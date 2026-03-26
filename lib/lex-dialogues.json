@@ -1,0 +1,18 @@
+{
+  "dashboard_welcome": {
+    "text": "¡Hola! ¡Qué bueno verte de nuevo! ¿Listo para aprender hoy?",
+    "audio": "/audio/welcome.mp3"
+  },
+  "daily_challenge_start": {
+    "text": "¡El desafío de hoy es especial! ¡Tú puedes hacerlo!",
+    "audio": "/audio/challenge.mp3"
+  },
+  "daily_challenge_complete": {
+    "text": "¡Lo lograste! ¡Eres increíble! ¡Sigue así!",
+    "audio": "/audio/success.mp3"
+  },
+  "level_up": {
+    "text": "¡Increíble! ¡Has subido de nivel! ¡Eres un campeón!",
+    "audio": "/audio/levelup.mp3"
+  }
+}

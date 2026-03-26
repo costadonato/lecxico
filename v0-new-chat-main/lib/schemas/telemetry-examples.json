@@ -1,0 +1,139 @@
+{
+  "examples": {
+    "session_start": {
+      "eventType": "session_start",
+      "sessionId": "550e8400-e29b-41d4-a716-446655440000",
+      "userId": "user-123",
+      "gameId": "cazador-sonidos",
+      "timestamp": "2025-01-15T10:30:00Z",
+      "level": 2,
+      "metadata": {
+        "deviceType": "tablet",
+        "platform": "web",
+        "userAgent": "Mozilla/5.0 (iPad; CPU OS 15_0 like Mac OS X)"
+      }
+    },
+    "exercise_attempt": {
+      "eventType": "exercise_attempt",
+      "sessionId": "550e8400-e29b-41d4-a716-446655440000",
+      "attemptId": "660e8400-e29b-41d4-a716-446655440001",
+      "userId": "user-123",
+      "gameId": "cazador-sonidos",
+      "timestamp": "2025-01-15T10:31:30Z",
+      "attemptNumber": 5,
+      "level": 2,
+      "contentId": "word-manzana",
+      "userResponse": "manzana",
+      "correctResponse": "manzana",
+      "isCorrect": true,
+      "timeToAnswer": 4.5,
+      "hintUsed": false,
+      "metadata": {
+        "targetSound": "m",
+        "audioPlayed": ["target_sound", "word_manzana"],
+        "consecutiveCorrect": 3
+      }
+    },
+    "session_end": {
+      "eventType": "session_end",
+      "sessionId": "550e8400-e29b-41d4-a716-446655440000",
+      "userId": "user-123",
+      "gameId": "cazador-sonidos",
+      "timestamp": "2025-01-15T10:40:00Z",
+      "levelStart": 2,
+      "levelEnd": 3,
+      "totalAttempts": 12,
+      "correctAttempts": 10,
+      "accuracy": 0.83,
+      "hintsUsed": 2,
+      "timeSpentSeconds": 600,
+      "completed": true,
+      "metadata": {
+        "maxConsecutiveCorrect": 5,
+        "avgTimePerAttempt": 50,
+        "levelUpAchieved": true
+      }
+    },
+    "level_up": {
+      "eventType": "level_up",
+      "sessionId": "550e8400-e29b-41d4-a716-446655440000",
+      "userId": "user-123",
+      "gameId": "cazador-sonidos",
+      "timestamp": "2025-01-15T10:35:00Z",
+      "previousLevel": 2,
+      "newLevel": 3,
+      "triggeredBy": "consecutive_correct"
+    },
+    "hint_used": {
+      "eventType": "hint_used",
+      "sessionId": "550e8400-e29b-41d4-a716-446655440000",
+      "attemptId": "660e8400-e29b-41d4-a716-446655440002",
+      "userId": "user-123",
+      "gameId": "cazador-sonidos",
+      "timestamp": "2025-01-15T10:33:00Z",
+      "hintType": "audio",
+      "consecutiveErrors": 2
+    },
+    "fatigue_detected": {
+      "eventType": "fatigue_detected",
+      "sessionId": "550e8400-e29b-41d4-a716-446655440000",
+      "userId": "user-123",
+      "gameId": "cazador-sonidos",
+      "timestamp": "2025-01-15T10:38:00Z",
+      "indicators": {
+        "recentAccuracy": 0.4,
+        "avgTimeIncrease": 1.5,
+        "consecutiveErrors": 3
+      },
+      "recommendedAction": "break"
+    }
+  },
+  "schemas": {
+    "game_sessions_table": {
+      "table_name": "game_sessions",
+      "columns": [
+        { "name": "id", "type": "UUID", "primary_key": true },
+        { "name": "user_id", "type": "UUID", "foreign_key": "users(id)" },
+        { "name": "game_id", "type": "VARCHAR(50)" },
+        { "name": "session_start", "type": "TIMESTAMP" },
+        { "name": "session_end", "type": "TIMESTAMP", "nullable": true },
+        { "name": "level_start", "type": "INTEGER" },
+        { "name": "level_end", "type": "INTEGER", "nullable": true },
+        { "name": "total_attempts", "type": "INTEGER", "default": 0 },
+        { "name": "correct_attempts", "type": "INTEGER", "default": 0 },
+        { "name": "hints_used", "type": "INTEGER", "default": 0 },
+        { "name": "time_spent_seconds", "type": "INTEGER" },
+        { "name": "completed", "type": "BOOLEAN", "default": false },
+        { "name": "metadata", "type": "JSONB", "nullable": true },
+        { "name": "created_at", "type": "TIMESTAMP", "default": "NOW()" }
+      ],
+      "indexes": [
+        { "name": "idx_game_sessions_user", "columns": ["user_id"] },
+        { "name": "idx_game_sessions_game", "columns": ["game_id"] },
+        { "name": "idx_game_sessions_date", "columns": ["session_start"] }
+      ]
+    },
+    "game_attempts_table": {
+      "table_name": "game_attempts",
+      "columns": [
+        { "name": "id", "type": "UUID", "primary_key": true },
+        { "name": "session_id", "type": "UUID", "foreign_key": "game_sessions(id)" },
+        { "name": "attempt_number", "type": "INTEGER" },
+        { "name": "timestamp", "type": "TIMESTAMP" },
+        { "name": "level", "type": "INTEGER" },
+        { "name": "is_correct", "type": "BOOLEAN" },
+        { "name": "time_to_answer", "type": "FLOAT" },
+        { "name": "hint_used", "type": "BOOLEAN", "default": false },
+        { "name": "content_id", "type": "VARCHAR(100)", "nullable": true },
+        { "name": "user_response", "type": "TEXT", "nullable": true },
+        { "name": "correct_response", "type": "TEXT", "nullable": true },
+        { "name": "metadata", "type": "JSONB", "nullable": true },
+        { "name": "created_at", "type": "TIMESTAMP", "default": "NOW()" }
+      ],
+      "indexes": [
+        { "name": "idx_game_attempts_session", "columns": ["session_id"] },
+        { "name": "idx_game_attempts_content", "columns": ["content_id"] }
+      ]
+    }
+  }
+}
