@@ -36,13 +36,6 @@ export default function LandingPage() {
             >
               Sobre la Dislexia
             </Link>
-            <Link
-              href="/professional/login"
-              className="text-primary font-semibold hover:text-primary/80 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
-              aria-label="Acceso Profesional"
-            >
-              Acceso Profesional
-            </Link>
           </nav>
           <div className="flex items-center gap-3">
             <Button variant="ghost" asChild>
@@ -80,9 +73,6 @@ export default function LandingPage() {
                     Comenzar Gratis
                     <Sparkles className="ml-2 w-5 h-5" />
                   </Link>
-                </Button>
-                <Button size="lg" variant="outline" className="text-lg bg-transparent" asChild>
-                  <Link href="#how-it-works">Ver Demo</Link>
                 </Button>
               </div>
               <div className="flex items-center gap-6 pt-4">
@@ -298,75 +288,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="mt-12 max-w-4xl mx-auto">
-            <Card className="border-2 border-primary bg-gradient-to-br from-primary/5 to-accent/5 hover:shadow-lg transition-all">
-              <CardHeader className="text-center space-y-4 p-8">
-                <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto">
-                  <TrendingUp className="w-8 h-8 text-primary-foreground" />
-                </div>
-                <CardTitle className="text-2xl md:text-3xl">Panel Escolar de Estadísticas</CardTitle>
-                <CardDescription className="text-lg leading-relaxed">
-                  Accede al panel completo con estadísticas detalladas de todos los estudiantes, métricas de
-                  rendimiento, alertas y análisis de progreso en tiempo real
-                </CardDescription>
-                <Button size="lg" className="mt-4" asChild>
-                  <Link href="/school/statistics">
-                    Ver Panel Escolar
-                    <TrendingUp className="ml-2 w-5 h-5" />
-                  </Link>
-                </Button>
-              </CardHeader>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Professional Demo Panels Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Paneles Profesionales</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Herramientas especializadas para docentes y psicopedagogos
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          <Card className="border-blue-200 hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-                <Users className="w-6 h-6 text-blue-700" />
-              </div>
-              <CardTitle className="text-2xl md:text-3xl">Panel para Docentes</CardTitle>
-              <CardDescription className="text-lg leading-relaxed">
-                Seguimiento pedagógico básico de estudiantes con alertas automáticas y métricas de desempeño por área
-              </CardDescription>
-              <Button size="lg" className="mt-4" asChild>
-                <Link href="/professional/demo-docente">
-                  Ver Panel Docente
-                  <Users className="ml-2 w-5 h-5" />
-                </Link>
-              </Button>
-            </CardHeader>
-          </Card>
-
-          <Card className="border-purple-200 hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
-                <Brain className="w-6 h-6 text-purple-700" />
-              </div>
-              <CardTitle className="text-2xl md:text-3xl">Panel Psicopedagógico</CardTitle>
-              <CardDescription className="text-lg leading-relaxed">
-                Herramientas completas de evaluación con notas clínicas, configuración de juegos y generación de
-                informes
-              </CardDescription>
-              <Button size="lg" className="mt-4" variant="secondary" asChild>
-                <Link href="/professional/demo-psicopedagogo">
-                  Ver Panel Psicopedagógico
-                  <Brain className="ml-2 w-5 h-5" />
-                </Link>
-              </Button>
-            </CardHeader>
-          </Card>
         </div>
       </section>
 
