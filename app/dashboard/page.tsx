@@ -96,10 +96,10 @@ export default function DashboardPage() {
             <p className="text-lg text-gray-500 mt-2">¿Qué querés hacer hoy?</p>
           </div>
           <img
-            src="/images/lumo.png"
+            src="/images/lumo-transparent.png"
             alt="Lumo"
             className="w-24 h-24 md:w-32 md:h-32 object-contain drop-shadow-lg"
-            style={{ animation: "dashboard-float 3s ease-in-out infinite 0.5s", mixBlendMode: "multiply" }}
+            style={{ animation: "dashboard-float 3s ease-in-out infinite 0.5s" }}
           />
         </div>
 
