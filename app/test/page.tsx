@@ -153,6 +153,9 @@ export default function TestPage() {
     setSaved(false)
   }
 
+  /* ---- helper: is block 1 (auditory discrimination) ---- */
+  const isBlock1 = current.block === 1
+
   /* ================================================================ */
   /*  RESULTS SCREEN                                                   */
   /* ================================================================ */
@@ -161,12 +164,21 @@ export default function TestPage() {
     const hasIndicators = totalPct < 60
 
     return (
-      <div className="min-h-screen bg-gray-50 py-10 px-4">
-        <div className="max-w-2xl mx-auto space-y-8">
-          {/* Header */}
+      <div className="min-h-screen" style={{ backgroundColor: "#FFF0F0" }}>
+        {/* Header */}
+        <header className="sticky top-0 z-20 bg-white border-b shadow-sm">
+          <div className="container mx-auto px-4 py-3 flex items-center">
+            <h1 className="text-2xl font-extrabold text-red-600 tracking-tight">Lecxico</h1>
+            <span className="flex-1 text-center text-lg font-bold text-red-600">
+              Test de indicadores de dislexia
+            </span>
+            <div className="w-[80px]" />
+          </div>
+        </header>
+
+        <div className="max-w-2xl mx-auto space-y-8 py-10 px-4">
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold text-gray-900">Resultados del Test</h1>
-            <p className="text-muted-foreground">Test de indicadores de dislexia</p>
+            <h2 className="text-3xl font-bold text-gray-900">Resultados del Test</h2>
           </div>
 
           {/* Score summary */}
@@ -245,75 +257,154 @@ export default function TestPage() {
   /*  QUESTION SCREEN                                                  */
   /* ================================================================ */
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* ---- Progress bar ---- */}
-      <div className="sticky top-0 z-10 bg-white border-b shadow-sm">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <span className="text-sm font-medium text-muted-foreground">
-            Pregunta {currentIndex + 1} de {TOTAL_QUESTIONS}
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#FFF0F0" }}>
+      {/* ---- Header ---- */}
+      <header className="sticky top-0 z-20 bg-white border-b shadow-sm">
+        <div className="container mx-auto px-4 py-3 flex items-center">
+          <h1 className="text-2xl font-extrabold text-red-600 tracking-tight">Lecxico</h1>
+          <span className="flex-1 text-center text-lg font-bold text-red-600">
+            Test de indicadores de dislexia
           </span>
-          <span className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
-            {current.blockName}
-          </span>
+          <div className="w-[80px]" />
         </div>
-        <div className="h-1.5 bg-gray-200">
+      </header>
+
+      {/* ---- Progress bar with dots ---- */}
+      <div className="w-full bg-white border-b px-4 py-4">
+        <div className="relative flex items-center justify-between max-w-4xl mx-auto">
+          {/* Background line */}
+          <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -translate-y-1/2 rounded-full" />
+          {/* Filled line */}
           <div
-            className="h-full bg-primary transition-all duration-300 ease-out"
-            style={{ width: `${progress}%` }}
+            className="absolute top-1/2 left-0 h-1 bg-green-400 -translate-y-1/2 rounded-full transition-all duration-300"
+            style={{ width: `${((currentIndex) / (TOTAL_QUESTIONS - 1)) * 100}%` }}
           />
+          {/* Dots */}
+          {questions.map((_, idx) => {
+            const isCompleted = idx < currentIndex
+            const isCurrent = idx === currentIndex
+            return (
+              <div
+                key={idx}
+                className={`
+                  relative z-10 rounded-full transition-all duration-300 flex items-center justify-center
+                  ${isCurrent
+                    ? "w-6 h-6 bg-blue-500 ring-4 ring-blue-200"
+                    : isCompleted
+                      ? "w-4 h-4 bg-green-500"
+                      : "w-4 h-4 bg-yellow-400"
+                  }
+                `}
+              >
+                {isCurrent && (
+                  <span className="text-[9px] font-bold text-white">{idx + 1}</span>
+                )}
+              </div>
+            )
+          })}
         </div>
       </div>
 
-      {/* ---- Question body ---- */}
-      <div className="flex-1 flex items-center justify-center px-4 py-10">
-        <div className="w-full max-w-lg space-y-8">
-          {/* Context (two words, syllable breakdown, etc.) */}
-          {current.context && (
-            <div className="text-center">
-              <span className="inline-block bg-white border-2 border-primary/20 rounded-2xl px-8 py-5 text-3xl sm:text-4xl font-bold tracking-widest text-gray-800 shadow-sm">
-                {current.context}
-              </span>
+      {/* ---- Question card ---- */}
+      <div className="flex-1 flex items-center justify-center px-4 py-6">
+        <div
+          className="w-full max-w-2xl rounded-3xl border-2 bg-white shadow-lg flex flex-col"
+          style={{ borderColor: "#5BBCB4", minHeight: "70vh" }}
+        >
+          {/* Question header - teal/celeste banner */}
+          <div
+            className="rounded-t-3xl px-8 py-6"
+            style={{ backgroundColor: "#E0F5F3" }}
+          >
+            {/* Block name badge */}
+            <span className="inline-block text-xs font-semibold text-teal-700 bg-teal-100 px-3 py-1 rounded-full mb-3">
+              {current.blockName}
+            </span>
+
+            {/* Context (two words, syllable breakdown, etc.) */}
+            {current.context && (
+              <div className="mb-3">
+                <span className="inline-block bg-white border-2 border-teal-200 rounded-2xl px-8 py-4 text-3xl sm:text-4xl font-bold tracking-widest text-gray-800 shadow-sm">
+                  {current.context}
+                </span>
+              </div>
+            )}
+
+            {/* Prompt */}
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+              {current.prompt}
+            </h2>
+          </div>
+
+          {/* Options area */}
+          <div className="flex-1 flex flex-col justify-center px-8 py-8">
+            <div className={`grid gap-4 ${current.options.length <= 2 ? "grid-cols-2" : current.options.length === 3 ? "grid-cols-1" : "grid-cols-2"}`}>
+              {current.options.map((opt, idx) => {
+                const isSelected = selectedOption === idx
+
+                // Block 1: special colored buttons
+                if (isBlock1) {
+                  const isFirst = idx === 0
+                  const baseColor = isFirst ? "green" : "red"
+                  const emoji = isFirst ? "👍" : "👎"
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleSelect(idx)}
+                      className={`
+                        rounded-2xl border-3 py-6 px-8 text-xl font-bold transition-all duration-150 flex items-center justify-center gap-3
+                        ${isSelected
+                          ? baseColor === "green"
+                            ? "border-green-600 bg-green-500 text-white shadow-lg scale-[1.03]"
+                            : "border-red-600 bg-red-500 text-white shadow-lg scale-[1.03]"
+                          : baseColor === "green"
+                            ? "border-green-400 bg-green-50 text-green-700 hover:bg-green-100 hover:shadow-md"
+                            : "border-red-400 bg-red-50 text-red-700 hover:bg-red-100 hover:shadow-md"
+                        }
+                      `}
+                    >
+                      <span className="text-2xl">{emoji}</span>
+                      {opt}
+                    </button>
+                  )
+                }
+
+                // Default option buttons
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => handleSelect(idx)}
+                    className={`
+                      rounded-2xl border-2 py-5 px-6 text-lg font-bold transition-all duration-150
+                      ${isSelected
+                        ? "border-teal-500 bg-teal-500 text-white shadow-lg scale-[1.02]"
+                        : "border-gray-300 bg-white text-gray-800 hover:border-teal-400 hover:shadow-md"
+                      }
+                    `}
+                  >
+                    {opt}
+                  </button>
+                )
+              })}
             </div>
-          )}
-
-          {/* Prompt */}
-          <h2 className="text-xl sm:text-2xl font-bold text-center text-gray-900">
-            {current.prompt}
-          </h2>
-
-          {/* Options */}
-          <div className={`grid gap-3 ${current.options.length <= 2 ? "grid-cols-2" : current.options.length === 3 ? "grid-cols-1" : "grid-cols-2"}`}>
-            {current.options.map((opt, idx) => {
-              const isSelected = selectedOption === idx
-              return (
-                <button
-                  key={idx}
-                  onClick={() => handleSelect(idx)}
-                  className={`
-                    rounded-xl border-2 py-4 px-6 text-lg font-semibold transition-all duration-150
-                    ${isSelected
-                      ? "border-primary bg-primary text-primary-foreground shadow-md scale-[1.02]"
-                      : "border-gray-200 bg-white text-gray-800 hover:border-primary/50 hover:shadow-sm"
-                    }
-                  `}
-                >
-                  {opt}
-                </button>
-              )
-            })}
           </div>
 
           {/* Next button */}
-          <div className="flex justify-end">
-            <Button
-              size="lg"
+          <div className="px-8 pb-8 flex justify-end">
+            <button
               disabled={selectedOption === null}
               onClick={handleNext}
-              className="gap-2 text-lg px-8"
+              className={`
+                flex items-center gap-2 rounded-xl px-8 py-4 text-lg font-bold text-white transition-all duration-150
+                ${selectedOption === null
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-red-500 hover:bg-red-600 shadow-md hover:shadow-lg"
+                }
+              `}
             >
               {currentIndex + 1 === TOTAL_QUESTIONS ? "Finalizar" : "Siguiente"}
               <ArrowRight className="w-5 h-5" />
-            </Button>
+            </button>
           </div>
         </div>
       </div>
