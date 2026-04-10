@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { CheckCircle2, XCircle, Loader2, ArrowRight, RotateCcw, Save, Home } from "lucide-react"
+import { CheckCircle2, XCircle, Loader2, ArrowRight, RotateCcw, Save, Home, Volume2 } from "lucide-react"
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -58,6 +58,36 @@ const questions: Question[] = [
 ]
 
 const TOTAL_QUESTIONS = questions.length
+
+/* ------------------------------------------------------------------ */
+/*  EMOJI MAP                                                          */
+/* ------------------------------------------------------------------ */
+const questionEmojis: Record<number, { context?: string[]; prompt?: string; options?: string[] }> = {
+  // Block 1: pair emojis for each context word
+  1:  { context: ["💋", "⚖️"] },
+  2:  { context: ["🛏️", "👴"] },
+  3:  { context: ["🪣", "🔫"] },
+  4:  { context: ["🐂", "🐂"] },
+  5:  { context: ["👆", "🎲"] },
+  // Block 2: prompt emoji + option emojis
+  6:  { prompt: "🏠", options: ["🪑", "☕", "🐶"] },
+  7:  { prompt: "👩", options: ["🛏️", "🤚", "🦆"] },
+  8:  { prompt: "🐱", options: ["🍽️", "🪑", "🚗"] },
+  9:  { prompt: "🐶", options: ["⚽", "🚗", "🫏"] },
+  10: { prompt: "🌸", options: ["☀️", "🎨", "🐟"] },
+  // Block 3: emoji for the word
+  11: { prompt: "🍼" },
+  12: { prompt: "🐱" },
+  13: { prompt: "🦋" },
+  14: { prompt: "🐘" },
+  15: { prompt: "☀️" },
+  // Block 4: emoji for the completed word
+  16: { prompt: "🧠" },
+  17: { prompt: "🐱" },
+  18: { prompt: "⚽" },
+  19: { prompt: "🪑" },
+  20: { prompt: "⛲" },
+}
 const BLOCKS = [
   { id: 1, name: "Discriminación auditiva" },
   { id: 2, name: "Conciencia fonológica" },
@@ -155,6 +185,28 @@ export default function TestPage() {
 
   /* ---- helper: is block 1 (auditory discrimination) ---- */
   const isBlock1 = current.block === 1
+
+  /* ---- text-to-speech ---- */
+  const [speaking, setSpeaking] = useState(false)
+
+  const speak = useCallback((text: string) => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return
+    window.speechSynthesis.cancel()
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang = "es-ES"
+    utterance.rate = 0.85
+    utterance.onstart = () => setSpeaking(true)
+    utterance.onend = () => setSpeaking(false)
+    utterance.onerror = () => setSpeaking(false)
+    window.speechSynthesis.speak(utterance)
+  }, [])
+
+  const speakQuestion = useCallback(() => {
+    const parts: string[] = []
+    if (current.context) parts.push(current.context.replace("—", "..."))
+    parts.push(current.prompt)
+    speak(parts.join(". "))
+  }, [current, speak])
 
   /* ================================================================ */
   /*  RESULTS SCREEN                                                   */
@@ -273,10 +325,10 @@ export default function TestPage() {
       <div className="w-full bg-white border-b px-4 py-4">
         <div className="relative flex items-center justify-between max-w-4xl mx-auto">
           {/* Background line */}
-          <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -translate-y-1/2 rounded-full" />
+          <div className="absolute top-1/2 left-0 right-0 h-[6px] bg-gray-200 -translate-y-1/2 rounded-full" />
           {/* Filled line */}
           <div
-            className="absolute top-1/2 left-0 h-1 bg-green-400 -translate-y-1/2 rounded-full transition-all duration-300"
+            className="absolute top-1/2 left-0 h-[6px] bg-green-400 -translate-y-1/2 rounded-full transition-all duration-300"
             style={{ width: `${((currentIndex) / (TOTAL_QUESTIONS - 1)) * 100}%` }}
           />
           {/* Dots */}
@@ -289,15 +341,15 @@ export default function TestPage() {
                 className={`
                   relative z-10 rounded-full transition-all duration-300 flex items-center justify-center
                   ${isCurrent
-                    ? "w-6 h-6 bg-blue-500 ring-4 ring-blue-200"
+                    ? "w-8 h-8 bg-blue-500 ring-4 ring-blue-200"
                     : isCompleted
-                      ? "w-4 h-4 bg-green-500"
-                      : "w-4 h-4 bg-yellow-400"
+                      ? "w-5 h-5 bg-green-500"
+                      : "w-5 h-5 bg-yellow-400"
                   }
                 `}
               >
                 {isCurrent && (
-                  <span className="text-[9px] font-bold text-white">{idx + 1}</span>
+                  <span className="text-xs font-bold text-white">{idx + 1}</span>
                 )}
               </div>
             )
@@ -309,31 +361,68 @@ export default function TestPage() {
       <div className="flex-1 flex items-center justify-center px-4 py-6">
         <div
           className="w-full max-w-2xl rounded-3xl border-2 bg-white shadow-lg flex flex-col"
-          style={{ borderColor: "#5BBCB4", minHeight: "70vh" }}
+          style={{ borderColor: "#E5E7EB", minHeight: "70vh" }}
         >
-          {/* Question header - teal/celeste banner */}
+          {/* Question header */}
           <div
-            className="rounded-t-3xl px-8 py-6"
-            style={{ backgroundColor: "#E0F5F3" }}
+            className="rounded-t-3xl px-8 py-6 text-center"
+            style={{ backgroundColor: "#F9FAFB" }}
           >
-            {/* Block name badge */}
-            <span className="inline-block text-xs font-semibold text-teal-700 bg-teal-100 px-3 py-1 rounded-full mb-3">
-              {current.blockName}
-            </span>
+            {/* Block name badge + audio button */}
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <span className="inline-block text-xs font-semibold text-gray-600 bg-gray-200 px-3 py-1 rounded-full">
+                {current.blockName}
+              </span>
+              <button
+                onClick={speakQuestion}
+                className={`
+                  inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all
+                  ${speaking
+                    ? "bg-red-100 text-red-600 animate-pulse"
+                    : "bg-blue-100 text-blue-600 hover:bg-blue-200"
+                  }
+                `}
+              >
+                <Volume2 className="w-4 h-4" />
+                {speaking ? "Escuchando..." : "Escuchar"}
+              </button>
+            </div>
 
-            {/* Context (two words, syllable breakdown, etc.) */}
-            {current.context && (
-              <div className="mb-3">
-                <span className="inline-block bg-white border-2 border-teal-200 rounded-2xl px-8 py-4 text-3xl sm:text-4xl font-bold tracking-widest text-gray-800 shadow-sm">
+            {/* Context with emojis */}
+            {current.context && current.block === 1 && questionEmojis[current.id]?.context ? (
+              <div className="mb-3 flex items-center justify-center gap-6">
+                {current.context.split(" — ").map((word, i) => (
+                  <div key={i} className="flex flex-col items-center gap-1">
+                    <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].context![i]}</span>
+                    <span className="inline-block bg-white border-2 border-gray-200 rounded-2xl px-6 py-3 text-2xl sm:text-3xl font-bold tracking-widest text-gray-800 shadow-sm">
+                      {word}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : current.context ? (
+              <div className="mb-3 flex flex-col items-center gap-2">
+                {questionEmojis[current.id]?.prompt && (
+                  <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].prompt}</span>
+                )}
+                <span className="inline-block bg-white border-2 border-gray-200 rounded-2xl px-8 py-4 text-3xl sm:text-4xl font-bold tracking-widest text-gray-800 shadow-sm">
                   {current.context}
                 </span>
               </div>
-            )}
+            ) : null}
 
-            {/* Prompt */}
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-              {current.prompt}
-            </h2>
+            {/* Prompt with emoji for blocks without context */}
+            <div className="flex items-center justify-center gap-3">
+              {!current.context && questionEmojis[current.id]?.prompt && (
+                <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].prompt}</span>
+              )}
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                {current.prompt}
+              </h2>
+              {current.block === 2 && questionEmojis[current.id]?.prompt && (
+                <span className="text-4xl sm:text-5xl">{questionEmojis[current.id].prompt}</span>
+              )}
+            </div>
           </div>
 
           {/* Options area */}
@@ -342,47 +431,51 @@ export default function TestPage() {
               {current.options.map((opt, idx) => {
                 const isSelected = selectedOption === idx
 
-                // Block 1: special colored buttons
+                // Block 1: neutral buttons with red hover/selected
                 if (isBlock1) {
-                  const isFirst = idx === 0
-                  const baseColor = isFirst ? "green" : "red"
-                  const emoji = isFirst ? "👍" : "👎"
                   return (
                     <button
                       key={idx}
                       onClick={() => handleSelect(idx)}
                       className={`
-                        rounded-2xl border-3 py-6 px-8 text-xl font-bold transition-all duration-150 flex items-center justify-center gap-3
+                        rounded-2xl border-2 py-6 px-8 text-xl font-bold transition-all duration-150 flex items-center justify-center gap-3
                         ${isSelected
-                          ? baseColor === "green"
-                            ? "border-green-600 bg-green-500 text-white shadow-lg scale-[1.03]"
-                            : "border-red-600 bg-red-500 text-white shadow-lg scale-[1.03]"
-                          : baseColor === "green"
-                            ? "border-green-400 bg-green-50 text-green-700 hover:bg-green-100 hover:shadow-md"
-                            : "border-red-400 bg-red-50 text-red-700 hover:bg-red-100 hover:shadow-md"
+                          ? "border-red-500 bg-red-50 text-red-700 shadow-lg scale-[1.03]"
+                          : "border-gray-300 bg-white text-gray-800 hover:border-red-500 hover:text-red-600 hover:shadow-md"
                         }
                       `}
                     >
-                      <span className="text-2xl">{emoji}</span>
                       {opt}
+                      <Volume2
+                        className="w-5 h-5 opacity-40 hover:opacity-100 transition-opacity"
+                        onClick={(e) => { e.stopPropagation(); speak(opt) }}
+                      />
                     </button>
                   )
                 }
 
-                // Default option buttons
+                // Default option buttons (with emoji for block 2)
+                const optEmoji = questionEmojis[current.id]?.options?.[idx]
                 return (
                   <button
                     key={idx}
                     onClick={() => handleSelect(idx)}
                     className={`
-                      rounded-2xl border-2 py-5 px-6 text-lg font-bold transition-all duration-150
+                      rounded-2xl border-2 py-5 px-6 text-lg font-bold transition-all duration-150 flex flex-col items-center gap-2
                       ${isSelected
-                        ? "border-teal-500 bg-teal-500 text-white shadow-lg scale-[1.02]"
-                        : "border-gray-300 bg-white text-gray-800 hover:border-teal-400 hover:shadow-md"
+                        ? "border-red-500 bg-red-50 text-red-700 shadow-lg scale-[1.02]"
+                        : "border-gray-300 bg-white text-gray-800 hover:border-red-500 hover:text-red-600 hover:shadow-md"
                       }
                     `}
                   >
-                    {opt}
+                    {optEmoji && <span className="text-4xl sm:text-5xl">{optEmoji}</span>}
+                    <span className="flex items-center gap-2">
+                      {opt}
+                      <Volume2
+                        className="w-4 h-4 opacity-40 hover:opacity-100 transition-opacity"
+                        onClick={(e) => { e.stopPropagation(); speak(opt) }}
+                      />
+                    </span>
                   </button>
                 )
               })}
