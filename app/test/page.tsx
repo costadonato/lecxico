@@ -28,33 +28,38 @@ interface Question {
 /*  QUESTION DATA  (4 blocks × 5 questions = 20)                     */
 /* ------------------------------------------------------------------ */
 const questions: Question[] = [
-  // ── Bloque 1: Discriminación auditiva ──────────────────────────────
-  { id: 1,  block: 1, blockName: "Discriminación auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "BESO — PESO", options: ["Iguales", "Diferentes"], correctIndex: 1 },
-  { id: 2,  block: 1, blockName: "Discriminación auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "CAMA — CANA", options: ["Iguales", "Diferentes"], correctIndex: 1 },
-  { id: 3,  block: 1, blockName: "Discriminación auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "PALA — BALA", options: ["Iguales", "Diferentes"], correctIndex: 1 },
-  { id: 4,  block: 1, blockName: "Discriminación auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "TORO — TORO", options: ["Iguales", "Diferentes"], correctIndex: 0 },
-  { id: 5,  block: 1, blockName: "Discriminación auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "DEDO — DADO", options: ["Iguales", "Diferentes"], correctIndex: 1 },
+  // ── Bloque 1: Discriminación Auditiva ──────────────────────────────
+  { id: 1,  block: 1, blockName: "Discriminación Auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "PALA — BALA", options: ["Iguales", "Diferentes"], correctIndex: 1 },
+  { id: 2,  block: 1, blockName: "Discriminación Auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "GATO — GATO", options: ["Iguales", "Diferentes"], correctIndex: 0 },
+  { id: 3,  block: 1, blockName: "Discriminación Auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "CAMA — CANA", options: ["Iguales", "Diferentes"], correctIndex: 1 },
+  { id: 4,  block: 1, blockName: "Discriminación Auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "TORO — LORO", options: ["Iguales", "Diferentes"], correctIndex: 1 },
 
-  // ── Bloque 2: Conciencia fonológica ────────────────────────────────
-  { id: 6,  block: 2, blockName: "Conciencia fonológica", type: "multiple_choice", prompt: "¿Qué palabra rima con CASA?", options: ["Mesa", "Taza", "Perro"], correctIndex: 1 },
-  { id: 7,  block: 2, blockName: "Conciencia fonológica", type: "multiple_choice", prompt: "¿Qué palabra empieza igual que MAMÁ?", options: ["Cama", "Mano", "Pato"], correctIndex: 1 },
-  { id: 8,  block: 2, blockName: "Conciencia fonológica", type: "multiple_choice", prompt: "¿Qué palabra rima con GATO?", options: ["Plato", "Mesa", "Coche"], correctIndex: 0 },
-  { id: 9,  block: 2, blockName: "Conciencia fonológica", type: "multiple_choice", prompt: "¿Qué palabra empieza igual que PERRO?", options: ["Pelota", "Carro", "Burro"], correctIndex: 0 },
-  { id: 10, block: 2, blockName: "Conciencia fonológica", type: "multiple_choice", prompt: "¿Qué palabra rima con FLOR?", options: ["Sol", "Color", "Pez"], correctIndex: 1 },
+  // ── Bloque 2: Conciencia Fonológica ────────────────────────────────
+  { id: 5,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que MAMÁ?", options: ["Mariposa", "Pato", "Sol"], correctIndex: 0 },
+  { id: 6,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que SAPO?", options: ["Nube", "Sandía", "Perro"], correctIndex: 1 },
+  { id: 7,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que PELOTA?", options: ["Árbol", "Dado", "Pez"], correctIndex: 2 },
 
-  // ── Bloque 3: Conciencia silábica ──────────────────────────────────
-  { id: 11, block: 3, blockName: "Conciencia silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra BOTELLA?", context: "BO - TE - LLA", options: ["2", "3", "4"], correctIndex: 1 },
-  { id: 12, block: 3, blockName: "Conciencia silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra GATO?", context: "GA - TO", options: ["1", "2", "3"], correctIndex: 1 },
-  { id: 13, block: 3, blockName: "Conciencia silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra MARIPOSA?", context: "MA - RI - PO - SA", options: ["3", "4", "5"], correctIndex: 1 },
-  { id: 14, block: 3, blockName: "Conciencia silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra ELEFANTE?", context: "E - LE - FAN - TE", options: ["3", "4", "5"], correctIndex: 1 },
-  { id: 15, block: 3, blockName: "Conciencia silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra SOL?", context: "SOL", options: ["1", "2", "3"], correctIndex: 0 },
+  // ── Bloque 3: Conciencia Silábica ──────────────────────────────────
+  { id: 8,  block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra GATO?", context: "GA - TO", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 9,  block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra SOL?", context: "SOL", options: ["1", "2", "3"], correctIndex: 0 },
+  { id: 10, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CAMA?", context: "CA - MA", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 11, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra PAN?", context: "PAN", options: ["1", "2", "3"], correctIndex: 0 },
+  { id: 12, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra NUBE?", context: "NU - BE", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 13, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra PATO?", context: "PA - TO", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 14, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CASA?", context: "CA - SA", options: ["1", "2", "3"], correctIndex: 1 },
 
-  // ── Bloque 4: Correspondencia sonido-letra ─────────────────────────
-  { id: 16, block: 4, blockName: "Correspondencia sonido-letra", type: "letter_fill", prompt: "Completa la palabra: CA_EZA", options: ["b", "d", "p", "q"], correctIndex: 0 },
-  { id: 17, block: 4, blockName: "Correspondencia sonido-letra", type: "letter_fill", prompt: "Completa la palabra: _ATO", options: ["g", "p", "t", "m"], correctIndex: 0 },
-  { id: 18, block: 4, blockName: "Correspondencia sonido-letra", type: "letter_fill", prompt: "Completa la palabra: _ELOTA", options: ["b", "d", "p", "q"], correctIndex: 2 },
-  { id: 19, block: 4, blockName: "Correspondencia sonido-letra", type: "letter_fill", prompt: "Completa la palabra: ME_A", options: ["s", "z", "c", "x"], correctIndex: 0 },
-  { id: 20, block: 4, blockName: "Correspondencia sonido-letra", type: "letter_fill", prompt: "Completa la palabra: _UENTE", options: ["f", "j", "p", "t"], correctIndex: 0 },
+  // ── Bloque 4: Memoria Fonológica ────────────────────────────────────
+  { id: 15, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste primero? SOL – PAN – LUNA", options: ["Luna", "Sol", "Pan"], correctIndex: 1 },
+  { id: 16, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste segundo? GATO – CASA – PATO", options: ["Gato", "Pato", "Casa"], correctIndex: 2 },
+  { id: 17, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste último? MESA – SOL – NUBE", options: ["Mesa", "Nube", "Sol"], correctIndex: 1 },
+
+  // ── Bloque 5: Vocabulario y Comprensión Oral ───────────────────────
+  { id: 18, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la mariposa?", options: ["Mariposa", "Abeja", "Oruga"], correctIndex: 0 },
+  { id: 19, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es el camión?", options: ["Auto", "Camión", "Colectivo"], correctIndex: 1 },
+  { id: 20, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la sandía?", options: ["Manzana", "Uva", "Sandía"], correctIndex: 2 },
+  { id: 21, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la araña?", options: ["Mariposa", "Araña", "Abeja"], correctIndex: 1 },
+  { id: 22, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la guitarra?", options: ["Guitarra", "Trompeta", "Tambor"], correctIndex: 0 },
+  { id: 23, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es el elefante?", options: ["Jirafa", "Cebra", "Elefante"], correctIndex: 2 },
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -64,35 +69,40 @@ const TOTAL_QUESTIONS = questions.length
 /* ------------------------------------------------------------------ */
 const questionEmojis: Record<number, { context?: string[]; prompt?: string; options?: string[] }> = {
   // Block 1: pair emojis for each context word
-  1:  { context: ["💋", "⚖️"] },
-  2:  { context: ["🛏️", "👴"] },
-  3:  { context: ["🪣", "🔫"] },
-  4:  { context: ["🐂", "🐂"] },
-  5:  { context: ["👆", "🎲"] },
+  1: { context: ["🪣", "🔫"] },
+  2: { context: ["🐱", "🐱"] },
+  3: { context: ["🛏️", "👴"] },
+  4: { context: ["🐂", "🦜"] },
   // Block 2: prompt emoji + option emojis
-  6:  { prompt: "🏠", options: ["🪑", "☕", "🐶"] },
-  7:  { prompt: "👩", options: ["🛏️", "🤚", "🦆"] },
-  8:  { prompt: "🐱", options: ["🍽️", "🪑", "🚗"] },
-  9:  { prompt: "🐶", options: ["⚽", "🚗", "🫏"] },
-  10: { prompt: "🌸", options: ["☀️", "🎨", "🐟"] },
+  5: { prompt: "👩", options: ["🦋", "🦆", "☀️"] },
+  6: { prompt: "🐸", options: ["☁️", "🍉", "🐕"] },
+  7: { prompt: "🎾", options: ["🌳", "🎲", "🐟"] },
   // Block 3: emoji for the word
-  11: { prompt: "🍼" },
-  12: { prompt: "🐱" },
-  13: { prompt: "🦋" },
-  14: { prompt: "🐘" },
-  15: { prompt: "☀️" },
-  // Block 4: emoji for the completed word
-  16: { prompt: "🧠" },
-  17: { prompt: "🐱" },
-  18: { prompt: "⚽" },
-  19: { prompt: "🪑" },
-  20: { prompt: "⛲" },
+  8:  { prompt: "🐱" },
+  9:  { prompt: "☀️" },
+  10: { prompt: "🛏️" },
+  11: { prompt: "🍞" },
+  12: { prompt: "☁️" },
+  13: { prompt: "🦆" },
+  14: { prompt: "🏠" },
+  // Block 4: option emojis for the sequence words
+  15: { options: ["🌙", "☀️", "🍞"] },
+  16: { options: ["🐱", "🦆", "🏠"] },
+  17: { options: ["🪑", "☁️", "☀️"] },
+  // Block 5: option emojis for the vocabulary words
+  18: { options: ["🦋", "🐝", "🐛"] },
+  19: { options: ["🚗", "🚚", "🚌"] },
+  20: { options: ["🍎", "🍇", "🍉"] },
+  21: { options: ["🦋", "🕷️", "🐝"] },
+  22: { options: ["🎸", "🎺", "🥁"] },
+  23: { options: ["🦒", "🦓", "🐘"] },
 }
 const BLOCKS = [
-  { id: 1, name: "Discriminación auditiva" },
-  { id: 2, name: "Conciencia fonológica" },
-  { id: 3, name: "Conciencia silábica" },
-  { id: 4, name: "Correspondencia sonido-letra" },
+  { id: 1, name: "Discriminación Auditiva" },
+  { id: 2, name: "Conciencia Fonológica" },
+  { id: 3, name: "Conciencia Silábica" },
+  { id: 4, name: "Memoria Fonológica" },
+  { id: 5, name: "Vocabulario y Comprensión Oral" },
 ]
 
 /* ------------------------------------------------------------------ */
@@ -165,6 +175,7 @@ export default function TestPage() {
         bloque_2_correctas: blockResults[1].correct,
         bloque_3_correctas: blockResults[2].correct,
         bloque_4_correctas: blockResults[3].correct,
+        bloque_5_correctas: blockResults[4].correct,
         conclusion: totalPct < 60 ? "indicadores_detectados" : "sin_indicadores",
       })
       setSaved(true)
@@ -214,14 +225,20 @@ export default function TestPage() {
   if (finished) {
     const blockResults = computeResults()
     const hasIndicators = totalPct < 60
+    const getScoreColor = (pct: number) => {
+      if (pct >= 80) return "bg-green-50 text-green-700"
+      if (pct >= 60) return "bg-yellow-50 text-yellow-700"
+      if (pct >= 40) return "bg-orange-50 text-orange-700"
+      return "bg-red-50 text-red-700"
+    }
 
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#FFF0F0" }}>
+      <div className="min-h-screen bg-gradient-to-b from-white to-red-50">
         {/* Header */}
-        <header className="sticky top-0 z-20 bg-white border-b shadow-sm">
+        <header className="sticky top-0 z-20 bg-white shadow-sm">
           <div className="container mx-auto px-4 py-3 flex items-center">
             <h1 className="text-2xl font-extrabold text-red-600 tracking-tight">Lecxico</h1>
-            <span className="flex-1 text-center text-lg font-bold text-red-600">
+            <span className="flex-1 text-center text-lg font-bold text-gray-800">
               Test de indicadores de dislexia
             </span>
             <div className="w-[80px]" />
@@ -234,18 +251,18 @@ export default function TestPage() {
           </div>
 
           {/* Score summary */}
-          <Card className="border-2 shadow-sm">
+          <Card className="rounded-2xl border-0 shadow-xl">
             <CardHeader className="text-center pb-2">
-              <CardTitle className="text-5xl font-extrabold text-primary">{totalPct}%</CardTitle>
+              <CardTitle className="text-5xl font-extrabold text-red-600">{totalPct}%</CardTitle>
               <CardDescription className="text-lg mt-1">{totalCorrect} de {TOTAL_QUESTIONS} respuestas correctas</CardDescription>
             </CardHeader>
           </Card>
 
           {/* Table */}
-          <Card className="border-2 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-0 shadow-xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-primary text-primary-foreground">
+                <thead className="bg-red-500 text-white">
                   <tr>
                     <th className="py-3 px-4">Bloque</th>
                     <th className="py-3 px-4 text-center">Correctas</th>
@@ -253,8 +270,8 @@ export default function TestPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {blockResults.map((b, i) => (
-                    <tr key={b.id} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                  {blockResults.map((b) => (
+                    <tr key={b.id} className={getScoreColor(b.pct)}>
                       <td className="py-3 px-4 font-medium">{b.name}</td>
                       <td className="py-3 px-4 text-center">{b.correct} / {b.total}</td>
                       <td className="py-3 px-4 text-center font-semibold">{b.pct}%</td>
@@ -266,7 +283,7 @@ export default function TestPage() {
           </Card>
 
           {/* Conclusion */}
-          <Card className={`border-2 shadow-sm ${hasIndicators ? "border-red-300 bg-red-50" : "border-green-300 bg-green-50"}`}>
+          <Card className={`rounded-2xl border-2 shadow-md ${hasIndicators ? "border-red-400 bg-red-50" : "border-green-400 bg-green-50"}`}>
             <CardContent className="py-6 flex items-start gap-4">
               {hasIndicators ? (
                 <XCircle className="w-8 h-8 text-red-500 shrink-0 mt-0.5" />
@@ -289,14 +306,26 @@ export default function TestPage() {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button onClick={handleSave} disabled={saving || saved} className="flex-1 gap-2">
+            <Button
+              onClick={handleSave}
+              disabled={saving || saved}
+              className="flex-1 gap-2 bg-red-500 hover:bg-red-600 text-white"
+            >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <CheckCircle2 className="w-4 h-4" /> : <Save className="w-4 h-4" />}
               {saving ? "Guardando…" : saved ? "Guardado ✓" : "Guardar resultados"}
             </Button>
-            <Button variant="outline" onClick={handleRestart} className="flex-1 gap-2">
+            <Button
+              variant="outline"
+              onClick={handleRestart}
+              className="flex-1 gap-2 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+            >
               <RotateCcw className="w-4 h-4" /> Repetir test
             </Button>
-            <Button variant="outline" onClick={() => router.push("/dashboard")} className="flex-1 gap-2">
+            <Button
+              variant="outline"
+              onClick={() => router.push("/dashboard")}
+              className="flex-1 gap-2 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+            >
               <Home className="w-4 h-4" /> Volver al inicio
             </Button>
           </div>
@@ -309,12 +338,12 @@ export default function TestPage() {
   /*  QUESTION SCREEN                                                  */
   /* ================================================================ */
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#FFF0F0" }}>
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-red-50">
       {/* ---- Header ---- */}
-      <header className="sticky top-0 z-20 bg-white border-b shadow-sm">
+      <header className="sticky top-0 z-20 bg-white shadow-sm">
         <div className="container mx-auto px-4 py-3 flex items-center">
           <h1 className="text-2xl font-extrabold text-red-600 tracking-tight">Lecxico</h1>
-          <span className="flex-1 text-center text-lg font-bold text-red-600">
+          <span className="flex-1 text-center text-lg font-bold text-gray-800">
             Test de indicadores de dislexia
           </span>
           <div className="w-[80px]" />
@@ -322,13 +351,13 @@ export default function TestPage() {
       </header>
 
       {/* ---- Progress bar with dots ---- */}
-      <div className="w-full bg-white border-b px-4 py-4">
+      <div className="w-full bg-white shadow-sm px-4 py-4">
         <div className="relative flex items-center justify-between max-w-4xl mx-auto">
           {/* Background line */}
           <div className="absolute top-1/2 left-0 right-0 h-[6px] bg-gray-200 -translate-y-1/2 rounded-full" />
           {/* Filled line */}
           <div
-            className="absolute top-1/2 left-0 h-[6px] bg-green-400 -translate-y-1/2 rounded-full transition-all duration-300"
+            className="absolute top-1/2 left-0 h-[6px] bg-red-400 -translate-y-1/2 rounded-full transition-all duration-300"
             style={{ width: `${((currentIndex) / (TOTAL_QUESTIONS - 1)) * 100}%` }}
           />
           {/* Dots */}
@@ -341,115 +370,116 @@ export default function TestPage() {
                 className={`
                   relative z-10 rounded-full transition-all duration-300 flex items-center justify-center
                   ${isCurrent
-                    ? "w-8 h-8 bg-blue-500 ring-4 ring-blue-200"
+                    ? "w-8 h-8 bg-white border-4 border-red-500"
                     : isCompleted
-                      ? "w-5 h-5 bg-green-500"
-                      : "w-5 h-5 bg-yellow-400"
+                      ? "w-5 h-5 bg-red-500"
+                      : "w-5 h-5 bg-gray-200"
                   }
                 `}
               >
                 {isCurrent && (
-                  <span className="text-xs font-bold text-white">{idx + 1}</span>
+                  <span className="text-xs font-bold text-red-600">{idx + 1}</span>
                 )}
               </div>
             )
           })}
         </div>
+        <p className="text-center text-xs font-semibold text-red-500 mt-3">
+          {current.blockName}
+        </p>
       </div>
 
       {/* ---- Question card ---- */}
       <div className="flex-1 flex items-center justify-center px-4 py-6">
         <div
-          className="w-full max-w-2xl rounded-3xl border-2 bg-white shadow-lg flex flex-col"
-          style={{ borderColor: "#E5E7EB", minHeight: "70vh" }}
+          key={currentIndex}
+          className="w-full max-w-2xl rounded-2xl bg-white shadow-xl flex flex-col p-8 animate-in fade-in slide-in-from-bottom-4 duration-300"
+          style={{ minHeight: "70vh" }}
         >
-          {/* Question header */}
-          <div
-            className="rounded-t-3xl px-8 py-6 text-center"
-            style={{ backgroundColor: "#F9FAFB" }}
-          >
-            {/* Block name badge + audio button */}
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <span className="inline-block text-xs font-semibold text-gray-600 bg-gray-200 px-3 py-1 rounded-full">
-                {current.blockName}
-              </span>
-              <button
-                onClick={speakQuestion}
-                className={`
-                  inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all
-                  ${speaking
-                    ? "bg-red-100 text-red-600 animate-pulse"
-                    : "bg-blue-100 text-blue-600 hover:bg-blue-200"
-                  }
-                `}
-              >
-                <Volume2 className="w-4 h-4" />
-                {speaking ? "Escuchando..." : "Escuchar"}
-              </button>
-            </div>
+          {/* Block name badge + audio button */}
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <span className="inline-block text-xs font-semibold text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+              {current.blockName}
+            </span>
+            <button
+              onClick={speakQuestion}
+              className={`
+                inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all
+                ${speaking
+                  ? "bg-red-100 text-red-600 animate-pulse"
+                  : "bg-red-50 text-red-500 hover:bg-red-100"
+                }
+              `}
+            >
+              <Volume2 className="w-4 h-4" />
+              {speaking ? "Escuchando..." : "Escuchar"}
+            </button>
+          </div>
 
-            {/* Context with emojis */}
-            {current.context && current.block === 1 && questionEmojis[current.id]?.context ? (
-              <div className="mb-3 flex items-center justify-center gap-6">
-                {current.context.split(" — ").map((word, i) => (
-                  <div key={i} className="flex flex-col items-center gap-1">
+          {/* Context with emojis */}
+          {current.context && current.block === 1 && questionEmojis[current.id]?.context ? (
+            <div className="mb-4 flex items-center justify-center gap-4 flex-wrap">
+              {current.context.split(" — ").map((word, i, arr) => (
+                <div key={i} className="flex items-center gap-4">
+                  <div className="flex flex-col items-center gap-1">
                     <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].context![i]}</span>
-                    <span className="inline-block bg-white border-2 border-gray-200 rounded-2xl px-6 py-3 text-2xl sm:text-3xl font-bold tracking-widest text-gray-800 shadow-sm">
-                      {word}
-                    </span>
+                    <span className="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-wide">{word}</span>
                   </div>
-                ))}
-              </div>
-            ) : current.context ? (
-              <div className="mb-3 flex flex-col items-center gap-2">
-                {questionEmojis[current.id]?.prompt && (
-                  <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].prompt}</span>
-                )}
-                <span className="inline-block bg-white border-2 border-gray-200 rounded-2xl px-8 py-4 text-3xl sm:text-4xl font-bold tracking-widest text-gray-800 shadow-sm">
-                  {current.context}
-                </span>
-              </div>
-            ) : null}
-
-            {/* Prompt with emoji for blocks without context */}
-            <div className="flex items-center justify-center gap-3">
-              {!current.context && questionEmojis[current.id]?.prompt && (
+                  {i < arr.length - 1 && (
+                    <span className="text-3xl sm:text-4xl font-bold text-gray-400">–</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : current.context ? (
+            <div className="mb-4 flex flex-col items-center gap-2">
+              {questionEmojis[current.id]?.prompt && (
                 <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].prompt}</span>
               )}
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                {current.prompt}
-              </h2>
-              {current.block === 2 && questionEmojis[current.id]?.prompt && (
-                <span className="text-4xl sm:text-5xl">{questionEmojis[current.id].prompt}</span>
-              )}
+              <span className="inline-block bg-white border-2 border-gray-200 rounded-2xl px-8 py-4 text-3xl sm:text-4xl font-bold tracking-widest text-gray-800 shadow-sm">
+                {current.context}
+              </span>
             </div>
+          ) : null}
+
+          {/* Prompt */}
+          <div className="mb-6 bg-red-50 border-l-4 border-red-500 rounded-r-xl px-6 py-5 flex items-center justify-center gap-3">
+            {!current.context && questionEmojis[current.id]?.prompt && (
+              <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].prompt}</span>
+            )}
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 text-center">
+              {current.prompt}
+            </h2>
+            {current.block === 2 && questionEmojis[current.id]?.prompt && (
+              <span className="text-4xl sm:text-5xl">{questionEmojis[current.id].prompt}</span>
+            )}
           </div>
 
           {/* Options area */}
-          <div className="flex-1 flex flex-col justify-center px-8 py-8">
+          <div className="flex-1 flex flex-col justify-center py-2">
             <div className={`grid gap-4 ${current.options.length <= 2 ? "grid-cols-2" : current.options.length === 3 ? "grid-cols-1" : "grid-cols-2"}`}>
               {current.options.map((opt, idx) => {
                 const isSelected = selectedOption === idx
 
-                // Block 1: neutral buttons with red hover/selected
+                // Block 1: Sí / No buttons
                 if (isBlock1) {
+                  const isYes = idx === 0
                   return (
                     <button
                       key={idx}
                       onClick={() => handleSelect(idx)}
                       className={`
-                        rounded-2xl border-2 py-6 px-8 text-xl font-bold transition-all duration-150 flex items-center justify-center gap-3
+                        rounded-2xl py-8 px-8 text-2xl font-extrabold transition-all duration-200 flex flex-col items-center justify-center gap-2
                         ${isSelected
-                          ? "border-red-500 bg-red-50 text-red-700 shadow-lg scale-[1.03]"
-                          : "border-gray-300 bg-white text-gray-800 hover:border-red-500 hover:text-red-600 hover:shadow-md"
+                          ? isYes
+                            ? "bg-green-500 text-white"
+                            : "bg-red-500 text-white"
+                          : "border-2 border-gray-200 bg-white text-gray-800 hover:border-red-400 hover:bg-red-50"
                         }
                       `}
                     >
-                      {opt}
-                      <Volume2
-                        className="w-5 h-5 opacity-40 hover:opacity-100 transition-opacity"
-                        onClick={(e) => { e.stopPropagation(); speak(opt) }}
-                      />
+                      <span className="text-4xl">{isYes ? "👍" : "👎"}</span>
+                      {isYes ? "Sí" : "No"}
                     </button>
                   )
                 }
@@ -461,10 +491,10 @@ export default function TestPage() {
                     key={idx}
                     onClick={() => handleSelect(idx)}
                     className={`
-                      rounded-2xl border-2 py-5 px-6 text-lg font-bold transition-all duration-150 flex flex-col items-center gap-2
+                      rounded-2xl border-2 py-5 px-6 text-lg font-bold transition-all duration-200 flex flex-col items-center gap-2
                       ${isSelected
-                        ? "border-red-500 bg-red-50 text-red-700 shadow-lg scale-[1.02]"
-                        : "border-gray-300 bg-white text-gray-800 hover:border-red-500 hover:text-red-600 hover:shadow-md"
+                        ? "border-transparent bg-red-500 text-white"
+                        : "border-gray-200 bg-white text-gray-800 hover:border-red-400 hover:bg-red-50"
                       }
                     `}
                   >
@@ -472,7 +502,7 @@ export default function TestPage() {
                     <span className="flex items-center gap-2">
                       {opt}
                       <Volume2
-                        className="w-4 h-4 opacity-40 hover:opacity-100 transition-opacity"
+                        className={`w-4 h-4 transition-opacity ${isSelected ? "opacity-70 hover:opacity-100" : "opacity-40 hover:opacity-100"}`}
                         onClick={(e) => { e.stopPropagation(); speak(opt) }}
                       />
                     </span>
@@ -483,12 +513,12 @@ export default function TestPage() {
           </div>
 
           {/* Next button */}
-          <div className="px-8 pb-8 flex justify-end">
+          <div className="pt-4 flex justify-end">
             <button
               disabled={selectedOption === null}
               onClick={handleNext}
               className={`
-                flex items-center gap-2 rounded-xl px-8 py-4 text-lg font-bold text-white transition-all duration-150
+                flex items-center gap-2 rounded-xl px-8 py-4 text-lg font-bold text-white transition-all duration-200
                 ${selectedOption === null
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-red-500 hover:bg-red-600 shadow-md hover:shadow-lg"
