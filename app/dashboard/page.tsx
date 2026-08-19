@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { Button } from "@/components/ui/button"
-import { Brain, Gamepad2, User, LogOut, Loader2, Star } from "lucide-react"
+import { LogOut, Loader2, User } from "lucide-react"
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -32,10 +31,15 @@ export default function DashboardPage() {
     router.refresh()
   }
 
+  /* Diagonal gradient: near-black red → dark red → deep indigo */
+  const backgroundStyle = {
+    background: "linear-gradient(135deg, #1a0000 0%, #7f1d1d 50%, #1e1e2e 100%)",
+  }
+
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-red-50">
-        <Loader2 className="w-10 h-10 animate-spin text-red-600" />
+      <div className="min-h-screen flex items-center justify-center" style={backgroundStyle}>
+        <Loader2 className="w-10 h-10 animate-spin text-white/80" />
       </div>
     )
   }
@@ -44,111 +48,97 @@ export default function DashboardPage() {
     {
       title: "Test",
       description: "Detectá indicadores de dislexia",
-      icon: Brain,
+      icon: "🧠",
       href: "/test",
-      gradient: "from-red-500 to-orange-400",
-      shadow: "hover:shadow-red-200/60",
     },
     {
       title: "Entrenamiento",
       description: "Practicá con juegos interactivos",
-      icon: Gamepad2,
+      icon: "🎮",
       href: "/entrenamiento",
-      gradient: "from-blue-500 to-violet-500",
-      shadow: "hover:shadow-violet-200/60",
     },
     {
       title: "Mi Perfil",
       description: "Revisá tu progreso y resultados",
-      icon: User,
+      icon: "👤",
       href: "/perfil",
-      gradient: "from-emerald-500 to-teal-500",
-      shadow: "hover:shadow-emerald-200/60",
     },
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-red-50 pb-16">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-red-100 sticky top-0 z-10 px-4 py-4">
-        <div className="container mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-extrabold text-red-600 tracking-tight">Lecxico</h1>
-          <Button variant="outline" size="sm" onClick={handleLogout} className="flex items-center gap-2 border-red-200 text-red-600 hover:bg-red-50">
-            <LogOut className="w-4 h-4" />
-            Cerrar Sesión
-          </Button>
+    <div className="min-h-screen relative overflow-hidden" style={backgroundStyle}>
+      {/* ---- Ambient blurred orbs (depth) ---- */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-32 -left-32 w-[28rem] h-[28rem] rounded-full bg-red-500 opacity-20 blur-3xl" />
+        <div className="absolute top-1/3 -right-32 w-[26rem] h-[26rem] rounded-full bg-pink-500 opacity-20 blur-3xl" />
+        <div className="absolute -bottom-40 left-1/2 -translate-x-1/2 w-[30rem] h-[30rem] rounded-full bg-orange-500 opacity-20 blur-3xl" />
+      </div>
+
+      {/* ---- Navbar ---- */}
+      <header className="relative z-10 h-16 bg-red-600 shadow-lg">
+        <div className="container mx-auto h-full px-4 flex items-center justify-between">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Lecxico</h1>
+
+          <div className="flex items-center gap-4">
+            <span className="hidden sm:flex items-center gap-2 text-white font-medium">
+              <User className="w-5 h-5" />
+              {firstName}
+            </span>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
+            >
+              <LogOut className="w-4 h-4" />
+              Cerrar sesión
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4">
-        {/* Hero with mascots */}
-        <div className="flex items-center justify-center gap-6 mt-12 mb-2">
+      <main className="relative z-10 container mx-auto px-4">
+        {/* ---- Greeting with mascots ---- */}
+        <div className="flex items-center justify-center gap-4 sm:gap-8 pt-12 pb-10">
           <img
             src="/images/lex.png"
             alt="Lex"
-            className="w-24 h-24 md:w-32 md:h-32 object-contain drop-shadow-lg"
-            style={{ animation: "dashboard-float 3s ease-in-out infinite" }}
+            className="h-[180px] md:h-[220px] w-auto object-contain shrink-0 drop-shadow-2xl"
           />
+
           <div className="text-center">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900">
-              ¡Hola, {firstName}! 👋
-            </h2>
-            <p className="text-lg text-gray-500 mt-2">¿Qué querés hacer hoy?</p>
+            <h2 className="text-4xl font-bold text-white">Hola, {firstName}</h2>
+            <p className="text-lg text-white/70 mt-2">¿Qué querés hacer hoy?</p>
           </div>
+
           <img
-            src="/images/lumo-transparent.png"
+            src="/images/lumo.png"
             alt="Lumo"
-            className="w-24 h-24 md:w-32 md:h-32 object-contain drop-shadow-lg"
-            style={{ animation: "dashboard-float 3s ease-in-out infinite 0.5s" }}
+            className="h-[180px] md:h-[220px] w-auto object-contain shrink-0 drop-shadow-2xl"
+            style={{ mixBlendMode: "screen" }}
           />
         </div>
 
-        {/* Navigation cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 max-w-5xl mx-auto">
-          {cards.map((card) => {
-            const Icon = card.icon
-            return (
-              <button
-                key={card.title}
-                onClick={() => router.push(card.href)}
-                className={`group relative rounded-2xl bg-gradient-to-br ${card.gradient} p-8 text-white text-left shadow-lg ${card.shadow} hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer`}
-              >
-                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <Icon className="w-9 h-9" />
-                </div>
-                <h3 className="text-2xl font-bold mb-2">{card.title}</h3>
-                <p className="text-white/85 text-base leading-relaxed">{card.description}</p>
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </div>
-              </button>
-            )
-          })}
-        </div>
+        {/* ---- Navigation cards ---- */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto pb-16">
+          {cards.map((card) => (
+            <button
+              key={card.title}
+              onClick={() => router.push(card.href)}
+              className="group rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-8 text-left hover:bg-white/20 hover:scale-105 hover:shadow-2xl transition-all duration-300 cursor-pointer"
+            >
+              <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-3xl">
+                {card.icon}
+              </div>
 
-        {/* Motivational section */}
-        <div className="max-w-3xl mx-auto mt-14">
-          <div className="bg-white/70 backdrop-blur-sm border border-red-100 rounded-2xl p-6 flex items-center gap-4 shadow-sm">
-            <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Star className="w-6 h-6 text-yellow-500 fill-yellow-400" />
-            </div>
-            <div>
-              <h4 className="font-bold text-gray-900 text-lg">Tu progreso</h4>
-              <p className="text-gray-500">¡Seguí así! Cada día mejorás un poco más 🌟</p>
-            </div>
-          </div>
+              <h3 className="text-xl font-bold text-white mt-6">{card.title}</h3>
+              <p className="text-sm text-white/70 mt-2">{card.description}</p>
+
+              <div className="border-t border-white/20 mt-6 pt-4">
+                <span className="text-sm text-white/50">Ir →</span>
+              </div>
+            </button>
+          ))}
         </div>
       </main>
-
-      {/* Float animation */}
-      <style jsx>{`
-        @keyframes dashboard-float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-      `}</style>
     </div>
   )
 }
