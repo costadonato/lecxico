@@ -8,7 +8,7 @@ import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Save,
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
 /* ------------------------------------------------------------------ */
-type QuestionType = "same_different" | "multiple_choice" | "syllable_count" | "letter_fill"
+type QuestionType = "same_different" | "multiple_choice" | "syllable_count" | "letter_fill" | "word_image"
 
 interface Question {
   id: number
@@ -27,37 +27,40 @@ interface Question {
 /* ------------------------------------------------------------------ */
 const questions: Question[] = [
   // ── Bloque 1: Discriminación Auditiva ──────────────────────────────
-  { id: 1,  block: 1, blockName: "Discriminación Auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "PALA — BALA", options: ["Iguales", "Diferentes"], correctIndex: 1 },
-  { id: 2,  block: 1, blockName: "Discriminación Auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "GATO — GATO", options: ["Iguales", "Diferentes"], correctIndex: 0 },
-  { id: 3,  block: 1, blockName: "Discriminación Auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "CAMA — CANA", options: ["Iguales", "Diferentes"], correctIndex: 1 },
-  { id: 4,  block: 1, blockName: "Discriminación Auditiva", type: "same_different", prompt: "¿Estas palabras suenan igual o diferente?", context: "TORO — LORO", options: ["Iguales", "Diferentes"], correctIndex: 1 },
+  { id: 1,  block: 1, blockName: "Discriminación Auditiva", type: "same_different", prompt: "¿Son la misma palabra?", context: "PALA — BALA", options: ["Iguales", "Diferentes"], correctIndex: 1 },
+  { id: 2,  block: 1, blockName: "Discriminación Auditiva", type: "same_different", prompt: "¿Son la misma palabra?", context: "GATO — GATO", options: ["Iguales", "Diferentes"], correctIndex: 0 },
+  { id: 3,  block: 1, blockName: "Discriminación Auditiva", type: "same_different", prompt: "¿Son la misma palabra?", context: "CAMA — CANA", options: ["Iguales", "Diferentes"], correctIndex: 1 },
+  { id: 4,  block: 1, blockName: "Discriminación Auditiva", type: "same_different", prompt: "¿Son la misma palabra?", context: "TORO — LORO", options: ["Iguales", "Diferentes"], correctIndex: 1 },
+  // Ejercicio B: escuchar la palabra y elegir la imagen correcta
+  { id: 5,  block: 1, blockName: "Discriminación Auditiva", type: "word_image", prompt: "GATO", context: "¿Qué palabra escuchaste?", options: ["Pato", "Gato", "Ratón"], correctIndex: 1 },
+  { id: 6,  block: 1, blockName: "Discriminación Auditiva", type: "word_image", prompt: "PELOTA", context: "¿Qué palabra escuchaste?", options: ["Pelota", "Manzana", "Luna"], correctIndex: 0 },
 
   // ── Bloque 2: Conciencia Fonológica ────────────────────────────────
-  { id: 5,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que MAMÁ?", options: ["Mariposa", "Pato", "Sol"], correctIndex: 0 },
-  { id: 6,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que SAPO?", options: ["Nube", "Sandía", "Perro"], correctIndex: 1 },
-  { id: 7,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que PELOTA?", options: ["Árbol", "Dado", "Pez"], correctIndex: 2 },
+  { id: 7,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que MAMÁ?", options: ["Mariposa", "Pato", "Sol"], correctIndex: 0 },
+  { id: 8,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que SAPO?", options: ["Nube", "Sandía", "Perro"], correctIndex: 1 },
+  { id: 9,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que PELOTA?", options: ["Árbol", "Dado", "Pez"], correctIndex: 2 },
 
   // ── Bloque 3: Conciencia Silábica ──────────────────────────────────
-  { id: 8,  block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra GATO?", context: "GA - TO", options: ["1", "2", "3"], correctIndex: 1 },
-  { id: 9,  block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra SOL?", context: "SOL", options: ["1", "2", "3"], correctIndex: 0 },
-  { id: 10, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CAMA?", context: "CA - MA", options: ["1", "2", "3"], correctIndex: 1 },
-  { id: 11, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra PAN?", context: "PAN", options: ["1", "2", "3"], correctIndex: 0 },
-  { id: 12, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra NUBE?", context: "NU - BE", options: ["1", "2", "3"], correctIndex: 1 },
-  { id: 13, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra PATO?", context: "PA - TO", options: ["1", "2", "3"], correctIndex: 1 },
-  { id: 14, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CASA?", context: "CA - SA", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 10, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra GATO?", context: "GA - TO", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 11, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra SOL?", context: "SOL", options: ["1", "2", "3"], correctIndex: 0 },
+  { id: 12, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CAMA?", context: "CA - MA", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 13, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra PAN?", context: "PAN", options: ["1", "2", "3"], correctIndex: 0 },
+  { id: 14, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra NUBE?", context: "NU - BE", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 15, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra PATO?", context: "PA - TO", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 16, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CASA?", context: "CA - SA", options: ["1", "2", "3"], correctIndex: 1 },
 
   // ── Bloque 4: Memoria Fonológica ────────────────────────────────────
-  { id: 15, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste primero? SOL – PAN – LUNA", options: ["Luna", "Sol", "Pan"], correctIndex: 1 },
-  { id: 16, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste segundo? GATO – CASA – PATO", options: ["Gato", "Pato", "Casa"], correctIndex: 2 },
-  { id: 17, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste último? MESA – SOL – NUBE", options: ["Mesa", "Nube", "Sol"], correctIndex: 1 },
+  { id: 17, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste primero? SOL – PAN – LUNA", options: ["Luna", "Sol", "Pan"], correctIndex: 1 },
+  { id: 18, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste segundo? GATO – CASA – PATO", options: ["Gato", "Pato", "Casa"], correctIndex: 2 },
+  { id: 19, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste último? MESA – SOL – NUBE", options: ["Mesa", "Nube", "Sol"], correctIndex: 1 },
 
   // ── Bloque 5: Vocabulario y Comprensión Oral ───────────────────────
-  { id: 18, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la mariposa?", options: ["Mariposa", "Abeja", "Oruga"], correctIndex: 0 },
-  { id: 19, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es el camión?", options: ["Auto", "Camión", "Colectivo"], correctIndex: 1 },
-  { id: 20, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la sandía?", options: ["Manzana", "Uva", "Sandía"], correctIndex: 2 },
-  { id: 21, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la araña?", options: ["Mariposa", "Araña", "Abeja"], correctIndex: 1 },
-  { id: 22, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la guitarra?", options: ["Guitarra", "Trompeta", "Tambor"], correctIndex: 0 },
-  { id: 23, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es el elefante?", options: ["Jirafa", "Cebra", "Elefante"], correctIndex: 2 },
+  { id: 20, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la mariposa?", options: ["Mariposa", "Abeja", "Oruga"], correctIndex: 0 },
+  { id: 21, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es el camión?", options: ["Auto", "Camión", "Colectivo"], correctIndex: 1 },
+  { id: 22, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la sandía?", options: ["Manzana", "Uva", "Sandía"], correctIndex: 2 },
+  { id: 23, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la araña?", options: ["Mariposa", "Araña", "Abeja"], correctIndex: 1 },
+  { id: 24, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la guitarra?", options: ["Guitarra", "Trompeta", "Tambor"], correctIndex: 0 },
+  { id: 25, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es el elefante?", options: ["Jirafa", "Cebra", "Elefante"], correctIndex: 2 },
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -66,34 +69,32 @@ const TOTAL_QUESTIONS = questions.length
 /*  EMOJI MAP                                                          */
 /* ------------------------------------------------------------------ */
 const questionEmojis: Record<number, { context?: string[]; prompt?: string; options?: string[] }> = {
-  // Block 1: pair emojis for each context word
-  1: { context: ["🪣", "🔫"] },
-  2: { context: ["🐱", "🐱"] },
-  3: { context: ["🛏️", "👴"] },
-  4: { context: ["🐂", "🦜"] },
+  // Block 1 (Ejercicio B): option emojis for the word→image choices
+  5: { options: ["🦆", "🐱", "🐭"] },
+  6: { options: ["⚽", "🍎", "🌙"] },
   // Block 2: prompt emoji + option emojis
-  5: { prompt: "👩", options: ["🦋", "🦆", "☀️"] },
-  6: { prompt: "🐸", options: ["☁️", "🍉", "🐕"] },
-  7: { prompt: "🎾", options: ["🌳", "🎲", "🐟"] },
+  7: { prompt: "👩", options: ["🦋", "🦆", "☀️"] },
+  8: { prompt: "🐸", options: ["☁️", "🍉", "🐕"] },
+  9: { prompt: "🎾", options: ["🌳", "🎲", "🐟"] },
   // Block 3: emoji for the word
-  8:  { prompt: "🐱" },
-  9:  { prompt: "☀️" },
-  10: { prompt: "🛏️" },
-  11: { prompt: "🍞" },
-  12: { prompt: "☁️" },
-  13: { prompt: "🦆" },
-  14: { prompt: "🏠" },
+  10: { prompt: "🐱" },
+  11: { prompt: "☀️" },
+  12: { prompt: "🛏️" },
+  13: { prompt: "🍞" },
+  14: { prompt: "☁️" },
+  15: { prompt: "🦆" },
+  16: { prompt: "🏠" },
   // Block 4: option emojis for the sequence words
-  15: { options: ["🌙", "☀️", "🍞"] },
-  16: { options: ["🐱", "🦆", "🏠"] },
-  17: { options: ["🪑", "☁️", "☀️"] },
+  17: { options: ["🌙", "☀️", "🍞"] },
+  18: { options: ["🐱", "🦆", "🏠"] },
+  19: { options: ["🪑", "☁️", "☀️"] },
   // Block 5: option emojis for the vocabulary words
-  18: { options: ["🦋", "🐝", "🐛"] },
-  19: { options: ["🚗", "🚚", "🚌"] },
-  20: { options: ["🍎", "🍇", "🍉"] },
-  21: { options: ["🦋", "🕷️", "🐝"] },
-  22: { options: ["🎸", "🎺", "🥁"] },
-  23: { options: ["🦒", "🦓", "🐘"] },
+  20: { options: ["🦋", "🐝", "🐛"] },
+  21: { options: ["🚗", "🚚", "🚌"] },
+  22: { options: ["🍎", "🍇", "🍉"] },
+  23: { options: ["🦋", "🕷️", "🐝"] },
+  24: { options: ["🎸", "🎺", "🥁"] },
+  25: { options: ["🦒", "🦓", "🐘"] },
 }
 const BLOCKS = [
   { id: 1, name: "Discriminación Auditiva" },
@@ -199,6 +200,7 @@ export default function TestPage() {
 
   /* ---- helper: is block 1 (auditory discrimination) ---- */
   const isBlock1 = current.block === 1
+  const isWordImage = current.type === "word_image"
 
   /* ---- text-to-speech ---- */
   const [speaking, setSpeaking] = useState(false)
@@ -424,29 +426,37 @@ export default function TestPage() {
             <span className="inline-block text-xs font-semibold text-white/80 bg-white/10 px-3 py-1 rounded-full">
               {current.blockName}
             </span>
-            <button
-              onClick={speakQuestion}
-              className={`
-                inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all
-                ${speaking
-                  ? "bg-white/30 text-white animate-pulse"
-                  : "bg-white/20 text-white hover:bg-white/30"
-                }
-              `}
-            >
-              <Volume2 className="w-4 h-4" />
-              {speaking ? "Escuchando..." : "Escuchar"}
-            </button>
+            {!isBlock1 && (
+              <button
+                onClick={speakQuestion}
+                className={`
+                  inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all
+                  ${speaking
+                    ? "bg-white/30 text-white animate-pulse"
+                    : "bg-white/20 text-white hover:bg-white/30"
+                  }
+                `}
+              >
+                <Volume2 className="w-4 h-4" />
+                {speaking ? "Escuchando..." : "Escuchar"}
+              </button>
+            )}
           </div>
 
-          {/* Context with emojis */}
-          {current.context && current.block === 1 && questionEmojis[current.id]?.context ? (
+          {/* Context (block 1: words only, no emojis) */}
+          {current.context && current.block === 1 && !isWordImage ? (
             <div className="mb-4 flex items-center justify-center gap-4 flex-wrap">
               {current.context.split(" — ").map((word, i, arr) => (
                 <div key={i} className="flex items-center gap-4">
                   <div className="flex flex-col items-center gap-2">
-                    <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].context![i]}</span>
                     <span className="bg-white/20 rounded-xl px-5 py-2 text-2xl sm:text-3xl font-extrabold text-white tracking-wide">{word}</span>
+                    <button
+                      onClick={() => speak(word)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition-all"
+                    >
+                      <Volume2 className="w-4 h-4" />
+                      Escuchar
+                    </button>
                   </div>
                   {i < arr.length - 1 && (
                     <span className="text-3xl sm:text-4xl font-bold text-white/40">–</span>
@@ -454,7 +464,7 @@ export default function TestPage() {
                 </div>
               ))}
             </div>
-          ) : current.context ? (
+          ) : current.context && !isWordImage ? (
             <div className="mb-4 flex flex-col items-center gap-2">
               {questionEmojis[current.id]?.prompt && (
                 <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].prompt}</span>
@@ -465,18 +475,39 @@ export default function TestPage() {
             </div>
           ) : null}
 
-          {/* Prompt */}
-          <div className="mb-6 flex items-center justify-center gap-3">
-            {!current.context && questionEmojis[current.id]?.prompt && (
-              <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].prompt}</span>
-            )}
-            <h2 className="text-xl sm:text-2xl font-bold text-white text-center">
-              {current.prompt}
-            </h2>
-            {current.block === 2 && questionEmojis[current.id]?.prompt && (
-              <span className="text-4xl sm:text-5xl">{questionEmojis[current.id].prompt}</span>
-            )}
-          </div>
+          {/* Word→image (block 1, ejercicio B): word in a box + audio button, no emoji */}
+          {isWordImage ? (
+            <div className="mb-6 flex flex-col items-center gap-3">
+              <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl sm:text-4xl font-extrabold tracking-widest text-white">
+                {current.prompt}
+              </span>
+              {current.context && (
+                <p className="text-lg sm:text-xl font-semibold text-white text-center">
+                  {current.context}
+                </p>
+              )}
+              <button
+                onClick={() => speak(current.prompt)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition-all"
+              >
+                <Volume2 className="w-4 h-4" />
+                Escuchar
+              </button>
+            </div>
+          ) : (
+            /* Prompt */
+            <div className="mb-6 flex items-center justify-center gap-3">
+              {!current.context && questionEmojis[current.id]?.prompt && (
+                <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].prompt}</span>
+              )}
+              <h2 className="text-xl sm:text-2xl font-bold text-white text-center">
+                {current.prompt}
+              </h2>
+              {current.block === 2 && questionEmojis[current.id]?.prompt && (
+                <span className="text-4xl sm:text-5xl">{questionEmojis[current.id].prompt}</span>
+              )}
+            </div>
+          )}
 
           {/* Options area */}
           <div className="flex-1 flex flex-col justify-center py-2">
@@ -484,7 +515,28 @@ export default function TestPage() {
               {current.options.map((opt, idx) => {
                 const isSelected = selectedOption === idx
 
-                // Block 1: Sí / No buttons
+                // Block 1 — Ejercicio B (word→image): emoji + text, no per-option audio
+                if (isWordImage) {
+                  const optEmoji = questionEmojis[current.id]?.options?.[idx]
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleSelect(idx)}
+                      className={`
+                        rounded-2xl border py-5 px-6 text-lg font-bold transition-all duration-200 flex flex-col items-center gap-2
+                        ${isSelected
+                          ? "bg-red-500 border-red-400 text-white"
+                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
+                        }
+                      `}
+                    >
+                      {optEmoji && <span className="text-4xl sm:text-5xl">{optEmoji}</span>}
+                      <span>{opt}</span>
+                    </button>
+                  )
+                }
+
+                // Block 1 — Ejercicio A (same/different): Sí / No buttons
                 if (isBlock1) {
                   const isYes = idx === 0
                   return (
