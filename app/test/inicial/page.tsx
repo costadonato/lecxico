@@ -8,7 +8,7 @@ import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Save,
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
 /* ------------------------------------------------------------------ */
-type QuestionType = "same_different" | "multiple_choice" | "syllable_count" | "letter_fill" | "word_image"
+type QuestionType = "same_different" | "multiple_choice" | "syllable_count" | "letter_fill" | "word_image" | "syllable_match"
 
 interface Question {
   id: number
@@ -41,13 +41,15 @@ const questions: Question[] = [
   { id: 9,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que PELOTA?", options: ["Árbol", "Dado", "Pez"], correctIndex: 2 },
 
   // ── Bloque 3: Conciencia Silábica ──────────────────────────────────
-  { id: 10, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra GATO?", context: "GA - TO", options: ["1", "2", "3"], correctIndex: 1 },
+  // Ejercicio D: contar sílabas
+  { id: 10, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra GATO?", context: "GATO", options: ["1", "2", "3"], correctIndex: 1 },
   { id: 11, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra SOL?", context: "SOL", options: ["1", "2", "3"], correctIndex: 0 },
-  { id: 12, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CAMA?", context: "CA - MA", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 12, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CAMA?", context: "CAMA", options: ["1", "2", "3"], correctIndex: 1 },
   { id: 13, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra PAN?", context: "PAN", options: ["1", "2", "3"], correctIndex: 0 },
-  { id: 14, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra NUBE?", context: "NU - BE", options: ["1", "2", "3"], correctIndex: 1 },
-  { id: 15, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra PATO?", context: "PA - TO", options: ["1", "2", "3"], correctIndex: 1 },
-  { id: 16, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CASA?", context: "CA - SA", options: ["1", "2", "3"], correctIndex: 1 },
+  // Ejercicio E: elegir la palabra que empieza con la misma sílaba inicial
+  { id: 14, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "PELOTA", options: ["Pera", "Mesa", "Casa"], correctIndex: 0 },
+  { id: 15, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MAMÁ", options: ["Mano", "Pato", "Sol"], correctIndex: 0 },
+  { id: 16, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "SOPA", options: ["Sol", "Nube", "Gato"], correctIndex: 0 },
 
   // ── Bloque 4: Memoria Fonológica ────────────────────────────────────
   { id: 17, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste primero? SOL – PAN – LUNA", options: ["Luna", "Sol", "Pan"], correctIndex: 1 },
@@ -76,14 +78,15 @@ const questionEmojis: Record<number, { context?: string[]; prompt?: string; opti
   7: { prompt: "👩", options: ["🦋", "🦆", "☀️"] },
   8: { prompt: "🐸", options: ["☁️", "🍉", "🐕"] },
   9: { prompt: "⚽", options: ["🌳", "🎲", "🐟"] },
-  // Block 3: emoji for the word
+  // Block 3 — Ejercicio D: emoji for the word
   10: { prompt: "🐱" },
   11: { prompt: "☀️" },
   12: { prompt: "🛏️" },
   13: { prompt: "🍞" },
-  14: { prompt: "☁️" },
-  15: { prompt: "🦆" },
-  16: { prompt: "🏠" },
+  // Block 3 — Ejercicio E: option emojis for the syllable match
+  14: { options: ["🍐", "🪑", "🏠"] },
+  15: { options: ["✋", "🦆", "☀️"] },
+  16: { options: ["☀️", "☁️", "🐱"] },
   // Block 4: option emojis for the sequence words
   17: { options: ["🌙", "☀️", "🍞"] },
   18: { options: ["🐱", "🦆", "🏠"] },
@@ -201,6 +204,7 @@ export default function TestPage() {
   /* ---- helper: is block 1 (auditory discrimination) ---- */
   const isBlock1 = current.block === 1
   const isWordImage = current.type === "word_image"
+  const isSyllableMatch = current.type === "syllable_match"
 
   /* ---- text-to-speech ---- */
   const [speaking, setSpeaking] = useState(false)
@@ -475,9 +479,14 @@ export default function TestPage() {
             </div>
           ) : null}
 
-          {/* Word→image (block 1, ejercicio B): word in a box + audio button, no emoji */}
-          {isWordImage ? (
+          {/* Word in a box + audio button (block 1 ej. B word_image / block 3 ej. E syllable_match) */}
+          {isWordImage || isSyllableMatch ? (
             <div className="mb-6 flex flex-col items-center gap-3">
+              {isSyllableMatch && (
+                <h2 className="text-xl sm:text-2xl font-bold text-white text-center">
+                  ¿Qué palabra empieza por la misma sílaba?
+                </h2>
+              )}
               <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl sm:text-4xl font-extrabold tracking-widest text-white">
                 {current.prompt}
               </span>
