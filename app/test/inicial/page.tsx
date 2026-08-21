@@ -61,14 +61,6 @@ const questions: Question[] = [
   { id: 18, block: 4, blockName: "Memoria Fonológica", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["GATO", "CASA", "PATO"], options: ["Pato", "Gato", "Casa"], correctOrder: [1, 2, 0] },
   { id: 19, block: 4, blockName: "Memoria Fonológica", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["MESA", "SOL", "NUBE"], options: ["Nube", "Mesa", "Sol"], correctOrder: [1, 2, 0] },
   { id: 20, block: 4, blockName: "Memoria Fonológica", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["PERRO", "LUNA", "DADO"], options: ["Dado", "Perro", "Luna"], correctOrder: [1, 2, 0] },
-
-  // ── Bloque 5: Vocabulario y Comprensión Oral ───────────────────────
-  { id: 21, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la mariposa?", options: ["Mariposa", "Abeja", "Oruga"], correctIndex: 0 },
-  { id: 22, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es el camión?", options: ["Auto", "Camión", "Colectivo"], correctIndex: 1 },
-  { id: 23, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la sandía?", options: ["Manzana", "Uva", "Sandía"], correctIndex: 2 },
-  { id: 24, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la araña?", options: ["Mariposa", "Araña", "Abeja"], correctIndex: 1 },
-  { id: 25, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la guitarra?", options: ["Guitarra", "Trompeta", "Tambor"], correctIndex: 0 },
-  { id: 26, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es el elefante?", options: ["Jirafa", "Cebra", "Elefante"], correctIndex: 2 },
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -98,20 +90,12 @@ const questionEmojis: Record<number, { context?: string[]; prompt?: string; opti
   18: { options: ["🦆", "🐱", "🏠"] },
   19: { options: ["☁️", "🪑", "☀️"] },
   20: { options: ["🎲", "🐕", "🌙"] },
-  // Block 5: option emojis for the vocabulary words
-  21: { options: ["🦋", "🐝", "🐛"] },
-  22: { options: ["🚗", "🚚", "🚌"] },
-  23: { options: ["🍎", "🍇", "🍉"] },
-  24: { options: ["🦋", "🕷️", "🐝"] },
-  25: { options: ["🎸", "🎺", "🥁"] },
-  26: { options: ["🦒", "🦓", "🐘"] },
 }
 const BLOCKS = [
   { id: 1, name: "Discriminación Auditiva" },
   { id: 2, name: "Conciencia Fonológica" },
   { id: 3, name: "Conciencia Silábica" },
   { id: 4, name: "Memoria Fonológica" },
-  { id: 5, name: "Vocabulario y Comprensión Oral" },
 ]
 
 /* Diagonal gradient: near-black red → dark red → deep indigo */
@@ -214,7 +198,6 @@ export default function TestPage() {
         bloque_2_correctas: blockResults[1].correct,
         bloque_3_correctas: blockResults[2].correct,
         bloque_4_correctas: blockResults[3].correct,
-        bloque_5_correctas: blockResults[4].correct,
         conclusion: totalPct < 60 ? "indicadores_detectados" : "sin_indicadores",
       })
       setSaved(true)
