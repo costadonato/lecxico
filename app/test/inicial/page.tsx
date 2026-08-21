@@ -75,7 +75,7 @@ const questionEmojis: Record<number, { context?: string[]; prompt?: string; opti
   // Block 2: prompt emoji + option emojis
   7: { prompt: "👩", options: ["🦋", "🦆", "☀️"] },
   8: { prompt: "🐸", options: ["☁️", "🍉", "🐕"] },
-  9: { prompt: "🎾", options: ["🌳", "🎲", "🐟"] },
+  9: { prompt: "⚽", options: ["🌳", "🎲", "🐟"] },
   // Block 3: emoji for the word
   10: { prompt: "🐱" },
   11: { prompt: "☀️" },
