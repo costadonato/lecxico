@@ -8,7 +8,7 @@ import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Save,
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
 /* ------------------------------------------------------------------ */
-type QuestionType = "same_different" | "multiple_choice" | "syllable_count" | "letter_fill" | "word_image" | "syllable_match"
+type QuestionType = "same_different" | "multiple_choice" | "syllable_count" | "letter_fill" | "word_image" | "syllable_match" | "sequence_order"
 
 interface Question {
   id: number
@@ -17,9 +17,14 @@ interface Question {
   type: QuestionType
   prompt: string
   options: string[]
-  correctIndex: number
+  /** Correct option index (single-answer questions) */
+  correctIndex?: number
   /** Extra context shown above the prompt (e.g. the two words to compare) */
   context?: string
+  /** Words played (in order) for sequence_order questions — heard, not shown */
+  sequence?: string[]
+  /** Expected selection order (indices into options) for sequence_order questions */
+  correctOrder?: number[]
 }
 
 /* ------------------------------------------------------------------ */
@@ -51,18 +56,19 @@ const questions: Question[] = [
   { id: 15, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MAMÁ", options: ["Mano", "Pato", "Sol"], correctIndex: 0 },
   { id: 16, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "SOPA", options: ["Sol", "Nube", "Gato"], correctIndex: 0 },
 
-  // ── Bloque 4: Memoria Fonológica ────────────────────────────────────
-  { id: 17, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste primero? SOL – PAN – LUNA", options: ["Luna", "Sol", "Pan"], correctIndex: 1 },
-  { id: 18, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste segundo? GATO – CASA – PATO", options: ["Gato", "Pato", "Casa"], correctIndex: 2 },
-  { id: 19, block: 4, blockName: "Memoria Fonológica", type: "multiple_choice", prompt: "¿Cuál de estas imágenes escuchaste último? MESA – SOL – NUBE", options: ["Mesa", "Nube", "Sol"], correctIndex: 1 },
+  // ── Bloque 4: Memoria Fonológica (Ejercicio F: recordar el orden) ──
+  { id: 17, block: 4, blockName: "Memoria Fonológica", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["SOL", "PAN", "LUNA"], options: ["Luna", "Sol", "Pan"], correctOrder: [1, 2, 0] },
+  { id: 18, block: 4, blockName: "Memoria Fonológica", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["GATO", "CASA", "PATO"], options: ["Pato", "Gato", "Casa"], correctOrder: [1, 2, 0] },
+  { id: 19, block: 4, blockName: "Memoria Fonológica", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["MESA", "SOL", "NUBE"], options: ["Nube", "Mesa", "Sol"], correctOrder: [1, 2, 0] },
+  { id: 20, block: 4, blockName: "Memoria Fonológica", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["PERRO", "LUNA", "DADO"], options: ["Dado", "Perro", "Luna"], correctOrder: [1, 2, 0] },
 
   // ── Bloque 5: Vocabulario y Comprensión Oral ───────────────────────
-  { id: 20, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la mariposa?", options: ["Mariposa", "Abeja", "Oruga"], correctIndex: 0 },
-  { id: 21, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es el camión?", options: ["Auto", "Camión", "Colectivo"], correctIndex: 1 },
-  { id: 22, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la sandía?", options: ["Manzana", "Uva", "Sandía"], correctIndex: 2 },
-  { id: 23, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la araña?", options: ["Mariposa", "Araña", "Abeja"], correctIndex: 1 },
-  { id: 24, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la guitarra?", options: ["Guitarra", "Trompeta", "Tambor"], correctIndex: 0 },
-  { id: 25, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es el elefante?", options: ["Jirafa", "Cebra", "Elefante"], correctIndex: 2 },
+  { id: 21, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la mariposa?", options: ["Mariposa", "Abeja", "Oruga"], correctIndex: 0 },
+  { id: 22, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es el camión?", options: ["Auto", "Camión", "Colectivo"], correctIndex: 1 },
+  { id: 23, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la sandía?", options: ["Manzana", "Uva", "Sandía"], correctIndex: 2 },
+  { id: 24, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la araña?", options: ["Mariposa", "Araña", "Abeja"], correctIndex: 1 },
+  { id: 25, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es la guitarra?", options: ["Guitarra", "Trompeta", "Tambor"], correctIndex: 0 },
+  { id: 26, block: 5, blockName: "Vocabulario y Comprensión Oral", type: "multiple_choice", prompt: "¿Cuál es el elefante?", options: ["Jirafa", "Cebra", "Elefante"], correctIndex: 2 },
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -87,17 +93,18 @@ const questionEmojis: Record<number, { context?: string[]; prompt?: string; opti
   14: { options: ["🍐", "🪑", "🏠"] },
   15: { options: ["✋", "🦆", "☀️"] },
   16: { options: ["☀️", "☁️", "🐱"] },
-  // Block 4: option emojis for the sequence words
+  // Block 4 — Ejercicio F: option emojis (in the fixed options order)
   17: { options: ["🌙", "☀️", "🍞"] },
-  18: { options: ["🐱", "🦆", "🏠"] },
-  19: { options: ["🪑", "☁️", "☀️"] },
+  18: { options: ["🦆", "🐱", "🏠"] },
+  19: { options: ["☁️", "🪑", "☀️"] },
+  20: { options: ["🎲", "🐕", "🌙"] },
   // Block 5: option emojis for the vocabulary words
-  20: { options: ["🦋", "🐝", "🐛"] },
-  21: { options: ["🚗", "🚚", "🚌"] },
-  22: { options: ["🍎", "🍇", "🍉"] },
-  23: { options: ["🦋", "🕷️", "🐝"] },
-  24: { options: ["🎸", "🎺", "🥁"] },
-  25: { options: ["🦒", "🦓", "🐘"] },
+  21: { options: ["🦋", "🐝", "🐛"] },
+  22: { options: ["🚗", "🚚", "🚌"] },
+  23: { options: ["🍎", "🍇", "🍉"] },
+  24: { options: ["🦋", "🕷️", "🐝"] },
+  25: { options: ["🎸", "🎺", "🥁"] },
+  26: { options: ["🦒", "🦓", "🐘"] },
 }
 const BLOCKS = [
   { id: 1, name: "Discriminación Auditiva" },
@@ -112,6 +119,16 @@ const backgroundStyle = {
   background: "linear-gradient(135deg, #1a0000 0%, #7f1d1d 50%, #1e1e2e 100%)",
 }
 
+/** True when the stored answer matches the question's expected answer. */
+function isAnswerCorrect(q: Question, ans: number | number[] | null): boolean {
+  if (ans === null) return false
+  if (q.type === "sequence_order") {
+    if (!Array.isArray(ans) || !q.correctOrder) return false
+    return ans.length === q.correctOrder.length && ans.every((v, i) => v === q.correctOrder![i])
+  }
+  return ans === q.correctIndex
+}
+
 /* ------------------------------------------------------------------ */
 /*  COMPONENT                                                          */
 /* ------------------------------------------------------------------ */
@@ -120,30 +137,45 @@ export default function TestPage() {
   const supabase = createClient()
 
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [answers, setAnswers] = useState<(number | null)[]>(Array(TOTAL_QUESTIONS).fill(null))
+  const [answers, setAnswers] = useState<(number | number[] | null)[]>(Array(TOTAL_QUESTIONS).fill(null))
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
+  /** Selection order (option indices) for the active sequence_order question */
+  const [sequenceSelection, setSequenceSelection] = useState<number[]>([])
   const [finished, setFinished] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
   const current = questions[currentIndex]
   const progress = ((currentIndex + 1) / TOTAL_QUESTIONS) * 100
+  const isSequenceOrder = current.type === "sequence_order"
+  /** Whether the current question has a complete answer ready to submit */
+  const canProceed = isSequenceOrder
+    ? sequenceSelection.length === current.options.length
+    : selectedOption !== null
 
   /* ---- handlers ---- */
   const handleSelect = (optionIdx: number) => {
     setSelectedOption(optionIdx)
   }
 
+  /* Toggle an option into/out of the sequence-order selection */
+  const handleSequenceSelect = (optionIdx: number) => {
+    setSequenceSelection((prev) =>
+      prev.includes(optionIdx) ? prev.filter((i) => i !== optionIdx) : [...prev, optionIdx]
+    )
+  }
+
   const handleNext = () => {
-    if (selectedOption === null) return
+    if (!canProceed) return
 
     const updated = [...answers]
-    updated[currentIndex] = selectedOption
+    updated[currentIndex] = isSequenceOrder ? [...sequenceSelection] : selectedOption
     setAnswers(updated)
 
     if (currentIndex + 1 < TOTAL_QUESTIONS) {
       setCurrentIndex(currentIndex + 1)
       setSelectedOption(null)
+      setSequenceSelection([])
     } else {
       setFinished(true)
     }
@@ -156,13 +188,13 @@ export default function TestPage() {
       let correct = 0
       blockQuestions.forEach((q) => {
         const idx = questions.indexOf(q)
-        if (answers[idx] === q.correctIndex) correct++
+        if (isAnswerCorrect(q, answers[idx])) correct++
       })
       return { ...block, total: blockQuestions.length, correct, pct: Math.round((correct / blockQuestions.length) * 100) }
     })
   }
 
-  const totalCorrect = answers.reduce<number>((acc, ans, idx) => acc + (ans === questions[idx].correctIndex ? 1 : 0), 0)
+  const totalCorrect = answers.reduce<number>((acc, ans, idx) => acc + (isAnswerCorrect(questions[idx], ans) ? 1 : 0), 0)
   const totalPct = Math.round((totalCorrect / TOTAL_QUESTIONS) * 100)
 
   /* ---- save to Supabase ---- */
@@ -197,6 +229,7 @@ export default function TestPage() {
     setCurrentIndex(0)
     setAnswers(Array(TOTAL_QUESTIONS).fill(null))
     setSelectedOption(null)
+    setSequenceSelection([])
     setFinished(false)
     setSaved(false)
   }
@@ -227,6 +260,23 @@ export default function TestPage() {
     parts.push(current.prompt)
     speak(parts.join(". "))
   }, [current, speak])
+
+  /* Play the sequence words one by one, with an 800ms gap between each */
+  const speakSequence = useCallback(() => {
+    if (!current.sequence || typeof window === "undefined" || !window.speechSynthesis) return
+    window.speechSynthesis.cancel()
+    setSpeaking(true)
+    const words = current.sequence
+    words.forEach((word, i) => {
+      window.setTimeout(() => {
+        const utterance = new SpeechSynthesisUtterance(word)
+        utterance.lang = "es-ES"
+        utterance.rate = 0.85
+        if (i === words.length - 1) utterance.onend = () => setSpeaking(false)
+        window.speechSynthesis.speak(utterance)
+      }, i * 800)
+    })
+  }, [current])
 
   /* ================================================================ */
   /*  RESULTS SCREEN                                                   */
@@ -503,6 +553,26 @@ export default function TestPage() {
                 Escuchar
               </button>
             </div>
+          ) : isSequenceOrder ? (
+            /* Sequence-order (block 4, ejercicio F): instruction + play-sequence button */
+            <div className="mb-6 flex flex-col items-center gap-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-white text-center">
+                {current.prompt}
+              </h2>
+              <button
+                onClick={speakSequence}
+                className={`
+                  inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
+                  ${speaking
+                    ? "bg-white/30 text-white animate-pulse"
+                    : "bg-white/20 text-white hover:bg-white/30"
+                  }
+                `}
+              >
+                <Volume2 className="w-5 h-5" />
+                {speaking ? "Reproduciendo..." : "Escuchar secuencia"}
+              </button>
+            </div>
           ) : (
             /* Prompt */
             <div className="mb-6 flex items-center justify-center gap-3">
@@ -523,6 +593,34 @@ export default function TestPage() {
             <div className={`grid gap-4 ${current.options.length <= 2 ? "grid-cols-2" : current.options.length === 3 ? "grid-cols-1" : "grid-cols-2"}`}>
               {current.options.map((opt, idx) => {
                 const isSelected = selectedOption === idx
+
+                // Block 4 — Ejercicio F (sequence_order): emoji + text + order badge
+                if (isSequenceOrder) {
+                  const optEmoji = questionEmojis[current.id]?.options?.[idx]
+                  const order = sequenceSelection.indexOf(idx)
+                  const isPicked = order !== -1
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleSequenceSelect(idx)}
+                      className={`
+                        relative rounded-2xl border py-5 px-6 text-lg font-bold transition-all duration-200 flex flex-col items-center gap-2
+                        ${isPicked
+                          ? "bg-red-500 border-red-400 text-white"
+                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
+                        }
+                      `}
+                    >
+                      {isPicked && (
+                        <span className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-white text-red-600 text-sm font-extrabold">
+                          {order + 1}°
+                        </span>
+                      )}
+                      {optEmoji && <span className="text-4xl sm:text-5xl">{optEmoji}</span>}
+                      <span>{opt}</span>
+                    </button>
+                  )
+                }
 
                 // Block 1 — Ejercicio B (word→image): emoji + text, no per-option audio
                 if (isWordImage) {
@@ -599,11 +697,11 @@ export default function TestPage() {
           {/* Next button */}
           <div className="pt-4 flex justify-end">
             <button
-              disabled={selectedOption === null}
+              disabled={!canProceed}
               onClick={handleNext}
               className={`
                 flex items-center gap-2 rounded-xl px-8 py-4 text-lg font-bold transition-all duration-200
-                ${selectedOption === null
+                ${!canProceed
                   ? "bg-white/10 text-white/40 cursor-not-allowed"
                   : "bg-red-500 hover:bg-red-400 text-white shadow-lg"
                 }
