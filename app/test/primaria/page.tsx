@@ -34,6 +34,8 @@ interface MultipleChoiceQuestion {
   options: string[]
   correct: string
   context?: string
+  /** Ejercicio J: the pseudoword played as audio (heard, never shown) */
+  spokenWord?: string
 }
 
 interface SyllableCountQuestion {
@@ -133,8 +135,8 @@ const questions: Question[] = [
   { id: 2, block: 1, type: 'same_different', word1: 'CAMINO', word2: 'CAMINO', correct: 'same', emoji1: '🛣️', emoji2: '🛣️' },
   { id: 3, block: 1, type: 'same_different', word1: 'CABALLO', word2: 'CABELLO', correct: 'different', emoji1: '🐴', emoji2: '💇' },
   // Ejercicio B — ¿Cuál escuchaste?
-  { id: 4, block: 1, type: 'multiple_choice', question: '¿Cuál es la imagen que escuchaste?', options: ['MARIPOSA', 'ABEJA', 'ORUGA'], correct: 'ABEJA', context: '🔊 ABEJA' },
-  { id: 5, block: 1, type: 'multiple_choice', question: '¿Cuál es la imagen que escuchaste?', options: ['ELEFANTE', 'JIRAFA', 'CEBRA'], correct: 'CEBRA', context: '🔊 CEBRA' },
+  { id: 4, block: 1, type: 'multiple_choice', question: '¿Cuál es la imagen que escuchaste?', options: ['MARIPOSA', 'ABEJA', 'ORUGA'], correct: 'ABEJA', context: 'ABEJA' },
+  { id: 5, block: 1, type: 'multiple_choice', question: '¿Cuál es la imagen que escuchaste?', options: ['ELEFANTE', 'JIRAFA', 'CEBRA'], correct: 'CEBRA', context: 'CEBRA' },
 
   // BLOQUE 2 — Conciencia Fonológica
   // Ejercicio C — Sonido inicial
@@ -165,9 +167,9 @@ const questions: Question[] = [
   { id: 20, block: 4, type: 'sequence_order', sequence: ['ZAPATO', 'SOL', 'MESA'], options: ['MESA', 'SOL', 'ZAPATO'], correctOrder: [2, 1, 0] },
   { id: 21, block: 4, type: 'sequence_order', sequence: ['LUNA', 'LIBRO', 'PERRO'], options: ['PERRO', 'LUNA', 'LIBRO'], correctOrder: [1, 2, 0] },
   // Ejercicio J — Pseudopalabras orales
-  { id: 22, block: 4, type: 'multiple_choice', question: '¿Cuál de estas pseudopalabras viste?', options: ['TERLONA', 'TRELONA', 'TRENOLA'], correct: 'TRELONA', context: 'TRELONA' },
-  { id: 23, block: 4, type: 'multiple_choice', question: '¿Cuál de estas pseudopalabras viste?', options: ['PELANTO', 'PELANOT', 'TAPELNO'], correct: 'PELANTO', context: 'PELANTO' },
-  { id: 24, block: 4, type: 'multiple_choice', question: '¿Cuál de estas pseudopalabras viste?', options: ['UPELMA', 'PUMELA', 'MUPELA'], correct: 'MUPELA', context: 'MUPELA' },
+  { id: 22, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['TERLONA', 'TRELONA', 'TRENOLA'], correct: 'TRELONA', spokenWord: 'TRELONA' },
+  { id: 23, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PELANTO', 'PELANOT', 'TAPELNO'], correct: 'PELANTO', spokenWord: 'PELANTO' },
+  { id: 24, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['UPELMA', 'PUMELA', 'MUPELA'], correct: 'MUPELA', spokenWord: 'MUPELA' },
 
   // BLOQUE 5 — Comprensión Lectora
   {
@@ -386,7 +388,9 @@ export default function TestPrimariaPage() {
       ? current.word.replace(/\//g, "")
       : current.type === "multiple_choice" && current.block === 1 && current.context
         ? current.context.replace("🔊", "").trim()
-        : null
+        : current.type === "multiple_choice" && current.block === 4 && "spokenWord" in current && current.spokenWord
+          ? current.spokenWord
+          : null
 
   useEffect(() => {
     if (autoPlayText) speak(autoPlayText)
@@ -918,6 +922,23 @@ export default function TestPrimariaPage() {
           ) : isHeardWord ? (
             /* Ejercicio B: the word is heard, so nothing about it is shown */
             null
+          ) : current.type === "multiple_choice" && current.block === 4 && "spokenWord" in current && current.spokenWord ? (
+            /* Ejercicio J: the pseudoword is only heard — replay it as often as needed */
+            <div className="mb-4 flex justify-center">
+              <button
+                onClick={() => current.spokenWord && speak(current.spokenWord)}
+                className={`
+                  inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
+                  ${speaking
+                    ? "bg-white/30 text-white animate-pulse"
+                    : "bg-white/20 text-white hover:bg-white/30"
+                  }
+                `}
+              >
+                <Volume2 className="w-5 h-5" />
+                {speaking ? "Escuchando..." : "Escuchar palabra"}
+              </button>
+            </div>
           ) : current.type === "multiple_choice" && current.block === 7 && current.context ? (
             /* Ejercicio O: just the picture of the word to spell */
             <div className="mb-4 flex justify-center">
@@ -1053,7 +1074,7 @@ export default function TestPrimariaPage() {
                 {displayOptions.map((opt, idx) => {
                   const isSelected = selectedOption === idx
 
-                  // same_different: Iguales / Diferentes buttons
+                  // same_different: Sí / No buttons with emojis
                   if (!activeStoryQuestion && current.type === "same_different") {
                     const isSame = idx === 0
                     return (
@@ -1070,7 +1091,8 @@ export default function TestPrimariaPage() {
                           }
                         `}
                       >
-                        {String(opt)}
+                        <span className="text-4xl">{isSame ? "👍" : "👎"}</span>
+                        {isSame ? "Sí" : "No"}
                       </button>
                     )
                   }
