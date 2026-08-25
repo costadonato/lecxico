@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Save, Home, Volume2 } from "lucide-react"
+import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Home, Volume2 } from "lucide-react"
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -596,6 +596,12 @@ export default function TestPrimariaPage() {
     setStoryAnswers({})
   }
 
+  /* ---- auto-save results as soon as the test finishes ---- */
+  useEffect(() => {
+    if (finished) handleSave()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finished])
+
   /* ================================================================ */
   /*  RESULTS SCREEN                                                   */
   /* ================================================================ */
@@ -690,16 +696,22 @@ export default function TestPrimariaPage() {
             </div>
           </div>
 
+          {/* Save status indicator */}
+          {(saving || saved) && (
+            <div className="flex items-center justify-center gap-2 text-sm text-white/70">
+              {saving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Guardando resultados...
+                </>
+              ) : (
+                "Resultados guardados ✓"
+              )}
+            </div>
+          )}
+
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3 pb-10">
-            <button
-              onClick={handleSave}
-              disabled={saving || saved}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200 disabled:bg-white/10 disabled:text-white/50 disabled:cursor-not-allowed"
-            >
-              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <CheckCircle2 className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-              {saving ? "Guardando…" : saved ? "Guardado ✓" : "Guardar resultados"}
-            </button>
             <button
               onClick={handleRestart}
               className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
