@@ -56,11 +56,11 @@ const questions: Question[] = [
   { id: 15, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MAMÁ", options: ["Mano", "Pato", "Sol"], correctIndex: 0 },
   { id: 16, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MATE", options: ["Mano", "Casa", "Luna"], correctIndex: 0 },
 
-  // ── Bloque 4: Memoria Fonológica (Ejercicio F: recordar el orden) ──
-  { id: 17, block: 4, blockName: "Memoria Fonológica", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["SOL", "PAN", "LUNA"], options: ["Luna", "Sol", "Pan"], correctOrder: [1, 2, 0] },
-  { id: 18, block: 4, blockName: "Memoria Fonológica", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["GATO", "CASA", "PATO"], options: ["Pato", "Gato", "Casa"], correctOrder: [1, 2, 0] },
-  { id: 19, block: 4, blockName: "Memoria Fonológica", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["MESA", "SOL", "NUBE"], options: ["Nube", "Mesa", "Sol"], correctOrder: [1, 2, 0] },
-  { id: 20, block: 4, blockName: "Memoria Fonológica", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["PERRO", "LUNA", "DADO"], options: ["Dado", "Perro", "Luna"], correctOrder: [1, 2, 0] },
+  // ── Bloque 4: Memoria Auditiva (Ejercicio F: recordar el orden) ──
+  { id: 17, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["SOL", "PAN"], options: ["Pan", "Sol"], correctOrder: [1, 0] },
+  { id: 18, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["GATO", "CASA", "PATO"], options: ["Pato", "Gato", "Casa"], correctOrder: [1, 2, 0] },
+  { id: 19, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["MESA", "SOL", "NUBE"], options: ["Nube", "Mesa", "Sol"], correctOrder: [1, 2, 0] },
+  { id: 20, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["PERRO", "LUNA", "DADO", "MATE"], options: ["Dado", "Perro", "Luna", "Mate"], correctOrder: [1, 2, 0, 3] },
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -86,16 +86,16 @@ const questionEmojis: Record<number, { context?: string[]; prompt?: string; opti
   15: { options: ["✋", "🦆", "☀️"] },
   16: { options: ["✋", "🏠", "🌙"] },
   // Block 4 — Ejercicio F: option emojis (in the fixed options order)
-  17: { options: ["🌙", "☀️", "🍞"] },
+  17: { options: ["🍞", "☀️"] },
   18: { options: ["🦆", "🐱", "🏠"] },
   19: { options: ["☁️", "🪑", "☀️"] },
-  20: { options: ["🎲", "🐕", "🌙"] },
+  20: { options: ["🎲", "🐕", "🌙", "🧉"] },
 }
 const BLOCKS = [
   { id: 1, name: "Discriminación Auditiva" },
   { id: 2, name: "Conciencia Fonológica" },
   { id: 3, name: "Conciencia Silábica" },
-  { id: 4, name: "Memoria Fonológica" },
+  { id: 4, name: "Memoria Auditiva" },
 ]
 
 /* Diagonal gradient: near-black red → dark red → deep indigo */
@@ -125,6 +125,8 @@ export default function TestPage() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
   /** Selection order (option indices) for the active sequence_order question */
   const [sequenceSelection, setSequenceSelection] = useState<number[]>([])
+  /** How many times the current sequence has been played (max 3) */
+  const [playCount, setPlayCount] = useState(0)
   const [finished, setFinished] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -160,6 +162,7 @@ export default function TestPage() {
       setCurrentIndex(currentIndex + 1)
       setSelectedOption(null)
       setSequenceSelection([])
+      setPlayCount(0)
     } else {
       setFinished(true)
     }
@@ -213,6 +216,7 @@ export default function TestPage() {
     setAnswers(Array(TOTAL_QUESTIONS).fill(null))
     setSelectedOption(null)
     setSequenceSelection([])
+    setPlayCount(0)
     setFinished(false)
     setSaved(false)
   }
@@ -250,10 +254,12 @@ export default function TestPage() {
     speak(parts.join(". "))
   }, [current, speak])
 
-  /* Play the sequence words one by one, with an 800ms gap between each */
+  /* Play the sequence words one by one, with an 800ms gap between each (máx 3 veces) */
   const speakSequence = useCallback(() => {
     if (!current.sequence || typeof window === "undefined" || !window.speechSynthesis) return
+    if (playCount >= 3) return
     window.speechSynthesis.cancel()
+    setPlayCount((prev) => prev + 1)
     setSpeaking(true)
     const words = current.sequence
     words.forEach((word, i) => {
@@ -265,7 +271,7 @@ export default function TestPage() {
         window.speechSynthesis.speak(utterance)
       }, i * 800)
     })
-  }, [current])
+  }, [current, playCount])
 
   /* ================================================================ */
   /*  RESULTS SCREEN                                                   */
@@ -556,16 +562,23 @@ export default function TestPage() {
               </h2>
               <button
                 onClick={speakSequence}
+                disabled={speaking || playCount >= 3}
                 className={`
                   inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
                   ${speaking
                     ? "bg-white/30 text-white animate-pulse"
-                    : "bg-white/20 text-white hover:bg-white/30"
+                    : playCount >= 3
+                      ? "bg-white/10 text-white/40 cursor-not-allowed"
+                      : "bg-white/20 text-white hover:bg-white/30"
                   }
                 `}
               >
                 <Volume2 className="w-5 h-5" />
-                {speaking ? "Reproduciendo..." : "Escuchar secuencia"}
+                {speaking
+                  ? "Reproduciendo..."
+                  : playCount >= 3
+                    ? "Sin reproducciones"
+                    : `Escuchar secuencia (quedan ${3 - playCount})`}
               </button>
             </div>
           ) : (
@@ -598,12 +611,14 @@ export default function TestPage() {
                     <button
                       key={idx}
                       onClick={() => handleSequenceSelect(idx)}
+                      disabled={speaking}
                       className={`
                         relative rounded-2xl border py-5 px-6 text-lg font-bold transition-all duration-200 flex flex-col items-center gap-2
                         ${isPicked
                           ? "bg-red-500 border-red-400 text-white"
                           : "bg-white/10 border-white/20 text-white hover:bg-white/20"
                         }
+                        ${speaking ? "opacity-40 cursor-not-allowed" : ""}
                       `}
                     >
                       {isPicked && (
