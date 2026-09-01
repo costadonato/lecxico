@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Save, Home, Volume2 } from "lucide-react"
+import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Home, Volume2 } from "lucide-react"
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -34,6 +34,8 @@ interface MultipleChoiceQuestion {
   options: string[]
   correct: string
   context?: string
+  /** Ejercicio J: the pseudoword played as audio (heard, never shown) */
+  spokenWord?: string
 }
 
 interface SyllableCountQuestion {
@@ -133,8 +135,8 @@ const questions: Question[] = [
   { id: 2, block: 1, type: 'same_different', word1: 'CAMINO', word2: 'CAMINO', correct: 'same', emoji1: '🛣️', emoji2: '🛣️' },
   { id: 3, block: 1, type: 'same_different', word1: 'CABALLO', word2: 'CABELLO', correct: 'different', emoji1: '🐴', emoji2: '💇' },
   // Ejercicio B — ¿Cuál escuchaste?
-  { id: 4, block: 1, type: 'multiple_choice', question: '¿Cuál es la imagen que escuchaste?', options: ['MARIPOSA', 'ABEJA', 'ORUGA'], correct: 'ABEJA', context: '🔊 ABEJA' },
-  { id: 5, block: 1, type: 'multiple_choice', question: '¿Cuál es la imagen que escuchaste?', options: ['ELEFANTE', 'JIRAFA', 'CEBRA'], correct: 'CEBRA', context: '🔊 CEBRA' },
+  { id: 4, block: 1, type: 'multiple_choice', question: '¿Cuál es la imagen que escuchaste?', options: ['MARIPOSA', 'ABEJA', 'ORUGA'], correct: 'ABEJA', context: 'ABEJA' },
+  { id: 5, block: 1, type: 'multiple_choice', question: '¿Cuál es la imagen que escuchaste?', options: ['ELEFANTE', 'JIRAFA', 'CEBRA'], correct: 'CEBRA', context: 'CEBRA' },
 
   // BLOQUE 2 — Conciencia Fonológica
   // Ejercicio C — Sonido inicial
@@ -163,11 +165,11 @@ const questions: Question[] = [
   // Ejercicio I — Repetir secuencia
   { id: 19, block: 4, type: 'sequence_order', sequence: ['CONEJO', 'CASA', 'LÁPIZ'], options: ['CASA', 'CONEJO', 'LÁPIZ'], correctOrder: [1, 0, 2] },
   { id: 20, block: 4, type: 'sequence_order', sequence: ['ZAPATO', 'SOL', 'MESA'], options: ['MESA', 'SOL', 'ZAPATO'], correctOrder: [2, 1, 0] },
-  { id: 21, block: 4, type: 'sequence_order', sequence: ['LUNA', 'LIBRO', 'PERRO'], options: ['PERRO', 'LUNA', 'LIBRO'], correctOrder: [1, 2, 0] },
+  { id: 21, block: 4, type: 'sequence_order', sequence: ['LUNA', 'LIBRO', 'PERRO', 'MATE'], options: ['PERRO', 'LUNA', 'LIBRO', 'MATE'], correctOrder: [1, 2, 0, 3] },
   // Ejercicio J — Pseudopalabras orales
-  { id: 22, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['FUNO', 'NUFO', 'FUBO'], correct: 'FUNO', context: '🔊AUDIO:FUNO' },
-  { id: 23, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PILA', 'LIPA', 'LIBA'], correct: 'LIPA', context: '🔊AUDIO:LIPA' },
-  { id: 24, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PELATO', 'TALOPE', 'TAPELO'], correct: 'TAPELO', context: '🔊AUDIO:TAPELO' },
+  { id: 22, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['FUNO', 'NUFO', 'FUBO'], correct: 'FUNO', spokenWord: 'FUNO' },
+  { id: 23, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PILA', 'LIPA', 'LIBA'], correct: 'LIPA', spokenWord: 'LIPA' },
+  { id: 24, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PELATO', 'TALOPE', 'TAPELO'], correct: 'TAPELO', spokenWord: 'TAPELO' },
 
   // BLOQUE 5 — Comprensión Lectora
   {
@@ -211,25 +213,15 @@ const questionEmojis: Record<string, string> = {
   'JIRAFA': '🦒', 'CEBRA': '🦓', 'PATO': '🦆', 'SOL': '☀️', 'MESA': '🪑',
   'BICICLETA': '🚲', 'TORO': '🐂', 'GATO': '🐱', 'CASA': '🏠', 'PERA': '🍐',
   'CABALLO': '🐴', 'PELOTA': '⚽', 'NUBE': '☁️', 'CONEJO': '🐰', 'LÁPIZ': '✏️',
-  'ZAPATO': '👟', 'PERRO': '🐕', 'LUNA': '🌙', 'LIBRO': '📚', 'TOMATE': '🍅',
-}
-
-/** A `context` written as `🔊AUDIO:PALABRA` is only played, never shown on screen */
-const AUDIO_CONTEXT_PREFIX = "🔊AUDIO:"
-
-const audioOnlyWord = (question?: Question): string | null => {
-  if (!question) return null
-  if (question.type !== "multiple_choice" && question.type !== "letter_fill") return null
-  return question.context?.startsWith(AUDIO_CONTEXT_PREFIX)
-    ? question.context.slice(AUDIO_CONTEXT_PREFIX.length).trim()
-    : null
+  'ZAPATO': '👟', 'PERRO': '🐕', 'LUNA': '🌙', 'LIBRO': '📚', 'MATE': '🧉',
+  'TOMATE': '🍅',
 }
 
 const BLOCKS = [
   { id: 1, name: "Discriminación Auditiva" },
   { id: 2, name: "Conciencia Fonológica" },
   { id: 3, name: "Conciencia Silábica" },
-  { id: 4, name: "Memoria Fonológica" },
+  { id: 4, name: "Memoria Auditiva" },
   { id: 5, name: "Comprensión Lectora" },
   { id: 6, name: "Correspondencia Sonido-Letra" },
   { id: 7, name: "Reconocimiento Visual" },
@@ -290,6 +282,8 @@ export default function TestPrimariaPage() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
   /** Ejercicio I: option indices in the order they were clicked */
   const [sequenceSelection, setSequenceSelection] = useState<number[]>([])
+  /** Ejercicio I: how many times the current sequence has been played (max 2) */
+  const [playCount, setPlayCount] = useState(0)
   /** Ejercicio H: syllables placed so far, left to right */
   const [builtWord, setBuiltWord] = useState<string[]>([])
   /** Ejercicio P: which audio option is playing right now */
@@ -355,7 +349,7 @@ export default function TestPrimariaPage() {
     } else if (current.type === "syllable_count") {
       parts.push(current.word)
     } else if ((current.type === "multiple_choice" || current.type === "letter_fill") && current.context) {
-      parts.push(audioOnlyWord(current) ?? current.context)
+      parts.push(current.context)
     }
     parts.push(displayPrompt)
     speak(parts.join(". "))
@@ -364,7 +358,9 @@ export default function TestPrimariaPage() {
   /* ---- Ejercicio I: play the words one by one, 800ms apart ---- */
   const speakSequence = useCallback((words: string[]) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return
+    if (playCount >= 2) return
     window.speechSynthesis.cancel()
+    setPlayCount((prev) => prev + 1)
     setSpeaking(true)
     words.forEach((word, i) => {
       window.setTimeout(() => {
@@ -376,7 +372,7 @@ export default function TestPrimariaPage() {
         window.speechSynthesis.speak(utterance)
       }, i * 800)
     })
-  }, [])
+  }, [playCount])
 
   /* ---- Ejercicio P: play one audio option and keep track of which one ---- */
   const speakAudioOption = useCallback((idx: number, text: string) => {
@@ -393,17 +389,15 @@ export default function TestPrimariaPage() {
   }, [])
 
   /* ---- audio that plays on its own as soon as the question opens ---- */
-  /** Ejercicio J: the pseudoword lives in `context` as `🔊AUDIO:PALABRA` — heard, never shown */
-  const hiddenAudioWord = audioOnlyWord(current)
   /** Ejercicio L hears the syllable, Ejercicios B and J hear the word; all hide the text */
   const autoPlayText = !current
     ? null
-    : hiddenAudioWord
-      ? hiddenAudioWord
-      : current.type === "letter_fill" && current.word.startsWith("/") && current.word.endsWith("/")
-        ? current.word.replace(/\//g, "")
-        : current.type === "multiple_choice" && current.block === 1 && current.context
-          ? current.context.replace("🔊", "").trim()
+    : current.type === "letter_fill" && current.word.startsWith("/") && current.word.endsWith("/")
+      ? current.word.replace(/\//g, "")
+      : current.type === "multiple_choice" && current.block === 1 && current.context
+        ? current.context.replace("🔊", "").trim()
+        : current.type === "multiple_choice" && current.block === 4 && "spokenWord" in current && current.spokenWord
+          ? current.spokenWord
           : null
 
   useEffect(() => {
@@ -493,6 +487,7 @@ export default function TestPrimariaPage() {
       setSequenceSelection([])
       setBuiltWord([])
       setPlayingAudio(null)
+      setPlayCount(0)
     } else {
       setFinished(true)
     }
@@ -604,11 +599,18 @@ export default function TestPrimariaPage() {
     setSequenceSelection([])
     setBuiltWord([])
     setPlayingAudio(null)
+    setPlayCount(0)
     setFinished(false)
     setSaved(false)
     setStorySubIndex(-1)
     setStoryAnswers({})
   }
+
+  /* ---- auto-save results as soon as the test finishes ---- */
+  useEffect(() => {
+    if (finished) handleSave()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finished])
 
   /* ================================================================ */
   /*  RESULTS SCREEN                                                   */
@@ -704,16 +706,22 @@ export default function TestPrimariaPage() {
             </div>
           </div>
 
+          {/* Save status indicator */}
+          {(saving || saved) && (
+            <div className="flex items-center justify-center gap-2 text-sm text-white/70">
+              {saving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Guardando resultados...
+                </>
+              ) : (
+                "Resultados guardados ✓"
+              )}
+            </div>
+          )}
+
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3 pb-10">
-            <button
-              onClick={handleSave}
-              disabled={saving || saved}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200 disabled:bg-white/10 disabled:text-white/50 disabled:cursor-not-allowed"
-            >
-              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <CheckCircle2 className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-              {saving ? "Guardando…" : saved ? "Guardado ✓" : "Guardar resultados"}
-            </button>
             <button
               onClick={handleRestart}
               className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
@@ -892,16 +900,23 @@ export default function TestPrimariaPage() {
             <div className="mb-4 flex justify-center">
               <button
                 onClick={() => speakSequence(current.sequence)}
+                disabled={speaking || playCount >= 2}
                 className={`
                   inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
                   ${speaking
                     ? "bg-white/30 text-white animate-pulse"
-                    : "bg-white/20 text-white hover:bg-white/30"
+                    : playCount >= 2
+                      ? "bg-white/10 text-white/40 cursor-not-allowed"
+                      : "bg-white/20 text-white hover:bg-white/30"
                   }
                 `}
               >
                 <Volume2 className="w-5 h-5" />
-                {speaking ? "Reproduciendo..." : "Escuchar secuencia"}
+                {speaking
+                  ? "Reproduciendo..."
+                  : playCount >= 2
+                    ? "Sin reproducciones"
+                    : `Escuchar secuencia (quedan ${2 - playCount})`}
               </button>
             </div>
           ) : current.type === "syllable_drag" ? (
@@ -936,11 +951,11 @@ export default function TestPrimariaPage() {
           ) : isHeardWord ? (
             /* Ejercicio B: the word is heard, so nothing about it is shown */
             null
-          ) : hiddenAudioWord ? (
+          ) : current.type === "multiple_choice" && current.block === 4 && "spokenWord" in current && current.spokenWord ? (
             /* Ejercicio J: the pseudoword is only heard — replay it as often as needed */
             <div className="mb-4 flex justify-center">
               <button
-                onClick={() => speak(hiddenAudioWord)}
+                onClick={() => current.spokenWord && speak(current.spokenWord)}
                 className={`
                   inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
                   ${speaking
@@ -950,7 +965,7 @@ export default function TestPrimariaPage() {
                 `}
               >
                 <Volume2 className="w-5 h-5" />
-                {speaking ? "Escuchando..." : "Escuchar de nuevo"}
+                {speaking ? "Escuchando..." : "Escuchar palabra"}
               </button>
             </div>
           ) : current.type === "multiple_choice" && current.block === 7 && current.context ? (
@@ -995,12 +1010,14 @@ export default function TestPrimariaPage() {
                     <button
                       key={idx}
                       onClick={() => handleSequenceSelect(idx)}
+                      disabled={speaking}
                       className={`
                         relative rounded-2xl border py-5 px-6 text-lg font-bold transition-all duration-200 flex flex-col items-center gap-2
                         ${isPicked
                           ? "bg-red-500 border-red-400 text-white"
                           : "bg-white/10 border-white/20 text-white hover:bg-white/20"
                         }
+                        ${speaking ? "opacity-40 cursor-not-allowed" : ""}
                       `}
                     >
                       {isPicked && (
@@ -1088,7 +1105,7 @@ export default function TestPrimariaPage() {
                 {displayOptions.map((opt, idx) => {
                   const isSelected = selectedOption === idx
 
-                  // same_different: Iguales / Diferentes buttons
+                  // same_different: Sí / No buttons with emojis
                   if (!activeStoryQuestion && current.type === "same_different") {
                     const isSame = idx === 0
                     return (
@@ -1105,7 +1122,8 @@ export default function TestPrimariaPage() {
                           }
                         `}
                       >
-                        {String(opt)}
+                        <span className="text-4xl">{isSame ? "👍" : "👎"}</span>
+                        {isSame ? "Sí" : "No"}
                       </button>
                     )
                   }
