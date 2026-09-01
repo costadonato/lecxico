@@ -165,7 +165,7 @@ const questions: Question[] = [
   // Ejercicio I — Repetir secuencia
   { id: 19, block: 4, type: 'sequence_order', sequence: ['CONEJO', 'CASA', 'LÁPIZ'], options: ['CASA', 'CONEJO', 'LÁPIZ'], correctOrder: [1, 0, 2] },
   { id: 20, block: 4, type: 'sequence_order', sequence: ['ZAPATO', 'SOL', 'MESA'], options: ['MESA', 'SOL', 'ZAPATO'], correctOrder: [2, 1, 0] },
-  { id: 21, block: 4, type: 'sequence_order', sequence: ['LUNA', 'LIBRO', 'PERRO'], options: ['PERRO', 'LUNA', 'LIBRO'], correctOrder: [1, 2, 0] },
+  { id: 21, block: 4, type: 'sequence_order', sequence: ['LUNA', 'LIBRO', 'PERRO', 'MATE'], options: ['PERRO', 'LUNA', 'LIBRO', 'MATE'], correctOrder: [1, 2, 0, 3] },
   // Ejercicio J — Pseudopalabras orales
   { id: 22, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['TERLONA', 'TRELONA', 'TRENOLA'], correct: 'TRELONA', spokenWord: 'TRELONA' },
   { id: 23, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PELANTO', 'PELANOT', 'TAPELNO'], correct: 'PELANTO', spokenWord: 'PELANTO' },
@@ -213,14 +213,14 @@ const questionEmojis: Record<string, string> = {
   'JIRAFA': '🦒', 'CEBRA': '🦓', 'PATO': '🦆', 'SOL': '☀️', 'MESA': '🪑',
   'BICICLETA': '🚲', 'TORO': '🐂', 'GATO': '🐱', 'CASA': '🏠', 'PERA': '🍐',
   'CABALLO': '🐴', 'PELOTA': '⚽', 'NUBE': '☁️', 'CONEJO': '🐰', 'LÁPIZ': '✏️',
-  'ZAPATO': '👟', 'PERRO': '🐕', 'LUNA': '🌙', 'LIBRO': '📚',
+  'ZAPATO': '👟', 'PERRO': '🐕', 'LUNA': '🌙', 'LIBRO': '📚', 'MATE': '🧉',
 }
 
 const BLOCKS = [
   { id: 1, name: "Discriminación Auditiva" },
   { id: 2, name: "Conciencia Fonológica" },
   { id: 3, name: "Conciencia Silábica" },
-  { id: 4, name: "Memoria Fonológica" },
+  { id: 4, name: "Memoria Auditiva" },
   { id: 5, name: "Comprensión Lectora" },
   { id: 6, name: "Correspondencia Sonido-Letra" },
   { id: 7, name: "Reconocimiento Visual" },
@@ -281,6 +281,8 @@ export default function TestPrimariaPage() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
   /** Ejercicio I: option indices in the order they were clicked */
   const [sequenceSelection, setSequenceSelection] = useState<number[]>([])
+  /** Ejercicio I: how many times the current sequence has been played (max 2) */
+  const [playCount, setPlayCount] = useState(0)
   /** Ejercicio H: syllables placed so far, left to right */
   const [builtWord, setBuiltWord] = useState<string[]>([])
   /** Ejercicio P: which audio option is playing right now */
@@ -354,7 +356,9 @@ export default function TestPrimariaPage() {
   /* ---- Ejercicio I: play the words one by one, 800ms apart ---- */
   const speakSequence = useCallback((words: string[]) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return
+    if (playCount >= 2) return
     window.speechSynthesis.cancel()
+    setPlayCount((prev) => prev + 1)
     setSpeaking(true)
     words.forEach((word, i) => {
       window.setTimeout(() => {
@@ -365,7 +369,7 @@ export default function TestPrimariaPage() {
         window.speechSynthesis.speak(utterance)
       }, i * 800)
     })
-  }, [])
+  }, [playCount])
 
   /* ---- Ejercicio P: play one audio option and keep track of which one ---- */
   const speakAudioOption = useCallback((idx: number, text: string) => {
@@ -479,6 +483,7 @@ export default function TestPrimariaPage() {
       setSequenceSelection([])
       setBuiltWord([])
       setPlayingAudio(null)
+      setPlayCount(0)
     } else {
       setFinished(true)
     }
@@ -590,6 +595,7 @@ export default function TestPrimariaPage() {
     setSequenceSelection([])
     setBuiltWord([])
     setPlayingAudio(null)
+    setPlayCount(0)
     setFinished(false)
     setSaved(false)
     setStorySubIndex(-1)
@@ -890,16 +896,23 @@ export default function TestPrimariaPage() {
             <div className="mb-4 flex justify-center">
               <button
                 onClick={() => speakSequence(current.sequence)}
+                disabled={speaking || playCount >= 2}
                 className={`
                   inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
                   ${speaking
                     ? "bg-white/30 text-white animate-pulse"
-                    : "bg-white/20 text-white hover:bg-white/30"
+                    : playCount >= 2
+                      ? "bg-white/10 text-white/40 cursor-not-allowed"
+                      : "bg-white/20 text-white hover:bg-white/30"
                   }
                 `}
               >
                 <Volume2 className="w-5 h-5" />
-                {speaking ? "Reproduciendo..." : "Escuchar secuencia"}
+                {speaking
+                  ? "Reproduciendo..."
+                  : playCount >= 2
+                    ? "Sin reproducciones"
+                    : `Escuchar secuencia (quedan ${2 - playCount})`}
               </button>
             </div>
           ) : current.type === "syllable_drag" ? (
@@ -993,12 +1006,14 @@ export default function TestPrimariaPage() {
                     <button
                       key={idx}
                       onClick={() => handleSequenceSelect(idx)}
+                      disabled={speaking}
                       className={`
                         relative rounded-2xl border py-5 px-6 text-lg font-bold transition-all duration-200 flex flex-col items-center gap-2
                         ${isPicked
                           ? "bg-red-500 border-red-400 text-white"
                           : "bg-white/10 border-white/20 text-white hover:bg-white/20"
                         }
+                        ${speaking ? "opacity-40 cursor-not-allowed" : ""}
                       `}
                     >
                       {isPicked && (
