@@ -48,13 +48,13 @@ const questions: Question[] = [
   // ── Bloque 3: Conciencia Silábica ──────────────────────────────────
   // Ejercicio D: contar sílabas
   { id: 10, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra GATO?", context: "GATO", options: ["1", "2", "3"], correctIndex: 1 },
-  { id: 11, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra SOL?", context: "SOL", options: ["1", "2", "3"], correctIndex: 0 },
+  { id: 11, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra NENA?", context: "NENA", options: ["1", "2", "3"], correctIndex: 1 },
   { id: 12, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CAMA?", context: "CAMA", options: ["1", "2", "3"], correctIndex: 1 },
   { id: 13, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra PAN?", context: "PAN", options: ["1", "2", "3"], correctIndex: 0 },
   // Ejercicio E: elegir la palabra que empieza con la misma sílaba inicial
   { id: 14, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "PELOTA", options: ["Pera", "Mesa", "Casa"], correctIndex: 0 },
   { id: 15, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MAMÁ", options: ["Mano", "Pato", "Sol"], correctIndex: 0 },
-  { id: 16, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "SOPA", options: ["Sol", "Nube", "Gato"], correctIndex: 0 },
+  { id: 16, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MATE", options: ["Mano", "Casa", "Luna"], correctIndex: 0 },
 
   // ── Bloque 4: Memoria Fonológica (Ejercicio F: recordar el orden) ──
   { id: 17, block: 4, blockName: "Memoria Fonológica", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["SOL", "PAN", "LUNA"], options: ["Luna", "Sol", "Pan"], correctOrder: [1, 2, 0] },
@@ -78,13 +78,13 @@ const questionEmojis: Record<number, { context?: string[]; prompt?: string; opti
   9: { prompt: "⚽", options: ["🌳", "🎲", "🐟"] },
   // Block 3 — Ejercicio D: emoji for the word
   10: { prompt: "🐱" },
-  11: { prompt: "☀️" },
+  11: { prompt: "👧" },
   12: { prompt: "🛏️" },
   13: { prompt: "🍞" },
   // Block 3 — Ejercicio E: option emojis for the syllable match
   14: { options: ["🍐", "🪑", "🏠"] },
   15: { options: ["✋", "🦆", "☀️"] },
-  16: { options: ["☀️", "☁️", "🐱"] },
+  16: { options: ["✋", "🏠", "🌙"] },
   // Block 4 — Ejercicio F: option emojis (in the fixed options order)
   17: { options: ["🌙", "☀️", "🍞"] },
   18: { options: ["🦆", "🐱", "🏠"] },
