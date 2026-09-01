@@ -156,8 +156,8 @@ const questions: Question[] = [
   { id: 15, block: 3, type: 'multiple_choice', question: '¿Cuál empieza con la misma sílaba que PELOTA?', options: ['PERA', 'MESA', 'CASA'], correct: 'PERA' },
   { id: 16, block: 3, type: 'multiple_choice', question: '¿Cuál empieza con la misma sílaba que CAMISA?', options: ['CABALLO', 'PELOTA', 'NUBE'], correct: 'CABALLO' },
   // Ejercicio H — Construir la palabra
-  { id: 17, block: 3, type: 'syllable_drag', word: 'ZAPATO', emoji: '👟', syllables: ['TO', 'ZA', 'PA'], correct: ['ZA', 'PA', 'TO'] },
-  { id: 18, block: 3, type: 'syllable_drag', word: 'COCODRILO', emoji: '🐊', syllables: ['LO', 'CO', 'DRI', 'CO'], correct: ['CO', 'CO', 'DRI', 'LO'] },
+  { id: 17, block: 3, type: 'syllable_drag', word: 'LUNA', emoji: '🌙', syllables: ['NA', 'LU'], correct: ['LU', 'NA'] },
+  { id: 18, block: 3, type: 'syllable_drag', word: 'TOMATE', emoji: '🍅', syllables: ['TE', 'TO', 'MA'], correct: ['TO', 'MA', 'TE'] },
 
   // BLOQUE 4 — Memoria Fonológica
   // Ejercicio I — Repetir secuencia
@@ -165,9 +165,9 @@ const questions: Question[] = [
   { id: 20, block: 4, type: 'sequence_order', sequence: ['ZAPATO', 'SOL', 'MESA'], options: ['MESA', 'SOL', 'ZAPATO'], correctOrder: [2, 1, 0] },
   { id: 21, block: 4, type: 'sequence_order', sequence: ['LUNA', 'LIBRO', 'PERRO'], options: ['PERRO', 'LUNA', 'LIBRO'], correctOrder: [1, 2, 0] },
   // Ejercicio J — Pseudopalabras orales
-  { id: 22, block: 4, type: 'multiple_choice', question: '¿Cuál de estas pseudopalabras viste?', options: ['TERLONA', 'TRELONA', 'TRENOLA'], correct: 'TRELONA', context: 'TRELONA' },
-  { id: 23, block: 4, type: 'multiple_choice', question: '¿Cuál de estas pseudopalabras viste?', options: ['PELANTO', 'PELANOT', 'TAPELNO'], correct: 'PELANTO', context: 'PELANTO' },
-  { id: 24, block: 4, type: 'multiple_choice', question: '¿Cuál de estas pseudopalabras viste?', options: ['UPELMA', 'PUMELA', 'MUPELA'], correct: 'MUPELA', context: 'MUPELA' },
+  { id: 22, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['FUNO', 'NUFO', 'FUBO'], correct: 'FUNO', context: '🔊AUDIO:FUNO' },
+  { id: 23, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PILA', 'LIPA', 'LIBA'], correct: 'LIPA', context: '🔊AUDIO:LIPA' },
+  { id: 24, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PELATO', 'TALOPE', 'TAPELO'], correct: 'TAPELO', context: '🔊AUDIO:TAPELO' },
 
   // BLOQUE 5 — Comprensión Lectora
   {
@@ -196,8 +196,8 @@ const questions: Question[] = [
   { id: 33, block: 7, type: 'multiple_choice', question: '¿Cuál está bien escrita?', options: ['MARIPOSSA', 'MARIPOSA', 'MARIPOSE'], correct: 'MARIPOSA', context: '🦋' },
 
   // BLOQUE 8 — Lectura de Pseudopalabras
-  { id: 34, block: 8, type: 'pseudo_audio', writtenWord: 'PRELOSA', audioOptions: ['prelosa', 'prulosa', 'perlosa'], correct: 'prelosa' },
-  { id: 35, block: 8, type: 'pseudo_audio', writtenWord: 'CAMITO', audioOptions: ['camito', 'camoto', 'comito'], correct: 'camito' },
+  { id: 34, block: 8, type: 'pseudo_audio', writtenWord: 'GOPI', audioOptions: ['gopi', 'pogi', 'govi'], correct: 'gopi' },
+  { id: 35, block: 8, type: 'pseudo_audio', writtenWord: 'FUMISA', audioOptions: ['fumisa', 'misafu', 'fumosa'], correct: 'fumisa' },
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -211,7 +211,18 @@ const questionEmojis: Record<string, string> = {
   'JIRAFA': '🦒', 'CEBRA': '🦓', 'PATO': '🦆', 'SOL': '☀️', 'MESA': '🪑',
   'BICICLETA': '🚲', 'TORO': '🐂', 'GATO': '🐱', 'CASA': '🏠', 'PERA': '🍐',
   'CABALLO': '🐴', 'PELOTA': '⚽', 'NUBE': '☁️', 'CONEJO': '🐰', 'LÁPIZ': '✏️',
-  'ZAPATO': '👟', 'PERRO': '🐕', 'LUNA': '🌙', 'LIBRO': '📚',
+  'ZAPATO': '👟', 'PERRO': '🐕', 'LUNA': '🌙', 'LIBRO': '📚', 'TOMATE': '🍅',
+}
+
+/** A `context` written as `🔊AUDIO:PALABRA` is only played, never shown on screen */
+const AUDIO_CONTEXT_PREFIX = "🔊AUDIO:"
+
+const audioOnlyWord = (question?: Question): string | null => {
+  if (!question) return null
+  if (question.type !== "multiple_choice" && question.type !== "letter_fill") return null
+  return question.context?.startsWith(AUDIO_CONTEXT_PREFIX)
+    ? question.context.slice(AUDIO_CONTEXT_PREFIX.length).trim()
+    : null
 }
 
 const BLOCKS = [
@@ -327,6 +338,7 @@ export default function TestPrimariaPage() {
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = "es-ES"
     utterance.rate = 0.85
+    utterance.pitch = 1
     utterance.onstart = () => setSpeaking(true)
     utterance.onend = () => setSpeaking(false)
     utterance.onerror = () => setSpeaking(false)
@@ -343,7 +355,7 @@ export default function TestPrimariaPage() {
     } else if (current.type === "syllable_count") {
       parts.push(current.word)
     } else if ((current.type === "multiple_choice" || current.type === "letter_fill") && current.context) {
-      parts.push(current.context)
+      parts.push(audioOnlyWord(current) ?? current.context)
     }
     parts.push(displayPrompt)
     speak(parts.join(". "))
@@ -359,6 +371,7 @@ export default function TestPrimariaPage() {
         const utterance = new SpeechSynthesisUtterance(word)
         utterance.lang = "es-ES"
         utterance.rate = 0.85
+        utterance.pitch = 1
         if (i === words.length - 1) utterance.onend = () => setSpeaking(false)
         window.speechSynthesis.speak(utterance)
       }, i * 800)
@@ -372,6 +385,7 @@ export default function TestPrimariaPage() {
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = "es-ES"
     utterance.rate = 0.85
+    utterance.pitch = 1
     utterance.onstart = () => setPlayingAudio(idx)
     utterance.onend = () => setPlayingAudio(null)
     utterance.onerror = () => setPlayingAudio(null)
@@ -379,14 +393,18 @@ export default function TestPrimariaPage() {
   }, [])
 
   /* ---- audio that plays on its own as soon as the question opens ---- */
-  /** Ejercicio L hears the syllable, Ejercicio B hears the word; both hide the text */
+  /** Ejercicio J: the pseudoword lives in `context` as `🔊AUDIO:PALABRA` — heard, never shown */
+  const hiddenAudioWord = audioOnlyWord(current)
+  /** Ejercicio L hears the syllable, Ejercicios B and J hear the word; all hide the text */
   const autoPlayText = !current
     ? null
-    : current.type === "letter_fill" && current.word.startsWith("/") && current.word.endsWith("/")
-      ? current.word.replace(/\//g, "")
-      : current.type === "multiple_choice" && current.block === 1 && current.context
-        ? current.context.replace("🔊", "").trim()
-        : null
+    : hiddenAudioWord
+      ? hiddenAudioWord
+      : current.type === "letter_fill" && current.word.startsWith("/") && current.word.endsWith("/")
+        ? current.word.replace(/\//g, "")
+        : current.type === "multiple_choice" && current.block === 1 && current.context
+          ? current.context.replace("🔊", "").trim()
+          : null
 
   useEffect(() => {
     if (autoPlayText) speak(autoPlayText)
@@ -918,6 +936,23 @@ export default function TestPrimariaPage() {
           ) : isHeardWord ? (
             /* Ejercicio B: the word is heard, so nothing about it is shown */
             null
+          ) : hiddenAudioWord ? (
+            /* Ejercicio J: the pseudoword is only heard — replay it as often as needed */
+            <div className="mb-4 flex justify-center">
+              <button
+                onClick={() => speak(hiddenAudioWord)}
+                className={`
+                  inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
+                  ${speaking
+                    ? "bg-white/30 text-white animate-pulse"
+                    : "bg-white/20 text-white hover:bg-white/30"
+                  }
+                `}
+              >
+                <Volume2 className="w-5 h-5" />
+                {speaking ? "Escuchando..." : "Escuchar de nuevo"}
+              </button>
+            </div>
           ) : current.type === "multiple_choice" && current.block === 7 && current.context ? (
             /* Ejercicio O: just the picture of the word to spell */
             <div className="mb-4 flex justify-center">
