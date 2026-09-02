@@ -194,12 +194,12 @@ const questions: Question[] = [
   { id: 31, block: 6, type: 'mirror_letters', question: '¿Qué letra va aquí?', word: '_eso', emoji: '💋', options: ['b', 'd'], correct: 'b' },
 
   // BLOQUE 7 — Reconocimiento Visual
-  { id: 32, block: 7, type: 'multiple_choice', question: '¿Cuál está bien escrita?', options: ['ELEFANTE', 'ELANTE', 'ELEFENT'], correct: 'ELEFANTE', context: '🐘' },
-  { id: 33, block: 7, type: 'multiple_choice', question: '¿Cuál está bien escrita?', options: ['MARIPOSSA', 'MARIPOSA', 'MARIPOSE'], correct: 'MARIPOSA', context: '🦋' },
+  { id: 32, block: 7, type: 'multiple_choice', question: '¿Cuál está bien escrita?', options: ['PEROO', 'PERO', 'PERRO'], correct: 'PERRO', context: '🐕' },
+  { id: 33, block: 7, type: 'multiple_choice', question: '¿Cuál está bien escrita?', options: ['AOTO', 'AUTO', 'AUTOO'], correct: 'AUTO', context: '🚗' },
 
   // BLOQUE 8 — Lectura de Pseudopalabras
   { id: 34, block: 8, type: 'pseudo_audio', writtenWord: 'GOPI', audioOptions: ['gopi', 'pogi', 'govi'], correct: 'gopi' },
-  { id: 35, block: 8, type: 'pseudo_audio', writtenWord: 'FUMISA', audioOptions: ['fumisa', 'misafu', 'fumosa'], correct: 'fumisa' },
+  { id: 35, block: 8, type: 'pseudo_audio', writtenWord: 'FUMISA', audioOptions: ['fumosa', 'misafu', 'fumisa'], correct: 'fumisa' },
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -397,7 +397,7 @@ export default function TestPrimariaPage() {
       : current.type === "multiple_choice" && current.block === 1 && current.context
         ? current.context.replace("🔊", "").trim()
         : current.type === "multiple_choice" && current.block === 4 && "spokenWord" in current && current.spokenWord
-          ? current.spokenWord
+          ? current.spokenWord.toLowerCase()
           : null
 
   useEffect(() => {
@@ -877,6 +877,22 @@ export default function TestPrimariaPage() {
             </div>
           ) : showingStoryText && current.type === "reading_comprehension" ? (
             <div className="mb-4 w-full">
+              {/* Bloque 5: la historia también se puede escuchar */}
+              <div className="mb-2 flex justify-end">
+                <button
+                  onClick={() => speak(current.text)}
+                  className={`
+                    inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all
+                    ${speaking
+                      ? "bg-white/30 text-white animate-pulse"
+                      : "bg-white/20 text-white hover:bg-white/30"
+                    }
+                  `}
+                >
+                  <Volume2 className="w-4 h-4" />
+                  {speaking ? "Reproduciendo..." : "Escuchar historia"}
+                </button>
+              </div>
               <div className="bg-white/20 rounded-xl p-6 max-h-72 overflow-y-auto text-left text-base sm:text-lg leading-relaxed text-white whitespace-pre-line">
                 {current.text}
               </div>
@@ -955,7 +971,7 @@ export default function TestPrimariaPage() {
             /* Ejercicio J: the pseudoword is only heard — replay it as often as needed */
             <div className="mb-4 flex justify-center">
               <button
-                onClick={() => current.spokenWord && speak(current.spokenWord)}
+                onClick={() => current.spokenWord && speak(current.spokenWord.toLowerCase())}
                 className={`
                   inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
                   ${speaking
