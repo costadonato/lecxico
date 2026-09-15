@@ -52,14 +52,14 @@ const questions: Question[] = [
   { id: 12, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CAMA?", context: "CA-MA", options: ["1", "2", "3"], correctIndex: 1 },
   { id: 13, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra PAN?", context: "PAN", options: ["1", "2", "3"], correctIndex: 0 },
   // Ejercicio E: elegir la palabra que empieza con la misma sílaba inicial
-  { id: 14, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "PELOTA", options: ["Pera", "Mesa", "Casa"], correctIndex: 0 },
+  { id: 14, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "PELOTA", options: ["Pera", "Silla", "Casa"], correctIndex: 0 },
   { id: 15, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MAMÁ", options: ["Mano", "Pato", "Sol"], correctIndex: 0 },
   { id: 16, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MATE", options: ["Mano", "Casa", "Luna"], correctIndex: 0 },
 
   // ── Bloque 4: Memoria Auditiva (Ejercicio F: recordar el orden) ──
   { id: 17, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["SOL", "PAN"], options: ["Pan", "Sol"], correctOrder: [1, 0] },
   { id: 18, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["GATO", "CASA", "PATO"], options: ["Pato", "Gato", "Casa"], correctOrder: [1, 2, 0] },
-  { id: 19, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["MESA", "SOL", "NUBE"], options: ["Nube", "Mesa", "Sol"], correctOrder: [1, 2, 0] },
+  { id: 19, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["SILLA", "SOL", "NUBE"], options: ["Nube", "Silla", "Sol"], correctOrder: [1, 2, 0] },
   { id: 20, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["PERRO", "LUNA", "DADO", "MATE"], options: ["Dado", "Perro", "Luna", "Mate"], correctOrder: [1, 2, 0, 3] },
 ]
 

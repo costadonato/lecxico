@@ -157,7 +157,7 @@ const questions: Question[] = [
   { id: 13, block: 3, type: 'syllable_count', word: 'MARIPOSA', options: [3, 4, 5], correct: 4, emoji: '🦋', syllableDisplay: 'MA-RI-PO-SA' },
   { id: 14, block: 3, type: 'syllable_count', word: 'PELOTA', options: [2, 3, 4], correct: 3, emoji: '⚽', syllableDisplay: 'PE-LO-TA' },
   // Ejercicio G — Sílaba inicial
-  { id: 15, block: 3, type: 'multiple_choice', question: '¿Cuál empieza con la misma sílaba que PELOTA?', options: ['PERA', 'MESA', 'CASA'], correct: 'PERA' },
+  { id: 15, block: 3, type: 'multiple_choice', question: '¿Cuál empieza con la misma sílaba que PELOTA?', options: ['PERA', 'SILLA', 'CASA'], correct: 'PERA' },
   { id: 16, block: 3, type: 'multiple_choice', question: '¿Cuál empieza con la misma sílaba que CAMISA?', options: ['CABALLO', 'PELOTA', 'NUBE'], correct: 'CABALLO' },
   // Ejercicio H — Construir la palabra
   { id: 17, block: 3, type: 'syllable_drag', word: 'LUNA', emoji: '🌙', syllables: ['NA', 'LU'], correct: ['LU', 'NA'] },
@@ -166,7 +166,7 @@ const questions: Question[] = [
   // BLOQUE 4 — Memoria Fonológica
   // Ejercicio I — Repetir secuencia
   { id: 19, block: 4, type: 'sequence_order', sequence: ['CONEJO', 'CASA', 'LÁPIZ'], options: ['CASA', 'CONEJO', 'LÁPIZ'], correctOrder: [1, 0, 2] },
-  { id: 20, block: 4, type: 'sequence_order', sequence: ['ZAPATO', 'SOL', 'MESA'], options: ['MESA', 'SOL', 'ZAPATO'], correctOrder: [2, 1, 0] },
+  { id: 20, block: 4, type: 'sequence_order', sequence: ['ZAPATO', 'SOL', 'SILLA'], options: ['SILLA', 'SOL', 'ZAPATO'], correctOrder: [2, 1, 0] },
   { id: 21, block: 4, type: 'sequence_order', sequence: ['LUNA', 'LIBRO', 'PERRO', 'MATE'], options: ['PERRO', 'LUNA', 'LIBRO', 'MATE'], correctOrder: [1, 2, 0, 3] },
   // Ejercicio J — Pseudopalabras orales
   { id: 22, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['FUNO', 'NUFO', 'FUBO'], correct: 'FUNO', spokenWord: 'FUNO' },
@@ -212,7 +212,7 @@ const TOTAL_QUESTIONS = questions.length
 /* ------------------------------------------------------------------ */
 const questionEmojis: Record<string, string> = {
   'MARIPOSA': '🦋', 'ABEJA': '🐝', 'ORUGA': '🐛', 'ELEFANTE': '🐘',
-  'JIRAFA': '🦒', 'CEBRA': '🦓', 'PATO': '🦆', 'SOL': '☀️', 'MESA': '🪑',
+  'JIRAFA': '🦒', 'CEBRA': '🦓', 'PATO': '🦆', 'SOL': '☀️', 'SILLA': '🪑',
   'BICICLETA': '🚲', 'TORO': '🐂', 'GATO': '🐱', 'CASA': '🏠', 'PERA': '🍐',
   'CABALLO': '🐴', 'PELOTA': '⚽', 'NUBE': '☁️', 'CONEJO': '🐰', 'LÁPIZ': '✏️',
   'ZAPATO': '👟', 'PERRO': '🐕', 'LUNA': '🌙', 'LIBRO': '📚', 'MATE': '🧉',
