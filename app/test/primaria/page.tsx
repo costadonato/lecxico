@@ -122,6 +122,10 @@ interface ProfessionalRatedQuestion {
   block: number
   type: "professional_rated"
   question: string
+  /** Optional big word shown in a box (e.g. a pseudoword to read aloud) */
+  displayWord?: string
+  /** Optional custom labels for the rating buttons */
+  ratingLabels?: { correct: string; incorrect: string }
 }
 
 type Question =
@@ -211,6 +215,12 @@ const questions: Question[] = [
   // BLOQUE 8 — Lectura de Pseudopalabras
   { id: 34, block: 8, type: 'pseudo_audio', writtenWord: 'GOPI', audioOptions: ['gopi', 'pogi', 'govi'], correct: 'gopi' },
   { id: 35, block: 8, type: 'pseudo_audio', writtenWord: 'FUMISA', audioOptions: ['fumosa', 'misafu', 'fumisa'], correct: 'fumisa' },
+  // Lectura en voz alta evaluada por el profesional (dificultad incremental)
+  { id: 36, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'TASO', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 37, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'MELUPA', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 38, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'RIDOTE', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 39, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'BALCUTINA', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 40, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'PLONDRESAMO', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -960,6 +970,13 @@ export default function TestPrimariaPage() {
                 {current.writtenWord}
               </span>
             </div>
+          ) : current.type === "professional_rated" && current.displayWord ? (
+            /* Bloque 8: the pseudoword to read aloud */
+            <div className="mb-4 flex justify-center">
+              <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl font-bold tracking-widest text-white">
+                {current.displayWord}
+              </span>
+            </div>
           ) : isSpokenSyllable ? (
             /* Ejercicio L: the syllable is only heard — replay it as often as needed */
             <div className="mb-4 flex justify-center">
@@ -1143,7 +1160,10 @@ export default function TestPrimariaPage() {
             /* Ejercicio E: the professional rates the child's spoken answer */
             <div className="flex-1 flex flex-col justify-center py-2">
               <div className="grid gap-4 grid-cols-2">
-                {["Bien respondido", "Mal respondido"].map((label, idx) => {
+                {[
+                  current.ratingLabels?.correct ?? "Bien respondido",
+                  current.ratingLabels?.incorrect ?? "Mal respondido",
+                ].map((label, idx) => {
                   const isSelected = selectedOption === idx
                   const isGood = idx === 0
                   return (
