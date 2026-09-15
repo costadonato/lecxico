@@ -116,6 +116,14 @@ interface PseudoAudioQuestion {
   correct: string
 }
 
+/** Ejercicio E: the professional rates the child's spoken answer as right/wrong */
+interface ProfessionalRatedQuestion {
+  id: number
+  block: number
+  type: "professional_rated"
+  question: string
+}
+
 type Question =
   | SameDifferentQuestion
   | MultipleChoiceQuestion
@@ -126,6 +134,7 @@ type Question =
   | SequenceOrderQuestion
   | SyllabDragQuestion
   | PseudoAudioQuestion
+  | ProfessionalRatedQuestion
 
 /* ------------------------------------------------------------------ */
 /*  QUESTION DATA  (7 blocks)                                          */
@@ -149,8 +158,8 @@ const questions: Question[] = [
   { id: 9, block: 2, type: 'multiple_choice', question: '¿Qué palabra se puede formar con estas letras?', options: ['MANO', 'RATA', 'GATO'], correct: 'GATO', context: 'A / T / G / O' },
   { id: 10, block: 2, type: 'multiple_choice', question: '¿Qué palabra se puede formar con estas letras?', options: ['PEZ', 'CAE', 'PAN'], correct: 'PAN', context: 'N / A / P' },
   // Ejercicio E — Omisión de fonema
-  { id: 11, block: 2, type: 'multiple_choice', question: '¿Cómo queda GATO sin la /g/?', options: ['TATO', 'ATO', 'GATO'], correct: 'ATO' },
-  { id: 12, block: 2, type: 'multiple_choice', question: '¿Cómo queda SALA sin la /s/?', options: ['SALA', 'LASA', 'ALA'], correct: 'ALA' },
+  { id: 11, block: 2, type: 'professional_rated', question: '¿Cómo queda GATO sin la /g/?' },
+  { id: 12, block: 2, type: 'professional_rated', question: '¿Cómo queda SALA sin la /s/?' },
 
   // BLOQUE 3 — Conciencia Silábica
   // Ejercicio F — Conteo de sílabas
@@ -254,6 +263,9 @@ const isOptionCorrect = (q: Question, ans: Answer): boolean => {
       return typeof ans === "number" && q.options[ans] === q.correct
     case "pseudo_audio":
       return typeof ans === "number" && q.audioOptions[ans] === q.correct
+    /* Rated by the professional: 0 = "Bien respondido" counts as correct */
+    case "professional_rated":
+      return ans === 0
     case "sequence_order":
       return (
         Array.isArray(ans) &&
@@ -431,7 +443,8 @@ export default function TestPrimariaPage() {
       : current.type === "reading_comprehension" ||
           current.type === "sequence_order" ||
           current.type === "syllable_drag" ||
-          current.type === "pseudo_audio"
+          current.type === "pseudo_audio" ||
+          current.type === "professional_rated"
         ? []
         : current.options
 
@@ -1116,6 +1129,34 @@ export default function TestPrimariaPage() {
                   </button>
                 )
               })}
+            </div>
+          ) : !showingStoryText && current.type === "professional_rated" ? (
+            /* Ejercicio E: the professional rates the child's spoken answer */
+            <div className="flex-1 flex flex-col justify-center py-2">
+              <div className="grid gap-4 grid-cols-2">
+                {["Bien respondido", "Mal respondido"].map((label, idx) => {
+                  const isSelected = selectedOption === idx
+                  const isGood = idx === 0
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleSelect(idx)}
+                      className={`
+                        rounded-2xl py-8 px-8 text-xl sm:text-2xl font-extrabold transition-all duration-200 flex flex-col items-center justify-center gap-2 border
+                        ${isSelected
+                          ? isGood
+                            ? "bg-green-500/80 border-green-400 text-white"
+                            : "bg-red-500/80 border-red-400 text-white"
+                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
+                        }
+                      `}
+                    >
+                      <span className="text-4xl">{isGood ? "✓" : "✗"}</span>
+                      {label}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           ) : !showingStoryText && (
             <div className="flex-1 flex flex-col justify-center py-2">
