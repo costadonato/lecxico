@@ -46,6 +46,8 @@ interface SyllableCountQuestion {
   options: number[]
   correct: number
   emoji: string
+  /** Ejercicio F: word split into syllables with hyphens (shown + read aloud with pauses) */
+  syllableDisplay?: string
 }
 
 interface ReadingComprehensionQuestion {
@@ -152,8 +154,8 @@ const questions: Question[] = [
 
   // BLOQUE 3 — Conciencia Silábica
   // Ejercicio F — Conteo de sílabas
-  { id: 13, block: 3, type: 'syllable_count', word: 'MARIPOSA', options: [3, 4, 5], correct: 4, emoji: '🦋' },
-  { id: 14, block: 3, type: 'syllable_count', word: 'PELOTA', options: [2, 3, 4], correct: 3, emoji: '⚽' },
+  { id: 13, block: 3, type: 'syllable_count', word: 'MARIPOSA', options: [3, 4, 5], correct: 4, emoji: '🦋', syllableDisplay: 'MA-RI-PO-SA' },
+  { id: 14, block: 3, type: 'syllable_count', word: 'PELOTA', options: [2, 3, 4], correct: 3, emoji: '⚽', syllableDisplay: 'PE-LO-TA' },
   // Ejercicio G — Sílaba inicial
   { id: 15, block: 3, type: 'multiple_choice', question: '¿Cuál empieza con la misma sílaba que PELOTA?', options: ['PERA', 'MESA', 'CASA'], correct: 'PERA' },
   { id: 16, block: 3, type: 'multiple_choice', question: '¿Cuál empieza con la misma sílaba que CAMISA?', options: ['CABALLO', 'PELOTA', 'NUBE'], correct: 'CABALLO' },
@@ -347,7 +349,7 @@ export default function TestPrimariaPage() {
     } else if (current.type === "same_different") {
       parts.push(`${current.word1}... ${current.word2}`)
     } else if (current.type === "syllable_count") {
-      parts.push(current.word)
+      parts.push(current.syllableDisplay?.replace(/-/g, ", ") ?? current.word)
     } else if ((current.type === "multiple_choice" || current.type === "letter_fill") && current.context) {
       parts.push(current.context)
     }
@@ -901,7 +903,7 @@ export default function TestPrimariaPage() {
             <div className="mb-4 flex flex-col items-center gap-2">
               <span className="text-5xl sm:text-6xl">{current.emoji}</span>
               <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl sm:text-4xl font-bold tracking-widest text-white">
-                {current.word}
+                {current.syllableDisplay ?? current.word}
               </span>
             </div>
           ) : current.type === "mirror_letters" ? (
