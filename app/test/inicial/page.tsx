@@ -41,9 +41,9 @@ const questions: Question[] = [
   { id: 6,  block: 1, blockName: "Discriminación Auditiva", type: "word_image", prompt: "PELOTA", context: "¿Qué palabra escuchaste?", options: ["Pelota", "Manzana", "Luna"], correctIndex: 0 },
 
   // ── Bloque 2: Conciencia Fonológica ────────────────────────────────
-  { id: 7,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que MAMÁ?", options: ["Mariposa", "Pato", "Sol"], correctIndex: 0 },
-  { id: 8,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que SAPO?", options: ["Nube", "Sandía", "Perro"], correctIndex: 1 },
-  { id: 9,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que PELOTA?", options: ["Árbol", "Dado", "Pez"], correctIndex: 2 },
+  { id: 7,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que MAMÁ?", options: ["MARIPOSA", "PATO", "SOL"], correctIndex: 0 },
+  { id: 8,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que SAPO?", options: ["NUBE", "SANDÍA", "PERRO"], correctIndex: 1 },
+  { id: 9,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que PELOTA?", options: ["ÁRBOL", "DADO", "PEZ"], correctIndex: 2 },
 
   // ── Bloque 3: Conciencia Silábica ──────────────────────────────────
   // Ejercicio D: contar sílabas
@@ -72,10 +72,6 @@ const questionEmojis: Record<number, { context?: string[]; prompt?: string; opti
   // Block 1 (Ejercicio B): option emojis for the word→image choices
   5: { options: ["🦆", "🐱", "🐭"] },
   6: { options: ["⚽", "🍎", "🌙"] },
-  // Block 2: prompt emoji + option emojis
-  7: { prompt: "👩", options: ["🦋", "🦆", "☀️"] },
-  8: { prompt: "🐸", options: ["☁️", "🍉", "🐕"] },
-  9: { prompt: "⚽", options: ["🌳", "🎲", "🐟"] },
   // Block 3 — Ejercicio D: emoji for the word
   10: { prompt: "🐱" },
   11: { prompt: "👧" },
