@@ -47,9 +47,9 @@ const questions: Question[] = [
 
   // ── Bloque 3: Conciencia Silábica ──────────────────────────────────
   // Ejercicio D: contar sílabas
-  { id: 10, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra GATO?", context: "GATO", options: ["1", "2", "3"], correctIndex: 1 },
-  { id: 11, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra NENA?", context: "NENA", options: ["1", "2", "3"], correctIndex: 1 },
-  { id: 12, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CAMA?", context: "CAMA", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 10, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra GATO?", context: "GA-TO", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 11, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra NENA?", context: "NE-NA", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 12, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CAMA?", context: "CA-MA", options: ["1", "2", "3"], correctIndex: 1 },
   { id: 13, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra PAN?", context: "PAN", options: ["1", "2", "3"], correctIndex: 0 },
   // Ejercicio E: elegir la palabra que empieza con la misma sílaba inicial
   { id: 14, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "PELOTA", options: ["Pera", "Mesa", "Casa"], correctIndex: 0 },
@@ -245,7 +245,13 @@ export default function TestPage() {
 
   const speakQuestion = useCallback(() => {
     const parts: string[] = []
-    if (current.context) parts.push(current.context.replace("—", "..."))
+    if (current.context) {
+      const contextText =
+        current.type === "syllable_count"
+          ? current.context.replace(/-/g, ", ")
+          : current.context.replace("—", "...")
+      parts.push(contextText)
+    }
     parts.push(current.prompt)
     speak(parts.join(". "))
   }, [current, speak])
