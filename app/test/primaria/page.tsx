@@ -178,7 +178,7 @@ const questions: Question[] = [
   { id: 20, block: 4, type: 'sequence_order', sequence: ['ZAPATO', 'SOL', 'SILLA'], options: ['SILLA', 'SOL', 'ZAPATO'], correctOrder: [2, 1, 0] },
   { id: 21, block: 4, type: 'sequence_order', sequence: ['LUNA', 'LIBRO', 'PERRO', 'MATE'], options: ['PERRO', 'LUNA', 'LIBRO', 'MATE'], correctOrder: [1, 2, 0, 3] },
   // Ejercicio J — Pseudopalabras orales
-  { id: 22, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['FUNO', 'NUFO', 'FUBO'], correct: 'FUNO', spokenWord: 'FUNO' },
+  { id: 22, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['FUNO', 'FUBO', 'NUFO'], correct: 'FUNO', spokenWord: 'FUNO' },
   { id: 23, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PILA', 'LIPA', 'LIBA'], correct: 'LIPA', spokenWord: 'LIPA' },
   { id: 24, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PELATO', 'TALOPE', 'TAPELO'], correct: 'TAPELO', spokenWord: 'TAPELO' },
 
@@ -410,9 +410,7 @@ export default function TestPrimariaPage() {
       ? current.word.replace(/\//g, "")
       : current.type === "multiple_choice" && current.block === 1 && current.context
         ? current.context.replace("🔊", "").trim()
-        : current.type === "multiple_choice" && current.block === 4 && "spokenWord" in current && current.spokenWord
-          ? current.spokenWord.toLowerCase()
-          : null
+        : null
 
   useEffect(() => {
     if (autoPlayText) speak(autoPlayText)
@@ -983,20 +981,31 @@ export default function TestPrimariaPage() {
             /* Ejercicio B: the word is heard, so nothing about it is shown */
             null
           ) : current.type === "multiple_choice" && current.block === 4 && "spokenWord" in current && current.spokenWord ? (
-            /* Ejercicio J: the pseudoword is only heard — replay it as often as needed */
+            /* Ejercicio J: the pseudoword is only heard — máximo 2 reproducciones voluntarias */
             <div className="mb-4 flex justify-center">
               <button
-                onClick={() => current.spokenWord && speak(current.spokenWord.toLowerCase())}
+                onClick={() => {
+                  if (playCount >= 2 || !current.spokenWord) return
+                  setPlayCount((prev) => prev + 1)
+                  speak(current.spokenWord.toLowerCase())
+                }}
+                disabled={speaking || playCount >= 2}
                 className={`
                   inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
                   ${speaking
                     ? "bg-white/30 text-white animate-pulse"
-                    : "bg-white/20 text-white hover:bg-white/30"
+                    : playCount >= 2
+                      ? "bg-white/10 text-white/40 cursor-not-allowed"
+                      : "bg-white/20 text-white hover:bg-white/30"
                   }
                 `}
               >
                 <Volume2 className="w-5 h-5" />
-                {speaking ? "Escuchando..." : "Escuchar palabra"}
+                {speaking
+                  ? "Escuchando..."
+                  : playCount >= 2
+                    ? "Sin reproducciones"
+                    : `Escuchar palabra (quedan ${2 - playCount})`}
               </button>
             </div>
           ) : current.type === "multiple_choice" && current.block === 7 && current.context ? (
