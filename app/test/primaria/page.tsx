@@ -198,7 +198,7 @@ const questions: Question[] = [
   { id: 26, block: 6, type: 'letter_fill', question: '¿Con qué letra empieza esta sílaba?', word: '/ma/', options: ['M', 'N', 'B', 'P'], correct: 'M' },
   { id: 27, block: 6, type: 'letter_fill', question: '¿Con qué letra empieza esta sílaba?', word: '/pa/', options: ['B', 'D', 'P', 'T'], correct: 'P' },
   // Ejercicio M — Letra faltante
-  { id: 28, block: 6, type: 'letter_fill', question: '¿Qué letra falta?', context: '🧠 CA_EZA', word: 'CA_EZA', options: ['B', 'E', 'R', 'Q'], correct: 'B' },
+  { id: 28, block: 6, type: 'letter_fill', question: '¿Qué letra falta?', context: '👤 CA_EZA', word: 'CA_EZA', options: ['B', 'E', 'R', 'D'], correct: 'B' },
   { id: 29, block: 6, type: 'letter_fill', question: '¿Qué letra falta?', context: '🦆 _ATO', word: '_ATO', options: ['P', 'G', 'B', 'D'], correct: 'P' },
   // Ejercicio N — Letras espejo
   { id: 30, block: 6, type: 'mirror_letters', question: '¿Qué letra va aquí?', word: '_ado', emoji: '🎲', options: ['b', 'd'], correct: 'd' },
