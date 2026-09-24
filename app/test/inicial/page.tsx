@@ -64,7 +64,7 @@ const questions: Question[] = [
   // Ejercicio E: elegir la palabra que empieza con la misma sílaba inicial
   { id: 14, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "PELOTA", options: ["Pera", "Silla", "Casa"], correctIndex: 0 },
   { id: 15, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MAMÁ", options: ["Mano", "Pato", "Sol"], correctIndex: 0 },
-  { id: 16, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MATE", options: ["Mano", "Casa", "Luna"], correctIndex: 0 },
+  { id: 16, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MATE", options: ["Casa", "Manzana", "Luna"], correctIndex: 1 },
 
   // ── Bloque 4: Memoria Auditiva (Ejercicio F: recordar el orden) ──
   { id: 17, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["SOL", "PAN"], options: ["Pan", "Sol"], correctOrder: [1, 0] },
@@ -100,7 +100,7 @@ const questionEmojis: Record<number, { context?: string[]; prompt?: string; opti
   // Block 3 — Ejercicio E: option emojis for the syllable match
   14: { options: ["🍐", "🪑", "🏠"] },
   15: { options: ["✋", "🦆", "☀️"] },
-  16: { options: ["✋", "🏠", "🌙"] },
+  16: { options: ["🏠", "🍎", "🌙"] },
   // Block 4 — Ejercicio F: option emojis (in the fixed options order)
   17: { options: ["🍞", "☀️"] },
   18: { options: ["🦆", "🐱", "🏠"] },
@@ -305,6 +305,24 @@ export default function TestPage() {
 
   /* ---- text-to-speech ---- */
   const [speaking, setSpeaking] = useState(false)
+  /** A Spanish voice picked from the browser's available voices (loaded async) */
+  const [spanishVoice, setSpanishVoice] = useState<SpeechSynthesisVoice | null>(null)
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return
+    const pickVoice = () => {
+      const voices = window.speechSynthesis.getVoices()
+      // Preferir español de España; si no, cualquier español
+      const preferred =
+        voices.find((v) => v.lang === "es-ES") ??
+        voices.find((v) => v.lang.startsWith("es")) ??
+        null
+      if (preferred) setSpanishVoice(preferred)
+    }
+    pickVoice()
+    window.speechSynthesis.onvoiceschanged = pickVoice
+    return () => { window.speechSynthesis.onvoiceschanged = null }
+  }, [])
 
   const speak = useCallback((text: string) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return
@@ -312,21 +330,23 @@ export default function TestPage() {
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = "es-ES"
     utterance.rate = 0.85
+    if (spanishVoice) utterance.voice = spanishVoice
     utterance.onstart = () => setSpeaking(true)
     utterance.onend = () => setSpeaking(false)
     utterance.onerror = () => setSpeaking(false)
     window.speechSynthesis.speak(utterance)
-  }, [])
+  }, [spanishVoice])
 
   const speakQuestion = useCallback(() => {
-    const parts: string[] = []
-    if (current.context) {
-      const contextText =
-        current.type === "syllable_count"
-          ? current.context.replace(/-/g, ", ")
-          : current.context.replace("—", "...")
-      parts.push(contextText)
+    // syllable_count: read the whole word (hyphens removed) so short uppercase
+    // syllables like "GA"/"NE" aren't spelled out as acronyms
+    if (current.type === "syllable_count" && current.context) {
+      speak(current.context.replace(/-/g, ""))
+      return
     }
+
+    const parts: string[] = []
+    if (current.context) parts.push(current.context.replace("—", "..."))
     parts.push(current.prompt)
     speak(parts.join(". "))
   }, [current, speak])
@@ -344,11 +364,12 @@ export default function TestPage() {
         const utterance = new SpeechSynthesisUtterance(word)
         utterance.lang = "es-ES"
         utterance.rate = 0.85
+        if (spanishVoice) utterance.voice = spanishVoice
         if (i === words.length - 1) utterance.onend = () => setSpeaking(false)
         window.speechSynthesis.speak(utterance)
       }, i * 800)
     })
-  }, [current, playCount])
+  }, [current, playCount, spanishVoice])
 
   /* ================================================================ */
   /*  RESULTS SCREEN                                                   */
