@@ -213,7 +213,7 @@ const questions: Question[] = [
   { id: 33, block: 7, type: 'multiple_choice', question: '¿Cuál está bien escrita?', options: ['AOTO', 'AUTO', 'AUTOO'], correct: 'AUTO', context: '🚗' },
 
   // BLOQUE 8 — Lectura de Pseudopalabras
-  { id: 34, block: 8, type: 'pseudo_audio', writtenWord: 'GOPI', audioOptions: ['gopi', 'pogi', 'govi'], correct: 'gopi' },
+  { id: 34, block: 8, type: 'pseudo_audio', writtenWord: 'TOPI', audioOptions: ['topi', 'poti', 'tovi'], correct: 'topi' },
   { id: 35, block: 8, type: 'pseudo_audio', writtenWord: 'FUMISA', audioOptions: ['fumosa', 'misafu', 'fumisa'], correct: 'fumisa' },
   // Lectura en voz alta evaluada por el profesional (dificultad incremental)
   { id: 36, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'TASO', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
