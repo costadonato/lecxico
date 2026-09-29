@@ -8,7 +8,7 @@ import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Home,
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
 /* ------------------------------------------------------------------ */
-type QuestionType = "same_different" | "multiple_choice" | "syllable_count" | "letter_fill" | "word_image" | "syllable_match" | "sequence_order"
+type QuestionType = "same_different" | "multiple_choice" | "syllable_count" | "letter_fill" | "word_image" | "syllable_match" | "sequence_order" | "rapid_naming"
 
 interface Question {
   id: number
@@ -25,6 +25,16 @@ interface Question {
   sequence?: string[]
   /** Expected selection order (indices into options) for sequence_order questions */
   correctOrder?: number[]
+  /** rapid_naming: ítems de la grilla (nombres de color o emojis) */
+  items?: string[]
+  /** rapid_naming: valor objetivo a seleccionar (nombre de color o emoji) */
+  target?: string
+  /** rapid_naming: cómo renderizar los ítems */
+  itemKind?: "color" | "object"
+  /** rapid_naming: columnas de la grilla */
+  columns?: number
+  /** rapid_naming: límite de tiempo en segundos */
+  timeLimit?: number
 }
 
 /* ------------------------------------------------------------------ */
@@ -41,26 +51,36 @@ const questions: Question[] = [
   { id: 6,  block: 1, blockName: "Discriminación Auditiva", type: "word_image", prompt: "PELOTA", context: "¿Qué palabra escuchaste?", options: ["Pelota", "Manzana", "Luna"], correctIndex: 0 },
 
   // ── Bloque 2: Conciencia Fonológica ────────────────────────────────
-  { id: 7,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que MAMÁ?", options: ["Mariposa", "Pato", "Sol"], correctIndex: 0 },
-  { id: 8,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que SAPO?", options: ["Nube", "Sandía", "Perro"], correctIndex: 1 },
-  { id: 9,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que PELOTA?", options: ["Árbol", "Dado", "Pez"], correctIndex: 2 },
+  { id: 7,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que MAMÁ?", options: ["MARIPOSA", "PATO", "SOL"], correctIndex: 0 },
+  { id: 8,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que SAPO?", options: ["NUBE", "SANDÍA", "PERRO"], correctIndex: 1 },
+  { id: 9,  block: 2, blockName: "Conciencia Fonológica", type: "multiple_choice", prompt: "¿Cuál empieza igual que PELOTA?", options: ["ÁRBOL", "DADO", "PEZ"], correctIndex: 2 },
 
   // ── Bloque 3: Conciencia Silábica ──────────────────────────────────
   // Ejercicio D: contar sílabas
-  { id: 10, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra GATO?", context: "GATO", options: ["1", "2", "3"], correctIndex: 1 },
-  { id: 11, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra NENA?", context: "NENA", options: ["1", "2", "3"], correctIndex: 1 },
-  { id: 12, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CAMA?", context: "CAMA", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 10, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra GATO?", context: "GA-TO", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 11, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra NENA?", context: "NE-NA", options: ["1", "2", "3"], correctIndex: 1 },
+  { id: 12, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra CAMA?", context: "CA-MA", options: ["1", "2", "3"], correctIndex: 1 },
   { id: 13, block: 3, blockName: "Conciencia Silábica", type: "syllable_count", prompt: "¿Cuántas sílabas tiene la palabra PAN?", context: "PAN", options: ["1", "2", "3"], correctIndex: 0 },
   // Ejercicio E: elegir la palabra que empieza con la misma sílaba inicial
-  { id: 14, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "PELOTA", options: ["Pera", "Mesa", "Casa"], correctIndex: 0 },
+  { id: 14, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "PELOTA", options: ["Pera", "Silla", "Casa"], correctIndex: 0 },
   { id: 15, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MAMÁ", options: ["Mano", "Pato", "Sol"], correctIndex: 0 },
-  { id: 16, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MATE", options: ["Mano", "Casa", "Luna"], correctIndex: 0 },
+  { id: 16, block: 3, blockName: "Conciencia Silábica", type: "syllable_match", prompt: "MATE", options: ["Casa", "Manzana", "Luna"], correctIndex: 1 },
 
   // ── Bloque 4: Memoria Auditiva (Ejercicio F: recordar el orden) ──
   { id: 17, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["SOL", "PAN"], options: ["Pan", "Sol"], correctOrder: [1, 0] },
   { id: 18, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["GATO", "CASA", "PATO"], options: ["Pato", "Gato", "Casa"], correctOrder: [1, 2, 0] },
-  { id: 19, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["MESA", "SOL", "NUBE"], options: ["Nube", "Mesa", "Sol"], correctOrder: [1, 2, 0] },
+  { id: 19, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["SILLA", "SOL", "NUBE"], options: ["Nube", "Silla", "Sol"], correctOrder: [1, 2, 0] },
   { id: 20, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["PERRO", "LUNA", "DADO", "MATE"], options: ["Dado", "Perro", "Luna", "Mate"], correctOrder: [1, 2, 0, 3] },
+
+  // ── Bloque 5: Denominación Rápida ──────────────────────────────────
+  { id: 21, block: 5, blockName: "Denominación Rápida", type: "rapid_naming", prompt: "Tocá el cuadrado ROJO", options: [], itemKind: "color", target: "red", columns: 6, timeLimit: 15,
+    items: ["blue","red","yellow","green","black","white"] },
+  { id: 22, block: 5, blockName: "Denominación Rápida", type: "rapid_naming", prompt: "Tocá todos los cuadrados AZULES", options: [], itemKind: "color", target: "blue", columns: 5, timeLimit: 30,
+    items: ["blue","red","yellow","green","black","red","blue","green","yellow","blue","white","green","blue","red","yellow"] },
+  { id: 23, block: 5, blockName: "Denominación Rápida", type: "rapid_naming", prompt: "Tocá la ESTRELLA", options: [], itemKind: "object", target: "⭐", columns: 6, timeLimit: 15,
+    items: ["🚗","🔑","⭐","☂️","✏️","🚗"] },
+  { id: 24, block: 5, blockName: "Denominación Rápida", type: "rapid_naming", prompt: "Tocá todos los PARAGUAS", options: [], itemKind: "object", target: "☂️", columns: 5, timeLimit: 30,
+    items: ["🚗","☂️","🔑","⭐","✏️","☂️","🚗","⭐","🔑","☂️","✏️","⭐","🚗","☂️","🔑"] },
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -72,10 +92,6 @@ const questionEmojis: Record<number, { context?: string[]; prompt?: string; opti
   // Block 1 (Ejercicio B): option emojis for the word→image choices
   5: { options: ["🦆", "🐱", "🐭"] },
   6: { options: ["⚽", "🍎", "🌙"] },
-  // Block 2: prompt emoji + option emojis
-  7: { prompt: "👩", options: ["🦋", "🦆", "☀️"] },
-  8: { prompt: "🐸", options: ["☁️", "🍉", "🐕"] },
-  9: { prompt: "⚽", options: ["🌳", "🎲", "🐟"] },
   // Block 3 — Ejercicio D: emoji for the word
   10: { prompt: "🐱" },
   11: { prompt: "👧" },
@@ -84,7 +100,7 @@ const questionEmojis: Record<number, { context?: string[]; prompt?: string; opti
   // Block 3 — Ejercicio E: option emojis for the syllable match
   14: { options: ["🍐", "🪑", "🏠"] },
   15: { options: ["✋", "🦆", "☀️"] },
-  16: { options: ["✋", "🏠", "🌙"] },
+  16: { options: ["🏠", "🍎", "🌙"] },
   // Block 4 — Ejercicio F: option emojis (in the fixed options order)
   17: { options: ["🍞", "☀️"] },
   18: { options: ["🦆", "🐱", "🏠"] },
@@ -96,11 +112,18 @@ const BLOCKS = [
   { id: 2, name: "Conciencia Fonológica" },
   { id: 3, name: "Conciencia Silábica" },
   { id: 4, name: "Memoria Auditiva" },
+  { id: 5, name: "Denominación Rápida" },
 ]
 
 /* Diagonal gradient: near-black red → dark red → deep indigo */
 const backgroundStyle = {
   background: "linear-gradient(135deg, #1a0000 0%, #7f1d1d 50%, #1e1e2e 100%)",
+}
+
+/* rapid_naming: color name → CSS color for the grid squares */
+const RAPID_COLORS: Record<string, string> = {
+  red: "#dc2626", blue: "#2563eb", yellow: "#facc15",
+  green: "#16a34a", black: "#171717", white: "#ffffff",
 }
 
 /** True when the stored answer matches the question's expected answer. */
@@ -111,6 +134,18 @@ function isAnswerCorrect(q: Question, ans: number | number[] | null): boolean {
     return ans.length === q.correctOrder.length && ans.every((v, i) => v === q.correctOrder![i])
   }
   return ans === q.correctIndex
+}
+
+/** Points earned / points available for a question (rapid_naming is fractionally scored). */
+function questionScore(q: Question, ans: number | number[] | null): { correct: number; total: number } {
+  if (q.type === "rapid_naming") {
+    const targets = (q.items ?? []).reduce((acc, it, i) => (it === q.target ? [...acc, i] : acc), [] as number[])
+    const total = targets.length
+    const picked = Array.isArray(ans) ? ans : []
+    const correct = picked.filter((i) => targets.includes(i)).length
+    return { correct, total }
+  }
+  return { correct: isAnswerCorrect(q, ans) ? 1 : 0, total: 1 }
 }
 
 /* ------------------------------------------------------------------ */
@@ -130,13 +165,19 @@ export default function TestPage() {
   const [finished, setFinished] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  /* ---- rapid_naming (Bloque 5) ---- */
+  const [selectedItems, setSelectedItems] = useState<number[]>([])
+  const [revealed, setRevealed] = useState(false)
+  const [timeLeft, setTimeLeft] = useState<number | null>(null)
+  const [locked, setLocked] = useState(false)
 
   const current = questions[currentIndex]
   const progress = ((currentIndex + 1) / TOTAL_QUESTIONS) * 100
   const isSequenceOrder = current.type === "sequence_order"
   /** Whether the current question has a complete answer ready to submit */
-  const canProceed = isSequenceOrder
-    ? sequenceSelection.length === current.options.length
+  const canProceed =
+    current.type === "rapid_naming" ? locked
+    : isSequenceOrder ? sequenceSelection.length === current.options.length
     : selectedOption !== null
 
   /* ---- handlers ---- */
@@ -151,11 +192,22 @@ export default function TestPage() {
     )
   }
 
+  /* ---- rapid_naming handlers ---- */
+  const handleReveal = () => { setRevealed(true); setTimeLeft(current.timeLimit ?? 30) }
+  const handleItemToggle = (idx: number) => {
+    if (locked) return
+    setSelectedItems((prev) => prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx])
+  }
+  const handleFinishRapid = () => setLocked(true)
+
   const handleNext = () => {
     if (!canProceed) return
 
     const updated = [...answers]
-    updated[currentIndex] = isSequenceOrder ? [...sequenceSelection] : selectedOption
+    updated[currentIndex] =
+      current.type === "rapid_naming" ? [...selectedItems]
+      : isSequenceOrder ? [...sequenceSelection]
+      : selectedOption
     setAnswers(updated)
 
     if (currentIndex + 1 < TOTAL_QUESTIONS) {
@@ -163,6 +215,10 @@ export default function TestPage() {
       setSelectedOption(null)
       setSequenceSelection([])
       setPlayCount(0)
+      setSelectedItems([])
+      setRevealed(false)
+      setTimeLeft(null)
+      setLocked(false)
     } else {
       setFinished(true)
     }
@@ -172,17 +228,19 @@ export default function TestPage() {
   const computeResults = () => {
     return BLOCKS.map((block) => {
       const blockQuestions = questions.filter((q) => q.block === block.id)
-      let correct = 0
+      let correct = 0, total = 0
       blockQuestions.forEach((q) => {
         const idx = questions.indexOf(q)
-        if (isAnswerCorrect(q, answers[idx])) correct++
+        const s = questionScore(q, answers[idx])
+        correct += s.correct; total += s.total
       })
-      return { ...block, total: blockQuestions.length, correct, pct: Math.round((correct / blockQuestions.length) * 100) }
+      return { ...block, total, correct, pct: total > 0 ? Math.round((correct / total) * 100) : 0 }
     })
   }
 
-  const totalCorrect = answers.reduce<number>((acc, ans, idx) => acc + (isAnswerCorrect(questions[idx], ans) ? 1 : 0), 0)
-  const totalPct = Math.round((totalCorrect / TOTAL_QUESTIONS) * 100)
+  const totalCorrect = questions.reduce((acc, q, idx) => acc + questionScore(q, answers[idx]).correct, 0)
+  const totalAnswerable = questions.reduce((acc, q, idx) => acc + questionScore(q, answers[idx]).total, 0)
+  const totalPct = totalAnswerable > 0 ? Math.round((totalCorrect / totalAnswerable) * 100) : 0
 
   /* ---- save to Supabase ---- */
   const handleSave = async () => {
@@ -201,6 +259,7 @@ export default function TestPage() {
         bloque_2_correctas: blockResults[1].correct,
         bloque_3_correctas: blockResults[2].correct,
         bloque_4_correctas: blockResults[3].correct,
+        bloque_5_correctas: blockResults[4].correct,
         conclusion: totalPct < 60 ? "indicadores_detectados" : "sin_indicadores",
       })
       setSaved(true)
@@ -217,6 +276,10 @@ export default function TestPage() {
     setSelectedOption(null)
     setSequenceSelection([])
     setPlayCount(0)
+    setSelectedItems([])
+    setRevealed(false)
+    setTimeLeft(null)
+    setLocked(false)
     setFinished(false)
     setSaved(false)
   }
@@ -227,6 +290,14 @@ export default function TestPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finished])
 
+  /* ---- rapid_naming countdown timer ---- */
+  useEffect(() => {
+    if (current.type !== "rapid_naming" || !revealed || locked || timeLeft === null) return
+    if (timeLeft <= 0) { setLocked(true); return }
+    const t = setTimeout(() => setTimeLeft((prev) => (prev === null ? null : prev - 1)), 1000)
+    return () => clearTimeout(t)
+  }, [revealed, locked, timeLeft, current])
+
   /* ---- helper: is block 1 (auditory discrimination) ---- */
   const isBlock1 = current.block === 1
   const isWordImage = current.type === "word_image"
@@ -234,6 +305,24 @@ export default function TestPage() {
 
   /* ---- text-to-speech ---- */
   const [speaking, setSpeaking] = useState(false)
+  /** A Spanish voice picked from the browser's available voices (loaded async) */
+  const [spanishVoice, setSpanishVoice] = useState<SpeechSynthesisVoice | null>(null)
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return
+    const pickVoice = () => {
+      const voices = window.speechSynthesis.getVoices()
+      // Preferir español de España; si no, cualquier español
+      const preferred =
+        voices.find((v) => v.lang === "es-ES") ??
+        voices.find((v) => v.lang.startsWith("es")) ??
+        null
+      if (preferred) setSpanishVoice(preferred)
+    }
+    pickVoice()
+    window.speechSynthesis.onvoiceschanged = pickVoice
+    return () => { window.speechSynthesis.onvoiceschanged = null }
+  }, [])
 
   const speak = useCallback((text: string) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return
@@ -241,13 +330,21 @@ export default function TestPage() {
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = "es-ES"
     utterance.rate = 0.85
+    if (spanishVoice) utterance.voice = spanishVoice
     utterance.onstart = () => setSpeaking(true)
     utterance.onend = () => setSpeaking(false)
     utterance.onerror = () => setSpeaking(false)
     window.speechSynthesis.speak(utterance)
-  }, [])
+  }, [spanishVoice])
 
   const speakQuestion = useCallback(() => {
+    // syllable_count: read the whole word (hyphens removed) so short uppercase
+    // syllables like "GA"/"NE" aren't spelled out as acronyms
+    if (current.type === "syllable_count" && current.context) {
+      speak(current.context.replace(/-/g, ""))
+      return
+    }
+
     const parts: string[] = []
     if (current.context) parts.push(current.context.replace("—", "..."))
     parts.push(current.prompt)
@@ -267,11 +364,12 @@ export default function TestPage() {
         const utterance = new SpeechSynthesisUtterance(word)
         utterance.lang = "es-ES"
         utterance.rate = 0.85
+        if (spanishVoice) utterance.voice = spanishVoice
         if (i === words.length - 1) utterance.onend = () => setSpeaking(false)
         window.speechSynthesis.speak(utterance)
       }, i * 800)
     })
-  }, [current, playCount])
+  }, [current, playCount, spanishVoice])
 
   /* ================================================================ */
   /*  RESULTS SCREEN                                                   */
@@ -320,7 +418,7 @@ export default function TestPage() {
           {/* Score summary */}
           <div className="rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-8 text-center">
             <p className="text-5xl font-extrabold text-white">{totalPct}%</p>
-            <p className="text-lg text-white/70 mt-2">{totalCorrect} de {TOTAL_QUESTIONS} respuestas correctas</p>
+            <p className="text-lg text-white/70 mt-2">{totalCorrect} de {totalAnswerable} respuestas correctas</p>
           </div>
 
           {/* Table */}
@@ -498,6 +596,8 @@ export default function TestPage() {
             )}
           </div>
 
+          {current.type !== "rapid_naming" ? (
+          <>
           {/* Context (block 1: words only, no emojis) */}
           {current.context && current.block === 1 && !isWordImage ? (
             <div className="mb-4 flex items-center justify-center gap-4 flex-wrap">
@@ -703,6 +803,72 @@ export default function TestPage() {
               })}
             </div>
           </div>
+          </>
+          ) : (
+            /* Bloque 5 — Denominación Rápida (rapid_naming) */
+            <div className="flex-1 flex flex-col justify-center py-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-white text-center mb-6">
+                {current.prompt}
+              </h2>
+
+              {!revealed ? (
+                <div className="flex-1 flex items-center justify-center">
+                  <button
+                    onClick={handleReveal}
+                    className="rounded-xl bg-red-500 hover:bg-red-400 text-white font-bold px-8 py-4 text-lg transition-colors duration-200"
+                  >
+                    Mostrar secuencia
+                  </button>
+                </div>
+              ) : (
+                <div className="w-full max-w-md mx-auto">
+                  <p className={`text-center text-lg font-bold mb-4 ${timeLeft !== null && timeLeft <= 5 && !locked ? "text-red-300" : "text-white/80"}`}>
+                    {locked ? "¡Tiempo!" : `Tiempo: ${timeLeft}s`}
+                  </p>
+
+                  <div style={{ display: "grid", gridTemplateColumns: `repeat(${current.columns}, minmax(0, 1fr))`, gap: "0.75rem" }}>
+                    {current.items?.map((item, idx) => {
+                      const isPicked = selectedItems.includes(idx)
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => handleItemToggle(idx)}
+                          disabled={locked}
+                          className={`
+                            rounded-lg transition-all
+                            ${isPicked ? "ring-4 ring-white scale-95" : ""}
+                            ${locked ? "opacity-90 cursor-not-allowed" : ""}
+                          `}
+                        >
+                          {current.itemKind === "color" ? (
+                            <span
+                              className="block aspect-square w-full rounded-lg border border-white/30"
+                              style={{ backgroundColor: RAPID_COLORS[item] }}
+                            />
+                          ) : (
+                            <span className="aspect-square w-full flex items-center justify-center text-4xl sm:text-5xl bg-white/10 rounded-lg">
+                              {item}
+                            </span>
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  {!locked && (
+                    <div className="flex justify-center mt-6">
+                      <button
+                        onClick={handleFinishRapid}
+                        className="rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold px-8 py-3 transition-colors duration-200"
+                      >
+                        Listo
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Next button */}
           <div className="pt-4 flex justify-end">

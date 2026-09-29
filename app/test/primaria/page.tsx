@@ -46,6 +46,8 @@ interface SyllableCountQuestion {
   options: number[]
   correct: number
   emoji: string
+  /** Ejercicio F: word split into syllables with hyphens (shown + read aloud with pauses) */
+  syllableDisplay?: string
 }
 
 interface ReadingComprehensionQuestion {
@@ -114,6 +116,18 @@ interface PseudoAudioQuestion {
   correct: string
 }
 
+/** Ejercicio E: the professional rates the child's spoken answer as right/wrong */
+interface ProfessionalRatedQuestion {
+  id: number
+  block: number
+  type: "professional_rated"
+  question: string
+  /** Optional big word shown in a box (e.g. a pseudoword to read aloud) */
+  displayWord?: string
+  /** Optional custom labels for the rating buttons */
+  ratingLabels?: { correct: string; incorrect: string }
+}
+
 type Question =
   | SameDifferentQuestion
   | MultipleChoiceQuestion
@@ -124,6 +138,7 @@ type Question =
   | SequenceOrderQuestion
   | SyllabDragQuestion
   | PseudoAudioQuestion
+  | ProfessionalRatedQuestion
 
 /* ------------------------------------------------------------------ */
 /*  QUESTION DATA  (7 blocks)                                          */
@@ -147,15 +162,15 @@ const questions: Question[] = [
   { id: 9, block: 2, type: 'multiple_choice', question: '¿Qué palabra se puede formar con estas letras?', options: ['MANO', 'RATA', 'GATO'], correct: 'GATO', context: 'A / T / G / O' },
   { id: 10, block: 2, type: 'multiple_choice', question: '¿Qué palabra se puede formar con estas letras?', options: ['PEZ', 'CAE', 'PAN'], correct: 'PAN', context: 'N / A / P' },
   // Ejercicio E — Omisión de fonema
-  { id: 11, block: 2, type: 'multiple_choice', question: '¿Cómo queda GATO sin la /g/?', options: ['TATO', 'ATO', 'GATO'], correct: 'ATO' },
-  { id: 12, block: 2, type: 'multiple_choice', question: '¿Cómo queda SALA sin la /s/?', options: ['SALA', 'LASA', 'ALA'], correct: 'ALA' },
+  { id: 11, block: 2, type: 'professional_rated', question: '¿Cómo queda GATO sin la /g/?' },
+  { id: 12, block: 2, type: 'professional_rated', question: '¿Cómo queda SALA sin la /s/?' },
 
   // BLOQUE 3 — Conciencia Silábica
   // Ejercicio F — Conteo de sílabas
-  { id: 13, block: 3, type: 'syllable_count', word: 'MARIPOSA', options: [3, 4, 5], correct: 4, emoji: '🦋' },
-  { id: 14, block: 3, type: 'syllable_count', word: 'PELOTA', options: [2, 3, 4], correct: 3, emoji: '⚽' },
+  { id: 13, block: 3, type: 'syllable_count', word: 'MARIPOSA', options: [3, 4, 5], correct: 4, emoji: '🦋', syllableDisplay: 'MA-RI-PO-SA' },
+  { id: 14, block: 3, type: 'syllable_count', word: 'PELOTA', options: [2, 3, 4], correct: 3, emoji: '⚽', syllableDisplay: 'PE-LO-TA' },
   // Ejercicio G — Sílaba inicial
-  { id: 15, block: 3, type: 'multiple_choice', question: '¿Cuál empieza con la misma sílaba que PELOTA?', options: ['PERA', 'MESA', 'CASA'], correct: 'PERA' },
+  { id: 15, block: 3, type: 'multiple_choice', question: '¿Cuál empieza con la misma sílaba que PELOTA?', options: ['PERA', 'SILLA', 'CASA'], correct: 'PERA' },
   { id: 16, block: 3, type: 'multiple_choice', question: '¿Cuál empieza con la misma sílaba que CAMISA?', options: ['CABALLO', 'PELOTA', 'NUBE'], correct: 'CABALLO' },
   // Ejercicio H — Construir la palabra
   { id: 17, block: 3, type: 'syllable_drag', word: 'LUNA', emoji: '🌙', syllables: ['NA', 'LU'], correct: ['LU', 'NA'] },
@@ -164,10 +179,10 @@ const questions: Question[] = [
   // BLOQUE 4 — Memoria Fonológica
   // Ejercicio I — Repetir secuencia
   { id: 19, block: 4, type: 'sequence_order', sequence: ['CONEJO', 'CASA', 'LÁPIZ'], options: ['CASA', 'CONEJO', 'LÁPIZ'], correctOrder: [1, 0, 2] },
-  { id: 20, block: 4, type: 'sequence_order', sequence: ['ZAPATO', 'SOL', 'MESA'], options: ['MESA', 'SOL', 'ZAPATO'], correctOrder: [2, 1, 0] },
+  { id: 20, block: 4, type: 'sequence_order', sequence: ['ZAPATO', 'SOL', 'SILLA'], options: ['SILLA', 'SOL', 'ZAPATO'], correctOrder: [2, 1, 0] },
   { id: 21, block: 4, type: 'sequence_order', sequence: ['LUNA', 'LIBRO', 'PERRO', 'MATE'], options: ['PERRO', 'LUNA', 'LIBRO', 'MATE'], correctOrder: [1, 2, 0, 3] },
   // Ejercicio J — Pseudopalabras orales
-  { id: 22, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['FUNO', 'NUFO', 'FUBO'], correct: 'FUNO', spokenWord: 'FUNO' },
+  { id: 22, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['FUNO', 'FUBO', 'NUFO'], correct: 'FUNO', spokenWord: 'FUNO' },
   { id: 23, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PILA', 'LIPA', 'LIBA'], correct: 'LIPA', spokenWord: 'LIPA' },
   { id: 24, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PELATO', 'TALOPE', 'TAPELO'], correct: 'TAPELO', spokenWord: 'TAPELO' },
 
@@ -187,7 +202,7 @@ const questions: Question[] = [
   { id: 26, block: 6, type: 'letter_fill', question: '¿Con qué letra empieza esta sílaba?', word: '/ma/', options: ['M', 'N', 'B', 'P'], correct: 'M' },
   { id: 27, block: 6, type: 'letter_fill', question: '¿Con qué letra empieza esta sílaba?', word: '/pa/', options: ['B', 'D', 'P', 'T'], correct: 'P' },
   // Ejercicio M — Letra faltante
-  { id: 28, block: 6, type: 'letter_fill', question: '¿Qué letra falta?', context: '🧠 CA_EZA', word: 'CA_EZA', options: ['B', 'E', 'R', 'Q'], correct: 'B' },
+  { id: 28, block: 6, type: 'letter_fill', question: '¿Qué letra falta?', context: '👤 CA_EZA', word: 'CA_EZA', options: ['B', 'E', 'R', 'D'], correct: 'B' },
   { id: 29, block: 6, type: 'letter_fill', question: '¿Qué letra falta?', context: '🦆 _ATO', word: '_ATO', options: ['P', 'G', 'B', 'D'], correct: 'P' },
   // Ejercicio N — Letras espejo
   { id: 30, block: 6, type: 'mirror_letters', question: '¿Qué letra va aquí?', word: '_ado', emoji: '🎲', options: ['b', 'd'], correct: 'd' },
@@ -198,8 +213,14 @@ const questions: Question[] = [
   { id: 33, block: 7, type: 'multiple_choice', question: '¿Cuál está bien escrita?', options: ['AOTO', 'AUTO', 'AUTOO'], correct: 'AUTO', context: '🚗' },
 
   // BLOQUE 8 — Lectura de Pseudopalabras
-  { id: 34, block: 8, type: 'pseudo_audio', writtenWord: 'GOPI', audioOptions: ['gopi', 'pogi', 'govi'], correct: 'gopi' },
+  { id: 34, block: 8, type: 'pseudo_audio', writtenWord: 'TOPI', audioOptions: ['topi', 'poti', 'tovi'], correct: 'topi' },
   { id: 35, block: 8, type: 'pseudo_audio', writtenWord: 'FUMISA', audioOptions: ['fumosa', 'misafu', 'fumisa'], correct: 'fumisa' },
+  // Lectura en voz alta evaluada por el profesional (dificultad incremental)
+  { id: 36, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'TASO', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 37, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'MELUPA', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 38, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'RIDOTE', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 39, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'BALCUTINA', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 40, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'PLONDRESAMO', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -210,7 +231,7 @@ const TOTAL_QUESTIONS = questions.length
 /* ------------------------------------------------------------------ */
 const questionEmojis: Record<string, string> = {
   'MARIPOSA': '🦋', 'ABEJA': '🐝', 'ORUGA': '🐛', 'ELEFANTE': '🐘',
-  'JIRAFA': '🦒', 'CEBRA': '🦓', 'PATO': '🦆', 'SOL': '☀️', 'MESA': '🪑',
+  'JIRAFA': '🦒', 'CEBRA': '🦓', 'PATO': '🦆', 'SOL': '☀️', 'SILLA': '🪑',
   'BICICLETA': '🚲', 'TORO': '🐂', 'GATO': '🐱', 'CASA': '🏠', 'PERA': '🍐',
   'CABALLO': '🐴', 'PELOTA': '⚽', 'NUBE': '☁️', 'CONEJO': '🐰', 'LÁPIZ': '✏️',
   'ZAPATO': '👟', 'PERRO': '🐕', 'LUNA': '🌙', 'LIBRO': '📚', 'MATE': '🧉',
@@ -252,6 +273,9 @@ const isOptionCorrect = (q: Question, ans: Answer): boolean => {
       return typeof ans === "number" && q.options[ans] === q.correct
     case "pseudo_audio":
       return typeof ans === "number" && q.audioOptions[ans] === q.correct
+    /* Rated by the professional: 0 = "Bien respondido" counts as correct */
+    case "professional_rated":
+      return ans === 0
     case "sequence_order":
       return (
         Array.isArray(ans) &&
@@ -347,7 +371,7 @@ export default function TestPrimariaPage() {
     } else if (current.type === "same_different") {
       parts.push(`${current.word1}... ${current.word2}`)
     } else if (current.type === "syllable_count") {
-      parts.push(current.word)
+      parts.push(current.syllableDisplay?.replace(/-/g, ", ") ?? current.word)
     } else if ((current.type === "multiple_choice" || current.type === "letter_fill") && current.context) {
       parts.push(current.context)
     }
@@ -396,9 +420,7 @@ export default function TestPrimariaPage() {
       ? current.word.replace(/\//g, "")
       : current.type === "multiple_choice" && current.block === 1 && current.context
         ? current.context.replace("🔊", "").trim()
-        : current.type === "multiple_choice" && current.block === 4 && "spokenWord" in current && current.spokenWord
-          ? current.spokenWord.toLowerCase()
-          : null
+        : null
 
   useEffect(() => {
     if (autoPlayText) speak(autoPlayText)
@@ -429,7 +451,8 @@ export default function TestPrimariaPage() {
       : current.type === "reading_comprehension" ||
           current.type === "sequence_order" ||
           current.type === "syllable_drag" ||
-          current.type === "pseudo_audio"
+          current.type === "pseudo_audio" ||
+          current.type === "professional_rated"
         ? []
         : current.options
 
@@ -901,7 +924,7 @@ export default function TestPrimariaPage() {
             <div className="mb-4 flex flex-col items-center gap-2">
               <span className="text-5xl sm:text-6xl">{current.emoji}</span>
               <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl sm:text-4xl font-bold tracking-widest text-white">
-                {current.word}
+                {current.syllableDisplay ?? current.word}
               </span>
             </div>
           ) : current.type === "mirror_letters" ? (
@@ -947,6 +970,13 @@ export default function TestPrimariaPage() {
                 {current.writtenWord}
               </span>
             </div>
+          ) : current.type === "professional_rated" && current.displayWord ? (
+            /* Bloque 8: the pseudoword to read aloud */
+            <div className="mb-4 flex justify-center">
+              <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl font-bold tracking-widest text-white">
+                {current.displayWord}
+              </span>
+            </div>
           ) : isSpokenSyllable ? (
             /* Ejercicio L: the syllable is only heard — replay it as often as needed */
             <div className="mb-4 flex justify-center">
@@ -968,20 +998,31 @@ export default function TestPrimariaPage() {
             /* Ejercicio B: the word is heard, so nothing about it is shown */
             null
           ) : current.type === "multiple_choice" && current.block === 4 && "spokenWord" in current && current.spokenWord ? (
-            /* Ejercicio J: the pseudoword is only heard — replay it as often as needed */
+            /* Ejercicio J: the pseudoword is only heard — máximo 2 reproducciones voluntarias */
             <div className="mb-4 flex justify-center">
               <button
-                onClick={() => current.spokenWord && speak(current.spokenWord.toLowerCase())}
+                onClick={() => {
+                  if (playCount >= 2 || !current.spokenWord) return
+                  setPlayCount((prev) => prev + 1)
+                  speak(current.spokenWord.toLowerCase())
+                }}
+                disabled={speaking || playCount >= 2}
                 className={`
                   inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
                   ${speaking
                     ? "bg-white/30 text-white animate-pulse"
-                    : "bg-white/20 text-white hover:bg-white/30"
+                    : playCount >= 2
+                      ? "bg-white/10 text-white/40 cursor-not-allowed"
+                      : "bg-white/20 text-white hover:bg-white/30"
                   }
                 `}
               >
                 <Volume2 className="w-5 h-5" />
-                {speaking ? "Escuchando..." : "Escuchar palabra"}
+                {speaking
+                  ? "Escuchando..."
+                  : playCount >= 2
+                    ? "Sin reproducciones"
+                    : `Escuchar palabra (quedan ${2 - playCount})`}
               </button>
             </div>
           ) : current.type === "multiple_choice" && current.block === 7 && current.context ? (
@@ -1114,6 +1155,37 @@ export default function TestPrimariaPage() {
                   </button>
                 )
               })}
+            </div>
+          ) : !showingStoryText && current.type === "professional_rated" ? (
+            /* Ejercicio E: the professional rates the child's spoken answer */
+            <div className="flex-1 flex flex-col justify-center py-2">
+              <div className="grid gap-4 grid-cols-2">
+                {[
+                  current.ratingLabels?.correct ?? "Bien respondido",
+                  current.ratingLabels?.incorrect ?? "Mal respondido",
+                ].map((label, idx) => {
+                  const isSelected = selectedOption === idx
+                  const isGood = idx === 0
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleSelect(idx)}
+                      className={`
+                        rounded-2xl py-8 px-8 text-xl sm:text-2xl font-extrabold transition-all duration-200 flex flex-col items-center justify-center gap-2 border
+                        ${isSelected
+                          ? isGood
+                            ? "bg-green-500/80 border-green-400 text-white"
+                            : "bg-red-500/80 border-red-400 text-white"
+                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
+                        }
+                      `}
+                    >
+                      <span className="text-4xl">{isGood ? "✓" : "✗"}</span>
+                      {label}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           ) : !showingStoryText && (
             <div className="flex-1 flex flex-col justify-center py-2">
