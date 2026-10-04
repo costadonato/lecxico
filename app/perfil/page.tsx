@@ -19,31 +19,8 @@ import {
   Trophy,
   Gamepad2,
 } from "lucide-react"
-
-const BLOCK_NAMES: Record<number, string> = {
-  1: "Discriminación auditiva",
-  2: "Conciencia fonológica",
-  3: "Conciencia silábica",
-  4: "Correspondencia sonido-letra",
-}
-
-interface TestResult {
-  fecha: string
-  puntaje_total: number
-  porcentaje_total: number
-  bloque_1_correctas: number
-  bloque_2_correctas: number
-  bloque_3_correctas: number
-  bloque_4_correctas: number
-  conclusion: string
-}
-
-interface Entrenamiento {
-  id: string
-  juego: string
-  puntaje: number
-  fecha: string
-}
+import { BLOQUE_NOMBRES } from "@/lib/test/bloques"
+import type { Entrenamiento, Test, TestBloqueResultado } from "@/lib/types/database"
 
 export default function PerfilPage() {
   const router = useRouter()
@@ -53,7 +30,8 @@ export default function PerfilPage() {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
-  const [testResult, setTestResult] = useState<TestResult | null>(null)
+  const [testResult, setTestResult] = useState<Test | null>(null)
+  const [testBloques, setTestBloques] = useState<TestBloqueResultado[]>([])
   const [entrenamientos, setEntrenamientos] = useState<Entrenamiento[]>([])
 
   useEffect(() => {
@@ -70,21 +48,29 @@ export default function PerfilPage() {
 
       // Último resultado del test
       const { data: testData } = await supabase
-        .from("test_resultados")
+        .from("test")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("nino_id", user.id)
         .order("fecha", { ascending: false })
         .limit(1)
-        .single()
+        .maybeSingle()
 
-      if (testData) setTestResult(testData)
+      if (testData) {
+        setTestResult(testData)
+        const { data: bloquesData } = await supabase
+          .from("test_bloque_resultado")
+          .select("*")
+          .eq("test_id", testData.id)
+          .order("orden", { ascending: true })
+        if (bloquesData) setTestBloques(bloquesData)
+      }
 
       // Últimos 10 entrenamientos
       const { data: entData } = await supabase
         .from("entrenamientos")
         .select("*")
         .eq("user_id", user.id)
-        .order("fecha", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(10)
 
       if (entData) setEntrenamientos(entData)
@@ -113,7 +99,7 @@ export default function PerfilPage() {
     return d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric" })
   }
 
-  const conclusionLabel = (c: string) =>
+  const conclusionLabel = (c: string | null) =>
     c === "indicadores_detectados"
       ? { text: "Indicadores detectados", variant: "destructive" as const }
       : { text: "Sin indicadores", variant: "secondary" as const }
@@ -188,7 +174,7 @@ export default function PerfilPage() {
                   </Badge>
                   <Badge variant="outline" className="flex items-center gap-1">
                     <Trophy className="w-3 h-3" />
-                    {testResult.puntaje_total}/20 — {testResult.porcentaje_total}%
+                    {testResult.puntaje_total}/{testBloques.reduce((acc, b) => acc + b.total, 0)} — {testResult.porcentaje_total}%
                   </Badge>
                   <Badge variant={conclusionLabel(testResult.conclusion).variant}>
                     {conclusionLabel(testResult.conclusion).text}
@@ -206,16 +192,13 @@ export default function PerfilPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {[1, 2, 3, 4].map((b) => {
-                        const correctas = testResult[`bloque_${b}_correctas` as keyof TestResult] as number
-                        return (
-                          <tr key={b} className="border-b last:border-b-0">
-                            <td className="px-4 py-2">{BLOCK_NAMES[b]}</td>
-                            <td className="text-center px-4 py-2 font-medium">{correctas}</td>
-                            <td className="text-center px-4 py-2 text-gray-500">5</td>
-                          </tr>
-                        )
-                      })}
+                      {testBloques.map((b) => (
+                        <tr key={b.id} className="border-b last:border-b-0">
+                          <td className="px-4 py-2">{BLOQUE_NOMBRES[b.bloque_codigo]}</td>
+                          <td className="text-center px-4 py-2 font-medium">{b.correctas}</td>
+                          <td className="text-center px-4 py-2 text-gray-500">{b.total}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -260,7 +243,7 @@ export default function PerfilPage() {
                           {e.juego}
                         </td>
                         <td className="text-center px-4 py-2 font-medium">{e.puntaje}</td>
-                        <td className="text-right px-4 py-2 text-gray-500">{formatDate(e.fecha)}</td>
+                        <td className="text-right px-4 py-2 text-gray-500">{formatDate(e.created_at)}</td>
                       </tr>
                     ))}
                   </tbody>

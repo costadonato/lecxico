@@ -1,9 +1,12 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
 import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Home, Volume2 } from "lucide-react"
+import { bloqueCodigoPorOrden } from "@/lib/test/bloques"
+import { guardarTest } from "@/lib/test/guardar-test"
+import { useAccesoTest } from "@/lib/test/use-acceso-test"
+import { TestAccesoAviso } from "@/components/test-acceso-aviso"
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -298,8 +301,16 @@ const isOptionCorrect = (q: Question, ans: Answer): boolean => {
 /*  COMPONENT                                                          */
 /* ------------------------------------------------------------------ */
 export default function TestPrimariaPage() {
+  return (
+    <Suspense fallback={<TestAccesoAviso />}>
+      <TestPrimaria />
+    </Suspense>
+  )
+}
+
+function TestPrimaria() {
   const router = useRouter()
-  const supabase = createClient()
+  const acceso = useAccesoTest("primario")
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState<(Answer | null)[]>(Array(TOTAL_QUESTIONS).fill(null))
@@ -315,6 +326,7 @@ export default function TestPrimariaPage() {
   const [finished, setFinished] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   /* ---- reading_comprehension sub-navigation ---- */
   /** -1 = showing the story text · 0..n-1 = answering storyQuestions[n] */
@@ -422,9 +434,10 @@ export default function TestPrimariaPage() {
         ? current.context.replace("🔊", "").trim()
         : null
 
+  const puedeComenzar = acceso.estado === "permitido"
   useEffect(() => {
-    if (autoPlayText) speak(autoPlayText)
-  }, [currentIndex, autoPlayText, speak])
+    if (puedeComenzar && autoPlayText) speak(autoPlayText)
+  }, [currentIndex, autoPlayText, speak, puedeComenzar])
 
   /* ---- empty-data guard ---- */
   if (!current) {
@@ -586,30 +599,27 @@ export default function TestPrimariaPage() {
 
   /* ---- save to Supabase ---- */
   const handleSave = async () => {
+    if (acceso.estado !== "permitido") return
     setSaving(true)
+    setSaveError(null)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error("No autenticado")
-
-      const blockResults = computeResults()
-      await supabase.from("test_resultados_primaria").insert({
-        user_id: user.id,
-        fecha: new Date().toISOString(),
-        puntaje_total: totalCorrect,
-        porcentaje_total: totalPct,
-        bloque_1_correctas: blockResults[0].correct,
-        bloque_2_correctas: blockResults[1].correct,
-        bloque_3_correctas: blockResults[2].correct,
-        bloque_4_correctas: blockResults[3].correct,
-        bloque_5_correctas: blockResults[4].correct,
-        bloque_6_correctas: blockResults[5].correct,
-        bloque_7_correctas: blockResults[6].correct,
-        bloque_8_correctas: blockResults[7]?.correct ?? 0,
+      await guardarTest({
+        ninoId: acceso.ninoId,
+        nivel: "primario",
+        bloques: computeResults().map((b) => ({
+          bloqueCodigo: bloqueCodigoPorOrden("primario", b.id),
+          orden: b.id,
+          correctas: b.correct,
+          total: b.total,
+        })),
+        puntajeTotal: totalCorrect,
+        porcentajeTotal: totalPct,
         conclusion: totalPct < 60 ? "indicadores_detectados" : "sin_indicadores",
       })
       setSaved(true)
     } catch (err) {
       console.error("Error al guardar:", err)
+      setSaveError((err as { message?: string })?.message || "Error desconocido")
     } finally {
       setSaving(false)
     }
@@ -625,6 +635,7 @@ export default function TestPrimariaPage() {
     setPlayCount(0)
     setFinished(false)
     setSaved(false)
+    setSaveError(null)
     setStorySubIndex(-1)
     setStoryAnswers({})
   }
@@ -634,6 +645,11 @@ export default function TestPrimariaPage() {
     if (finished) handleSave()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finished])
+
+  /* ---- sin acceso (o verificando): no se puede comenzar ---- */
+  if (acceso.estado !== "permitido") {
+    return <TestAccesoAviso motivo={acceso.estado === "denegado" ? acceso.motivo : undefined} />
+  }
 
   /* ================================================================ */
   /*  RESULTS SCREEN                                                   */
@@ -740,6 +756,17 @@ export default function TestPrimariaPage() {
               ) : (
                 "Resultados guardados ✓"
               )}
+            </div>
+          )}
+          {saveError && !saving && (
+            <div className="rounded-xl border border-red-400/60 bg-red-500/20 p-4 text-center space-y-3">
+              <p className="text-sm text-white">No se pudieron guardar los resultados: {saveError}</p>
+              <button
+                onClick={handleSave}
+                className="inline-flex items-center gap-2 rounded-lg bg-white/20 hover:bg-white/30 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200"
+              >
+                <RotateCcw className="w-4 h-4" /> Reintentar
+              </button>
             </div>
           )}
 
