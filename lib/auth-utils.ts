@@ -1,5 +1,5 @@
-// Auth utilities for Lecxico platform
-// Handles age-based routing, profile validation, and analytics
+// Utilidades mock (localStorage) que todavía usan los juegos: perfil, tutorial y analytics.
+// Se reemplazan en el slice 6. La autenticación real está en lib/auth/.
 
 export type AgeRange = "child" | "teen" | "adult" | "unknown"
 
@@ -13,32 +13,6 @@ export interface UserProfile {
   profileComplete: boolean
   tutorialSeen?: boolean
   createdAt: string
-}
-
-/**
- * Determines age range based on user's age
- * @param age - User's age as number
- * @returns AgeRange classification
- */
-export function getAgeRange(age: number): AgeRange {
-  if (isNaN(age) || age < 0) return "unknown"
-  if (age >= 6 && age <= 12) return "child"
-  if (age >= 13 && age <= 16) return "teen"
-  if (age >= 17) return "adult"
-  return "unknown"
-}
-
-/**
- * Validates if age is within acceptable range for the platform
- */
-export function isValidAge(age: number, expectedRange: "child" | "teen"): boolean {
-  if (expectedRange === "child") {
-    return age >= 6 && age <= 12
-  }
-  if (expectedRange === "teen") {
-    return age >= 13 && age <= 17
-  }
-  return false
 }
 
 /**
@@ -99,66 +73,6 @@ export async function saveUserProfile(profile: UserProfile): Promise<boolean> {
  */
 export function getCurrentUserUid(): string | null {
   return localStorage.getItem("current_user_uid")
-}
-
-/**
- * Main auth redirect handler
- * Called after successful login/registration
- */
-export async function handleAuthRedirect(uid: string, router: any): Promise<void> {
-  console.log("[v0] Starting auth redirect for uid:", uid)
-
-  // Fetch user profile with retry logic
-  let profile: UserProfile | null = null
-  let retries = 3
-
-  while (retries > 0 && !profile) {
-    profile = await fetchUserProfile(uid)
-    if (!profile) {
-      retries--
-      if (retries > 0) {
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-      }
-    }
-  }
-
-  // If profile doesn't exist or is incomplete
-  if (!profile || !profile.age || !profile.profileComplete) {
-    analytics.track("profile_incomplete", { uid })
-    console.log("[v0] Profile incomplete, redirecting to profile completion")
-    router.push("/profile/complete")
-    return
-  }
-
-  const age = profile.age
-  const ageRange = getAgeRange(age)
-
-  console.log("[v0] User age:", age, "Range:", ageRange)
-
-  // Track redirect event
-  analytics.track("redirect_to_dashboard", {
-    uid,
-    ageRange,
-    age,
-    timestamp: new Date().toISOString(),
-  })
-
-  if (ageRange === "child") {
-    const startTutorial = !profile.tutorialSeen
-    console.log("[v0] Redirecting child to games/child")
-    router.push(`/games/child${startTutorial ? "?startTutorial=true" : ""}`)
-  } else if (ageRange === "teen") {
-    console.log("[v0] Redirecting teen to dashboard/teen")
-    router.push("/dashboard/teen")
-  } else if (ageRange === "adult") {
-    // Adults might be parents/teachers
-    console.log("[v0] Redirecting adult to parent/dashboard")
-    router.push("/parent/dashboard")
-  } else {
-    // Unknown age range - let user choose
-    console.log("[v0] Unknown age range, redirecting to profile")
-    router.push("/profile?chooseMode=true")
-  }
 }
 
 /**

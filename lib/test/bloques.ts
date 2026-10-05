@@ -8,6 +8,15 @@ export type Nivel = "inicial" | "primario"
 
 export type EtapaEscolar = "sala_4" | "sala_5" | "primero" | "segundo" | "tercero"
 
+/** Etapas escolares en orden, con su texto visible (ninos_etapa_escolar_check). */
+export const ETAPAS_ESCOLARES: readonly { valor: EtapaEscolar; label: string }[] = [
+  { valor: "sala_4", label: "Sala de 4" },
+  { valor: "sala_5", label: "Sala de 5" },
+  { valor: "primero", label: "1er grado" },
+  { valor: "segundo", label: "2do grado" },
+  { valor: "tercero", label: "3er grado" },
+]
+
 export const BLOQUE_CODIGOS = [
   "discriminacion_auditiva",
   "conciencia_fonologica",

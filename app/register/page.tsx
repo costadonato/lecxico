@@ -4,396 +4,502 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import Image from "next/image"
+import type { AuthError } from "@supabase/supabase-js"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Card, CardContent } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Mail, Lock, User, Loader2, AlertCircle, Sparkles } from "lucide-react"
+import { AlertCircle, ArrowLeft, Loader2, MailCheck } from "lucide-react"
+import { AuthShell } from "@/components/auth/auth-shell"
+import { BotonGoogle } from "@/components/auth/boton-google"
+import { Campo, CasillaTyC } from "@/components/auth/campos"
+import { CampoNombreUsuario } from "@/components/auth/campo-nombre-usuario"
+import { useNombreUsuario, type EstadoNombreUsuario } from "@/lib/auth/use-nombre-usuario"
+import { emailValido, errorPassword, fechaNacimientoValida, hoyISO, PASSWORD_MIN } from "@/lib/auth/validaciones"
+import { ETAPAS_ESCOLARES, type EtapaEscolar } from "@/lib/test/bloques"
 
-type UserType = "estudiante" | "profesional" | null
+type TipoCuenta = "profesional" | "nino"
+type Errores = Record<string, string | undefined>
 
+/* ------------------------------------------------------------------ */
+/*  signUp                                                             */
+/* ------------------------------------------------------------------ */
+type ResultadoRegistro =
+  | { tipo: "sesion" }
+  | { tipo: "confirmar"; email: string }
+  | { tipo: "existe" }
+  | { tipo: "error"; mensaje: string }
+
+function mensajeErrorSignUp(error: AuthError): string {
+  const msg = error.message.toLowerCase()
+  if (error.code === "weak_password") return "La contraseña es demasiado débil. Probá con una más larga o combiná letras y números."
+  if (error.code === "email_address_invalid") return "El email no es válido."
+  if (error.code === "over_email_send_rate_limit" || error.status === 429)
+    return "Se hicieron demasiados intentos. Esperá unos minutos y probá de nuevo."
+  // Cualquier error del trigger de alta llega con este texto genérico.
+  if (msg.includes("database error saving new user"))
+    return "No se pudo crear la cuenta. Revisá los datos (por ejemplo, que el nombre de usuario siga disponible) y probá de nuevo."
+  return "Ocurrió un error al crear la cuenta. Probá de nuevo en unos minutos."
+}
+
+/** `data` sigue el contrato de metadata de handle_new_user (supabase/migrations/0002). */
+async function registrar(email: string, password: string, data: Record<string, unknown>): Promise<ResultadoRegistro> {
+  const emailLimpio = email.trim()
+  const { data: res, error } = await createClient().auth.signUp({
+    email: emailLimpio,
+    password,
+    options: { emailRedirectTo: `${window.location.origin}/auth/callback`, data },
+  })
+  if (error) {
+    console.error("signUp:", error)
+    if (error.code === "user_already_exists" || error.code === "email_exists") return { tipo: "existe" }
+    return { tipo: "error", mensaje: mensajeErrorSignUp(error) }
+  }
+  // Con la confirmación de email activa, Supabase no revela si el email ya
+  // existía: devuelve un usuario sin identidades.
+  if (res.user && res.user.identities?.length === 0) return { tipo: "existe" }
+  if (res.session) return { tipo: "sesion" }
+  return { tipo: "confirmar", email: emailLimpio }
+}
+
+/**
+ * Error a mostrar bajo el nombre de usuario al enviar. "formato" y "ocupado"
+ * no necesitan uno: CampoNombreUsuario ya muestra su mensaje.
+ */
+function errorNombreUsuario(estado: EstadoNombreUsuario): string | undefined {
+  if (estado === "vacio") return "Elegí un nombre de usuario."
+  if (estado === "error") return "No se pudo verificar el nombre de usuario. Probá de nuevo."
+  return undefined
+}
+
+/* ------------------------------------------------------------------ */
+/*  PÁGINA                                                             */
+/* ------------------------------------------------------------------ */
 export default function RegisterPage() {
   const router = useRouter()
-  const [step, setStep] = useState(1)
-  const [userType, setUserType] = useState<UserType>(null)
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [passwordError, setPasswordError] = useState<string | null>(null)
-  // Paso 3 — perfil del estudiante
-  const [birthDate, setBirthDate] = useState("")
-  const [hasDiagnosis, setHasDiagnosis] = useState(false)
-  const [hasLiteracy, setHasLiteracy] = useState(true)
-  const [academicLevel, setAcademicLevel] = useState<"inicial" | "primaria" | "secundaria" | null>(null)
+  const [paso, setPaso] = useState<1 | 2>(1)
+  const [tipo, setTipo] = useState<TipoCuenta | null>(null)
+  const [emailConfirmacion, setEmailConfirmacion] = useState<string | null>(null)
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const supabase = createClient()
-
-  const handleRegister = async () => {
-    setError(null)
-    setIsLoading(true)
-
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            first_name: firstName,
-            last_name: lastName,
-            user_type: userType,
-            birth_date: birthDate,
-            has_diagnosis: hasDiagnosis,
-            has_literacy: hasLiteracy,
-            academic_level: academicLevel,
-          },
-        },
-      })
-
-      if (error) throw error
-
-      router.push("/login")
-    } catch (err: any) {
-      console.error("Register error:", err.message)
-      const msg: string = err.message ?? ""
-      if (msg.toLowerCase().includes("user already registered")) {
-        setError("Ya existe una cuenta con ese correo electrónico. ¿Ya tenés cuenta? Iniciá sesión.")
-      } else if (msg.toLowerCase().includes("invalid email")) {
-        setError("El correo electrónico ingresado no es válido.")
-      } else {
-        setError("Ocurrió un error al crear la cuenta. Por favor intentá de nuevo.")
-      }
-    } finally {
-      setIsLoading(false)
+  const onRegistrado = (r: { tipo: "sesion" } | { tipo: "confirmar"; email: string }) => {
+    if (r.tipo === "sesion") {
+      router.push("/dashboard")
+      router.refresh()
+    } else {
+      setEmailConfirmacion(r.email)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 flex flex-col">
-      <header className="border-b bg-card/50 backdrop-blur-sm fixed top-0 left-0 right-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" aria-label="Lecxico - Inicio">
-            <Image src="/images/lecxico-logo.png" alt="Lecxico" width={120} height={40} className="h-8 w-auto" />
-          </Link>
-          <span className="text-lg font-semibold">¡Únete a Lecxico!</span>
+    <AuthShell
+      accion={
+        <Button variant="ghost" asChild>
+          <Link href="/login">Iniciar sesión</Link>
+        </Button>
+      }
+    >
+      <div className="w-full max-w-2xl">
+        <div className="border-2 border-primary rounded-xl p-6 sm:p-8">
+          {emailConfirmacion ? (
+            <ConfirmacionEnviada email={emailConfirmacion} />
+          ) : paso === 1 ? (
+            <SeleccionTipo tipo={tipo} onTipo={setTipo} onSiguiente={() => setPaso(2)} />
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => setPaso(1)}
+                className="mb-4 flex items-center gap-1 text-sm text-primary hover:underline font-medium"
+              >
+                <ArrowLeft className="w-4 h-4" /> Cambiar tipo de cuenta
+              </button>
+              {tipo === "profesional" ? (
+                <FormProfesional onRegistrado={onRegistrado} />
+              ) : (
+                <FormNino onRegistrado={onRegistrado} />
+              )}
+            </>
+          )}
         </div>
-      </header>
-
-      <div className="container mx-auto px-4 mt-24 flex-1 flex items-start justify-center py-12">
-        {step === 1 && (
-          <div className="w-full max-w-2xl">
-            <div className="border-2 border-primary rounded-xl p-8">
-              <h2 className="text-2xl font-semibold text-center mb-8">Seleccioná un tipo de usuario</h2>
-
-              <div className="grid grid-cols-2 gap-6 mb-8">
-                <button
-                  type="button"
-                  onClick={() => setUserType("estudiante")}
-                  className={`rounded-xl border-2 p-6 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
-                    userType === "estudiante"
-                      ? "bg-primary border-primary text-primary-foreground"
-                      : "bg-white border-border text-foreground hover:border-primary/50"
-                  }`}
-                >
-                  <p className="text-xl font-bold mb-3">Estudiante</p>
-                  <p className={`text-sm leading-relaxed ${userType === "estudiante" ? "text-primary-foreground/90" : "text-muted-foreground"}`}>
-                    Quiero probar/entrenar mis habilidades de lecto escritura.
-                  </p>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setUserType("profesional")}
-                  className={`rounded-xl border-2 p-6 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
-                    userType === "profesional"
-                      ? "bg-primary border-primary text-primary-foreground"
-                      : "bg-white border-border text-foreground hover:border-primary/50"
-                  }`}
-                >
-                  <p className="text-xl font-bold mb-3">Profesional</p>
-                  <p className={`text-sm leading-relaxed ${userType === "profesional" ? "text-primary-foreground/90" : "text-muted-foreground"}`}>
-                    Quiero realizar seguimiento a mis pacientes para estar al tanto de su entrenamiento y sus mejoras.
-                  </p>
-                </button>
-              </div>
-
-              <div className="flex justify-end">
-                <Button
-                  size="lg"
-                  disabled={userType === null}
-                  onClick={() => setStep(2)}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-8"
-                >
-                  SIGUIENTE →
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div className="w-full max-w-2xl">
-            <div className="border-2 border-primary rounded-xl p-8">
-              <h2 className="text-2xl font-semibold text-center mb-8">Completá tus datos</h2>
-
-              <Card className="shadow-sm">
-                <CardContent className="pt-6 space-y-5">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="lastName" className="uppercase font-bold text-xs tracking-wide">
-                        Apellido/s
-                      </Label>
-                      <Input
-                        id="lastName"
-                        placeholder="Pérez"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="firstName" className="uppercase font-bold text-xs tracking-wide">
-                        Nombre/s
-                      </Label>
-                      <Input
-                        id="firstName"
-                        placeholder="Juan"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="uppercase font-bold text-xs tracking-wide">
-                      Correo electrónico
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="tu@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="password" className="uppercase font-bold text-xs tracking-wide">
-                        Contraseña
-                      </Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="Mínimo 6 caracteres"
-                        value={password}
-                        onChange={(e) => {
-                          setPassword(e.target.value)
-                          if (confirmPassword && e.target.value !== confirmPassword) {
-                            setPasswordError("Las contraseñas no coinciden.")
-                          } else {
-                            setPasswordError(null)
-                          }
-                        }}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="confirmPassword" className="uppercase font-bold text-xs tracking-wide">
-                        Confirmar contraseña
-                      </Label>
-                      <Input
-                        id="confirmPassword"
-                        type="password"
-                        placeholder="Repetí tu contraseña"
-                        value={confirmPassword}
-                        onChange={(e) => {
-                          setConfirmPassword(e.target.value)
-                          if (e.target.value !== password) {
-                            setPasswordError("Las contraseñas no coinciden.")
-                          } else {
-                            setPasswordError(null)
-                          }
-                        }}
-                      />
-                      {passwordError && (
-                        <p className="text-sm text-destructive">{passwordError}</p>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <div className="flex justify-end mt-6">
-                <Button
-                  size="lg"
-                  disabled={
-                    !lastName.trim() ||
-                    !firstName.trim() ||
-                    !email.trim() ||
-                    !password.trim() ||
-                    !confirmPassword.trim() ||
-                    password !== confirmPassword
-                  }
-                  onClick={() => setStep(3)}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-8"
-                >
-                  SIGUIENTE →
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-        {step === 3 && userType === "estudiante" && (
-          <div className="w-full max-w-2xl">
-            <div className="border-2 border-primary rounded-xl p-8">
-              <h2 className="text-2xl font-semibold text-center mb-8">Configurá tu perfil inicial</h2>
-
-              <Card className="shadow-sm">
-                <CardContent className="pt-6 space-y-6">
-                  {/* Fecha de nacimiento */}
-                  <div className="flex items-center gap-4">
-                    <Label htmlFor="birthDate" className="uppercase font-bold text-xs tracking-wide w-64 shrink-0">
-                      Fecha de nacimiento
-                    </Label>
-                    <Input
-                      id="birthDate"
-                      type="date"
-                      value={birthDate}
-                      onChange={(e) => setBirthDate(e.target.value)}
-                      className="flex-1"
-                    />
-                  </div>
-
-                  {/* Diagnóstico previo */}
-                  <div className="flex items-center gap-4">
-                    <span className="uppercase font-bold text-xs tracking-wide w-64 shrink-0">
-                      ¿Posee diagnóstico previo?
-                    </span>
-                    <div className="flex gap-6">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="diagnosis"
-                          checked={hasDiagnosis === true}
-                          onChange={() => setHasDiagnosis(true)}
-                          className="accent-primary"
-                        />
-                        <span className="text-sm font-medium">SÍ</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="diagnosis"
-                          checked={hasDiagnosis === false}
-                          onChange={() => setHasDiagnosis(false)}
-                          className="accent-primary"
-                        />
-                        <span className="text-sm font-medium">NO</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Lectoescritura */}
-                  <div className="flex items-center gap-4">
-                    <span className="uppercase font-bold text-xs tracking-wide w-64 shrink-0">
-                      ¿Ha aprendido a leer y escribir?
-                    </span>
-                    <div className="flex gap-6">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="literacy"
-                          checked={hasLiteracy === true}
-                          onChange={() => setHasLiteracy(true)}
-                          className="accent-primary"
-                        />
-                        <span className="text-sm font-medium">SÍ</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="literacy"
-                          checked={hasLiteracy === false}
-                          onChange={() => setHasLiteracy(false)}
-                          className="accent-primary"
-                        />
-                        <span className="text-sm font-medium">NO</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Nivel académico */}
-                  <div className="flex items-center gap-4">
-                    <span className="uppercase font-bold text-xs tracking-wide w-64 shrink-0">
-                      Nivel académico
-                    </span>
-                    <div className="flex gap-3">
-                      {(["inicial", "primaria", "secundaria"] as const).map((level) => {
-                        const labels: Record<string, string> = {
-                          inicial: "🖍️ INICIAL",
-                          primaria: "📖 PRIMARIA",
-                          secundaria: "🖩 SECUNDARIA",
-                        }
-                        return (
-                          <button
-                            key={level}
-                            type="button"
-                            onClick={() => setAcademicLevel(level)}
-                            className={`px-4 py-2 rounded-lg border-2 text-sm font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
-                              academicLevel === level
-                                ? "bg-primary border-primary text-primary-foreground"
-                                : "bg-white border-border text-foreground hover:border-primary/50"
-                            }`}
-                          >
-                            {labels[level]}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  {error && (
-                    <div className="space-y-2">
-                      <p className="text-sm text-destructive">{error}</p>
-                      <button
-                        type="button"
-                        onClick={() => { setError(null); setStep(2) }}
-                        className="text-sm text-primary hover:underline font-medium"
-                      >
-                        ← Volver a los datos
-                      </button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              <div className="flex justify-end mt-6">
-                <Button
-                  size="lg"
-                  disabled={!birthDate || academicLevel === null || isLoading}
-                  onClick={handleRegister}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-8"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Registrando...
-                    </>
-                  ) : (
-                    "CONTINUAR →"
-                  )}
-                </Button>
-              </div>
-            </div>
-          </div>
+        {!emailConfirmacion && (
+          <p className="text-center text-sm text-muted-foreground mt-6">
+            ¿Ya tenés cuenta?{" "}
+            <Link href="/login" className="text-primary hover:underline font-semibold">
+              Iniciá sesión
+            </Link>
+          </p>
         )}
       </div>
+    </AuthShell>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  PASO 1 — TIPO DE CUENTA                                            */
+/* ------------------------------------------------------------------ */
+function SeleccionTipo({
+  tipo,
+  onTipo,
+  onSiguiente,
+}: {
+  tipo: TipoCuenta | null
+  onTipo: (t: TipoCuenta) => void
+  onSiguiente: () => void
+}) {
+  const opciones: { valor: TipoCuenta; titulo: string; descripcion: string }[] = [
+    {
+      valor: "profesional",
+      titulo: "Soy profesional",
+      descripcion: "Quiero tomar el test y hacer seguimiento del entrenamiento de los niños que acompaño.",
+    },
+    {
+      valor: "nino",
+      titulo: "Crear la cuenta de un niño",
+      descripcion: "La completa la madre, el padre o el tutor/a, con su propio email.",
+    },
+  ]
+
+  return (
+    <>
+      <h2 className="text-2xl font-semibold text-center mb-8">¿Qué cuenta querés crear?</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+        {opciones.map((o) => (
+          <button
+            key={o.valor}
+            type="button"
+            onClick={() => onTipo(o.valor)}
+            className={`rounded-xl border-2 p-6 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+              tipo === o.valor
+                ? "bg-primary border-primary text-primary-foreground"
+                : "bg-white border-border text-foreground hover:border-primary/50"
+            }`}
+          >
+            <p className="text-xl font-bold mb-3">{o.titulo}</p>
+            <p className={`text-sm leading-relaxed ${tipo === o.valor ? "text-primary-foreground/90" : "text-muted-foreground"}`}>
+              {o.descripcion}
+            </p>
+          </button>
+        ))}
+      </div>
+      <div className="flex justify-end">
+        <Button size="lg" disabled={tipo === null} onClick={onSiguiente} className="px-8">
+          SIGUIENTE →
+        </Button>
+      </div>
+    </>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  FORMULARIO — PROFESIONAL                                           */
+/* ------------------------------------------------------------------ */
+type OnRegistrado = (r: { tipo: "sesion" } | { tipo: "confirmar"; email: string }) => void
+
+function FormProfesional({ onRegistrado }: { onRegistrado: OnRegistrado }) {
+  const [nombre, setNombre] = useState("")
+  const [apellido, setApellido] = useState("")
+  const [usuario, setUsuario] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmacion, setConfirmacion] = useState("")
+  const [acepta, setAcepta] = useState(false)
+  const [errores, setErrores] = useState<Errores>({})
+  const [errorGeneral, setErrorGeneral] = useState<string | null>(null)
+  const [enviando, setEnviando] = useState(false)
+  const nombreUsuario = useNombreUsuario(usuario)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setErrorGeneral(null)
+    const nuevos: Errores = {
+      nombre: nombre.trim() ? undefined : "Completá tu nombre.",
+      apellido: apellido.trim() ? undefined : "Completá tu apellido.",
+      email: !email.trim() ? "Completá tu email." : emailValido(email) ? undefined : "El email no es válido.",
+      password: errorPassword(password, confirmacion) ?? undefined,
+      acepta: acepta ? undefined : "Tenés que aceptar los Términos y Condiciones y la Política de Privacidad.",
+    }
+    setEnviando(true)
+    const estadoUsuario = await nombreUsuario.verificarAhora()
+    nuevos.usuario = errorNombreUsuario(estadoUsuario)
+    setErrores(nuevos)
+    if (Object.values(nuevos).some(Boolean) || estadoUsuario !== "disponible") {
+      setEnviando(false)
+      return
+    }
+
+    const r = await registrar(email, password, {
+      rol: "profesional",
+      nombre: nombre.trim(),
+      apellido: apellido.trim(),
+      nombre_usuario: nombreUsuario.nombre,
+      acepta_tyc: true,
+    })
+    setEnviando(false)
+    if (r.tipo === "existe") setErrores({ email: "Ya existe una cuenta con ese email." })
+    else if (r.tipo === "error") setErrorGeneral(r.mensaje)
+    else onRegistrado(r)
+  }
+
+  return (
+    <>
+      <h2 className="text-2xl font-semibold text-center mb-6">Cuenta de profesional</h2>
+      <Card className="shadow-sm">
+        <CardContent className="pt-6">
+          <form onSubmit={handleSubmit} noValidate className="space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Campo id="nombre" label="Nombre/s" placeholder="Juan" value={nombre} onChange={(e) => setNombre(e.target.value)} error={errores.nombre} autoComplete="given-name" />
+              <Campo id="apellido" label="Apellido/s" placeholder="Pérez" value={apellido} onChange={(e) => setApellido(e.target.value)} error={errores.apellido} autoComplete="family-name" />
+            </div>
+            <CampoNombreUsuario
+              id="usuario"
+              label="Nombre de usuario"
+              value={usuario}
+              onChange={setUsuario}
+              estado={nombreUsuario.estado}
+              error={errores.usuario}
+            />
+            <Campo id="email" label="Email" type="email" placeholder="tu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} error={errores.email} autoComplete="email" />
+            <CamposPassword
+              password={password}
+              confirmacion={confirmacion}
+              onPassword={setPassword}
+              onConfirmacion={setConfirmacion}
+              error={errores.password}
+            />
+            <CasillaTyC id="acepta" checked={acepta} onChange={setAcepta} error={errores.acepta} />
+
+            {errorGeneral && <ErrorGeneral mensaje={errorGeneral} />}
+
+            <Button type="submit" size="lg" className="w-full" disabled={enviando}>
+              {enviando ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creando cuenta...</> : "CREAR CUENTA"}
+            </Button>
+          </form>
+
+          <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="h-px flex-1 bg-border" /> o <span className="h-px flex-1 bg-border" />
+          </div>
+          <BotonGoogle texto="Registrarme con Google" />
+        </CardContent>
+      </Card>
+    </>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  FORMULARIO — NIÑO (lo completa el tutor)                           */
+/* ------------------------------------------------------------------ */
+function FormNino({ onRegistrado }: { onRegistrado: OnRegistrado }) {
+  const [nombre, setNombre] = useState("")
+  const [apellido, setApellido] = useState("")
+  const [usuario, setUsuario] = useState("")
+  const [fechaNacimiento, setFechaNacimiento] = useState("")
+  const [etapa, setEtapa] = useState<EtapaEscolar | null>(null)
+  const [email, setEmail] = useState("")
+  const [telefono, setTelefono] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmacion, setConfirmacion] = useState("")
+  const [acepta, setAcepta] = useState(false)
+  const [errores, setErrores] = useState<Errores>({})
+  const [errorGeneral, setErrorGeneral] = useState<string | null>(null)
+  const [enviando, setEnviando] = useState(false)
+  const nombreUsuario = useNombreUsuario(usuario)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setErrorGeneral(null)
+    const nuevos: Errores = {
+      nombre: nombre.trim() ? undefined : "Completá el nombre del niño.",
+      apellido: apellido.trim() ? undefined : "Completá el apellido del niño.",
+      fechaNacimiento: !fechaNacimiento
+        ? "Completá la fecha de nacimiento."
+        : fechaNacimientoValida(fechaNacimiento) ? undefined : "La fecha de nacimiento no es válida.",
+      etapa: etapa ? undefined : "Elegí la etapa escolar.",
+      email: !email.trim() ? "Completá el email del tutor." : emailValido(email) ? undefined : "El email no es válido.",
+      telefono: !telefono.trim() || /^[0-9+()\-\s]{6,20}$/.test(telefono.trim()) ? undefined : "El teléfono no es válido.",
+      password: errorPassword(password, confirmacion) ?? undefined,
+      acepta: acepta ? undefined : "Tenés que aceptar los Términos y Condiciones y la Política de Privacidad.",
+    }
+    setEnviando(true)
+    const estadoUsuario = await nombreUsuario.verificarAhora()
+    nuevos.usuario = errorNombreUsuario(estadoUsuario)
+    setErrores(nuevos)
+    if (Object.values(nuevos).some(Boolean) || estadoUsuario !== "disponible") {
+      setEnviando(false)
+      return
+    }
+
+    // tutor_email no se manda: la base lo toma del email de la cuenta.
+    const r = await registrar(email, password, {
+      rol: "nino",
+      nombre: nombre.trim(),
+      apellido: apellido.trim(),
+      nombre_usuario: nombreUsuario.nombre,
+      acepta_tyc: true,
+      fecha_nacimiento: fechaNacimiento,
+      etapa_escolar: etapa,
+      tutor_telefono: telefono.trim() || null,
+    })
+    setEnviando(false)
+    if (r.tipo === "existe") setErrores({ email: "Ya existe una cuenta con ese email. Usá un email distinto para cada niño." })
+    else if (r.tipo === "error") setErrorGeneral(r.mensaje)
+    else onRegistrado(r)
+  }
+
+  return (
+    <>
+      <h2 className="text-2xl font-semibold text-center mb-2">Cuenta de un niño</h2>
+      <p className="text-center text-sm text-muted-foreground mb-6">La completa la madre, el padre o el tutor/a.</p>
+      <form onSubmit={handleSubmit} noValidate className="space-y-6">
+        <Card className="shadow-sm">
+          <CardContent className="pt-6 space-y-5">
+            <h3 className="font-semibold">Datos del niño</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Campo id="nombre" label="Nombre/s" value={nombre} onChange={(e) => setNombre(e.target.value)} error={errores.nombre} />
+              <Campo id="apellido" label="Apellido/s" value={apellido} onChange={(e) => setApellido(e.target.value)} error={errores.apellido} />
+            </div>
+            <CampoNombreUsuario
+              id="usuario"
+              label="Nombre de usuario del niño"
+              value={usuario}
+              onChange={setUsuario}
+              estado={nombreUsuario.estado}
+              error={errores.usuario}
+              ayuda="Es el nombre con el que su profesional lo va a encontrar."
+            />
+            <Campo
+              id="fechaNacimiento"
+              label="Fecha de nacimiento"
+              type="date"
+              max={hoyISO()}
+              value={fechaNacimiento}
+              onChange={(e) => setFechaNacimiento(e.target.value)}
+              error={errores.fechaNacimiento}
+            />
+            <div className="space-y-2">
+              <span className="block uppercase font-bold text-xs tracking-wide">Etapa escolar</span>
+              <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Etapa escolar">
+                {ETAPAS_ESCOLARES.map((e) => (
+                  <button
+                    key={e.valor}
+                    type="button"
+                    role="radio"
+                    aria-checked={etapa === e.valor}
+                    onClick={() => setEtapa(e.valor)}
+                    className={`px-4 py-2 rounded-lg border-2 text-sm font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                      etapa === e.valor
+                        ? "bg-primary border-primary text-primary-foreground"
+                        : "bg-white border-border text-foreground hover:border-primary/50"
+                    }`}
+                  >
+                    {e.label}
+                  </button>
+                ))}
+              </div>
+              {errores.etapa && <p className="text-sm text-destructive">{errores.etapa}</p>}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-sm">
+          <CardContent className="pt-6 space-y-5">
+            <h3 className="font-semibold">Datos del tutor</h3>
+            <Campo
+              id="email"
+              label="Email del tutor"
+              type="email"
+              placeholder="tu@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={errores.email}
+              autoComplete="email"
+              ayuda="Con este email vas a iniciar sesión en la cuenta del niño. Si tenés más de un niño a cargo, usá un email distinto para cada cuenta."
+            />
+            <Campo
+              id="telefono"
+              label="Teléfono (opcional)"
+              type="tel"
+              placeholder="11 2345-6789"
+              value={telefono}
+              onChange={(e) => setTelefono(e.target.value)}
+              error={errores.telefono}
+              autoComplete="tel"
+            />
+            <CamposPassword
+              password={password}
+              confirmacion={confirmacion}
+              onPassword={setPassword}
+              onConfirmacion={setConfirmacion}
+              error={errores.password}
+            />
+            <CasillaTyC
+              id="acepta"
+              checked={acepta}
+              onChange={setAcepta}
+              error={errores.acepta}
+              prefijo="Como madre, padre o tutor/a, acepto"
+              sufijo=" en nombre del niño"
+            />
+          </CardContent>
+        </Card>
+
+        {errorGeneral && <ErrorGeneral mensaje={errorGeneral} />}
+
+        <Button type="submit" size="lg" className="w-full" disabled={enviando}>
+          {enviando ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creando cuenta...</> : "CREAR CUENTA DEL NIÑO"}
+        </Button>
+      </form>
+    </>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  PIEZAS COMUNES                                                     */
+/* ------------------------------------------------------------------ */
+function CamposPassword({
+  password,
+  confirmacion,
+  onPassword,
+  onConfirmacion,
+  error,
+}: {
+  password: string
+  confirmacion: string
+  onPassword: (v: string) => void
+  onConfirmacion: (v: string) => void
+  error?: string
+}) {
+  return (
+    <div className="space-y-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Campo id="password" label="Contraseña" type="password" placeholder={`Mínimo ${PASSWORD_MIN} caracteres`} value={password} onChange={(e) => onPassword(e.target.value)} autoComplete="new-password" />
+        <Campo id="confirmacion" label="Confirmar contraseña" type="password" placeholder="Repetí la contraseña" value={confirmacion} onChange={(e) => onConfirmacion(e.target.value)} autoComplete="new-password" />
+      </div>
+      {error && <p className="text-sm text-destructive">{error}</p>}
+    </div>
+  )
+}
+
+function ErrorGeneral({ mensaje }: { mensaje: string }) {
+  return (
+    <Alert variant="destructive">
+      <AlertCircle className="h-4 w-4" />
+      <AlertDescription>{mensaje}</AlertDescription>
+    </Alert>
+  )
+}
+
+function ConfirmacionEnviada({ email }: { email: string }) {
+  return (
+    <div className="text-center space-y-4 py-6">
+      <MailCheck className="w-12 h-12 text-primary mx-auto" />
+      <h2 className="text-2xl font-semibold">Te enviamos un email para confirmar la cuenta</h2>
+      <p className="text-muted-foreground">
+        Abrí el enlace que enviamos a <span className="font-semibold text-foreground">{email}</span> para activar la cuenta.
+        Si no lo ves, revisá la carpeta de spam.
+      </p>
+      <Button asChild variant="outline">
+        <Link href="/login">Ir a iniciar sesión</Link>
+      </Button>
     </div>
   )
 }

@@ -1,10 +1,11 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { Suspense, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
+import type { AuthError } from "@supabase/supabase-js"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,45 +13,82 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Mail, Lock, Sparkles, Loader2, AlertCircle, BookOpen } from "lucide-react"
+import { BotonGoogle } from "@/components/auth/boton-google"
+import { rutaSegura } from "@/lib/auth/rutas"
+
+const MENSAJES_QUERY: Record<string, string> = {
+  enlace:
+    "El enlace no es válido o ya venció. Si estabas confirmando tu email, probá iniciar sesión: puede que ya haya quedado confirmado.",
+}
+
+function mensajeErrorLogin(error: AuthError): string {
+  if (error.code === "invalid_credentials") return "Email o contraseña incorrectos."
+  if (error.code === "email_not_confirmed")
+    return "Todavía no confirmaste tu email. Revisá tu casilla (y la carpeta de spam) y abrí el enlace que te enviamos."
+  if (error.code === "over_request_rate_limit" || error.status === 429)
+    return "Se hicieron demasiados intentos. Esperá unos minutos y probá de nuevo."
+  return "No se pudo iniciar sesión. Probá de nuevo en unos minutos."
+}
 
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <Login />
+    </Suspense>
+  )
+}
+
+function Login() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const next = rutaSegura(searchParams.get("next"))
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(MENSAJES_QUERY[searchParams.get("error") ?? ""] ?? null)
+  const [sinConfirmar, setSinConfirmar] = useState(false)
+  const [reenvio, setReenvio] = useState<"idle" | "enviando" | "enviado" | "error">("idle")
 
   const supabase = createClient()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    setSinConfirmar(false)
+    setReenvio("idle")
 
     if (!email || !password) {
-      setError("Por favor completa todos los campos")
+      setError("Completá el email y la contraseña.")
       return
     }
 
     setIsLoading(true)
 
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    })
 
-      if (error) {
-        throw error
-      }
-
-      router.push("/dashboard")
-      router.refresh()
-    } catch (err: any) {
-      console.error("Login error:", err.message)
-      setError("Credenciales incorrectas o error al iniciar sesión.")
-    } finally {
+    if (error) {
+      console.error("Login error:", error)
+      setError(mensajeErrorLogin(error))
+      setSinConfirmar(error.code === "email_not_confirmed")
       setIsLoading(false)
+      return
     }
+
+    router.push(next)
+    router.refresh()
+  }
+
+  const handleReenviar = async () => {
+    setReenvio("enviando")
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: email.trim(),
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    })
+    setReenvio(error ? "error" : "enviado")
   }
 
   return (
@@ -75,7 +113,7 @@ export default function LoginPage() {
               </div>
               <CardTitle className="text-3xl">Bienvenido de vuelta</CardTitle>
               <CardDescription className="text-base">
-                Inicia sesión para continuar tu aventura de aprendizaje
+                Iniciá sesión para continuar
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -83,7 +121,25 @@ export default function LoginPage() {
                 {error && (
                   <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertDescription>
+                      {error}
+                      {sinConfirmar && (
+                        <button
+                          type="button"
+                          onClick={handleReenviar}
+                          disabled={reenvio === "enviando" || reenvio === "enviado"}
+                          className="block mt-2 font-semibold underline disabled:no-underline disabled:opacity-70"
+                        >
+                          {reenvio === "enviado"
+                            ? "Listo, te reenviamos el email."
+                            : reenvio === "error"
+                              ? "No se pudo reenviar. Probá de nuevo en unos minutos."
+                              : reenvio === "enviando"
+                                ? "Reenviando..."
+                                : "Reenviar el email de confirmación"}
+                        </button>
+                      )}
+                    </AlertDescription>
                   </Alert>
                 )}
 
@@ -110,6 +166,9 @@ export default function LoginPage() {
                       <Lock className="w-4 h-4" />
                       Contraseña
                     </Label>
+                    <Link href="/recuperar" className="text-sm text-primary hover:underline font-medium">
+                      ¿Olvidaste tu contraseña?
+                    </Link>
                   </div>
                   <Input
                     id="password"
@@ -138,12 +197,17 @@ export default function LoginPage() {
                 </Button>
 
                 <p className="text-center text-sm text-muted-foreground mt-4">
-                  ¿No tienes una cuenta?{" "}
+                  ¿No tenés una cuenta?{" "}
                   <Link href="/register" className="text-primary hover:underline font-semibold">
-                    Regístrate gratis
+                    Registrate gratis
                   </Link>
                 </p>
               </form>
+
+              <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
+                <span className="h-px flex-1 bg-border" /> o <span className="h-px flex-1 bg-border" />
+              </div>
+              <BotonGoogle texto="Continuar con Google (profesionales)" next={next} />
             </CardContent>
           </Card>
         </div>

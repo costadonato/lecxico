@@ -19,6 +19,7 @@ import {
   Trophy,
   Gamepad2,
 } from "lucide-react"
+import { obtenerPerfilActual } from "@/lib/auth/perfil"
 import { BLOQUE_NOMBRES } from "@/lib/test/bloques"
 import type { Entrenamiento, Test, TestBloqueResultado } from "@/lib/types/database"
 
@@ -36,14 +37,22 @@ export default function PerfilPage() {
 
   useEffect(() => {
     const load = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const actual = await obtenerPerfilActual(supabase).catch((e) => {
+        console.error("perfil:", e)
+        return undefined
+      })
+      if (actual === null) {
+        router.push("/login")
+        return
+      }
+      const user = actual?.user ?? (await supabase.auth.getUser()).data.user
       if (!user) {
         router.push("/login")
         return
       }
 
-      setFirstName(user.user_metadata?.first_name || "")
-      setLastName(user.user_metadata?.last_name || "")
+      setFirstName(actual?.profile?.nombre ?? "")
+      setLastName(actual?.profile?.apellido ?? "")
       setEmail(user.email || "")
 
       // Último resultado del test
