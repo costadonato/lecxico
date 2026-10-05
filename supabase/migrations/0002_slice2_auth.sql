@@ -126,6 +126,10 @@ begin
       raise exception 'La etapa escolar del niño es inválida o falta.';
     end if;
 
+    if not v_acepta then
+      raise exception 'El tutor debe aceptar los Términos y Condiciones para crear la cuenta del niño.';
+    end if;
+
     if nullif(btrim(new.email), '') is null then
       raise exception 'La cuenta del niño necesita el email del tutor.';
     end if;
