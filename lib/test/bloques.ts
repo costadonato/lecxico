@@ -36,6 +36,14 @@ export function nivelParaEtapa(etapa: EtapaEscolar): Nivel {
   return etapa === "sala_4" || etapa === "sala_5" ? "inicial" : "primario"
 }
 
+/** Texto visible de cada nivel. */
+export const NIVEL_LABEL: Record<Nivel, string> = { inicial: "Inicial", primario: "Primario" }
+
+/** Página del test de `nivel` para el niño `ninoId` (la ruta del primario es /test/primaria). */
+export function rutaDelTest(nivel: Nivel, ninoId: string): string {
+  return `/test/${nivel === "inicial" ? "inicial" : "primaria"}?nino=${encodeURIComponent(ninoId)}`
+}
+
 /**
  * Bloques de cada test, en orden. La posición + 1 es el `id` de las
  * constantes BLOCKS de app/test/inicial y app/test/primaria.

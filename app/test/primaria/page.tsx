@@ -2,11 +2,13 @@
 
 import { useState, useCallback, useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
-import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Home, Volume2 } from "lucide-react"
+import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Home, Volume2, Users } from "lucide-react"
 import { bloqueCodigoPorOrden } from "@/lib/test/bloques"
 import { guardarTest } from "@/lib/test/guardar-test"
 import { useAccesoTest } from "@/lib/test/use-acceso-test"
+import { useSalidaDelTest } from "@/lib/test/use-salida-test"
 import { TestAccesoAviso } from "@/components/test-acceso-aviso"
+import { TestBandaNino } from "@/components/test-banda-nino"
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -327,6 +329,9 @@ function TestPrimaria() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
+  /* ---- salir a mitad del test pide confirmación (no hay guardado parcial) ---- */
+  const testEnCurso = acceso.estado === "permitido" && !saved && (currentIndex > 0 || finished)
+  const { salir, dialogo: dialogoSalida } = useSalidaDelTest(testEnCurso)
 
   /* ---- reading_comprehension sub-navigation ---- */
   /** -1 = showing the story text · 0..n-1 = answering storyQuestions[n] */
@@ -648,7 +653,12 @@ function TestPrimaria() {
 
   /* ---- sin acceso (o verificando): no se puede comenzar ---- */
   if (acceso.estado !== "permitido") {
-    return <TestAccesoAviso motivo={acceso.estado === "denegado" ? acceso.motivo : undefined} />
+    return (
+      <TestAccesoAviso
+        motivo={acceso.estado === "denegado" ? acceso.motivo : undefined}
+        elegirNino={acceso.estado === "denegado" && acceso.elegirNino}
+      />
+    )
   }
 
   /* ================================================================ */
@@ -680,7 +690,7 @@ function TestPrimaria() {
             <div className="flex items-center gap-4">
               <span className="hidden sm:inline text-white font-medium">Resultados del Test</span>
               <button
-                onClick={() => router.push("/test")}
+                onClick={() => salir("/test")}
                 className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -689,6 +699,8 @@ function TestPrimaria() {
             </div>
           </div>
         </header>
+        <TestBandaNino nino={acceso.nino} nivel="primario" />
+        {dialogoSalida}
 
         <main className="relative z-10 max-w-2xl mx-auto space-y-8 py-10 px-4">
           <div className="text-center space-y-2">
@@ -778,8 +790,16 @@ function TestPrimaria() {
             >
               <RotateCcw className="w-4 h-4" /> Repetir test
             </button>
+            {saved && (
+              <button
+                onClick={() => router.push("/test")}
+                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
+              >
+                <Users className="w-4 h-4" /> Tomar test a otro niño
+              </button>
+            )}
             <button
-              onClick={() => router.push("/dashboard")}
+              onClick={() => salir("/dashboard")}
               className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
             >
               <Home className="w-4 h-4" /> Volver al inicio
@@ -821,7 +841,7 @@ function TestPrimaria() {
           <div className="flex items-center gap-4">
             <span className="hidden sm:inline text-white font-medium">{blockName}</span>
             <button
-              onClick={() => router.push("/test")}
+              onClick={() => salir("/test")}
               className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -830,6 +850,8 @@ function TestPrimaria() {
           </div>
         </div>
       </header>
+      <TestBandaNino nino={acceso.nino} nivel="primario" />
+      {dialogoSalida}
 
       {/* ---- Progress bar with dots ---- */}
       <div className="relative z-10 w-full px-4 py-6">

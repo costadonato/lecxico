@@ -18,6 +18,8 @@ export interface Confirmacion {
   titulo: string
   descripcion: React.ReactNode
   textoConfirmar: string
+  /** Texto del botón que cierra sin hacer nada (por defecto "Volver"). */
+  textoCancelar?: string
   /** Acción a ejecutar; si lanza, el mensaje se muestra en el diálogo. */
   accion: () => Promise<void>
 }
@@ -68,7 +70,7 @@ export function ConfirmarDialog({
         </AlertDialogHeader>
         {error && <p className="text-sm text-destructive">{error}</p>}
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={ejecutando}>Volver</AlertDialogCancel>
+          <AlertDialogCancel disabled={ejecutando}>{confirmacion?.textoCancelar ?? "Volver"}</AlertDialogCancel>
           {/* Button común (no AlertDialogAction) para que el diálogo no se cierre antes de terminar. */}
           <Button variant="destructive" onClick={confirmar} disabled={ejecutando}>
             {ejecutando && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

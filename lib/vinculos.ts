@@ -9,6 +9,9 @@ import { useEffect, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
 import type { VinculoDelNino, VinculoDelProfesional } from "@/lib/types/database"
 
+/** Mensaje tras invitar (o reafiliar) a un niño; se usa en /ninos y en /test. */
+export const MENSAJE_INVITACION_ENVIADA = "Invitación enviada. La vas a ver en la campanita hasta que la acepten."
+
 function lanzar(error: { message: string } | null) {
   if (error) throw new Error(error.message || "Ocurrió un error inesperado. Probá de nuevo.")
 }

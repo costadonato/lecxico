@@ -11,7 +11,7 @@ import type { Rol } from "@/lib/types/database"
 const TARJETAS = {
   test: {
     title: "Test",
-    description: "Detectá indicadores de dislexia",
+    description: "Elegí un niño y tomale el test de indicadores",
     icon: "🧠",
     href: "/test",
   },

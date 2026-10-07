@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Loader2, Lock } from "lucide-react"
+import { ArrowLeft, Loader2, Lock, Users } from "lucide-react"
 
 /* Mismo fondo que las pantallas del test */
 const backgroundStyle = {
@@ -10,9 +10,10 @@ const backgroundStyle = {
 
 /**
  * Pantalla previa al test: sin `motivo` muestra un spinner (verificando
- * acceso); con `motivo`, el mensaje que impide comenzar.
+ * acceso); con `motivo`, el mensaje que impide comenzar. Con `elegirNino`
+ * (usuario profesional) ofrece volver a /test para elegir un niño.
  */
-export function TestAccesoAviso({ motivo }: { motivo?: string }) {
+export function TestAccesoAviso({ motivo, elegirNino = false }: { motivo?: string; elegirNino?: boolean }) {
   const router = useRouter()
 
   return (
@@ -35,6 +36,15 @@ export function TestAccesoAviso({ motivo }: { motivo?: string }) {
           <div className="max-w-md rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-8 text-center space-y-4">
             <Lock className="w-10 h-10 text-white/80 mx-auto" />
             <p className="text-lg font-semibold text-white">{motivo}</p>
+            {elegirNino && (
+              <button
+                onClick={() => router.push("/test")}
+                className="inline-flex items-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-6 py-3 text-sm font-semibold text-white transition-colors duration-200"
+              >
+                <Users className="w-4 h-4" />
+                Elegir un niño
+              </button>
+            )}
           </div>
         ) : (
           <Loader2 className="w-8 h-8 animate-spin text-white" />

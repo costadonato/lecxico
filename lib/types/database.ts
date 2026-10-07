@@ -104,3 +104,16 @@ export interface VinculoDelNino {
   fecha_afiliacion: string | null
   profesional: ProfesionalVisible | null
 }
+
+/** Fila de la RPC ninos_para_test (0004): niños con vínculo activo y su último test. */
+export interface NinoParaTest {
+  nino_id: string
+  nombre: string
+  apellido: string
+  nombre_usuario: string
+  etapa_escolar: EtapaEscolar
+  nivel: Nivel
+  /** Del test más reciente del niño (de cualquier profesional); null si no tiene. */
+  fecha_ultimo_test: string | null
+  porcentaje_ultimo_test: number | null
+}

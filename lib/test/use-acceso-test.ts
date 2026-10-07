@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { nivelParaEtapa, type Nivel } from "@/lib/test/bloques"
+import { NIVEL_LABEL, nivelParaEtapa, type Nivel } from "@/lib/test/bloques"
 
 export const MENSAJE_SOLO_PROFESIONAL =
   "El test se inicia desde la cuenta de un profesional, seleccionando un niño."
@@ -12,8 +12,9 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
 export type AccesoTest =
   | { estado: "cargando" }
-  | { estado: "permitido"; ninoId: string }
-  | { estado: "denegado"; motivo: string }
+  | { estado: "permitido"; ninoId: string; nino: { nombre: string; apellido: string } }
+  /** `elegirNino`: el usuario es profesional; se le ofrece volver a /test a elegir otro. */
+  | { estado: "denegado"; motivo: string; elegirNino: boolean }
 
 /**
  * Decide si se puede tomar el test `nivel` al niño del query param `nino`.
@@ -28,49 +29,46 @@ export function useAccesoTest(nivel: Nivel): AccesoTest {
   useEffect(() => {
     let cancelado = false
     const resolver = (a: AccesoTest) => { if (!cancelado) setAcceso(a) }
+    const denegar = (motivo: string, elegirNino: boolean) => resolver({ estado: "denegado", motivo, elegirNino })
 
     const verificar = async () => {
-      if (!ninoParam || !UUID_RE.test(ninoParam)) {
-        return resolver({ estado: "denegado", motivo: MENSAJE_SOLO_PROFESIONAL })
-      }
-
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return resolver({ estado: "denegado", motivo: MENSAJE_SOLO_PROFESIONAL })
+      if (!user) return denegar(MENSAJE_SOLO_PROFESIONAL, false)
 
       const { data: perfil, error: perfilError } = await supabase
         .from("profiles")
         .select("rol")
         .eq("id", user.id)
         .maybeSingle()
-      if (perfilError) {
-        return resolver({ estado: "denegado", motivo: `No se pudo verificar tu cuenta: ${perfilError.message}` })
-      }
-      if (perfil?.rol !== "profesional") {
-        return resolver({ estado: "denegado", motivo: MENSAJE_SOLO_PROFESIONAL })
-      }
+      if (perfilError) return denegar(`No se pudo verificar tu cuenta: ${perfilError.message}`, false)
+      if (perfil?.rol !== "profesional") return denegar(MENSAJE_SOLO_PROFESIONAL, false)
 
-      // RLS solo deja ver la fila de un niño con vínculo activo.
+      if (!ninoParam || !UUID_RE.test(ninoParam)) return denegar(MENSAJE_SOLO_PROFESIONAL, true)
+
+      // RLS solo deja ver la fila (y el perfil) de un niño con vínculo activo.
       const { data: nino, error: ninoError } = await supabase
         .from("ninos")
-        .select("etapa_escolar")
+        .select("etapa_escolar, perfil:profiles!ninos_profile_id_fkey(nombre, apellido)")
         .eq("profile_id", ninoParam)
         .maybeSingle()
-      if (ninoError) {
-        return resolver({ estado: "denegado", motivo: `No se pudo verificar al niño: ${ninoError.message}` })
-      }
-      if (!nino) {
-        return resolver({ estado: "denegado", motivo: "No tenés un vínculo activo con este niño." })
-      }
+      if (ninoError) return denegar(`No se pudo verificar al niño: ${ninoError.message}`, true)
+      if (!nino) return denegar("No tenés un vínculo activo con este niño.", true)
+
       const nivelDelNino = nivelParaEtapa(nino.etapa_escolar)
       if (nivelDelNino !== nivel) {
-        return resolver({
-          estado: "denegado",
-          motivo: `Por su etapa escolar, a este niño le corresponde el test de nivel ${nivelDelNino}.`,
-        })
+        return denegar(
+          `Por su etapa escolar, a este niño le corresponde el test de nivel ${NIVEL_LABEL[nivelDelNino]}.`,
+          true,
+        )
       }
 
-      resolver({ estado: "permitido", ninoId: ninoParam })
+      const perfilNino = nino.perfil as unknown as { nombre: string; apellido: string } | null
+      resolver({
+        estado: "permitido",
+        ninoId: ninoParam,
+        nino: { nombre: perfilNino?.nombre ?? "", apellido: perfilNino?.apellido ?? "" },
+      })
     }
 
     verificar()
