@@ -10,7 +10,6 @@ import { Badge } from "@/components/ui/badge"
 import {
   ArrowLeft,
   Loader2,
-  LogOut,
   User,
   Mail,
   ClipboardList,
@@ -19,15 +18,17 @@ import {
   Trophy,
   Gamepad2,
 } from "lucide-react"
+import { AppHeader } from "@/components/app-header"
 import { obtenerPerfilActual } from "@/lib/auth/perfil"
 import { BLOQUE_NOMBRES } from "@/lib/test/bloques"
-import type { Entrenamiento, Test, TestBloqueResultado } from "@/lib/types/database"
+import type { Entrenamiento, Profile, Test, TestBloqueResultado } from "@/lib/types/database"
 
 export default function PerfilPage() {
   const router = useRouter()
   const supabase = createClient()
 
   const [isLoading, setIsLoading] = useState(true)
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
@@ -51,6 +52,7 @@ export default function PerfilPage() {
         return
       }
 
+      setProfile(actual?.profile ?? null)
       setFirstName(actual?.profile?.nombre ?? "")
       setLastName(actual?.profile?.apellido ?? "")
       setEmail(user.email || "")
@@ -89,12 +91,6 @@ export default function PerfilPage() {
     load()
   }, [router, supabase])
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push("/login")
-    router.refresh()
-  }
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -115,23 +111,16 @@ export default function PerfilPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
-      {/* Header */}
-      <header className="bg-white border-b shadow-sm sticky top-0 z-10 px-4 py-4">
-        <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard")} className="p-2">
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-            <h1 className="text-xl font-bold text-primary">Mi Perfil</h1>
-          </div>
-          <Button variant="outline" size="sm" onClick={handleLogout} className="flex items-center gap-2">
-            <LogOut className="w-4 h-4" />
-            Cerrar Sesión
-          </Button>
-        </div>
-      </header>
+      {profile && <AppHeader profile={profile} />}
 
       <main className="container mx-auto px-4 mt-8 space-y-8 max-w-3xl">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard")} className="p-2" aria-label="Volver al inicio">
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h1 className="text-2xl font-bold text-primary">Mi Perfil</h1>
+        </div>
+
         {/* ---- Datos personales ---- */}
         <Card className="border-2 shadow-sm">
           <CardHeader>

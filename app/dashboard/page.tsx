@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { LogOut, Loader2, User } from "lucide-react"
+import { LogOut, Loader2 } from "lucide-react"
+import { AppHeader } from "@/components/app-header"
 import { obtenerPerfilActual, perfilIncompleto } from "@/lib/auth/perfil"
 import type { Rol } from "@/lib/types/database"
 
@@ -26,12 +27,23 @@ const TARJETAS = {
     icon: "👤",
     href: "/perfil",
   },
+  ninos: {
+    title: "Mis niños",
+    description: "Vinculá niños y gestioná a quiénes acompañás",
+    icon: "👥",
+    href: "/ninos",
+  },
+  profesionales: {
+    title: "Mis profesionales",
+    description: "Mirá quiénes te acompañan",
+    icon: "🩺",
+    href: "/mis-profesionales",
+  },
 }
 
-/* La gestión de niños del profesional llega en el slice 5. */
 const TARJETAS_POR_ROL: Record<Rol, (typeof TARJETAS)[keyof typeof TARJETAS][]> = {
-  profesional: [TARJETAS.test],
-  nino: [TARJETAS.entrenamiento, TARJETAS.perfil],
+  profesional: [TARJETAS.test, TARJETAS.ninos],
+  nino: [TARJETAS.entrenamiento, TARJETAS.perfil, TARJETAS.profesionales],
 }
 
 export default function DashboardPage() {
@@ -127,25 +139,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ---- Navbar ---- */}
-      <header className="relative z-10 h-16 bg-red-600 shadow-lg">
-        <div className="container mx-auto h-full px-4 flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Lecxico</h1>
-
-          <div className="flex items-center gap-4">
-            <span className="hidden sm:flex items-center gap-2 text-white font-medium">
-              <User className="w-5 h-5" />
-              {firstName}
-            </span>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
-            >
-              <LogOut className="w-4 h-4" />
-              Cerrar sesión
-            </button>
-          </div>
-        </div>
-      </header>
+      <AppHeader profile={{ nombre: firstName, rol }} />
 
       <main className="relative z-10 container mx-auto px-4">
         {/* ---- Greeting with mascots ---- */}

@@ -76,3 +76,31 @@ export interface Entrenamiento {
   puntaje: number
   created_at: string
 }
+
+/** Fila de la RPC vinculos_del_profesional (0003). */
+export interface VinculoDelProfesional {
+  vinculo_id: string
+  estado: EstadoVinculo
+  nino_id: string
+  /** Siempre presente: es lo que el profesional escribió para invitar. */
+  nombre_usuario: string
+  /** nombre, apellido y etapa_escolar solo con estado 'activa'. */
+  nombre: string | null
+  apellido: string | null
+  etapa_escolar: EtapaEscolar | null
+  fecha_invitacion: string
+  fecha_afiliacion: string | null
+  fecha_baja: string | null
+}
+
+/** Datos públicos del profesional que el niño puede ver (vínculo pendiente o activo). */
+export type ProfesionalVisible = Pick<Profile, "nombre" | "apellido" | "nombre_usuario">
+
+/** Vínculo visto desde la cuenta del niño, con el perfil del profesional. */
+export interface VinculoDelNino {
+  id: string
+  estado: EstadoVinculo
+  fecha_invitacion: string
+  fecha_afiliacion: string | null
+  profesional: ProfesionalVisible | null
+}
