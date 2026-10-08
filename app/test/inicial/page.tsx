@@ -2,13 +2,14 @@
 
 import { useState, useCallback, useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
-import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Home, Volume2, Users } from "lucide-react"
+import { Loader2, ArrowLeft, ArrowRight, RotateCcw, Home, Volume2, Users } from "lucide-react"
 import { bloqueCodigoPorOrden } from "@/lib/test/bloques"
 import { guardarTest } from "@/lib/test/guardar-test"
 import { useAccesoTest } from "@/lib/test/use-acceso-test"
 import { useSalidaDelTest } from "@/lib/test/use-salida-test"
 import { TestAccesoAviso } from "@/components/test-acceso-aviso"
 import { TestBandaNino } from "@/components/test-banda-nino"
+import { ResultadosTest } from "@/components/test/resultados-test"
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -403,14 +404,12 @@ function TestInicial() {
   /*  RESULTS SCREEN                                                   */
   /* ================================================================ */
   if (finished) {
-    const blockResults = computeResults()
-    const hasIndicators = totalPct < 60
-    const getScoreColor = (pct: number) => {
-      if (pct >= 80) return "text-green-400"
-      if (pct >= 60) return "text-yellow-400"
-      if (pct >= 40) return "text-orange-400"
-      return "text-red-400"
-    }
+    const bloquesResultado = computeResults().map((b) => ({
+      bloque_codigo: bloqueCodigoPorOrden("inicial", b.id),
+      orden: b.id,
+      correctas: b.correct,
+      total: b.total,
+    }))
 
     return (
       <div className="min-h-screen relative overflow-hidden" style={backgroundStyle}>
@@ -445,55 +444,12 @@ function TestInicial() {
             <h2 className="text-3xl font-bold text-white">Resultados del Test</h2>
           </div>
 
-          {/* Score summary */}
-          <div className="rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-8 text-center">
-            <p className="text-5xl font-extrabold text-white">{totalPct}%</p>
-            <p className="text-lg text-white/70 mt-2">{totalCorrect} de {totalAnswerable} respuestas correctas</p>
-          </div>
-
-          {/* Table */}
-          <div className="rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-white/10">
-                  <tr>
-                    <th className="py-3 px-4 text-white font-semibold">Bloque</th>
-                    <th className="py-3 px-4 text-center text-white font-semibold">Correctas</th>
-                    <th className="py-3 px-4 text-center text-white font-semibold">Porcentaje</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {blockResults.map((b) => (
-                    <tr key={b.id} className="border-t border-white/10">
-                      <td className="py-3 px-4 font-medium text-white">{b.name}</td>
-                      <td className="py-3 px-4 text-center text-white/70">{b.correct} / {b.total}</td>
-                      <td className={`py-3 px-4 text-center font-bold ${getScoreColor(b.pct)}`}>{b.pct}%</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Conclusion */}
-          <div className={`rounded-2xl bg-white/10 backdrop-blur-md border p-6 flex items-start gap-4 ${hasIndicators ? "border-red-400/60" : "border-green-400/60"}`}>
-            {hasIndicators ? (
-              <XCircle className="w-8 h-8 text-red-400 shrink-0 mt-0.5" />
-            ) : (
-              <CheckCircle2 className="w-8 h-8 text-green-400 shrink-0 mt-0.5" />
-            )}
-            <div>
-              <p className={`font-semibold text-lg ${hasIndicators ? "text-red-300" : "text-green-300"}`}>
-                {hasIndicators
-                  ? "Se detectaron indicadores de dislexia"
-                  : "No se detectaron indicadores significativos"}
-              </p>
-              <p className="text-sm text-white/70 mt-2">
-                Este test es orientativo y <span className="font-semibold text-white/90">no reemplaza un diagnóstico profesional</span>.
-                Te recomendamos consultar con un especialista para una evaluación completa.
-              </p>
-            </div>
-          </div>
+          <ResultadosTest
+            nivel="inicial"
+            porcentajeTotal={totalPct}
+            conclusion={totalPct < 60 ? "indicadores_detectados" : "sin_indicadores"}
+            bloques={bloquesResultado}
+          />
 
           {/* Save status indicator */}
           {(saving || saved) && (

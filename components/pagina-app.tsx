@@ -10,19 +10,23 @@ import type { PerfilActual } from "@/lib/auth/perfil"
 import type { Profile } from "@/lib/types/database"
 
 /**
- * Marco de las páginas de gestión (/ninos, /mis-profesionales): AppHeader,
- * volver al inicio, título y acciones. Muestra carga o error mientras el
- * perfil no está listo; `children` recibe el perfil ya resuelto.
+ * Marco de las páginas de gestión (/ninos, /mis-profesionales, /test...):
+ * AppHeader, flecha para volver (por defecto al inicio), título y acciones.
+ * Muestra carga o error mientras el perfil no está listo; `children` recibe
+ * el perfil ya resuelto.
  */
 export function PaginaApp({
   pagina,
   titulo,
   acciones,
+  volverA = "/dashboard",
   children,
 }: {
   pagina: PerfilPagina
   titulo: string
   acciones?: React.ReactNode
+  /** Destino de la flecha de volver. */
+  volverA?: string
   children: (actual: PerfilActual & { profile: Profile }) => React.ReactNode
 }) {
   if (pagina.estado === "cargando") {
@@ -51,9 +55,9 @@ export function PaginaApp({
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link
-              href="/dashboard"
+              href={volverA}
               className="p-2 rounded-md hover:bg-gray-200 transition-colors"
-              aria-label="Volver al inicio"
+              aria-label="Volver"
             >
               <ArrowLeft className="w-4 h-4" />
             </Link>

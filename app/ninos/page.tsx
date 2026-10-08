@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useState } from "react"
+import Link from "next/link"
 import { Loader2, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -136,9 +137,14 @@ function TablaNinos() {
                     <td className="px-4 py-3">{etiquetaEtapa(v.etapa_escolar)}</td>
                     <td className="px-4 py-3">{formatearFecha(v.fecha_afiliacion)}</td>
                     <td className="px-4 py-3 text-right">
-                      <Button size="sm" variant="outline" onClick={() => pedirBaja(v)}>
-                        Dar de baja
-                      </Button>
+                      <div className="flex justify-end gap-2">
+                        <Button size="sm" asChild>
+                          <Link href={`/ninos/${v.nino_id}`}>Ver detalle</Link>
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => pedirBaja(v)}>
+                          Dar de baja
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
