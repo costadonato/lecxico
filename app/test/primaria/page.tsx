@@ -1,9 +1,15 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
-import { CheckCircle2, XCircle, Loader2, ArrowLeft, ArrowRight, RotateCcw, Home, Volume2 } from "lucide-react"
+import { Loader2, ArrowLeft, ArrowRight, RotateCcw, Home, Volume2, Users } from "lucide-react"
+import { bloqueCodigoPorOrden } from "@/lib/test/bloques"
+import { guardarTest } from "@/lib/test/guardar-test"
+import { useAccesoTest } from "@/lib/test/use-acceso-test"
+import { useSalidaDelTest } from "@/lib/test/use-salida-test"
+import { TestAccesoAviso } from "@/components/test-acceso-aviso"
+import { TestBandaNino } from "@/components/test-banda-nino"
+import { ResultadosTest } from "@/components/test/resultados-test"
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -298,8 +304,16 @@ const isOptionCorrect = (q: Question, ans: Answer): boolean => {
 /*  COMPONENT                                                          */
 /* ------------------------------------------------------------------ */
 export default function TestPrimariaPage() {
+  return (
+    <Suspense fallback={<TestAccesoAviso />}>
+      <TestPrimaria />
+    </Suspense>
+  )
+}
+
+function TestPrimaria() {
   const router = useRouter()
-  const supabase = createClient()
+  const acceso = useAccesoTest("primario")
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState<(Answer | null)[]>(Array(TOTAL_QUESTIONS).fill(null))
@@ -315,6 +329,10 @@ export default function TestPrimariaPage() {
   const [finished, setFinished] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  /* ---- salir a mitad del test pide confirmación (no hay guardado parcial) ---- */
+  const testEnCurso = acceso.estado === "permitido" && !saved && (currentIndex > 0 || finished)
+  const { salir, dialogo: dialogoSalida } = useSalidaDelTest(testEnCurso)
 
   /* ---- reading_comprehension sub-navigation ---- */
   /** -1 = showing the story text · 0..n-1 = answering storyQuestions[n] */
@@ -422,15 +440,16 @@ export default function TestPrimariaPage() {
         ? current.context.replace("🔊", "").trim()
         : null
 
+  const puedeComenzar = acceso.estado === "permitido"
   useEffect(() => {
-    if (autoPlayText) speak(autoPlayText)
-  }, [currentIndex, autoPlayText, speak])
+    if (puedeComenzar && autoPlayText) speak(autoPlayText)
+  }, [currentIndex, autoPlayText, speak, puedeComenzar])
 
   /* ---- empty-data guard ---- */
   if (!current) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4 text-center" style={backgroundStyle}>
-        <h1 className="text-2xl font-bold text-white">Test de Nivel Primario</h1>
+        <h1 className="text-2xl font-bold text-white">Evaluación de indicadores de dislexia · Nivel Primario</h1>
         <p className="text-white/70">Todavía no hay preguntas cargadas para este nivel.</p>
         <button
           onClick={() => router.push("/test")}
@@ -586,30 +605,27 @@ export default function TestPrimariaPage() {
 
   /* ---- save to Supabase ---- */
   const handleSave = async () => {
+    if (acceso.estado !== "permitido") return
     setSaving(true)
+    setSaveError(null)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error("No autenticado")
-
-      const blockResults = computeResults()
-      await supabase.from("test_resultados_primaria").insert({
-        user_id: user.id,
-        fecha: new Date().toISOString(),
-        puntaje_total: totalCorrect,
-        porcentaje_total: totalPct,
-        bloque_1_correctas: blockResults[0].correct,
-        bloque_2_correctas: blockResults[1].correct,
-        bloque_3_correctas: blockResults[2].correct,
-        bloque_4_correctas: blockResults[3].correct,
-        bloque_5_correctas: blockResults[4].correct,
-        bloque_6_correctas: blockResults[5].correct,
-        bloque_7_correctas: blockResults[6].correct,
-        bloque_8_correctas: blockResults[7]?.correct ?? 0,
+      await guardarTest({
+        ninoId: acceso.ninoId,
+        nivel: "primario",
+        bloques: computeResults().map((b) => ({
+          bloqueCodigo: bloqueCodigoPorOrden("primario", b.id),
+          orden: b.id,
+          correctas: b.correct,
+          total: b.total,
+        })),
+        puntajeTotal: totalCorrect,
+        porcentajeTotal: totalPct,
         conclusion: totalPct < 60 ? "indicadores_detectados" : "sin_indicadores",
       })
       setSaved(true)
     } catch (err) {
       console.error("Error al guardar:", err)
+      setSaveError((err as { message?: string })?.message || "Error desconocido")
     } finally {
       setSaving(false)
     }
@@ -625,6 +641,7 @@ export default function TestPrimariaPage() {
     setPlayCount(0)
     setFinished(false)
     setSaved(false)
+    setSaveError(null)
     setStorySubIndex(-1)
     setStoryAnswers({})
   }
@@ -635,18 +652,26 @@ export default function TestPrimariaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finished])
 
+  /* ---- sin acceso (o verificando): no se puede comenzar ---- */
+  if (acceso.estado !== "permitido") {
+    return (
+      <TestAccesoAviso
+        motivo={acceso.estado === "denegado" ? acceso.motivo : undefined}
+        elegirNino={acceso.estado === "denegado" && acceso.elegirNino}
+      />
+    )
+  }
+
   /* ================================================================ */
   /*  RESULTS SCREEN                                                   */
   /* ================================================================ */
   if (finished) {
-    const blockResults = computeResults()
-    const hasIndicators = totalPct < 60
-    const getScoreColor = (pct: number) => {
-      if (pct >= 80) return "text-green-400"
-      if (pct >= 60) return "text-yellow-400"
-      if (pct >= 40) return "text-orange-400"
-      return "text-red-400"
-    }
+    const bloquesResultado = computeResults().map((b) => ({
+      bloque_codigo: bloqueCodigoPorOrden("primario", b.id),
+      orden: b.id,
+      correctas: b.correct,
+      total: b.total,
+    }))
 
     return (
       <div className="min-h-screen relative overflow-hidden" style={backgroundStyle}>
@@ -662,9 +687,9 @@ export default function TestPrimariaPage() {
           <div className="container mx-auto h-full px-4 flex items-center justify-between">
             <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Lecxico</h1>
             <div className="flex items-center gap-4">
-              <span className="hidden sm:inline text-white font-medium">Resultados del Test</span>
+              <span className="hidden sm:inline text-white font-medium">Resultados de la evaluación</span>
               <button
-                onClick={() => router.push("/test")}
+                onClick={() => salir("/test")}
                 className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -673,61 +698,19 @@ export default function TestPrimariaPage() {
             </div>
           </div>
         </header>
+        <TestBandaNino nino={acceso.nino} nivel="primario" />
+        {dialogoSalida}
 
         <main className="relative z-10 max-w-2xl mx-auto space-y-8 py-10 px-4">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-white">Resultados del Test</h2>
+            <h2 className="text-3xl font-bold text-white">Resultados de la evaluación de indicadores de dislexia</h2>
           </div>
 
-          {/* Score summary */}
-          <div className="rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-8 text-center">
-            <p className="text-5xl font-extrabold text-white">{totalPct}%</p>
-            <p className="text-lg text-white/70 mt-2">{totalCorrect} de {totalAnswerable} respuestas correctas</p>
-          </div>
-
-          {/* Table */}
-          <div className="rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-white/10">
-                  <tr>
-                    <th className="py-3 px-4 text-white font-semibold">Bloque</th>
-                    <th className="py-3 px-4 text-center text-white font-semibold">Correctas</th>
-                    <th className="py-3 px-4 text-center text-white font-semibold">Porcentaje</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {blockResults.map((b) => (
-                    <tr key={b.id} className="border-t border-white/10">
-                      <td className="py-3 px-4 font-medium text-white">{b.name}</td>
-                      <td className="py-3 px-4 text-center text-white/70">{b.correct} / {b.total}</td>
-                      <td className={`py-3 px-4 text-center font-bold ${getScoreColor(b.pct)}`}>{b.pct}%</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Conclusion */}
-          <div className={`rounded-2xl bg-white/10 backdrop-blur-md border p-6 flex items-start gap-4 ${hasIndicators ? "border-red-400/60" : "border-green-400/60"}`}>
-            {hasIndicators ? (
-              <XCircle className="w-8 h-8 text-red-400 shrink-0 mt-0.5" />
-            ) : (
-              <CheckCircle2 className="w-8 h-8 text-green-400 shrink-0 mt-0.5" />
-            )}
-            <div>
-              <p className={`font-semibold text-lg ${hasIndicators ? "text-red-300" : "text-green-300"}`}>
-                {hasIndicators
-                  ? "Se detectaron indicadores de dislexia"
-                  : "No se detectaron indicadores significativos"}
-              </p>
-              <p className="text-sm text-white/70 mt-2">
-                Este test es orientativo y <span className="font-semibold text-white/90">no reemplaza un diagnóstico profesional</span>.
-                Te recomendamos consultar con un especialista para una evaluación completa.
-              </p>
-            </div>
-          </div>
+          <ResultadosTest
+            nivel="primario"
+            porcentajeTotal={totalPct}
+            bloques={bloquesResultado}
+          />
 
           {/* Save status indicator */}
           {(saving || saved) && (
@@ -742,6 +725,17 @@ export default function TestPrimariaPage() {
               )}
             </div>
           )}
+          {saveError && !saving && (
+            <div className="rounded-xl border border-red-400/60 bg-red-500/20 p-4 text-center space-y-3">
+              <p className="text-sm text-white">No se pudieron guardar los resultados: {saveError}</p>
+              <button
+                onClick={handleSave}
+                className="inline-flex items-center gap-2 rounded-lg bg-white/20 hover:bg-white/30 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200"
+              >
+                <RotateCcw className="w-4 h-4" /> Reintentar
+              </button>
+            </div>
+          )}
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3 pb-10">
@@ -749,10 +743,18 @@ export default function TestPrimariaPage() {
               onClick={handleRestart}
               className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
             >
-              <RotateCcw className="w-4 h-4" /> Repetir test
+              <RotateCcw className="w-4 h-4" /> Repetir evaluación
             </button>
+            {saved && (
+              <button
+                onClick={() => router.push("/test")}
+                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
+              >
+                <Users className="w-4 h-4" /> Evaluar a otro niño
+              </button>
+            )}
             <button
-              onClick={() => router.push("/dashboard")}
+              onClick={() => salir("/dashboard")}
               className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
             >
               <Home className="w-4 h-4" /> Volver al inicio
@@ -794,7 +796,7 @@ export default function TestPrimariaPage() {
           <div className="flex items-center gap-4">
             <span className="hidden sm:inline text-white font-medium">{blockName}</span>
             <button
-              onClick={() => router.push("/test")}
+              onClick={() => salir("/test")}
               className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -803,6 +805,8 @@ export default function TestPrimariaPage() {
           </div>
         </div>
       </header>
+      <TestBandaNino nino={acceso.nino} nivel="primario" />
+      {dialogoSalida}
 
       {/* ---- Progress bar with dots ---- */}
       <div className="relative z-10 w-full px-4 py-6">

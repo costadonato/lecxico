@@ -3,23 +3,91 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { LogOut, Loader2, User } from "lucide-react"
+import { LogOut, Loader2 } from "lucide-react"
+import { AppHeader } from "@/components/app-header"
+import { obtenerPerfilActual, perfilIncompleto } from "@/lib/auth/perfil"
+import type { Rol } from "@/lib/types/database"
+
+const TARJETAS = {
+  test: {
+    title: "Evaluación de indicadores de dislexia",
+    description: "Elegí un niño y realizá la evaluación",
+    icon: "🧠",
+    href: "/test",
+  },
+  entrenamiento: {
+    title: "Entrenamiento",
+    description: "Practicá con juegos interactivos",
+    icon: "🎮",
+    href: "/entrenamiento",
+  },
+  perfil: {
+    title: "Mi Perfil",
+    description: "Revisá tu progreso y resultados",
+    icon: "👤",
+    href: "/perfil",
+  },
+  ninos: {
+    title: "Mis niños",
+    description: "Vinculá niños y gestioná a quiénes acompañás",
+    icon: "👥",
+    href: "/ninos",
+  },
+  profesionales: {
+    title: "Mis profesionales",
+    description: "Mirá quiénes te acompañan",
+    icon: "🩺",
+    href: "/mis-profesionales",
+  },
+}
+
+const TARJETAS_POR_ROL: Record<Rol, (typeof TARJETAS)[keyof typeof TARJETAS][]> = {
+  profesional: [TARJETAS.test, TARJETAS.ninos],
+  nino: [TARJETAS.entrenamiento, TARJETAS.profesionales, TARJETAS.perfil],
+}
 
 export default function DashboardPage() {
   const router = useRouter()
   const supabase = createClient()
   const [firstName, setFirstName] = useState<string>("")
+  const [rol, setRol] = useState<Rol | null>(null)
+  const [errorCarga, setErrorCarga] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        setFirstName(user.user_metadata?.first_name || "Usuario")
-      } else {
-        router.push("/login")
+      try {
+        const actual = await obtenerPerfilActual(supabase)
+        if (!actual) {
+          router.push("/login")
+          return
+        }
+        if (!actual.profile) {
+          setErrorCarga("Tu cuenta no tiene un perfil asociado. Contactá al equipo de Lecxico.")
+          setIsLoading(false)
+          return
+        }
+        if (perfilIncompleto(actual.profile)) {
+          router.replace("/completar-perfil")
+          return
+        }
+
+        setFirstName(actual.profile.nombre)
+        setRol(actual.profile.rol)
+        setIsLoading(false)
+
+        if (actual.profile.rol === "nino") {
+          const { error } = await supabase
+            .from("ninos")
+            .update({ ultima_conexion: new Date().toISOString() })
+            .eq("profile_id", actual.user.id)
+          if (error) console.error("No se pudo registrar la última conexión:", error)
+        }
+      } catch (e) {
+        console.error("dashboard:", e)
+        setErrorCarga("No se pudo cargar tu perfil. Recargá la página.")
+        setIsLoading(false)
       }
-      setIsLoading(false)
     }
 
     fetchUser()
@@ -44,26 +112,22 @@ export default function DashboardPage() {
     )
   }
 
-  const cards = [
-    {
-      title: "Test",
-      description: "Detectá indicadores de dislexia",
-      icon: "🧠",
-      href: "/test",
-    },
-    {
-      title: "Entrenamiento",
-      description: "Practicá con juegos interactivos",
-      icon: "🎮",
-      href: "/entrenamiento",
-    },
-    {
-      title: "Mi Perfil",
-      description: "Revisá tu progreso y resultados",
-      icon: "👤",
-      href: "/perfil",
-    },
-  ]
+  if (errorCarga || !rol) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4 text-center" style={backgroundStyle}>
+        <p className="text-lg text-white">{errorCarga}</p>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
+        >
+          <LogOut className="w-4 h-4" />
+          Cerrar sesión
+        </button>
+      </div>
+    )
+  }
+
+  const cards = TARJETAS_POR_ROL[rol]
 
   return (
     <div className="min-h-screen relative overflow-hidden" style={backgroundStyle}>
@@ -75,25 +139,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ---- Navbar ---- */}
-      <header className="relative z-10 h-16 bg-red-600 shadow-lg">
-        <div className="container mx-auto h-full px-4 flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Lecxico</h1>
-
-          <div className="flex items-center gap-4">
-            <span className="hidden sm:flex items-center gap-2 text-white font-medium">
-              <User className="w-5 h-5" />
-              {firstName}
-            </span>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
-            >
-              <LogOut className="w-4 h-4" />
-              Cerrar sesión
-            </button>
-          </div>
-        </div>
-      </header>
+      <AppHeader profile={{ nombre: firstName, rol }} />
 
       <main className="relative z-10 container mx-auto px-4">
         {/* ---- Greeting with mascots ---- */}
@@ -118,7 +164,11 @@ export default function DashboardPage() {
         </div>
 
         {/* ---- Navigation cards ---- */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto pb-16">
+        <div
+          className={`grid grid-cols-1 gap-6 mx-auto pb-16 ${
+            cards.length === 1 ? "max-w-sm" : cards.length === 2 ? "md:grid-cols-2 max-w-3xl" : "md:grid-cols-3 max-w-5xl"
+          }`}
+        >
           {cards.map((card) => (
             <button
               key={card.title}

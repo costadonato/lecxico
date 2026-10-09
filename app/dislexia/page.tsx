@@ -175,19 +175,19 @@ export default function DislexiaPage() {
                 </div>
                 <h2 className="text-3xl md:text-4xl font-bold">Descubrí tu forma de aprender</h2>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                  Lecxico ofrece un test inicial para detectar señales de dislexia y conocer tu estilo de aprendizaje
-                  único.
+                  Lecxico ofrece una evaluación de indicadores de dislexia para detectar señales de dislexia y conocer tu
+                  estilo de aprendizaje único.
                 </p>
                 <div className="bg-card/80 p-6 rounded-lg border-2 max-w-2xl mx-auto">
                   <p className="text-base text-muted-foreground leading-relaxed mb-4">
-                    <strong className="text-foreground">Importante:</strong> Este test no reemplaza una evaluación
+                    <strong className="text-foreground">Importante:</strong> Esta evaluación no reemplaza un diagnóstico
                     profesional, pero te puede ayudar a entender mejor cómo aprendés y qué herramientas pueden ayudarte
                     más.
                   </p>
                   <ul className="text-left space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-start gap-2">
                       <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                      <span>Test interactivo y fácil de hacer</span>
+                      <span>Evaluación interactiva y fácil de hacer</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
@@ -205,7 +205,7 @@ export default function DislexiaPage() {
                 </div>
                 <Button size="lg" className="text-lg mt-4" asChild>
                   <Link href="/test-dislexia">
-                    Hacer el test ahora
+                    Hacer la evaluación ahora
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
                 </Button>

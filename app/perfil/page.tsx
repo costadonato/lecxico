@@ -5,86 +5,63 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import {
-  ArrowLeft,
-  Loader2,
-  LogOut,
-  User,
-  Mail,
-  ClipboardList,
-  Dumbbell,
-  Calendar,
-  Trophy,
-  Gamepad2,
-} from "lucide-react"
-
-const BLOCK_NAMES: Record<number, string> = {
-  1: "Discriminación auditiva",
-  2: "Conciencia fonológica",
-  3: "Conciencia silábica",
-  4: "Correspondencia sonido-letra",
-}
-
-interface TestResult {
-  fecha: string
-  puntaje_total: number
-  porcentaje_total: number
-  bloque_1_correctas: number
-  bloque_2_correctas: number
-  bloque_3_correctas: number
-  bloque_4_correctas: number
-  conclusion: string
-}
-
-interface Entrenamiento {
-  id: string
-  juego: string
-  puntaje: number
-  fecha: string
-}
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowLeft, Loader2, User, Mail, Dumbbell, Gamepad2 } from "lucide-react"
+import { AppHeader } from "@/components/app-header"
+import { MensajeAlerta } from "@/components/mensaje-alerta"
+import { HistorialEvaluaciones } from "@/components/test/historial-evaluaciones"
+import { obtenerPerfilActual } from "@/lib/auth/perfil"
+import { cargarTestsConBloques, type TestConBloques } from "@/lib/ninos/detalle"
+import type { Entrenamiento, Profile } from "@/lib/types/database"
 
 export default function PerfilPage() {
   const router = useRouter()
   const supabase = createClient()
 
   const [isLoading, setIsLoading] = useState(true)
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
-  const [testResult, setTestResult] = useState<TestResult | null>(null)
+  const [evaluaciones, setEvaluaciones] = useState<TestConBloques[]>([])
+  const [errorEvaluaciones, setErrorEvaluaciones] = useState(false)
   const [entrenamientos, setEntrenamientos] = useState<Entrenamiento[]>([])
 
   useEffect(() => {
     const load = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const actual = await obtenerPerfilActual(supabase).catch((e) => {
+        console.error("perfil:", e)
+        return undefined
+      })
+      if (actual === null) {
+        router.push("/login")
+        return
+      }
+      const user = actual?.user ?? (await supabase.auth.getUser()).data.user
       if (!user) {
         router.push("/login")
         return
       }
 
-      setFirstName(user.user_metadata?.first_name || "")
-      setLastName(user.user_metadata?.last_name || "")
+      setProfile(actual?.profile ?? null)
+      setFirstName(actual?.profile?.nombre ?? "")
+      setLastName(actual?.profile?.apellido ?? "")
       setEmail(user.email || "")
 
-      // Último resultado del test
-      const { data: testData } = await supabase
-        .from("test_resultados")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("fecha", { ascending: false })
-        .limit(1)
-        .single()
-
-      if (testData) setTestResult(testData)
+      // Historial de evaluaciones (con los bloques en una sola consulta)
+      try {
+        setEvaluaciones(await cargarTestsConBloques(supabase, user.id))
+      } catch (e) {
+        console.error("perfil evaluaciones:", e)
+        setErrorEvaluaciones(true)
+      }
 
       // Últimos 10 entrenamientos
       const { data: entData } = await supabase
         .from("entrenamientos")
         .select("*")
         .eq("user_id", user.id)
-        .order("fecha", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(10)
 
       if (entData) setEntrenamientos(entData)
@@ -93,12 +70,6 @@ export default function PerfilPage() {
     }
     load()
   }, [router, supabase])
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push("/login")
-    router.refresh()
-  }
 
   if (isLoading) {
     return (
@@ -113,30 +84,18 @@ export default function PerfilPage() {
     return d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric" })
   }
 
-  const conclusionLabel = (c: string) =>
-    c === "indicadores_detectados"
-      ? { text: "Indicadores detectados", variant: "destructive" as const }
-      : { text: "Sin indicadores", variant: "secondary" as const }
-
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
-      {/* Header */}
-      <header className="bg-white border-b shadow-sm sticky top-0 z-10 px-4 py-4">
-        <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard")} className="p-2">
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-            <h1 className="text-xl font-bold text-primary">Mi Perfil</h1>
-          </div>
-          <Button variant="outline" size="sm" onClick={handleLogout} className="flex items-center gap-2">
-            <LogOut className="w-4 h-4" />
-            Cerrar Sesión
-          </Button>
-        </div>
-      </header>
+      {profile && <AppHeader profile={profile} />}
 
       <main className="container mx-auto px-4 mt-8 space-y-8 max-w-3xl">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard")} className="p-2" aria-label="Volver al inicio">
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h1 className="text-2xl font-bold text-primary">Mi Perfil</h1>
+        </div>
+
         {/* ---- Datos personales ---- */}
         <Card className="border-2 shadow-sm">
           <CardHeader>
@@ -167,69 +126,12 @@ export default function PerfilPage() {
           </CardContent>
         </Card>
 
-        {/* ---- Resultado del test ---- */}
-        <Card className="border-2 shadow-sm">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-                <ClipboardList className="w-5 h-5 text-blue-600" />
-              </div>
-              <CardTitle className="text-xl">Resultado del Test</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {testResult ? (
-              <div className="space-y-5">
-                {/* Summary row */}
-                <div className="flex flex-wrap items-center gap-3">
-                  <Badge variant="outline" className="flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
-                    {formatDate(testResult.fecha)}
-                  </Badge>
-                  <Badge variant="outline" className="flex items-center gap-1">
-                    <Trophy className="w-3 h-3" />
-                    {testResult.puntaje_total}/20 — {testResult.porcentaje_total}%
-                  </Badge>
-                  <Badge variant={conclusionLabel(testResult.conclusion).variant}>
-                    {conclusionLabel(testResult.conclusion).text}
-                  </Badge>
-                </div>
-
-                {/* Block table */}
-                <div className="rounded-lg border overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="bg-gray-50 border-b">
-                        <th className="text-left px-4 py-2 font-semibold">Bloque</th>
-                        <th className="text-center px-4 py-2 font-semibold">Correctas</th>
-                        <th className="text-center px-4 py-2 font-semibold">Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[1, 2, 3, 4].map((b) => {
-                        const correctas = testResult[`bloque_${b}_correctas` as keyof TestResult] as number
-                        return (
-                          <tr key={b} className="border-b last:border-b-0">
-                            <td className="px-4 py-2">{BLOCK_NAMES[b]}</td>
-                            <td className="text-center px-4 py-2 font-medium">{correctas}</td>
-                            <td className="text-center px-4 py-2 text-gray-500">5</td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center py-6 space-y-4">
-                <p className="text-gray-500">Aún no realizaste el test</p>
-                <Button asChild>
-                  <Link href="/test">Realizar test</Link>
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {/* ---- Historial de evaluaciones (sin recomendación) ---- */}
+        {errorEvaluaciones ? (
+          <MensajeAlerta tipo="error" texto="No se pudo cargar el historial de evaluaciones. Recargá la página." />
+        ) : (
+          <HistorialEvaluaciones tests={evaluaciones} urlDetalle={(testId) => `/perfil/evaluaciones/${testId}`} />
+        )}
 
         {/* ---- Historial de entrenamientos ---- */}
         <Card className="border-2 shadow-sm">
@@ -260,7 +162,7 @@ export default function PerfilPage() {
                           {e.juego}
                         </td>
                         <td className="text-center px-4 py-2 font-medium">{e.puntaje}</td>
-                        <td className="text-right px-4 py-2 text-gray-500">{formatDate(e.fecha)}</td>
+                        <td className="text-right px-4 py-2 text-gray-500">{formatDate(e.created_at)}</td>
                       </tr>
                     ))}
                   </tbody>
