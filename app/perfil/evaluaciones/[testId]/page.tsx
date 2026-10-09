@@ -7,36 +7,40 @@ import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PaginaApp } from "@/components/pagina-app"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
-import { CargandoSeccion, SinAccesoNino } from "@/components/ninos/piezas-detalle"
+import { AvisoSinAcceso, CargandoSeccion } from "@/components/ninos/piezas-detalle"
 import { ResultadosTest } from "@/components/test/resultados-test"
 import { usePerfilPagina } from "@/lib/auth/use-perfil-pagina"
 import { formatearFecha } from "@/lib/fechas"
 import { cargarTestDeNino, type TestDeNino } from "@/lib/ninos/detalle"
 import { NIVEL_LABEL } from "@/lib/test/bloques"
 
-type Carga = { estado: "cargando" } | { estado: "error"; mensaje: string } | { estado: "sin-acceso" } | { estado: "listo"; datos: TestDeNino }
+type Carga = { estado: "cargando" } | { estado: "error"; mensaje: string } | { estado: "no-encontrada" } | { estado: "listo"; datos: TestDeNino }
 
-/** Una evaluación del historial con el mismo desglose que la pantalla final. */
-export default function DetalleTestPage() {
-  const { id, testId } = useParams<{ id: string; testId: string }>()
-  const pagina = usePerfilPagina("profesional")
-  const perfilListo = pagina.estado === "listo"
+/** Detalle de una evaluación propia, para la cuenta del niño (sin recomendación). */
+export default function EvaluacionPropiaPage() {
+  const { testId } = useParams<{ testId: string }>()
+  const pagina = usePerfilPagina("nino")
+  const userId = pagina.estado === "listo" ? pagina.actual.user.id : null
   const [carga, setCarga] = useState<Carga>({ estado: "cargando" })
 
   useEffect(() => {
-    if (!perfilListo) return
+    if (!userId) return
     let cancelado = false
-    cargarTestDeNino(id, testId)
-      .then((r) => { if (!cancelado) setCarga(r) })
+    // Se busca la evaluación dentro de las del propio niño (nino_id = usuario
+    // actual); la RLS ya lo restringe, pero se vuelve a comprobar acá.
+    cargarTestDeNino(userId, testId)
+      .then((r) => {
+        if (cancelado) return
+        setCarga(r.estado === "listo" && r.datos.test.nino_id === userId ? r : { estado: "no-encontrada" })
+      })
       .catch((e) => {
-        console.error("detalle test:", e)
+        console.error("evaluación propia:", e)
         if (!cancelado) setCarga({ estado: "error", mensaje: "No se pudo cargar la evaluación. Recargá la página." })
       })
     return () => { cancelado = true }
-  }, [perfilListo, id, testId])
+  }, [userId, testId])
 
   const datos = carga.estado === "listo" ? carga.datos : null
-  const volver = `/ninos/${id}`
 
   return (
     <PaginaApp
@@ -49,22 +53,22 @@ export default function DetalleTestPage() {
       acciones={
         datos ? (
           <Button variant="outline" asChild>
-            <Link href={volver}>
+            <Link href="/perfil">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Volver al detalle del niño
+              Volver a mi perfil
             </Link>
           </Button>
         ) : undefined
       }
-      volverA={datos ? volver : "/ninos"}
+      volverA="/perfil"
     >
       {() =>
         carga.estado === "cargando" ? (
           <CargandoSeccion />
         ) : carga.estado === "error" ? (
           <MensajeAlerta tipo="error" texto={carga.mensaje} />
-        ) : carga.estado === "sin-acceso" ? (
-          <SinAccesoNino />
+        ) : carga.estado === "no-encontrada" ? (
+          <AvisoSinAcceso mensaje="No encontramos esta evaluación." volverA="/perfil" textoVolver="Volver a mi perfil" />
         ) : (
           <div className="max-w-2xl">
             <ResultadosTest

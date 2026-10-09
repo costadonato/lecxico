@@ -71,7 +71,7 @@ export const BLOQUES_POR_NIVEL: Record<Nivel, readonly BloqueCodigo[]> = {
 /** Código del bloque `orden` (1-based, = id en BLOCKS) del test `nivel`. */
 export function bloqueCodigoPorOrden(nivel: Nivel, orden: number): BloqueCodigo {
   const codigo = BLOQUES_POR_NIVEL[nivel][orden - 1]
-  if (!codigo) throw new Error(`El test ${nivel} no tiene un bloque ${orden}`)
+  if (!codigo) throw new Error(`La evaluación de nivel ${NIVEL_LABEL[nivel]} no tiene un bloque ${orden}`)
   return codigo
 }
 

@@ -150,7 +150,7 @@ function SeleccionTipo({
     {
       valor: "profesional",
       titulo: "Soy profesional",
-      descripcion: "Quiero tomar el test y hacer seguimiento del entrenamiento de los niños que acompaño.",
+      descripcion: "Quiero realizar la evaluación de indicadores de dislexia y hacer seguimiento del entrenamiento de los niños que acompaño.",
     },
     {
       valor: "nino",

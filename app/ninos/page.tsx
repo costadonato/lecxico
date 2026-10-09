@@ -68,7 +68,7 @@ function TablaNinos() {
     setConfirmacion({
       titulo: `¿Dar de baja a ${v.nombre} ${v.apellido}?`,
       descripcion:
-        "Vas a dejar de ver su información (datos, tests y entrenamientos). Podés volver a invitarlo cuando quieras con su nombre de usuario.",
+        "Vas a dejar de ver su información (datos, evaluaciones y entrenamientos). Podés volver a invitarlo cuando quieras con su nombre de usuario.",
       textoConfirmar: "Dar de baja",
       accion: async () => {
         await desvincular(v.vinculo_id)
@@ -124,7 +124,7 @@ function TablaNinos() {
                   <th className="px-4 py-3 font-semibold">Apellido</th>
                   <th className="px-4 py-3 font-semibold">Usuario</th>
                   <th className="px-4 py-3 font-semibold">Etapa escolar</th>
-                  <th className="px-4 py-3 font-semibold">Fecha de afiliación</th>
+                  <th className="px-4 py-3 font-semibold">Fecha de vinculación</th>
                   <th className="px-4 py-3 font-semibold text-right">Acciones</th>
                 </tr>
               </thead>
@@ -161,7 +161,7 @@ function TablaNinos() {
                     <td className="px-4 py-3 text-right">
                       <Button size="sm" variant="outline" onClick={() => reafiliar(v)} disabled={reafiliando !== null}>
                         {reafiliando === v.vinculo_id && <Loader2 className="mr-1 h-3 w-3 animate-spin" />}
-                        Reafiliar
+                        Volver a vincular
                       </Button>
                     </td>
                   </tr>

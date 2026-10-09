@@ -449,7 +449,7 @@ function TestPrimaria() {
   if (!current) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4 text-center" style={backgroundStyle}>
-        <h1 className="text-2xl font-bold text-white">Test de Nivel Primario</h1>
+        <h1 className="text-2xl font-bold text-white">Evaluación de indicadores de dislexia · Nivel Primario</h1>
         <p className="text-white/70">Todavía no hay preguntas cargadas para este nivel.</p>
         <button
           onClick={() => router.push("/test")}
@@ -687,7 +687,7 @@ function TestPrimaria() {
           <div className="container mx-auto h-full px-4 flex items-center justify-between">
             <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Lecxico</h1>
             <div className="flex items-center gap-4">
-              <span className="hidden sm:inline text-white font-medium">Resultados del Test</span>
+              <span className="hidden sm:inline text-white font-medium">Resultados de la evaluación</span>
               <button
                 onClick={() => salir("/test")}
                 className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
@@ -703,13 +703,12 @@ function TestPrimaria() {
 
         <main className="relative z-10 max-w-2xl mx-auto space-y-8 py-10 px-4">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-white">Resultados del Test</h2>
+            <h2 className="text-3xl font-bold text-white">Resultados de la evaluación de indicadores de dislexia</h2>
           </div>
 
           <ResultadosTest
             nivel="primario"
             porcentajeTotal={totalPct}
-            conclusion={totalPct < 60 ? "indicadores_detectados" : "sin_indicadores"}
             bloques={bloquesResultado}
           />
 
@@ -744,14 +743,14 @@ function TestPrimaria() {
               onClick={handleRestart}
               className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
             >
-              <RotateCcw className="w-4 h-4" /> Repetir test
+              <RotateCcw className="w-4 h-4" /> Repetir evaluación
             </button>
             {saved && (
               <button
                 onClick={() => router.push("/test")}
                 className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
               >
-                <Users className="w-4 h-4" /> Tomar test a otro niño
+                <Users className="w-4 h-4" /> Evaluar a otro niño
               </button>
             )}
             <button

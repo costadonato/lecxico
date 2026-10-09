@@ -51,7 +51,7 @@ function TablaProfesionales() {
       descripcion: (
         <>
           <p>
-            {nombre} va a dejar de ver la información del niño: sus datos, los resultados de los tests y los
+            {nombre} va a dejar de ver la información del niño: sus datos, los resultados de las evaluaciones y los
             entrenamientos.
           </p>
           <p className="mt-2">Para volver a vincularse, el profesional tiene que enviar una invitación nueva.</p>

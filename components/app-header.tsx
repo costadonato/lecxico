@@ -9,8 +9,8 @@ import type { Profile } from "@/lib/types/database"
 
 /**
  * Navbar de las páginas con sesión: logo, nombre, campanita de invitaciones
- * y cerrar sesión. No se usa en las páginas del test (sin notificaciones
- * durante la prueba).
+ * y cerrar sesión. No se usa en las páginas de la evaluación (sin notificaciones
+ * mientras se evalúa).
  */
 export function AppHeader({ profile }: { profile: Pick<Profile, "nombre" | "rol"> }) {
   const router = useRouter()

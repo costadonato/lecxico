@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client"
 import { NIVEL_LABEL, nivelParaEtapa, type Nivel } from "@/lib/test/bloques"
 
 export const MENSAJE_SOLO_PROFESIONAL =
-  "El test se inicia desde la cuenta de un profesional, seleccionando un niño."
+  "La evaluación se inicia desde la cuenta de un profesional, seleccionando un niño."
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -58,7 +58,7 @@ export function useAccesoTest(nivel: Nivel): AccesoTest {
       const nivelDelNino = nivelParaEtapa(nino.etapa_escolar)
       if (nivelDelNino !== nivel) {
         return denegar(
-          `Por su etapa escolar, a este niño le corresponde el test de nivel ${NIVEL_LABEL[nivelDelNino]}.`,
+          `Por su etapa escolar, a este niño le corresponde la evaluación de nivel ${NIVEL_LABEL[nivelDelNino]}.`,
           true,
         )
       }

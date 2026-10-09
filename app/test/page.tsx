@@ -16,11 +16,11 @@ import { ninosParaTest } from "@/lib/test/ninos-para-test"
 import { useRecargaVinculos } from "@/lib/vinculos"
 import type { NinoParaTest } from "@/lib/types/database"
 
-/** Paso previo al test: el profesional elige a qué niño (con vínculo activo) se lo toma. */
+/** Paso previo a la evaluación: el profesional elige a qué niño (con vínculo activo) evaluar. */
 export default function SeleccionNinoTestPage() {
   const pagina = usePerfilPagina("profesional")
   return (
-    <PaginaApp pagina={pagina} titulo="Tomar test" acciones={<DialogoVincularNino />}>
+    <PaginaApp pagina={pagina} titulo="Evaluación de indicadores de dislexia" acciones={<DialogoVincularNino />}>
       {() => <TablaNinosParaTest />}
     </PaginaApp>
   )
@@ -46,7 +46,7 @@ function TablaNinosParaTest() {
   }, [])
 
   // Al volver a la pestaña se recarga: así aparece un niño cuyo tutor acaba
-  // de aceptar la invitación, y se actualiza el último test.
+  // de aceptar la invitación, y se actualiza la última evaluación.
   useRecargaVinculos(recargar)
 
   // Filtra solo la lista ya cargada (sin consultas nuevas).
@@ -72,9 +72,9 @@ function TablaNinosParaTest() {
       <Card className="border-2 shadow-sm">
         <CardContent className="py-12 text-center space-y-4">
           <ClipboardList className="w-10 h-10 text-muted-foreground mx-auto" />
-          <p className="font-semibold">Todavía no hay niños para tomarles el test.</p>
+          <p className="font-semibold">Todavía no hay niños para evaluar.</p>
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            Solo podés tomar el test a niños con los que tenés un vínculo activo. Pedile el nombre de usuario del niño a su
+            Solo podés evaluar a niños con los que tenés un vínculo activo. Pedile el nombre de usuario del niño a su
             madre, padre o tutor/a y enviale una invitación; cuando la acepten, el niño va a aparecer en esta lista.
           </p>
           <DialogoVincularNino variant="outline" />
@@ -103,8 +103,8 @@ function TablaNinosParaTest() {
               <tr className="bg-gray-50 border-b text-left">
                 <th className="px-4 py-3 font-semibold">Nombre completo</th>
                 <th className="px-4 py-3 font-semibold">Usuario</th>
-                <th className="px-4 py-3 font-semibold">Nivel del test</th>
-                <th className="px-4 py-3 font-semibold">Última prueba</th>
+                <th className="px-4 py-3 font-semibold">Nivel</th>
+                <th className="px-4 py-3 font-semibold">Última evaluación</th>
                 <th className="px-4 py-3 font-semibold">Porcentaje</th>
                 <th className="px-4 py-3 font-semibold text-right">Acción</th>
               </tr>
@@ -118,14 +118,14 @@ function TablaNinosParaTest() {
                   <td className="px-4 py-3 text-muted-foreground">@{n.nombre_usuario}</td>
                   <td className="px-4 py-3">{NIVEL_LABEL[n.nivel]}</td>
                   <td className="px-4 py-3">
-                    {n.fecha_ultimo_test ? formatearFecha(n.fecha_ultimo_test) : <span className="text-muted-foreground">Sin pruebas</span>}
+                    {n.fecha_ultimo_test ? formatearFecha(n.fecha_ultimo_test) : <span className="text-muted-foreground">Sin evaluaciones</span>}
                   </td>
                   <td className="px-4 py-3">
                     {n.porcentaje_ultimo_test !== null ? `${n.porcentaje_ultimo_test}%` : <span className="text-muted-foreground">—</span>}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Button size="sm" asChild>
-                      <Link href={rutaDelTest(n.nivel, n.nino_id)}>Tomar test</Link>
+                      <Link href={rutaDelTest(n.nivel, n.nino_id)}>Tomar evaluación</Link>
                     </Button>
                   </td>
                 </tr>

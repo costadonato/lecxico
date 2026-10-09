@@ -1,11 +1,11 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Bell, Loader2 } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { ConfirmarDialog, type Confirmacion } from "@/components/confirmar-dialog"
-import { formatearFecha } from "@/lib/fechas"
+import { formatearFechaHora, tiempoRelativo } from "@/lib/fechas"
 import {
   cancelarInvitacion,
   responderInvitacion,
@@ -20,6 +20,9 @@ import type { Rol, VinculoDelNino, VinculoDelProfesional } from "@/lib/types/dat
  * - Niño: invitaciones recibidas, con Aceptar / Rechazar.
  * - Profesional: invitaciones enviadas sin responder, con Cancelar.
  * Se refresca al cargar, al recuperar el foco y después de cada acción.
+ * Cada invitación muestra el tiempo transcurrido ("hace 5 minutos"), que se
+ * recalcula cada minuto mientras el panel está abierto; la fecha y hora
+ * exactas quedan en el title (al pasar el mouse).
  */
 export function CampanitaInvitaciones({ rol }: { rol: Rol }) {
   const [recibidas, setRecibidas] = useState<VinculoDelNino[]>([])
@@ -28,6 +31,15 @@ export function CampanitaInvitaciones({ rol }: { rol: Rol }) {
   const [error, setError] = useState<string | null>(null)
   const [aceptando, setAceptando] = useState<string | null>(null)
   const [confirmacion, setConfirmacion] = useState<Confirmacion | null>(null)
+  const [abierto, setAbierto] = useState(false)
+  const [ahora, setAhora] = useState(() => new Date())
+
+  useEffect(() => {
+    if (!abierto) return
+    setAhora(new Date())
+    const intervalo = setInterval(() => setAhora(new Date()), 60_000)
+    return () => clearInterval(intervalo)
+  }, [abierto])
 
   const recargar = useCallback(async () => {
     try {
@@ -76,7 +88,7 @@ export function CampanitaInvitaciones({ rol }: { rol: Rol }) {
 
   return (
     <>
-      <Popover>
+      <Popover open={abierto} onOpenChange={setAbierto}>
         <PopoverTrigger asChild>
           <button
             type="button"
@@ -115,7 +127,9 @@ export function CampanitaInvitaciones({ rol }: { rol: Rol }) {
                     <p className="text-sm">
                       <span className="font-semibold">{nombreProfesional(v)}</span> quiere vincularse como tu profesional
                     </p>
-                    <p className="text-xs text-muted-foreground">{formatearFecha(v.fecha_invitacion)}</p>
+                    <p className="text-xs text-muted-foreground" title={formatearFechaHora(v.fecha_invitacion)}>
+                      {tiempoRelativo(v.fecha_invitacion, ahora)}
+                    </p>
                     <div className="flex gap-2">
                       <Button size="sm" onClick={() => aceptar(v.id)} disabled={aceptando !== null}>
                         {aceptando === v.id && <Loader2 className="mr-1 h-3 w-3 animate-spin" />}
@@ -134,7 +148,9 @@ export function CampanitaInvitaciones({ rol }: { rol: Rol }) {
                   <li key={v.vinculo_id} className="px-4 py-3 flex items-center justify-between gap-3">
                     <p className="text-sm">
                       <span className="font-semibold">@{v.nombre_usuario}</span>
-                      <span className="text-muted-foreground"> · enviada el {formatearFecha(v.fecha_invitacion)}</span>
+                      <span className="text-muted-foreground" title={formatearFechaHora(v.fecha_invitacion)}>
+                        {" "}· enviada {tiempoRelativo(v.fecha_invitacion, ahora)}
+                      </span>
                     </p>
                     <Button size="sm" variant="outline" onClick={() => pedirCancelacion(v)}>
                       Cancelar

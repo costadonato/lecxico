@@ -10,8 +10,8 @@ import type { Rol } from "@/lib/types/database"
 
 const TARJETAS = {
   test: {
-    title: "Test",
-    description: "Elegí un niño y tomale el test de indicadores",
+    title: "Evaluación de indicadores de dislexia",
+    description: "Elegí un niño y realizá la evaluación",
     icon: "🧠",
     href: "/test",
   },
@@ -43,7 +43,7 @@ const TARJETAS = {
 
 const TARJETAS_POR_ROL: Record<Rol, (typeof TARJETAS)[keyof typeof TARJETAS][]> = {
   profesional: [TARJETAS.test, TARJETAS.ninos],
-  nino: [TARJETAS.entrenamiento, TARJETAS.perfil, TARJETAS.profesionales],
+  nino: [TARJETAS.entrenamiento, TARJETAS.profesionales, TARJETAS.perfil],
 }
 
 export default function DashboardPage() {

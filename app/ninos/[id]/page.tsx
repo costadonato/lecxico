@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import { ClipboardList, Dumbbell, Lightbulb, User } from "lucide-react"
+import { Dumbbell, Lightbulb, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PaginaApp } from "@/components/pagina-app"
 import { ConfirmarDialog, type Confirmacion } from "@/components/confirmar-dialog"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
-import { CargandoSeccion, Seccion, SinAccesoNino } from "@/components/ninos/piezas-detalle"
+import { CargandoSeccion, SinAccesoNino } from "@/components/ninos/piezas-detalle"
+import { Seccion } from "@/components/seccion"
+import { HistorialEvaluaciones } from "@/components/test/historial-evaluaciones"
 import { usePerfilPagina } from "@/lib/auth/use-perfil-pagina"
 import { calcularEdad, formatearFecha, textoEdad } from "@/lib/fechas"
 import { getGameById } from "@/lib/games-catalog"
@@ -57,7 +59,10 @@ export default function DetalleNinoPage() {
           <div className="space-y-6">
             <InformacionGeneral datos={carga.datos} />
             <Recomendacion datos={carga.datos} />
-            <HistorialTests ninoId={carga.datos.perfil.id} tests={carga.datos.tests} />
+            <HistorialEvaluaciones
+              tests={carga.datos.tests}
+              urlDetalle={(testId) => `/ninos/${carga.datos.perfil.id}/tests/${testId}`}
+            />
             <HistorialEntrenamientos datos={carga.datos} />
           </div>
         )
@@ -67,7 +72,7 @@ export default function DetalleNinoPage() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Encabezado: Tomar test / Dar de baja (sin editar)                   */
+/*  Encabezado: Tomar evaluación / Dar de baja (sin editar)             */
 /* ------------------------------------------------------------------ */
 function AccionesEncabezado({ datos }: { datos: DetalleNino }) {
   const router = useRouter()
@@ -78,7 +83,7 @@ function AccionesEncabezado({ datos }: { datos: DetalleNino }) {
     setConfirmacion({
       titulo: `¿Dar de baja a ${nombre}?`,
       descripcion:
-        "Vas a dejar de ver su información (datos, tests y entrenamientos). Podés volver a invitarlo cuando quieras con su nombre de usuario.",
+        "Vas a dejar de ver su información (datos, evaluaciones y entrenamientos). Podés volver a invitarlo cuando quieras con su nombre de usuario.",
       textoConfirmar: "Dar de baja",
       accion: async () => {
         await desvincular(datos.vinculo.id)
@@ -89,7 +94,7 @@ function AccionesEncabezado({ datos }: { datos: DetalleNino }) {
   return (
     <div className="flex flex-wrap gap-2">
       <Button asChild>
-        <Link href={rutaDelTest(nivelParaEtapa(datos.nino.etapa_escolar), datos.perfil.id)}>Tomar test</Link>
+        <Link href={rutaDelTest(nivelParaEtapa(datos.nino.etapa_escolar), datos.perfil.id)}>Tomar evaluación</Link>
       </Button>
       <Button variant="outline" onClick={pedirBaja}>
         Dar de baja
@@ -114,13 +119,13 @@ function InformacionGeneral({ datos }: { datos: DetalleNino }) {
     ["Usuario", perfil.nombre_usuario ? `@${perfil.nombre_usuario}` : "—"],
     ["Fecha de nacimiento", `${formatearFecha(nino.fecha_nacimiento)}${edad ? ` (${edad})` : ""}`],
     ["Etapa escolar", etapa],
-    ["Nivel del test", NIVEL_LABEL[nivelParaEtapa(nino.etapa_escolar)]],
+    ["Nivel de la evaluación", NIVEL_LABEL[nivelParaEtapa(nino.etapa_escolar)]],
     ["Mail del tutor", nino.tutor_email],
     ...(nino.tutor_telefono ? ([["Teléfono del tutor", nino.tutor_telefono]] as [string, string][]) : []),
     ["Vinculado con vos desde", oGuion(vinculo.fecha_afiliacion)],
     ["Última conexión", oGuion(nino.ultima_conexion)],
     ["Último entrenamiento", oGuion(nino.ultimo_entrenamiento)],
-    ["Última prueba", oGuion(nino.ultima_prueba)],
+    ["Última evaluación", oGuion(nino.ultima_prueba)],
   ]
 
   return (
@@ -138,7 +143,7 @@ function InformacionGeneral({ datos }: { datos: DetalleNino }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Recomendación (último test, de cualquier profesional)               */
+/*  Recomendación (última evaluación, de cualquier profesional)         */
 /* ------------------------------------------------------------------ */
 const colorBarra = (pct: number) =>
   pct >= 80 ? "bg-green-500" : pct >= 60 ? "bg-yellow-500" : pct >= 40 ? "bg-orange-500" : "bg-red-500"
@@ -150,9 +155,9 @@ function Recomendacion({ datos }: { datos: DetalleNino }) {
     <Seccion icono={<Lightbulb className="w-5 h-5" />} colorIcono="bg-amber-100 text-amber-600" titulo="Recomendación">
       {!ultimo ? (
         <div className="text-center py-6 space-y-4">
-          <p className="text-gray-500">La recomendación va a aparecer después del primer test.</p>
+          <p className="text-gray-500">La recomendación va a aparecer después de la primera evaluación.</p>
           <Button asChild>
-            <Link href={rutaDelTest(nivelParaEtapa(datos.nino.etapa_escolar), datos.perfil.id)}>Tomar test</Link>
+            <Link href={rutaDelTest(nivelParaEtapa(datos.nino.etapa_escolar), datos.perfil.id)}>Tomar evaluación</Link>
           </Button>
         </div>
       ) : (
@@ -169,8 +174,8 @@ function ListaRecomendacion({ test }: { test: TestConBloques }) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-gray-600">
-        Según el test del {formatearFecha(test.fecha)} (Nivel {NIVEL_LABEL[test.nivel]}). Los bloques van de menor a mayor
-        porcentaje de acierto.
+        Según la evaluación del {formatearFecha(test.fecha)} (Nivel {NIVEL_LABEL[test.nivel]}). Los bloques van de menor a
+        mayor porcentaje de acierto.
       </p>
       <ul className="space-y-3">
         {ordenados.map((b) => {
@@ -199,58 +204,11 @@ function ListaRecomendacion({ test }: { test: TestConBloques }) {
           )
         })}
       </ul>
-      {prioritarios.size === 0 && <p className="text-sm text-gray-600">En ese test respondió bien todos los bloques.</p>}
+      {prioritarios.size === 0 && <p className="text-sm text-gray-600">En esa evaluación respondió bien todos los bloques.</p>}
       <p className="text-xs text-gray-500">
-        Es una orientación a partir del último test: vos decidís qué trabajar con el niño.
+        Es una orientación a partir de la última evaluación: vos decidís qué trabajar con el niño.
       </p>
     </div>
-  )
-}
-
-/* ------------------------------------------------------------------ */
-/*  Historial de tests                                                  */
-/* ------------------------------------------------------------------ */
-function HistorialTests({ ninoId, tests }: { ninoId: string; tests: TestConBloques[] }) {
-  return (
-    <Seccion icono={<ClipboardList className="w-5 h-5" />} colorIcono="bg-blue-100 text-blue-600" titulo="Historial de tests">
-      {tests.length === 0 ? (
-        <p className="text-center text-gray-500 py-6">Todavía no hay tests registrados.</p>
-      ) : (
-        <div className="rounded-lg border overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50 border-b text-left">
-                <th className="px-4 py-2 font-semibold">Fecha</th>
-                <th className="px-4 py-2 font-semibold">Nivel</th>
-                <th className="px-4 py-2 font-semibold">Porcentaje general</th>
-                <th className="px-4 py-2 font-semibold">Bloque(s) con más errores</th>
-                <th className="px-4 py-2 font-semibold text-right">Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tests.map((t) => {
-                const debiles = bloquesMasDebiles(t.bloques)
-                return (
-                  <tr key={t.id} className="border-b last:border-b-0">
-                    <td className="px-4 py-2">{formatearFecha(t.fecha)}</td>
-                    <td className="px-4 py-2">{NIVEL_LABEL[t.nivel]}</td>
-                    <td className="px-4 py-2 font-medium">{t.porcentaje_total}%</td>
-                    <td className="px-4 py-2">
-                      {debiles.length > 0 ? debiles.map((b) => BLOQUE_NOMBRES[b.bloque_codigo]).join(", ") : "Ninguno"}
-                    </td>
-                    <td className="px-4 py-2 text-right">
-                      <Button size="sm" variant="outline" asChild>
-                        <Link href={`/ninos/${ninoId}/tests/${t.id}`}>Ver detalle</Link>
-                      </Button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </Seccion>
   )
 }
 

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ConfirmarDialog, type Confirmacion } from "@/components/confirmar-dialog"
 
-export const MENSAJE_SALIDA_TEST = "Si salís ahora, se pierde el progreso del test."
+export const MENSAJE_SALIDA_TEST = "Si salís ahora, se pierde el progreso de la evaluación."
 
 /** Marca de la entrada "trampa" del historial (ver más abajo). */
 const GUARDA = "lecxicoTestEnCurso"
@@ -28,10 +28,10 @@ export function useSalidaDelTest(enCurso: boolean) {
 
   const pedirConfirmacion = useCallback((irse: () => void) => {
     setConfirmacion({
-      titulo: "¿Salir del test?",
+      titulo: "¿Salir de la evaluación?",
       descripcion: MENSAJE_SALIDA_TEST,
-      textoConfirmar: "Salir del test",
-      textoCancelar: "Seguir con el test",
+      textoConfirmar: "Salir de la evaluación",
+      textoCancelar: "Seguir con la evaluación",
       accion: async () => {
         saliendo.current = true
         irse()
