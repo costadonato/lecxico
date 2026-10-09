@@ -85,7 +85,7 @@ export function CazadorNumeros({ onComplete }: CazadorNumerosProps) {
     <div className="space-y-6">
       {/* Lex mascot */}
       <div className="flex items-center gap-4 p-4 bg-primary/5 rounded-xl border border-primary/20">
-        <img src="/images/lex.png" alt="Lex" className="w-16 h-16 object-contain" />
+        <img src="/images/lex.webp" alt="Lex" className="w-16 h-16 object-contain" />
         <div className="flex-1">
           <p className="font-semibold text-sm mb-1">Lex dice:</p>
           <p className="text-sm text-muted-foreground">

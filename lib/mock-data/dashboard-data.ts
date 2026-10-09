@@ -7,7 +7,7 @@ export const mockStudents: Student[] = [
     age: 9,
     grade: "4to grado",
     mode: "child",
-    avatar: "/images/lex.png",
+    avatar: "/images/lex.webp",
     parentIds: ["parent_001"],
     teacherIds: ["teacher_001"],
     psychopedagogistId: "psych_001",

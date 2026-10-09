@@ -99,7 +99,7 @@ export function SightWords({ onComplete, mode = "child" }: SightWordsProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4 p-4 bg-cyan-50 rounded-xl border border-cyan-200">
-        <img src="/images/lex.png" alt="Lex" className="w-16 h-16 object-contain mascot-no-bg" />
+        <img src="/images/lex.webp" alt="Lex" className="w-16 h-16 object-contain mascot-no-bg" />
         <div className="flex-1">
           <p className="font-semibold text-sm mb-1">Lex dice:</p>
           <p className="text-sm text-muted-foreground">

@@ -3,79 +3,140 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ==================================================================
+   SISTEMA DE DISEÑO DE LECXICO
+   ------------------------------------------------------------------
+   Paleta tomada de los personajes:
+   - Rojo: el traje de Lex y la carcasa de Lumo (color principal).
+   - Celeste: la pantalla y los ojos de Lumo (acento).
+   - Pantalla: el azul noche de la cara de Lumo (superficies oscuras).
+   Colores de apoyo para diferenciar secciones: sol, menta y lavanda
+   (mandarina solo se usa en la escala de niveles de porcentaje).
+
+   Cada color tiene tres tonos:
+   - base   → rellenos, ilustraciones, barras.
+   - fuerte → texto e íconos (contraste AA sobre crema, blanco y su suave).
+   - suave  → fondos de chips, íconos y tarjetas.
+   ================================================================== */
 :root {
-  --background: hsl(0 0% 100%);
-  --foreground: hsl(0 0% 3.9%);
-  --card: hsl(0 0% 100%);
-  --card-foreground: hsl(0 0% 3.9%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(0 0% 3.9%);
-  --primary: hsl(0 72.2% 50.6%);
-  --primary-foreground: hsl(0 0% 98%);
-  --secondary: hsl(0 84.2% 60.2%);
-  --secondary-foreground: hsl(0 0% 9%);
-  --muted: hsl(0 0% 96.1%);
-  --muted-foreground: hsl(0 0% 45.1%);
-  --accent: hsl(160 84.1% 39.4%);
-  --accent-foreground: hsl(0 0% 98%);
-  --destructive: hsl(0 84.2% 60.2%);
-  --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(0 0% 89.8%);
-  --input: hsl(0 0% 89.8%);
-  --ring: hsl(0 72.2% 50.6%);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* --- Marca --- */
+  --rojo: #d42a2a;
+  --rojo-fuerte: #a81d22;
+  --rojo-suave: #fde6e3;
+  --celeste: #2fd0e6;
+  --celeste-fuerte: #0a7189;
+  --celeste-suave: #ddf6fa;
+  --pantalla: #1c2838;
+  --pantalla-claro: #2b3d55;
+  --pantalla-foreground: #f4efe6;
+  --plata: #d3dbe3; /* orejas y marco de la pantalla de Lumo */
+  --plata-oscuro: #9aa8b6;
+  --blanco: #ffffff;
+  /* Bandera argentina (ícono de "Primera plataforma argentina") */
+  --bandera-celeste: #74acdf;
+  --bandera-sol: #f6b40e;
+
+  /* --- Apoyo --- */
+  --sol: #ffc233;
+  --sol-fuerte: #8a5300;
+  --sol-suave: #fff1cc;
+  --menta: #34c38f;
+  --menta-fuerte: #14724f;
+  --menta-suave: #ddf5ea;
+  --lavanda: #9b7bf2;
+  --lavanda-fuerte: #5b3dc4;
+  --lavanda-suave: #eee8fd;
+  --mandarina: #ff8b3d;
+  --mandarina-fuerte: #9a4300;
+  --mandarina-suave: #ffe8d6;
+
+  /* --- Escala de niveles (porcentajes de acierto) --- */
+  --nivel-alto: var(--menta);
+  --nivel-alto-texto: var(--menta-fuerte);
+  --nivel-medio: var(--sol);
+  --nivel-medio-texto: var(--sol-fuerte);
+  --nivel-bajo: var(--mandarina);
+  --nivel-bajo-texto: var(--mandarina-fuerte);
+  --nivel-critico: var(--rojo);
+  --nivel-critico-texto: var(--rojo-fuerte);
+
+  /* --- Semánticos (shadcn) --- */
+  --background: #fbf6ee; /* crema cálido */
+  --foreground: #2a2420; /* gris muy oscuro, no negro */
+  --card: #fffdfa;
+  --card-foreground: #2a2420;
+  --popover: #fffdfa;
+  --popover-foreground: #2a2420;
+  --primary: var(--rojo);
+  --primary-foreground: #ffffff;
+  /* Los juegos usan text-/fill-secondary para estrellas y puntos: amarillo sol. */
+  --secondary: var(--sol);
+  --secondary-foreground: #2a2420;
+  --muted: #f4ede3;
+  --muted-foreground: #675d55;
+  --accent: var(--celeste-fuerte);
+  --accent-foreground: #ffffff;
+  --destructive: #b42318;
+  --destructive-foreground: #ffffff;
+  --border: #ebe1d3;
+  --input: #a6957c; /* 3:1 contra la tarjeta (borde de campo visible) */
+  --ring: var(--rojo);
+  --exito: var(--menta-fuerte);
+  --exito-suave: var(--menta-suave);
+
+  --chart-1: var(--rojo);
+  --chart-2: var(--celeste-fuerte);
+  --chart-3: var(--sol);
+  --chart-4: var(--menta);
+  --chart-5: var(--lavanda);
+
+  /* --- Forma --- */
+  --radius: 1rem;
+
+  --sidebar: #fffdfa;
+  --sidebar-foreground: #2a2420;
+  --sidebar-primary: var(--rojo);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f4ede3;
+  --sidebar-accent-foreground: #2a2420;
+  --sidebar-border: #ebe1d3;
+  --sidebar-ring: var(--rojo);
 }
 
+/* La app no activa el modo oscuro hoy; se deja coherente con la paleta. */
 .dark {
-  --background: hsl(0 0% 3.9%);
-  --foreground: hsl(0 0% 98%);
-  --card: hsl(0 0% 3.9%);
-  --card-foreground: hsl(0 0% 98%);
-  --popover: hsl(0 0% 3.9%);
-  --popover-foreground: hsl(0 0% 98%);
-  --primary: hsl(0 0% 98%);
-  --primary-foreground: hsl(0 0% 9%);
-  --secondary: hsl(0 0% 14.9%);
-  --secondary-foreground: hsl(0 0% 98%);
-  --muted: hsl(0 0% 14.9%);
-  --muted-foreground: hsl(0 0% 63.9%);
-  --accent: hsl(0 0% 14.9%);
-  --accent-foreground: hsl(0 0% 98%);
-  --destructive: hsl(0 62.8% 30.6%);
-  --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(0 0% 14.9%);
-  --input: hsl(0 0% 14.9%);
-  --ring: hsl(0 0% 83.1%);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --background: #171f2b;
+  --foreground: #f4efe6;
+  --card: #1c2838;
+  --card-foreground: #f4efe6;
+  --popover: #1c2838;
+  --popover-foreground: #f4efe6;
+  --primary: #f05252;
+  --primary-foreground: #1c0a0a;
+  --secondary: #263446;
+  --secondary-foreground: #f4efe6;
+  --muted: #263446;
+  --muted-foreground: #b9c2cf;
+  --accent: var(--celeste);
+  --accent-foreground: #0b1f26;
+  --destructive: #f05252;
+  --destructive-foreground: #1c0a0a;
+  --border: #2d3c50;
+  --input: #5b6b80;
+  --ring: #f05252;
+  --sidebar: #1c2838;
+  --sidebar-foreground: #f4efe6;
+  --sidebar-primary: #f05252;
+  --sidebar-primary-foreground: #1c0a0a;
+  --sidebar-accent: #263446;
+  --sidebar-accent-foreground: #f4efe6;
+  --sidebar-border: #2d3c50;
+  --sidebar-ring: #f05252;
 }
 
 @theme inline {
-  /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
+  --font-sans: var(--font-lexend), ui-sans-serif, system-ui, sans-serif;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -95,15 +156,57 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-exito: var(--exito);
+  --color-exito-suave: var(--exito-suave);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+
+  /* Marca y apoyo como utilidades: bg-sol-suave, text-celeste-fuerte, … */
+  --color-rojo: var(--rojo);
+  --color-rojo-fuerte: var(--rojo-fuerte);
+  --color-rojo-suave: var(--rojo-suave);
+  --color-celeste: var(--celeste);
+  --color-celeste-fuerte: var(--celeste-fuerte);
+  --color-celeste-suave: var(--celeste-suave);
+  --color-pantalla: var(--pantalla);
+  --color-pantalla-claro: var(--pantalla-claro);
+  --color-pantalla-foreground: var(--pantalla-foreground);
+  --color-plata: var(--plata);
+  --color-plata-oscuro: var(--plata-oscuro);
+  --color-blanco: var(--blanco);
+  --color-bandera-celeste: var(--bandera-celeste);
+  --color-bandera-sol: var(--bandera-sol);
+  --color-sol: var(--sol);
+  --color-sol-fuerte: var(--sol-fuerte);
+  --color-sol-suave: var(--sol-suave);
+  --color-menta: var(--menta);
+  --color-menta-fuerte: var(--menta-fuerte);
+  --color-menta-suave: var(--menta-suave);
+  --color-lavanda: var(--lavanda);
+  --color-lavanda-fuerte: var(--lavanda-fuerte);
+  --color-lavanda-suave: var(--lavanda-suave);
+  --color-mandarina: var(--mandarina);
+  --color-mandarina-fuerte: var(--mandarina-fuerte);
+  --color-mandarina-suave: var(--mandarina-suave);
+  --color-nivel-alto: var(--nivel-alto);
+  --color-nivel-alto-texto: var(--nivel-alto-texto);
+  --color-nivel-medio: var(--nivel-medio);
+  --color-nivel-medio-texto: var(--nivel-medio-texto);
+  --color-nivel-bajo: var(--nivel-bajo);
+  --color-nivel-bajo-texto: var(--nivel-bajo-texto);
+  --color-nivel-critico: var(--nivel-critico);
+  --color-nivel-critico-texto: var(--nivel-critico-texto);
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 4px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 16px);
+
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -114,15 +217,175 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Sombras cálidas (tinte marrón, no gris) y tipografía con interlineado amplio. */
+@theme {
+  --shadow-suave: 0 1px 2px rgb(74 52 30 / 0.05), 0 6px 18px -6px rgb(74 52 30 / 0.12);
+  --shadow-media: 0 2px 4px rgb(74 52 30 / 0.05), 0 14px 30px -10px rgb(74 52 30 / 0.2);
+  --shadow-elevada: 0 4px 10px rgb(74 52 30 / 0.06), 0 28px 56px -16px rgb(74 52 30 / 0.28);
+  --shadow-boton: inset 0 -3px 0 rgb(0 0 0 / 0.16), 0 6px 14px -6px rgb(74 52 30 / 0.45);
+  --shadow-boton-presionado: inset 0 -1px 0 rgb(0 0 0 / 0.16), 0 2px 4px -2px rgb(74 52 30 / 0.4);
+  --shadow-brillo-celeste: 0 0 0 1px rgb(47 208 230 / 0.25), 0 10px 30px -8px rgb(47 208 230 / 0.55);
+  --shadow-brillo-rojo: 0 0 0 1px rgb(212 42 42 / 0.15), 0 14px 34px -10px rgb(212 42 42 / 0.5);
+
+  /* Interlineado ≥ 1.5 en el texto corrido; los títulos grandes, algo menos. */
+  --text-xs--line-height: 1.6;
+  --text-sm--line-height: 1.6;
+  --text-base--line-height: 1.65;
+  --text-lg--line-height: 1.6;
+  --text-xl--line-height: 1.5;
+  --text-2xl--line-height: 1.4;
+  --text-3xl--line-height: 1.3;
+  --text-4xl--line-height: 1.2;
+  --text-5xl--line-height: 1.15;
+  --text-6xl--line-height: 1.1;
+
+  --ease-rebote: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-suave: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
   body {
     @apply bg-background text-foreground;
+    line-height: 1.65;
+    letter-spacing: 0.01em;
+    word-spacing: 0.05em;
+  }
+  /* Nada en cursiva: cuesta más leer con dislexia. */
+  i,
+  em,
+  cite,
+  address,
+  dfn {
+    font-style: normal;
+  }
+  ::selection {
+    background-color: var(--sol-suave);
+    color: var(--foreground);
   }
 }
 
+/* ==================================================================
+   FONDOS CON TEXTURA (sin pantallas planas)
+   ================================================================== */
+@utility textura-puntos {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in oklab, var(--foreground) 9%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 24px 24px;
+}
+
+@utility textura-cuadricula {
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--foreground) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--foreground) 5%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Fondo del niño: manchas de color grandes y alegres. */
+@utility fondo-nino {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(48rem 32rem at -10% -10%, color-mix(in oklab, var(--sol) 30%, transparent), transparent 70%),
+    radial-gradient(40rem 30rem at 110% 10%, color-mix(in oklab, var(--celeste) 24%, transparent), transparent 70%),
+    radial-gradient(44rem 34rem at 50% 115%, color-mix(in oklab, var(--rojo) 14%, transparent), transparent 70%),
+    radial-gradient(30rem 24rem at 100% 90%, color-mix(in oklab, var(--lavanda) 16%, transparent), transparent 70%);
+}
+
+/* Fondo del profesional: sereno, con un brillo celeste muy leve. */
+@utility fondo-profesional {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(50rem 30rem at 100% -10%, color-mix(in oklab, var(--celeste) 14%, transparent), transparent 70%),
+    radial-gradient(40rem 26rem at -10% 110%, color-mix(in oklab, var(--rojo) 6%, transparent), transparent 70%);
+}
+
+/* Degradado rojo de marca para bloques destacados (texto blanco: AA). */
+@utility fondo-rojo {
+  background-color: var(--rojo);
+  background-image:
+    radial-gradient(36rem 20rem at 0% 0%, color-mix(in oklab, var(--rojo-suave) 22%, transparent), transparent 70%),
+    radial-gradient(30rem 20rem at 100% 100%, color-mix(in oklab, var(--rojo-fuerte) 80%, transparent), transparent 70%);
+}
+
+/* ==================================================================
+   TABLAS QUE SE VUELVEN TARJETAS EN CELULAR
+   Cada <td> lleva data-label con el nombre de su columna.
+   ================================================================== */
+@media (max-width: 47.99rem) {
+  .tabla-tarjetas thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .tabla-tarjetas,
+  .tabla-tarjetas tbody,
+  .tabla-tarjetas tr,
+  .tabla-tarjetas td {
+    display: block;
+    width: 100%;
+  }
+  .tabla-tarjetas tbody {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .tabla-tarjetas tr {
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-xl);
+    background: var(--card);
+    padding: 0.75rem 1rem;
+    box-shadow: var(--shadow-suave);
+  }
+  .tabla-tarjetas td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.375rem 0 !important;
+    text-align: right !important;
+    white-space: normal;
+  }
+  .tabla-tarjetas td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    text-align: left;
+  }
+  .tabla-tarjetas td:not([data-label])::before,
+  .tabla-tarjetas td[data-label=""]::before {
+    content: none;
+  }
+  .tabla-tarjetas td:empty {
+    display: none;
+  }
+  .tabla-tarjetas td[colspan] {
+    justify-content: center;
+    text-align: center !important;
+  }
+  .tabla-tarjetas td[data-acciones] {
+    justify-content: flex-end;
+    padding-top: 0.75rem !important;
+  }
+  .tabla-tarjetas td[data-acciones] > * {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
+
+/* ==================================================================
+   ANIMACIONES CSS (las usan los juegos; se conservan)
+   ================================================================== */
 @layer utilities {
   @keyframes float {
     0%,
@@ -169,5 +432,18 @@
 
   .animate-pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite;
+  }
+}
+
+/* Sin movimiento si el usuario lo pide (las animaciones de motion se
+   controlan con MotionConfig reducedMotion="user" y useReducedMotion). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

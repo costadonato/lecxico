@@ -4,7 +4,6 @@ import type React from "react"
 import { Suspense, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import Image from "next/image"
 import type { AuthError } from "@supabase/supabase-js"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
@@ -13,6 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Mail, Lock, Sparkles, Loader2, AlertCircle, BookOpen } from "lucide-react"
+import { AuthShell } from "@/components/auth/auth-shell"
 import { BotonGoogle } from "@/components/auth/boton-google"
 import { rutaSegura } from "@/lib/auth/rutas"
 
@@ -92,126 +92,121 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 flex items-center justify-center">
-      <header className="border-b bg-card/50 backdrop-blur-sm fixed top-0 left-0 right-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" aria-label="Lecxico - Inicio">
-            <Image src="/images/lecxico-logo.png" alt="Lecxico" width={120} height={40} className="h-8 w-auto" />
-          </Link>
-          <Button variant="ghost" asChild>
-            <Link href="/register">Registrarse</Link>
-          </Button>
-        </div>
-      </header>
+    <AuthShell
+      personaje="lumo"
+      mensaje="¡Hola de nuevo! Qué bueno verte por acá."
+      accion={
+        <Button variant="ghost" asChild>
+          <Link href="/register">Registrarse</Link>
+        </Button>
+      }
+    >
+      <div className="w-full max-w-md">
+        <Card className="shadow-elevada">
+          <CardHeader className="space-y-3 text-center">
+            <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-rojo-suave text-rojo-fuerte">
+              <BookOpen className="size-8" />
+            </div>
+            <CardTitle className="text-3xl">Bienvenido de vuelta</CardTitle>
+            <CardDescription className="text-base">
+              Iniciá sesión para continuar
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    {error}
+                    {sinConfirmar && (
+                      <button
+                        type="button"
+                        onClick={handleReenviar}
+                        disabled={reenvio === "enviando" || reenvio === "enviado"}
+                        className="block mt-2 font-semibold underline disabled:no-underline disabled:opacity-70"
+                      >
+                        {reenvio === "enviado"
+                          ? "Listo, te reenviamos el email."
+                          : reenvio === "error"
+                            ? "No se pudo reenviar. Probá de nuevo en unos minutos."
+                            : reenvio === "enviando"
+                              ? "Reenviando..."
+                              : "Reenviar el email de confirmación"}
+                      </button>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              )}
 
-      <div className="container mx-auto px-4 py-24">
-        <div className="max-w-md mx-auto">
-          <Card className="border-2 shadow-sm">
-            <CardHeader className="space-y-4 text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto">
-                <BookOpen className="w-8 h-8 text-primary" />
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-base flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-muted-foreground" />
+                  Correo electrónico
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="tu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  className="text-base h-12"
+                />
               </div>
-              <CardTitle className="text-3xl">Bienvenido de vuelta</CardTitle>
-              <CardDescription className="text-base">
-                Iniciá sesión para continuar
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {error && (
-                  <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>
-                      {error}
-                      {sinConfirmar && (
-                        <button
-                          type="button"
-                          onClick={handleReenviar}
-                          disabled={reenvio === "enviando" || reenvio === "enviado"}
-                          className="block mt-2 font-semibold underline disabled:no-underline disabled:opacity-70"
-                        >
-                          {reenvio === "enviado"
-                            ? "Listo, te reenviamos el email."
-                            : reenvio === "error"
-                              ? "No se pudo reenviar. Probá de nuevo en unos minutos."
-                              : reenvio === "enviando"
-                                ? "Reenviando..."
-                                : "Reenviar el email de confirmación"}
-                        </button>
-                      )}
-                    </AlertDescription>
-                  </Alert>
-                )}
 
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-base flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
-                    Correo electrónico
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                  <Label htmlFor="password" className="text-base flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-muted-foreground" />
+                    Contraseña
                   </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="tu@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    disabled={isLoading}
-                    className="text-base h-12"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="password" className="text-base flex items-center gap-2">
-                      <Lock className="w-4 h-4" />
-                      Contraseña
-                    </Label>
-                    <Link href="/recuperar" className="text-sm text-primary hover:underline font-medium">
-                      ¿Olvidaste tu contraseña?
-                    </Link>
-                  </div>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Tu contraseña"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={isLoading}
-                    className="text-base h-12"
-                  />
-                </div>
-
-                <Button type="submit" size="lg" className="w-full text-lg" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Iniciando sesión...
-                    </>
-                  ) : (
-                    <>
-                      Iniciar Sesión
-                      <Sparkles className="ml-2 w-5 h-5" />
-                    </>
-                  )}
-                </Button>
-
-                <p className="text-center text-sm text-muted-foreground mt-4">
-                  ¿No tenés una cuenta?{" "}
-                  <Link href="/register" className="text-primary hover:underline font-semibold">
-                    Registrate gratis
+                  <Link href="/recuperar" className="text-sm text-primary hover:underline font-semibold">
+                    ¿Olvidaste tu contraseña?
                   </Link>
-                </p>
-              </form>
-
-              <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
-                <span className="h-px flex-1 bg-border" /> o <span className="h-px flex-1 bg-border" />
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Tu contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  className="text-base h-12"
+                />
               </div>
-              <BotonGoogle texto="Continuar con Google (profesionales)" next={next} />
-            </CardContent>
-          </Card>
-        </div>
+
+              <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Iniciando sesión...
+                  </>
+                ) : (
+                  <>
+                    Iniciar Sesión
+                    <Sparkles className="ml-1 w-5 h-5" />
+                  </>
+                )}
+              </Button>
+
+              <p className="text-center text-base text-muted-foreground mt-4">
+                ¿No tenés una cuenta?{" "}
+                <Link href="/register" className="text-primary hover:underline font-semibold">
+                  Registrate gratis
+                </Link>
+              </p>
+            </form>
+
+            <div className="my-6 flex items-center gap-3 text-sm text-muted-foreground">
+              <span className="h-px flex-1 bg-border" /> o <span className="h-px flex-1 bg-border" />
+            </div>
+            <BotonGoogle texto="Continuar con Google (profesionales)" next={next} />
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </AuthShell>
   )
 }

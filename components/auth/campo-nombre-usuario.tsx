@@ -32,7 +32,7 @@ export function CampoNombreUsuario({ id, label, value, onChange, estado, error, 
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={id} className="uppercase font-bold text-xs tracking-wide">
+      <Label htmlFor={id} className="text-base font-semibold">
         {label}
       </Label>
       <Input
@@ -46,14 +46,14 @@ export function CampoNombreUsuario({ id, label, value, onChange, estado, error, 
         disabled={disabled}
         aria-invalid={estado === "formato" || estado === "ocupado" || !!error}
       />
-      <p className="text-xs text-muted-foreground">
+      <p className="text-sm text-muted-foreground">
         {ayuda ? `${ayuda} ` : ""}
         {REGLA_NOMBRE_USUARIO}
       </p>
       {mensaje && (
         <p
           className={`flex items-center gap-1 text-sm ${
-            mensaje.tono === "ok" ? "text-green-600" : mensaje.tono === "error" ? "text-destructive" : "text-muted-foreground"
+            mensaje.tono === "ok" ? "text-exito" : mensaje.tono === "error" ? "text-destructive" : "text-muted-foreground"
           }`}
         >
           {estado === "verificando" && <Loader2 className="w-3.5 h-3.5 animate-spin" />}

@@ -101,7 +101,7 @@ export function PhonicsMatch({ onComplete, mode = "child" }: PhonicsMatchProps) 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-300">
-        <img src="/images/lex.png" alt="Lex" className="w-16 h-16 object-contain" />
+        <img src="/images/lex.webp" alt="Lex" className="w-16 h-16 object-contain" />
         <div className="flex-1">
           <p className="font-bold text-lg mb-1 text-blue-900">🎧 Escucha y selecciona</p>
           <p className="text-base text-blue-700 leading-relaxed">

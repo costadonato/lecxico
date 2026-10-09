@@ -169,12 +169,12 @@ export default function ExercisePage() {
         <Card className="max-w-2xl w-full border-2 relative overflow-hidden">
           {/* Lex celebrating */}
           <div className="absolute -left-8 top-1/2 -translate-y-1/2 w-32 h-32 opacity-20 md:opacity-40">
-            <img src="/images/lex.png" alt="Lex celebrando" className="w-full h-full object-contain animate-float" />
+            <img src="/images/lex.webp" alt="Lex celebrando" className="w-full h-full object-contain animate-float" />
           </div>
           {/* Lumo celebrating */}
           <div className="absolute -right-8 top-1/2 -translate-y-1/2 w-32 h-32 opacity-20 md:opacity-40">
             <img
-              src="/images/lumo.png"
+              src="/images/lumo.webp"
               alt="Lumo celebrando"
               className="w-full h-full object-contain animate-float-delayed"
             />
@@ -219,7 +219,7 @@ export default function ExercisePage() {
             <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl flex items-center gap-4">
               <div className="w-16 h-16 flex-shrink-0">
                 <img
-                  src={percentage >= 80 ? "/images/lex.png" : "/images/lumo.png"}
+                  src={percentage >= 80 ? "/images/lex.webp" : "/images/lumo.webp"}
                   alt={percentage >= 80 ? "Lex" : "Lumo"}
                   className="w-full h-full object-contain"
                 />

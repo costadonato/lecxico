@@ -181,11 +181,11 @@ export default function GamePage() {
       <div className="min-h-screen bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 flex items-center justify-center p-4">
         <Card className="max-w-2xl w-full border-2 relative overflow-hidden">
           <div className="absolute -left-8 top-1/2 -translate-y-1/2 w-32 h-32 opacity-20 md:opacity-40">
-            <img src="/images/lex.png" alt="Lex" className="w-full h-full object-contain animate-float mascot-no-bg" />
+            <img src="/images/lex.webp" alt="Lex" className="w-full h-full object-contain animate-float mascot-no-bg" />
           </div>
           <div className="absolute -right-8 top-1/2 -translate-y-1/2 w-32 h-32 opacity-20 md:opacity-40">
             <img
-              src="/images/lumo.png"
+              src="/images/lumo.webp"
               alt="Lumo"
               className="w-full h-full object-contain animate-float-delayed mascot-no-bg"
             />
@@ -220,7 +220,7 @@ export default function GamePage() {
             <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl flex items-center gap-4">
               <div className="w-16 h-16 flex-shrink-0">
                 <img
-                  src={percentage >= 80 ? "/images/lex.png" : "/images/lumo.png"}
+                  src={percentage >= 80 ? "/images/lex.webp" : "/images/lumo.webp"}
                   alt={percentage >= 80 ? "Lex" : "Lumo"}
                   className="w-full h-full object-contain mascot-no-bg"
                 />

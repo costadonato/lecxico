@@ -1,15 +1,21 @@
 import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import type { Metadata, Viewport } from "next"
+import { Lexend } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
+import { ProveedorMovimiento } from "@/components/motion/proveedor-movimiento"
 import "./globals.css"
 
-const inter = Inter({
+// Lexend: diseñada para reducir el estrés visual al leer (útil con dislexia).
+const lexend = Lexend({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-lexend",
   display: "swap",
 })
+
+export const viewport: Viewport = {
+  themeColor: "#fbf6ee",
+}
 
 export const metadata: Metadata = {
   title: "Lecxico - Plataforma Educativa para Dislexia",
@@ -77,9 +83,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es">
-      <body className={`${inter.variable} font-sans antialiased`}>
-        <Suspense fallback={null}>{children}</Suspense>
+    <html lang="es" className={lexend.variable}>
+      <body className="font-sans antialiased">
+        <ProveedorMovimiento>
+          <Suspense fallback={null}>{children}</Suspense>
+        </ProveedorMovimiento>
         <Analytics />
       </body>
     </html>

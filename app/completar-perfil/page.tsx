@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AuthShell } from "@/components/auth/auth-shell"
 import { Campo, CasillaTyC } from "@/components/auth/campos"
 import { CampoNombreUsuario } from "@/components/auth/campo-nombre-usuario"
+import { Cargando } from "@/components/estados"
 import { obtenerPerfilActual, perfilIncompleto } from "@/lib/auth/perfil"
 import { useNombreUsuario } from "@/lib/auth/use-nombre-usuario"
 import type { Profile } from "@/lib/types/database"
@@ -114,17 +115,15 @@ export default function CompletarPerfilPage() {
   }
 
   return (
-    <AuthShell titulo="Completá tu perfil">
-      <Card className="w-full max-w-lg border-2 shadow-sm">
+    <AuthShell titulo="Completá tu perfil" personaje="lex" mensaje="¡Ya casi! Solo faltan unos datos.">
+      <Card className="w-full max-w-lg shadow-elevada">
         <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-2xl">Completá tu perfil</CardTitle>
-          <CardDescription>Necesitamos algunos datos más antes de empezar.</CardDescription>
+          <CardTitle className="text-2xl sm:text-3xl">Completá tu perfil</CardTitle>
+          <CardDescription className="text-base">Necesitamos algunos datos más antes de empezar.</CardDescription>
         </CardHeader>
         <CardContent>
           {cargando ? (
-            <div className="flex justify-center py-6">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
-            </div>
+            <Cargando tamano={80} className="py-6" />
           ) : errorCarga ? (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />

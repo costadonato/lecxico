@@ -1,0 +1,6 @@
+export { EntradaPagina } from "@/components/motion/entrada-pagina"
+export { ListaCascada, ItemCascada, Elevable } from "@/components/motion/lista-cascada"
+export { NumeroAnimado } from "@/components/motion/numero-animado"
+export { BarraPorcentaje } from "@/components/motion/barra-porcentaje"
+export { ProveedorMovimiento } from "@/components/motion/proveedor-movimiento"
+export { EASE_SUAVE, RESORTE, RESORTE_SUAVE, PASO_CASCADA } from "@/components/motion/transiciones"

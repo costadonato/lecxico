@@ -5,10 +5,15 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, Loader2, User, Mail, Dumbbell, Gamepad2 } from "lucide-react"
-import { AppHeader } from "@/components/app-header"
+import { Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { ArrowLeft, User, Mail, Dumbbell, Gamepad2 } from "lucide-react"
+import { Cargando, EstadoVacio } from "@/components/estados"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
+import { MarcoPagina } from "@/components/pagina-app"
+import { LumoCara } from "@/components/personajes/lumo-cara"
+import { CaraPersonaje } from "@/components/personajes/personaje"
+import { Seccion } from "@/components/seccion"
+import { CuerpoTablaAnimado, FilaTablaAnimada } from "@/components/tabla-animada"
 import { HistorialEvaluaciones } from "@/components/test/historial-evaluaciones"
 import { obtenerPerfilActual } from "@/lib/auth/perfil"
 import { cargarTestsConBloques, type TestConBloques } from "@/lib/ninos/detalle"
@@ -72,11 +77,7 @@ export default function PerfilPage() {
   }, [router, supabase])
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    )
+    return <Cargando pantallaCompleta />
   }
 
   const formatDate = (iso: string) => {
@@ -85,106 +86,94 @@ export default function PerfilPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
-      {profile && <AppHeader profile={profile} />}
-
-      <main className="container mx-auto px-4 mt-8 space-y-8 max-w-3xl">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard")} className="p-2" aria-label="Volver al inicio">
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <h1 className="text-2xl font-bold text-primary">Mi Perfil</h1>
+    <MarcoPagina profile={profile} titulo="Mi Perfil" volverA="/dashboard" etiquetaVolver="Volver al inicio" ancho="max-w-3xl">
+      {/* ---- Datos personales ---- */}
+      <Seccion icono={<User />} tono="lavanda" titulo="Datos personales">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+          {profile?.rol === "profesional" ? (
+            <span className="grid size-20 shrink-0 place-items-center rounded-full bg-celeste-suave ring-4 ring-white">
+              <LumoCara tamano={64} />
+            </span>
+          ) : (
+            <CaraPersonaje personaje="lex" tamano={80} className="bg-rojo-suave ring-4 ring-white shadow-suave" />
+          )}
+          <dl className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl bg-muted/60 px-4 py-3">
+              <dt className="text-sm text-muted-foreground">Nombre</dt>
+              <dd className="text-lg font-semibold">{firstName || "—"}</dd>
+            </div>
+            <div className="rounded-2xl bg-muted/60 px-4 py-3">
+              <dt className="text-sm text-muted-foreground">Apellido</dt>
+              <dd className="text-lg font-semibold">{lastName || "—"}</dd>
+            </div>
+            <div className="rounded-2xl bg-muted/60 px-4 py-3 sm:col-span-2">
+              <dt className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <Mail className="size-4" /> Email
+              </dt>
+              <dd className="break-all text-lg font-semibold">{email}</dd>
+            </div>
+          </dl>
         </div>
+      </Seccion>
 
-        {/* ---- Datos personales ---- */}
-        <Card className="border-2 shadow-sm">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
-                <User className="w-5 h-5 text-purple-600" />
-              </div>
-              <CardTitle className="text-xl">Datos personales</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-500">Nombre</p>
-                <p className="font-medium">{firstName || "—"}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Apellido</p>
-                <p className="font-medium">{lastName || "—"}</p>
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500 flex items-center gap-1">
-                <Mail className="w-3 h-3" /> Email
-              </p>
-              <p className="font-medium">{email}</p>
-            </div>
-          </CardContent>
-        </Card>
+      {/* ---- Historial de evaluaciones (sin recomendación) ---- */}
+      {errorEvaluaciones ? (
+        <MensajeAlerta tipo="error" texto="No se pudo cargar el historial de evaluaciones. Recargá la página." />
+      ) : (
+        <HistorialEvaluaciones tests={evaluaciones} urlDetalle={(testId) => `/perfil/evaluaciones/${testId}`} />
+      )}
 
-        {/* ---- Historial de evaluaciones (sin recomendación) ---- */}
-        {errorEvaluaciones ? (
-          <MensajeAlerta tipo="error" texto="No se pudo cargar el historial de evaluaciones. Recargá la página." />
+      {/* ---- Historial de entrenamientos ---- */}
+      <Seccion icono={<Dumbbell />} tono="menta" titulo="Historial de entrenamientos">
+        {entrenamientos.length > 0 ? (
+          <div className="overflow-hidden rounded-2xl border border-border/80 max-md:rounded-none max-md:border-0">
+            <Table tarjetasEnCelular>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Juego</TableHead>
+                  <TableHead className="text-center">Puntaje</TableHead>
+                  <TableHead className="text-right">Fecha</TableHead>
+                </TableRow>
+              </TableHeader>
+              <CuerpoTablaAnimado>
+                {entrenamientos.map((e) => (
+                  <FilaTablaAnimada key={e.id}>
+                    <TableCell data-label="Juego" className="font-medium">
+                      <span className="flex items-center gap-2 max-md:justify-end">
+                        <span className="grid size-8 place-items-center rounded-xl bg-sol-suave text-sol-fuerte">
+                          <Gamepad2 className="size-4" />
+                        </span>
+                        {e.juego}
+                      </span>
+                    </TableCell>
+                    <TableCell data-label="Puntaje" className="text-center font-bold tabular-nums">{e.puntaje}</TableCell>
+                    <TableCell data-label="Fecha" className="text-right tabular-nums text-muted-foreground">
+                      {formatDate(e.created_at)}
+                    </TableCell>
+                  </FilaTablaAnimada>
+                ))}
+              </CuerpoTablaAnimado>
+            </Table>
+          </div>
         ) : (
-          <HistorialEvaluaciones tests={evaluaciones} urlDetalle={(testId) => `/perfil/evaluaciones/${testId}`} />
+          <EstadoVacio
+            compacto
+            personaje="lex"
+            descripcion="Aún no realizaste ningún entrenamiento"
+            accion={
+              <Button asChild>
+                <Link href="/entrenamiento">Ir a entrenar</Link>
+              </Button>
+            }
+          />
         )}
+      </Seccion>
 
-        {/* ---- Historial de entrenamientos ---- */}
-        <Card className="border-2 shadow-sm">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
-                <Dumbbell className="w-5 h-5 text-green-600" />
-              </div>
-              <CardTitle className="text-xl">Historial de entrenamientos</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {entrenamientos.length > 0 ? (
-              <div className="rounded-lg border overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-gray-50 border-b">
-                      <th className="text-left px-4 py-2 font-semibold">Juego</th>
-                      <th className="text-center px-4 py-2 font-semibold">Puntaje</th>
-                      <th className="text-right px-4 py-2 font-semibold">Fecha</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {entrenamientos.map((e) => (
-                      <tr key={e.id} className="border-b last:border-b-0">
-                        <td className="px-4 py-2 flex items-center gap-2">
-                          <Gamepad2 className="w-4 h-4 text-gray-400" />
-                          {e.juego}
-                        </td>
-                        <td className="text-center px-4 py-2 font-medium">{e.puntaje}</td>
-                        <td className="text-right px-4 py-2 text-gray-500">{formatDate(e.created_at)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div className="text-center py-6 space-y-4">
-                <p className="text-gray-500">Aún no realizaste ningún entrenamiento</p>
-                <Button asChild>
-                  <Link href="/entrenamiento">Ir a entrenar</Link>
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Volver */}
-        <Button variant="outline" className="w-full" onClick={() => router.push("/dashboard")}>
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Volver al Dashboard
-        </Button>
-      </main>
-    </div>
+      {/* Volver */}
+      <Button variant="outline" className="w-full" onClick={() => router.push("/dashboard")}>
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Volver al Dashboard
+      </Button>
+    </MarcoPagina>
   )
 }

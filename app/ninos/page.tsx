@@ -2,10 +2,15 @@
 
 import { useCallback, useState } from "react"
 import Link from "next/link"
-import { Loader2, Users } from "lucide-react"
+import { Loader2 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
+import { Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Cargando, EstadoVacio } from "@/components/estados"
+import { Iniciales } from "@/components/iniciales"
 import { PaginaApp } from "@/components/pagina-app"
+import { CuerpoTablaAnimado, FilaTablaAnimada } from "@/components/tabla-animada"
 import { ConfirmarDialog, type Confirmacion } from "@/components/confirmar-dialog"
 import { DialogoVincularNino } from "@/components/dialogo-vincular-nino"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
@@ -26,7 +31,7 @@ const etiquetaEtapa = (valor: string | null) => ETAPAS_ESCOLARES.find((e) => e.v
 export default function NinosPage() {
   const pagina = usePerfilPagina("profesional")
   return (
-    <PaginaApp pagina={pagina} titulo="Mis niños" acciones={<DialogoVincularNino />}>
+    <PaginaApp pagina={pagina} titulo="Mis niños" acciones={<DialogoVincularNino />} ancho="max-w-6xl">
       {() => <TablaNinos />}
     </PaginaApp>
   )
@@ -91,11 +96,7 @@ function TablaNinos() {
 
   if (errorCarga) return <MensajeAlerta tipo="error" texto={errorCarga} />
   if (!vinculos) {
-    return (
-      <div className="flex justify-center py-12">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
-      </div>
-    )
+    return <Cargando />
   }
 
   return (
@@ -103,72 +104,80 @@ function TablaNinos() {
       {aviso && <MensajeAlerta tipo={aviso.tipo} texto={aviso.texto} />}
 
       {activos.length === 0 && inactivos.length === 0 ? (
-        <Card className="border-2 shadow-sm">
-          <CardContent className="py-12 text-center space-y-3">
-            <Users className="w-10 h-10 text-muted-foreground mx-auto" />
-            <p className="font-semibold">Todavía no tenés niños vinculados.</p>
-            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+        <EstadoVacio
+          titulo="Todavía no tenés niños vinculados."
+          descripcion={
+            <p>
               Para vincular a un niño necesitás su nombre de usuario: pedíselo a su madre, padre o tutor/a, que lo eligió al
               crear la cuenta. Después tocá “Vincular nuevo niño”; cuando el tutor acepte la invitación, el niño va a
               aparecer acá.
             </p>
-          </CardContent>
-        </Card>
+          }
+        />
       ) : (
-        <Card className="border-2 shadow-sm overflow-hidden py-0">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 border-b text-left">
-                  <th className="px-4 py-3 font-semibold">Nombre</th>
-                  <th className="px-4 py-3 font-semibold">Apellido</th>
-                  <th className="px-4 py-3 font-semibold">Usuario</th>
-                  <th className="px-4 py-3 font-semibold">Etapa escolar</th>
-                  <th className="px-4 py-3 font-semibold">Fecha de vinculación</th>
-                  <th className="px-4 py-3 font-semibold text-right">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {activos.map((v) => (
-                  <tr key={v.vinculo_id} className="border-b last:border-b-0">
-                    <td className="px-4 py-3 font-medium">{v.nombre}</td>
-                    <td className="px-4 py-3 font-medium">{v.apellido}</td>
-                    <td className="px-4 py-3 text-muted-foreground">@{v.nombre_usuario}</td>
-                    <td className="px-4 py-3">{etiquetaEtapa(v.etapa_escolar)}</td>
-                    <td className="px-4 py-3">{formatearFecha(v.fecha_afiliacion)}</td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button size="sm" asChild>
-                          <Link href={`/ninos/${v.nino_id}`}>Ver detalle</Link>
-                        </Button>
-                        <Button size="sm" variant="outline" onClick={() => pedirBaja(v)}>
-                          Dar de baja
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                {inactivos.map((v) => (
-                  <tr key={v.vinculo_id} className="border-b last:border-b-0 bg-gray-50 text-gray-400">
-                    <td className="px-4 py-3" />
-                    <td className="px-4 py-3" />
-                    <td className="px-4 py-3">
-                      @{v.nombre_usuario}
-                      <span className="ml-2 text-xs">(dado de baja)</span>
-                    </td>
-                    <td className="px-4 py-3" />
-                    <td className="px-4 py-3" />
-                    <td className="px-4 py-3 text-right">
-                      <Button size="sm" variant="outline" onClick={() => reafiliar(v)} disabled={reafiliando !== null}>
-                        {reafiliando === v.vinculo_id && <Loader2 className="mr-1 h-3 w-3 animate-spin" />}
-                        Volver a vincular
+        <Card className="overflow-hidden py-0 max-md:border-0 max-md:bg-transparent max-md:shadow-none">
+          <Table tarjetasEnCelular>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nombre</TableHead>
+                <TableHead>Apellido</TableHead>
+                <TableHead>Usuario</TableHead>
+                <TableHead>Etapa escolar</TableHead>
+                <TableHead>Fecha de vinculación</TableHead>
+                <TableHead className="text-right">Acciones</TableHead>
+              </TableRow>
+            </TableHeader>
+            <CuerpoTablaAnimado>
+              {activos.map((v) => (
+                <FilaTablaAnimada key={v.vinculo_id}>
+                  <TableCell data-label="Nombre" className="font-semibold">
+                    <span className="flex items-center gap-3 max-md:justify-end">
+                      <Iniciales nombre={v.nombre} apellido={v.apellido} semilla={v.nombre_usuario} className="max-md:hidden" />
+                      {v.nombre}
+                    </span>
+                  </TableCell>
+                  <TableCell data-label="Apellido" className="font-semibold">{v.apellido}</TableCell>
+                  <TableCell data-label="Usuario" className="text-muted-foreground">@{v.nombre_usuario}</TableCell>
+                  <TableCell data-label="Etapa escolar">
+                    {v.etapa_escolar && <Badge variant="lavanda">{etiquetaEtapa(v.etapa_escolar)}</Badge>}
+                  </TableCell>
+                  <TableCell data-label="Fecha de vinculación" className="tabular-nums">
+                    {formatearFecha(v.fecha_afiliacion)}
+                  </TableCell>
+                  <TableCell data-acciones className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button size="sm" asChild>
+                        <Link href={`/ninos/${v.nino_id}`}>Ver detalle</Link>
                       </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      <Button size="sm" variant="outline" onClick={() => pedirBaja(v)}>
+                        Dar de baja
+                      </Button>
+                    </div>
+                  </TableCell>
+                </FilaTablaAnimada>
+              ))}
+              {inactivos.map((v) => (
+                <FilaTablaAnimada key={v.vinculo_id} className="bg-muted/50 text-muted-foreground hover:bg-muted/70">
+                  <TableCell />
+                  <TableCell />
+                  <TableCell data-label="Usuario">
+                    <span className="flex flex-wrap items-center gap-x-2 gap-y-1 max-md:justify-end">
+                      @{v.nombre_usuario}
+                      <Badge variant="neutro">dado de baja</Badge>
+                    </span>
+                  </TableCell>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell data-acciones className="text-right">
+                    <Button size="sm" variant="outline" onClick={() => reafiliar(v)} disabled={reafiliando !== null}>
+                      {reafiliando === v.vinculo_id && <Loader2 className="mr-1 h-3 w-3 animate-spin" />}
+                      Volver a vincular
+                    </Button>
+                  </TableCell>
+                </FilaTablaAnimada>
+              ))}
+            </CuerpoTablaAnimado>
+          </Table>
         </Card>
       )}
 

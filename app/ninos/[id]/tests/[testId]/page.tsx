@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { PaginaApp } from "@/components/pagina-app"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
 import { CargandoSeccion, SinAccesoNino } from "@/components/ninos/piezas-detalle"
-import { ResultadosTest } from "@/components/test/resultados-test"
+import { ResultadosEvaluacion } from "@/components/test/resultados-evaluacion"
 import { usePerfilPagina } from "@/lib/auth/use-perfil-pagina"
 import { formatearFecha } from "@/lib/fechas"
 import { cargarTestDeNino, type TestDeNino } from "@/lib/ninos/detalle"
@@ -66,9 +66,8 @@ export default function DetalleTestPage() {
         ) : carga.estado === "sin-acceso" ? (
           <SinAccesoNino />
         ) : (
-          <div className="max-w-2xl">
-            <ResultadosTest
-              tema="claro"
+          <div className="max-w-3xl">
+            <ResultadosEvaluacion
               nivel={carga.datos.test.nivel}
               porcentajeTotal={carga.datos.test.porcentaje_total}
               bloques={carga.datos.test.bloques}

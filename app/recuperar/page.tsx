@@ -3,12 +3,13 @@
 import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
-import { Loader2, MailCheck } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AuthShell } from "@/components/auth/auth-shell"
 import { Campo } from "@/components/auth/campos"
+import { LumoCara } from "@/components/personajes/lumo-cara"
 import { emailValido } from "@/lib/auth/validaciones"
 
 export default function RecuperarPage() {
@@ -40,12 +41,16 @@ export default function RecuperarPage() {
   }
 
   return (
-    <AuthShell titulo="Recuperar contraseña">
-      <Card className="w-full max-w-md border-2 shadow-sm">
+    <AuthShell
+      titulo="Recuperar contraseña"
+      personaje="lumo"
+      mensaje={enviado ? "¡Listo! Fijate en tu email." : "Tranqui, te ayudo a recuperar tu contraseña."}
+    >
+      <Card className="w-full max-w-md shadow-elevada">
         <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-2xl">¿Olvidaste tu contraseña?</CardTitle>
+          <CardTitle className="text-2xl sm:text-3xl">¿Olvidaste tu contraseña?</CardTitle>
           {!enviado && (
-            <CardDescription>
+            <CardDescription className="text-base">
               Ingresá el email de la cuenta y te enviamos un enlace para crear una nueva. En las cuentas de niños, es el
               email del tutor.
             </CardDescription>
@@ -54,8 +59,10 @@ export default function RecuperarPage() {
         <CardContent>
           {enviado ? (
             <div className="text-center space-y-4">
-              <MailCheck className="w-12 h-12 text-primary mx-auto" />
-              <p>Si el email está registrado, te va a llegar un enlace para restablecer la contraseña.</p>
+              <div className="mx-auto grid size-24 place-items-center rounded-[1.75rem] bg-pantalla shadow-brillo-celeste">
+                <LumoCara estado="feliz" tamano={80} />
+              </div>
+              <p className="text-lg">Si el email está registrado, te va a llegar un enlace para restablecer la contraseña.</p>
               <p className="text-sm text-muted-foreground">Revisá también la carpeta de spam.</p>
               <Button asChild variant="outline">
                 <Link href="/login">Volver a iniciar sesión</Link>
@@ -76,8 +83,8 @@ export default function RecuperarPage() {
               <Button type="submit" size="lg" className="w-full" disabled={enviando}>
                 {enviando ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Enviando...</> : "Enviar enlace"}
               </Button>
-              <p className="text-center text-sm">
-                <Link href="/login" className="text-primary hover:underline font-medium">
+              <p className="text-center text-base">
+                <Link href="/login" className="text-primary hover:underline font-semibold">
                   Volver a iniciar sesión
                 </Link>
               </p>

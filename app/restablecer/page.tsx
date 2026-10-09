@@ -4,12 +4,13 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Loader2 } from "lucide-react"
+import { Loader2, Lock } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AuthShell } from "@/components/auth/auth-shell"
 import { Campo } from "@/components/auth/campos"
+import { Cargando } from "@/components/estados"
 import { errorPassword, PASSWORD_MIN } from "@/lib/auth/validaciones"
 
 /**
@@ -57,20 +58,21 @@ export default function RestablecerPage() {
   }
 
   return (
-    <AuthShell titulo="Nueva contraseña">
-      <Card className="w-full max-w-md border-2 shadow-sm">
+    <AuthShell titulo="Nueva contraseña" personaje="lumo" mensaje="Elegí una contraseña nueva y seguimos.">
+      <Card className="w-full max-w-md shadow-elevada">
         <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-2xl">Elegí una nueva contraseña</CardTitle>
-          {conSesion && <CardDescription>Tiene que tener al menos {PASSWORD_MIN} caracteres.</CardDescription>}
+          <CardTitle className="text-2xl sm:text-3xl">Elegí una nueva contraseña</CardTitle>
+          {conSesion && <CardDescription className="text-base">Tiene que tener al menos {PASSWORD_MIN} caracteres.</CardDescription>}
         </CardHeader>
         <CardContent>
           {conSesion === null ? (
-            <div className="flex justify-center py-6">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
-            </div>
+            <Cargando tamano={80} className="py-6" />
           ) : !conSesion ? (
             <div className="text-center space-y-4">
-              <p>El enlace no es válido o ya venció.</p>
+              <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-rojo-suave text-rojo-fuerte">
+                <Lock className="size-6" />
+              </span>
+              <p className="text-lg">El enlace no es válido o ya venció.</p>
               <Button asChild>
                 <Link href="/recuperar">Pedir un enlace nuevo</Link>
               </Button>

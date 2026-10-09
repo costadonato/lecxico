@@ -108,7 +108,7 @@ export function BuscaLetra({ onComplete, mode = "child" }: BuscaLetraProps) {
       {/* Mascot */}
       <div className="flex items-center gap-4 p-4 bg-cyan-50 rounded-xl border border-cyan-200">
         <img
-          src={mode === "child" ? "/images/lex.png" : "/images/lumo.png"}
+          src={mode === "child" ? "/images/lex.webp" : "/images/lumo.webp"}
           alt={mode === "child" ? "Lex" : "Lumo"}
           className="w-16 h-16 object-contain mascot-no-bg"
         />
