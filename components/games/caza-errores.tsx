@@ -84,7 +84,7 @@ export function CazaErrores({ onComplete, mode = "child" }: CazaErroresProps) {
       {/* Mascot */}
       <div className="flex items-center gap-4 p-4 bg-amber-50 rounded-xl border border-amber-200">
         <img
-          src={mode === "child" ? "/images/lex.png" : "/images/lumo.png"}
+          src={mode === "child" ? "/images/lex.webp" : "/images/lumo.webp"}
           alt={mode === "child" ? "Lex" : "Lumo"}
           className="w-16 h-16 object-contain mascot-no-bg"
         />

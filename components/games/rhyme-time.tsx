@@ -153,7 +153,7 @@ export function RhymeTime({ onComplete, mode = "child" }: RhymeTimeProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4 p-4 bg-pink-50 rounded-xl border-2 border-pink-300">
-        <img src="/images/lumo.png" alt="Lumo" className="w-16 h-16 object-contain mascot-no-bg" />
+        <img src="/images/lumo.webp" alt="Lumo" className="w-16 h-16 object-contain mascot-no-bg" />
         <div className="flex-1">
           <p className="font-bold text-base mb-1 text-pink-900">¡Encuentra las rimas!</p>
           <p className="text-sm text-pink-700 leading-relaxed">

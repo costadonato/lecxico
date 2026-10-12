@@ -15,11 +15,11 @@ export function Campo({
 }: { id: string; label: string; error?: string | null; ayuda?: React.ReactNode } & React.ComponentProps<typeof Input>) {
   return (
     <div className="space-y-2">
-      <Label htmlFor={id} className="uppercase font-bold text-xs tracking-wide">
+      <Label htmlFor={id} className="text-base font-semibold">
         {label}
       </Label>
       <Input id={id} aria-invalid={!!error} {...inputProps} />
-      {ayuda && <p className="text-xs text-muted-foreground">{ayuda}</p>}
+      {ayuda && <p className="text-sm text-muted-foreground">{ayuda}</p>}
       {error && <p className="text-sm text-destructive">{error}</p>}
     </div>
   )
@@ -45,21 +45,21 @@ export function CasillaTyC({
 }) {
   return (
     <div className="space-y-1">
-      <label htmlFor={id} className="flex items-start gap-3 cursor-pointer text-sm leading-relaxed">
+      <label htmlFor={id} className="flex items-start gap-3 cursor-pointer rounded-2xl border border-border bg-muted/50 p-3 text-base leading-relaxed transition-colors hover:border-primary/30">
         <input
           id={id}
           type="checkbox"
           checked={checked}
           onChange={(e) => onChange(e.target.checked)}
-          className="mt-1 h-4 w-4 accent-primary shrink-0"
+          className="mt-1 size-5 shrink-0 cursor-pointer accent-primary"
         />
         <span>
           {prefijo} los{" "}
-          <Link href="/terminos" target="_blank" className="text-primary font-medium hover:underline">
+          <Link href="/terminos" target="_blank" className="text-primary font-semibold hover:underline">
             Términos y Condiciones
           </Link>{" "}
           y la{" "}
-          <Link href="/privacidad" target="_blank" className="text-primary font-medium hover:underline">
+          <Link href="/privacidad" target="_blank" className="text-primary font-semibold hover:underline">
             Política de Privacidad
           </Link>
           {sufijo}.

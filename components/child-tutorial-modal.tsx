@@ -28,7 +28,7 @@ export function ChildTutorialModal({ open, onComplete, variant = "child" }: Chil
       title: "¡Hola! Soy Lex",
       description:
         "¡Bienvenido a Lecxico! Soy Lex y junto a mi amigo Lumo te ayudaremos a convertirte en un superhéroe de la lectura.",
-      image: "/images/lex.png",
+      image: "/images/lex.webp",
       icon: Sparkles,
       color: "text-primary",
     },
@@ -36,7 +36,7 @@ export function ChildTutorialModal({ open, onComplete, variant = "child" }: Chil
       title: "Conoce a Lumo",
       description:
         "Lumo es mi compañero robot. Él te mostrará ejercicios divertidos y te dará pistas cuando las necesites.",
-      image: "/images/lumo.png",
+      image: "/images/lumo.webp",
       icon: Heart,
       color: "text-accent",
     },
@@ -61,7 +61,7 @@ export function ChildTutorialModal({ open, onComplete, variant = "child" }: Chil
       title: "Bienvenido a Lecxico",
       description:
         "Una plataforma diseñada para potenciar tus habilidades de lectura y escritura con tecnología avanzada.",
-      image: "/images/lex.png",
+      image: "/images/lex.webp",
       icon: Sparkles,
       color: "text-primary",
     },
@@ -69,7 +69,7 @@ export function ChildTutorialModal({ open, onComplete, variant = "child" }: Chil
       title: "Tu Asistente Inteligente",
       description:
         "Lumo utiliza inteligencia artificial para adaptar los desafíos a tu nivel y ritmo de aprendizaje.",
-      image: "/images/lumo.png",
+      image: "/images/lumo.webp",
       icon: Heart,
       color: "text-accent",
     },

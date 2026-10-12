@@ -9,11 +9,13 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle, ArrowLeft, Loader2, MailCheck } from "lucide-react"
+import { AlertCircle, ArrowLeft, Baby, Check, Loader2, Stethoscope, UserRound } from "lucide-react"
 import { AuthShell } from "@/components/auth/auth-shell"
 import { BotonGoogle } from "@/components/auth/boton-google"
 import { Campo, CasillaTyC } from "@/components/auth/campos"
 import { CampoNombreUsuario } from "@/components/auth/campo-nombre-usuario"
+import { LumoCara } from "@/components/personajes/lumo-cara"
+import { cn } from "@/lib/utils"
 import { useNombreUsuario, type EstadoNombreUsuario } from "@/lib/auth/use-nombre-usuario"
 import { emailValido, errorPassword, fechaNacimientoValida, hoyISO, PASSWORD_MIN } from "@/lib/auth/validaciones"
 import { ETAPAS_ESCOLARES, type EtapaEscolar } from "@/lib/test/bloques"
@@ -92,6 +94,8 @@ export default function RegisterPage() {
 
   return (
     <AuthShell
+      personaje="lex"
+      mensaje={emailConfirmacion ? "¡Ya casi! Revisá tu email." : "¡Hola! Soy Lex. ¡Qué bueno que quieras sumarte!"}
       accion={
         <Button variant="ghost" asChild>
           <Link href="/login">Iniciar sesión</Link>
@@ -99,7 +103,7 @@ export default function RegisterPage() {
       }
     >
       <div className="w-full max-w-2xl">
-        <div className="border-2 border-primary rounded-xl p-6 sm:p-8">
+        <div className="rounded-[2rem] border border-border/80 bg-card p-6 shadow-elevada sm:p-8">
           {emailConfirmacion ? (
             <ConfirmacionEnviada email={emailConfirmacion} />
           ) : paso === 1 ? (
@@ -109,7 +113,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => setPaso(1)}
-                className="mb-4 flex items-center gap-1 text-sm text-primary hover:underline font-medium"
+                className="mb-4 flex items-center gap-1 rounded-full px-1 text-base text-primary hover:underline font-semibold focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40"
               >
                 <ArrowLeft className="w-4 h-4" /> Cambiar tipo de cuenta
               </button>
@@ -122,7 +126,7 @@ export default function RegisterPage() {
           )}
         </div>
         {!emailConfirmacion && (
-          <p className="text-center text-sm text-muted-foreground mt-6">
+          <p className="text-center text-base text-muted-foreground mt-6">
             ¿Ya tenés cuenta?{" "}
             <Link href="/login" className="text-primary hover:underline font-semibold">
               Iniciá sesión
@@ -146,40 +150,56 @@ function SeleccionTipo({
   onTipo: (t: TipoCuenta) => void
   onSiguiente: () => void
 }) {
-  const opciones: { valor: TipoCuenta; titulo: string; descripcion: string }[] = [
+  const opciones: { valor: TipoCuenta; titulo: string; descripcion: string; icono: typeof Stethoscope; tono: string }[] = [
     {
       valor: "profesional",
       titulo: "Soy profesional",
       descripcion: "Quiero realizar la evaluación de indicadores de dislexia y hacer seguimiento del entrenamiento de los niños que acompaño.",
+      icono: Stethoscope,
+      tono: "bg-celeste-suave text-celeste-fuerte",
     },
     {
       valor: "nino",
       titulo: "Crear la cuenta de un niño",
       descripcion: "La completa la madre, el padre o el tutor/a, con su propio email.",
+      icono: Baby,
+      tono: "bg-sol-suave text-sol-fuerte",
     },
   ]
 
   return (
     <>
-      <h2 className="text-2xl font-semibold text-center mb-8">¿Qué cuenta querés crear?</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-        {opciones.map((o) => (
-          <button
-            key={o.valor}
-            type="button"
-            onClick={() => onTipo(o.valor)}
-            className={`rounded-xl border-2 p-6 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
-              tipo === o.valor
-                ? "bg-primary border-primary text-primary-foreground"
-                : "bg-white border-border text-foreground hover:border-primary/50"
-            }`}
-          >
-            <p className="text-xl font-bold mb-3">{o.titulo}</p>
-            <p className={`text-sm leading-relaxed ${tipo === o.valor ? "text-primary-foreground/90" : "text-muted-foreground"}`}>
-              {o.descripcion}
-            </p>
-          </button>
-        ))}
+      <h2 className="text-2xl font-bold text-center mb-8">¿Qué cuenta querés crear?</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+        {opciones.map((o) => {
+          const elegido = tipo === o.valor
+          const Icono = o.icono
+          return (
+            <button
+              key={o.valor}
+              type="button"
+              aria-pressed={elegido}
+              onClick={() => onTipo(o.valor)}
+              className={cn(
+                "group relative rounded-3xl border-2 p-6 text-left transition-[border-color,background-color,box-shadow,translate] duration-200 hover:-translate-y-1 motion-reduce:hover:translate-y-0 focus:outline-none focus-visible:ring-4 focus-visible:ring-ring/40",
+                elegido
+                  ? "border-primary bg-rojo-suave/60 shadow-brillo-rojo"
+                  : "border-border bg-card shadow-suave hover:border-primary/40 hover:shadow-media",
+              )}
+            >
+              {elegido && (
+                <span className="absolute right-4 top-4 grid size-7 place-items-center rounded-full bg-primary text-primary-foreground">
+                  <Check className="size-4" />
+                </span>
+              )}
+              <span className={cn("mb-4 grid size-14 place-items-center rounded-2xl", o.tono)}>
+                <Icono className="size-7" />
+              </span>
+              <p className="text-xl font-bold mb-2">{o.titulo}</p>
+              <p className="text-base leading-relaxed text-muted-foreground">{o.descripcion}</p>
+            </button>
+          )
+        })}
       </div>
       <div className="flex justify-end">
         <Button size="lg" disabled={tipo === null} onClick={onSiguiente} className="px-8">
@@ -242,9 +262,9 @@ function FormProfesional({ onRegistrado }: { onRegistrado: OnRegistrado }) {
 
   return (
     <>
-      <h2 className="text-2xl font-semibold text-center mb-6">Cuenta de profesional</h2>
-      <Card className="shadow-sm">
-        <CardContent className="pt-6">
+      <h2 className="text-2xl font-bold text-center mb-6">Cuenta de profesional</h2>
+      <Card className="border-border/60 bg-background/50 shadow-none">
+        <CardContent>
           <form onSubmit={handleSubmit} noValidate className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Campo id="nombre" label="Nombre/s" placeholder="Juan" value={nombre} onChange={(e) => setNombre(e.target.value)} error={errores.nombre} autoComplete="given-name" />
@@ -275,7 +295,7 @@ function FormProfesional({ onRegistrado }: { onRegistrado: OnRegistrado }) {
             </Button>
           </form>
 
-          <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="my-6 flex items-center gap-3 text-sm text-muted-foreground">
             <span className="h-px flex-1 bg-border" /> o <span className="h-px flex-1 bg-border" />
           </div>
           <BotonGoogle texto="Registrarme con Google" />
@@ -347,12 +367,15 @@ function FormNino({ onRegistrado }: { onRegistrado: OnRegistrado }) {
 
   return (
     <>
-      <h2 className="text-2xl font-semibold text-center mb-2">Cuenta de un niño</h2>
-      <p className="text-center text-sm text-muted-foreground mb-6">La completa la madre, el padre o el tutor/a.</p>
+      <h2 className="text-2xl font-bold text-center mb-2">Cuenta de un niño</h2>
+      <p className="text-center text-base text-muted-foreground mb-6">La completa la madre, el padre o el tutor/a.</p>
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
-        <Card className="shadow-sm">
-          <CardContent className="pt-6 space-y-5">
-            <h3 className="font-semibold">Datos del niño</h3>
+        <Card className="border-border/60 bg-background/50 shadow-none">
+          <CardContent className="space-y-5">
+            <h3 className="flex items-center gap-2 text-lg font-bold">
+              <span className="grid size-9 place-items-center rounded-xl bg-sol-suave text-sol-fuerte"><Baby className="size-5" /></span>
+              Datos del niño
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Campo id="nombre" label="Nombre/s" value={nombre} onChange={(e) => setNombre(e.target.value)} error={errores.nombre} />
               <Campo id="apellido" label="Apellido/s" value={apellido} onChange={(e) => setApellido(e.target.value)} error={errores.apellido} />
@@ -376,7 +399,7 @@ function FormNino({ onRegistrado }: { onRegistrado: OnRegistrado }) {
               error={errores.fechaNacimiento}
             />
             <div className="space-y-2">
-              <span className="block uppercase font-bold text-xs tracking-wide">Etapa escolar</span>
+              <span className="block text-base font-semibold">Etapa escolar</span>
               <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Etapa escolar">
                 {ETAPAS_ESCOLARES.map((e) => (
                   <button
@@ -385,11 +408,12 @@ function FormNino({ onRegistrado }: { onRegistrado: OnRegistrado }) {
                     role="radio"
                     aria-checked={etapa === e.valor}
                     onClick={() => setEtapa(e.valor)}
-                    className={`px-4 py-2 rounded-lg border-2 text-sm font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                    className={cn(
+                      "rounded-full border-2 px-4 py-2 text-base font-semibold transition-[background-color,border-color,color,translate] active:translate-y-px focus:outline-none focus-visible:ring-4 focus-visible:ring-ring/40",
                       etapa === e.valor
-                        ? "bg-primary border-primary text-primary-foreground"
-                        : "bg-white border-border text-foreground hover:border-primary/50"
-                    }`}
+                        ? "bg-primary border-primary text-primary-foreground shadow-boton"
+                        : "bg-card border-border text-foreground hover:border-primary/50 hover:bg-rojo-suave/40",
+                    )}
                   >
                     {e.label}
                   </button>
@@ -400,9 +424,12 @@ function FormNino({ onRegistrado }: { onRegistrado: OnRegistrado }) {
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm">
-          <CardContent className="pt-6 space-y-5">
-            <h3 className="font-semibold">Datos del tutor</h3>
+        <Card className="border-border/60 bg-background/50 shadow-none">
+          <CardContent className="space-y-5">
+            <h3 className="flex items-center gap-2 text-lg font-bold">
+              <span className="grid size-9 place-items-center rounded-xl bg-lavanda-suave text-lavanda-fuerte"><UserRound className="size-5" /></span>
+              Datos del tutor
+            </h3>
             <Campo
               id="email"
               label="Email del tutor"
@@ -491,8 +518,10 @@ function ErrorGeneral({ mensaje }: { mensaje: string }) {
 function ConfirmacionEnviada({ email }: { email: string }) {
   return (
     <div className="text-center space-y-4 py-6">
-      <MailCheck className="w-12 h-12 text-primary mx-auto" />
-      <h2 className="text-2xl font-semibold">Te enviamos un email para confirmar la cuenta</h2>
+      <div className="mx-auto grid size-24 place-items-center rounded-[1.75rem] bg-pantalla shadow-brillo-celeste">
+        <LumoCara estado="feliz" tamano={80} />
+      </div>
+      <h2 className="text-2xl font-bold">Te enviamos un email para confirmar la cuenta</h2>
       <p className="text-muted-foreground">
         Abrí el enlace que enviamos a <span className="font-semibold text-foreground">{email}</span> para activar la cuenta.
         Si no lo ves, revisá la carpeta de spam.

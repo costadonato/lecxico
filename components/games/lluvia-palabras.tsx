@@ -117,7 +117,7 @@ export function LluviaPalabras({ onComplete }: LluviaPalabrasProps) {
     <div className="space-y-6">
       {/* Lumo mascot */}
       <div className="flex items-center gap-4 p-4 bg-accent/5 rounded-xl border border-accent/20">
-        <img src="/images/lumo.png" alt="Lumo" className="w-16 h-16 object-contain mascot-no-bg" />
+        <img src="/images/lumo.webp" alt="Lumo" className="w-16 h-16 object-contain mascot-no-bg" />
         <div className="flex-1">
           <p className="font-semibold text-sm mb-1">Lumo dice:</p>
           <p className="text-sm text-muted-foreground">

@@ -145,13 +145,13 @@ export default function ChildGamesPage() {
 
                 <div className="relative h-64 md:h-80 mascot-no-bg">
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-40 h-40 animate-float">
-                    <Image src="/images/lex.png" alt="Lex" fill className="object-contain" />
+                    <Image src="/images/lex.webp" alt="Lex" fill className="object-contain" />
                   </div>
                   <div
                     className="absolute right-0 top-1/2 -translate-y-1/2 w-40 h-40 animate-float"
                     style={{ animationDelay: "0.5s" }}
                   >
-                    <Image src="/images/lumo.png" alt="Lumo" fill className="object-contain" />
+                    <Image src="/images/lumo.webp" alt="Lumo" fill className="object-contain" />
                   </div>
                 </div>
               </div>

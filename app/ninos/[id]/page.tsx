@@ -4,8 +4,16 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { Dumbbell, Lightbulb, User } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { EstadoVacio } from "@/components/estados"
+import { Iniciales } from "@/components/iniciales"
+import { BarraPorcentaje } from "@/components/motion/barra-porcentaje"
+import { ItemCascada, ListaCascada } from "@/components/motion/lista-cascada"
+import { NumeroAnimado } from "@/components/motion/numero-animado"
 import { PaginaApp } from "@/components/pagina-app"
+import { CuerpoTablaAnimado, FilaTablaAnimada } from "@/components/tabla-animada"
 import { ConfirmarDialog, type Confirmacion } from "@/components/confirmar-dialog"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
 import { CargandoSeccion, SinAccesoNino } from "@/components/ninos/piezas-detalle"
@@ -14,10 +22,12 @@ import { HistorialEvaluaciones } from "@/components/test/historial-evaluaciones"
 import { usePerfilPagina } from "@/lib/auth/use-perfil-pagina"
 import { calcularEdad, formatearFecha, textoEdad } from "@/lib/fechas"
 import { getGameById } from "@/lib/games-catalog"
+import { estiloNivel } from "@/lib/niveles"
 import { cargarDetalleNino, type DetalleNino, type TestConBloques } from "@/lib/ninos/detalle"
 import { bloquesMasDebiles, ordenRecomendacion, porcentajeBloque } from "@/lib/test/analisis"
 import { BLOQUE_NOMBRES, ETAPAS_ESCOLARES, NIVEL_LABEL, nivelParaEtapa, rutaDelTest } from "@/lib/test/bloques"
 import { desvincular } from "@/lib/vinculos"
+import { cn } from "@/lib/utils"
 
 type Carga = { estado: "cargando" } | { estado: "error"; mensaje: string } | { estado: "sin-acceso" } | { estado: "listo"; datos: DetalleNino }
 
@@ -128,16 +138,55 @@ function InformacionGeneral({ datos }: { datos: DetalleNino }) {
     ["Última evaluación", oGuion(nino.ultima_prueba)],
   ]
 
+  const ultimo = datos.tests[0]
+  const cifras: { etiqueta: string; valor: number | null; sufijo?: string; clase: string }[] = [
+    { etiqueta: "Evaluaciones", valor: datos.tests.length, clase: "bg-celeste-suave text-celeste-fuerte" },
+    {
+      etiqueta: "Último porcentaje general",
+      valor: ultimo ? ultimo.porcentaje_total : null,
+      sufijo: "%",
+      clase: ultimo ? cn(estiloNivel(ultimo.porcentaje_total).suave, estiloNivel(ultimo.porcentaje_total).texto) : "bg-muted text-muted-foreground",
+    },
+    { etiqueta: "Entrenamientos", valor: datos.entrenamientos.length, clase: "bg-menta-suave text-menta-fuerte" },
+  ]
+
   return (
-    <Seccion icono={<User className="w-5 h-5" />} colorIcono="bg-purple-100 text-purple-600" titulo="Información general">
-      <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
-        {campos.map(([etiqueta, valor]) => (
-          <div key={etiqueta}>
-            <dt className="text-sm text-gray-500">{etiqueta}</dt>
-            <dd className="font-medium break-words">{valor}</dd>
+    <Seccion icono={<User />} tono="lavanda" titulo="Información general">
+      <div className="space-y-6">
+        <div className="flex flex-wrap items-center gap-4">
+          <Iniciales nombre={perfil.nombre} apellido={perfil.apellido} semilla={perfil.nombre_usuario} className="size-16 text-xl" />
+          <div className="min-w-0 space-y-1.5">
+            <p className="text-2xl font-bold leading-tight">
+              {perfil.nombre} {perfil.apellido}
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              {perfil.nombre_usuario && <span className="text-base text-muted-foreground">@{perfil.nombre_usuario}</span>}
+              <Badge variant="lavanda">{etapa}</Badge>
+              {edad && <Badge variant="neutro">{edad}</Badge>}
+            </div>
           </div>
-        ))}
-      </dl>
+        </div>
+
+        <ListaCascada as="dl" className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {cifras.map((c) => (
+            <ItemCascada key={c.etiqueta} className={cn("rounded-2xl px-4 py-3", c.clase)}>
+              <dt className="text-sm font-semibold opacity-90">{c.etiqueta}</dt>
+              <dd className="text-3xl font-bold">
+                {c.valor === null ? "—" : <NumeroAnimado valor={c.valor} sufijo={c.sufijo} />}
+              </dd>
+            </ItemCascada>
+          ))}
+        </ListaCascada>
+
+        <dl className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+          {campos.map(([etiqueta, valor]) => (
+            <div key={etiqueta} className="border-b border-border/60 py-3">
+              <dt className="text-sm text-muted-foreground">{etiqueta}</dt>
+              <dd className="break-words font-semibold">{valor}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </Seccion>
   )
 }
@@ -145,21 +194,21 @@ function InformacionGeneral({ datos }: { datos: DetalleNino }) {
 /* ------------------------------------------------------------------ */
 /*  Recomendación (última evaluación, de cualquier profesional)         */
 /* ------------------------------------------------------------------ */
-const colorBarra = (pct: number) =>
-  pct >= 80 ? "bg-green-500" : pct >= 60 ? "bg-yellow-500" : pct >= 40 ? "bg-orange-500" : "bg-red-500"
-
 function Recomendacion({ datos }: { datos: DetalleNino }) {
   const ultimo = datos.tests[0]
 
   return (
-    <Seccion icono={<Lightbulb className="w-5 h-5" />} colorIcono="bg-amber-100 text-amber-600" titulo="Recomendación">
+    <Seccion icono={<Lightbulb />} tono="sol" titulo="Recomendación">
       {!ultimo ? (
-        <div className="text-center py-6 space-y-4">
-          <p className="text-gray-500">La recomendación va a aparecer después de la primera evaluación.</p>
-          <Button asChild>
-            <Link href={rutaDelTest(nivelParaEtapa(datos.nino.etapa_escolar), datos.perfil.id)}>Tomar evaluación</Link>
-          </Button>
-        </div>
+        <EstadoVacio
+          compacto
+          descripcion="La recomendación va a aparecer después de la primera evaluación."
+          accion={
+            <Button asChild>
+              <Link href={rutaDelTest(nivelParaEtapa(datos.nino.etapa_escolar), datos.perfil.id)}>Tomar evaluación</Link>
+            </Button>
+          }
+        />
       ) : (
         <ListaRecomendacion test={ultimo} />
       )}
@@ -173,39 +222,37 @@ function ListaRecomendacion({ test }: { test: TestConBloques }) {
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-gray-600">
+      <p className="text-base text-muted-foreground">
         Según la evaluación del {formatearFecha(test.fecha)} (Nivel {NIVEL_LABEL[test.nivel]}). Los bloques van de menor a
         mayor porcentaje de acierto.
       </p>
-      <ul className="space-y-3">
-        {ordenados.map((b) => {
+      <ListaCascada as="ul" className="space-y-3">
+        {ordenados.map((b, i) => {
           const pct = porcentajeBloque(b.correctas, b.total)
           const primero = prioritarios.has(b.bloque_codigo)
           return (
-            <li
+            <ItemCascada
+              as="li"
               key={b.bloque_codigo}
-              className={`rounded-lg border p-3 ${primero ? "border-red-300 bg-red-50" : "border-gray-200"}`}
+              className={cn(
+                "rounded-2xl border p-4",
+                primero ? "border-rojo/30 bg-rojo-suave/50" : "border-border/80 bg-background/60",
+              )}
             >
-              <div className="flex items-center justify-between gap-3 mb-2">
-                <span className="font-medium flex flex-wrap items-center gap-2">
+              <div className="mb-2.5 flex items-center justify-between gap-3">
+                <span className="flex flex-wrap items-center gap-2 font-semibold">
                   {BLOQUE_NOMBRES[b.bloque_codigo]}
-                  {primero && (
-                    <span className="text-xs font-semibold uppercase tracking-wide rounded-full bg-red-600 text-white px-2 py-0.5">
-                      Practicar primero
-                    </span>
-                  )}
+                  {primero && <Badge variant="destructive">Practicar primero</Badge>}
                 </span>
-                <span className="text-sm font-semibold tabular-nums">{pct}%</span>
+                <NumeroAnimado valor={pct} sufijo="%" className={cn("text-lg font-bold", estiloNivel(pct).texto)} />
               </div>
-              <div className="h-2 rounded-full bg-gray-200 overflow-hidden" aria-hidden="true">
-                <div className={`h-full rounded-full ${colorBarra(pct)}`} style={{ width: `${pct}%` }} />
-              </div>
-            </li>
+              <BarraPorcentaje valor={pct} className="h-3" retraso={i * 0.08} />
+            </ItemCascada>
           )
         })}
-      </ul>
-      {prioritarios.size === 0 && <p className="text-sm text-gray-600">En esa evaluación respondió bien todos los bloques.</p>}
-      <p className="text-xs text-gray-500">
+      </ListaCascada>
+      {prioritarios.size === 0 && <p className="text-base text-muted-foreground">En esa evaluación respondió bien todos los bloques.</p>}
+      <p className="text-sm text-muted-foreground">
         Es una orientación a partir de la última evaluación: vos decidís qué trabajar con el niño.
       </p>
     </div>
@@ -217,33 +264,31 @@ function ListaRecomendacion({ test }: { test: TestConBloques }) {
 /* ------------------------------------------------------------------ */
 function HistorialEntrenamientos({ datos }: { datos: DetalleNino }) {
   return (
-    <Seccion
-      icono={<Dumbbell className="w-5 h-5" />}
-      colorIcono="bg-green-100 text-green-600"
-      titulo="Historial de entrenamientos"
-    >
+    <Seccion icono={<Dumbbell />} tono="menta" titulo="Historial de entrenamientos">
       {datos.entrenamientos.length === 0 ? (
-        <p className="text-center text-gray-500 py-6">Todavía no hay entrenamientos registrados.</p>
+        <EstadoVacio compacto descripcion="Todavía no hay entrenamientos registrados." />
       ) : (
-        <div className="rounded-lg border overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50 border-b text-left">
-                <th className="px-4 py-2 font-semibold">Fecha</th>
-                <th className="px-4 py-2 font-semibold">Juego</th>
-                <th className="px-4 py-2 font-semibold text-right">Puntaje</th>
-              </tr>
-            </thead>
-            <tbody>
+        <div className="overflow-hidden rounded-2xl border border-border/80 max-md:rounded-none max-md:border-0">
+          <Table tarjetasEnCelular>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Fecha</TableHead>
+                <TableHead>Juego</TableHead>
+                <TableHead className="text-right">Puntaje</TableHead>
+              </TableRow>
+            </TableHeader>
+            <CuerpoTablaAnimado>
               {datos.entrenamientos.map((e) => (
-                <tr key={e.id} className="border-b last:border-b-0">
-                  <td className="px-4 py-2">{formatearFecha(e.created_at)}</td>
-                  <td className="px-4 py-2">{getGameById(e.juego)?.title ?? e.juego}</td>
-                  <td className="px-4 py-2 text-right font-medium">{e.puntaje}</td>
-                </tr>
+                <FilaTablaAnimada key={e.id}>
+                  <TableCell data-label="Fecha" className="tabular-nums">{formatearFecha(e.created_at)}</TableCell>
+                  <TableCell data-label="Juego" className="whitespace-normal font-medium">
+                    {getGameById(e.juego)?.title ?? e.juego}
+                  </TableCell>
+                  <TableCell data-label="Puntaje" className="text-right font-bold tabular-nums">{e.puntaje}</TableCell>
+                </FilaTablaAnimada>
               ))}
-            </tbody>
-          </table>
+            </CuerpoTablaAnimado>
+          </Table>
         </div>
       )}
     </Seccion>

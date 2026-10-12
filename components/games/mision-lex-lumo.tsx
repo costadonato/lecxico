@@ -130,14 +130,14 @@ export function MisionLexLumo({ onComplete, mode = "child" }: MisionLexLumoProps
       {/* Mascots */}
       <div className="grid grid-cols-2 gap-4">
         <div className="flex items-center gap-3 p-4 bg-primary/5 rounded-xl border border-primary/20">
-          <img src="/images/lex.png" alt="Lex" className="w-12 h-12 object-contain mascot-no-bg" />
+          <img src="/images/lex.webp" alt="Lex" className="w-12 h-12 object-contain mascot-no-bg" />
           <div>
             <p className="font-bold text-sm">Lex</p>
             <p className="text-xs text-muted-foreground">Aventurero</p>
           </div>
         </div>
         <div className="flex items-center gap-3 p-4 bg-accent/5 rounded-xl border border-accent/20">
-          <img src="/images/lumo.png" alt="Lumo" className="w-12 h-12 object-contain mascot-no-bg" />
+          <img src="/images/lumo.webp" alt="Lumo" className="w-12 h-12 object-contain mascot-no-bg" />
           <div>
             <p className="font-bold text-sm">Lumo</p>
             <p className="text-xs text-muted-foreground">Inventor</p>

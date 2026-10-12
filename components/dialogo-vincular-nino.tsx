@@ -16,6 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
+import { LumoCara } from "@/components/personajes/lumo-cara"
 import { invitarNino, MENSAJE_INVITACION_ENVIADA } from "@/lib/vinculos"
 
 /**
@@ -66,6 +67,9 @@ export function DialogoVincularNino({ variant = "default" }: { variant?: "defaul
       <DialogContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <DialogHeader>
+            <span className="mb-1 grid size-16 place-items-center rounded-2xl bg-pantalla shadow-brillo-celeste">
+              <LumoCara estado="feliz" tamano={52} />
+            </span>
             <DialogTitle>Vincular nuevo niño</DialogTitle>
             <DialogDescription>
               Escribí el nombre de usuario exacto del niño. Se lo podés pedir a su madre, padre o tutor/a. El niño va a
@@ -73,7 +77,7 @@ export function DialogoVincularNino({ variant = "default" }: { variant?: "defaul
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
-            <Label htmlFor="usuario-nino">Nombre de usuario del niño</Label>
+            <Label htmlFor="usuario-nino" className="text-base font-semibold">Nombre de usuario del niño</Label>
             <Input
               id="usuario-nino"
               value={usuario}

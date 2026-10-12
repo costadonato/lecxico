@@ -1,10 +1,12 @@
 "use client"
 
 import { useCallback, useState } from "react"
-import { AlertCircle, Loader2, Stethoscope } from "lucide-react"
+import { AlertCircle, CalendarHeart, Stethoscope } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Cargando, EstadoVacio } from "@/components/estados"
+import { Iniciales } from "@/components/iniciales"
+import { ItemCascada, ListaCascada } from "@/components/motion/lista-cascada"
 import { PaginaApp } from "@/components/pagina-app"
 import { ConfirmarDialog, type Confirmacion } from "@/components/confirmar-dialog"
 import { usePerfilPagina } from "@/lib/auth/use-perfil-pagina"
@@ -71,57 +73,62 @@ function TablaProfesionales() {
     )
   }
   if (!vinculos) {
-    return (
-      <div className="flex justify-center py-12">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
-      </div>
-    )
+    return <Cargando />
   }
 
   return (
     <>
       {vinculos.length === 0 ? (
-        <Card className="border-2 shadow-sm">
-          <CardContent className="py-12 text-center space-y-3">
-            <Stethoscope className="w-10 h-10 text-muted-foreground mx-auto" />
-            <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              Todavía no tenés profesionales vinculados. Cuando uno te invite, vas a ver la invitación en la campanita.
-            </p>
-          </CardContent>
-        </Card>
+        <EstadoVacio
+          personaje="lex"
+          descripcion={
+            <p>Todavía no tenés profesionales vinculados. Cuando uno te invite, vas a ver la invitación en la campanita.</p>
+          }
+        />
       ) : (
-        <Card className="border-2 shadow-sm overflow-hidden py-0">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 border-b text-left">
-                  <th className="px-4 py-3 font-semibold">Nombre</th>
-                  <th className="px-4 py-3 font-semibold">Apellido</th>
-                  <th className="px-4 py-3 font-semibold">Usuario</th>
-                  <th className="px-4 py-3 font-semibold">Vinculado desde</th>
-                  <th className="px-4 py-3 font-semibold text-right">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {vinculos.map((v) => (
-                  <tr key={v.id} className="border-b last:border-b-0">
-                    <td className="px-4 py-3 font-medium">{v.profesional?.nombre}</td>
-                    <td className="px-4 py-3 font-medium">{v.profesional?.apellido}</td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {v.profesional?.nombre_usuario && `@${v.profesional.nombre_usuario}`}
-                    </td>
-                    <td className="px-4 py-3">{formatearFecha(v.fecha_afiliacion)}</td>
-                    <td className="px-4 py-3 text-right">
-                      <Button size="sm" variant="outline" onClick={() => pedirDesvinculo(v)}>
-                        Desvincular
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+        <ListaCascada as="ul" className="grid gap-5 sm:grid-cols-2">
+          {vinculos.map((v) => (
+            <ItemCascada
+              as="li"
+              key={v.id}
+              elevar="suave"
+              className="relative flex flex-col gap-5 overflow-hidden rounded-3xl border-2 border-white bg-card p-6 shadow-media"
+            >
+              <span aria-hidden="true" className="pointer-events-none absolute -right-10 -top-12 size-36 rounded-full bg-celeste/20 blur-xl" />
+              <div className="relative flex items-center gap-4">
+                <Iniciales
+                  nombre={v.profesional?.nombre}
+                  apellido={v.profesional?.apellido}
+                  semilla={v.profesional?.nombre_usuario}
+                  className="size-14 text-lg"
+                />
+                <div className="min-w-0">
+                  <p className="text-xl font-bold leading-snug">
+                    {v.profesional?.nombre} {v.profesional?.apellido}
+                  </p>
+                  {v.profesional?.nombre_usuario && (
+                    <p className="truncate text-base text-muted-foreground">
+                      @{v.profesional.nombre_usuario}
+                    </p>
+                  )}
+                </div>
+                <span className="ml-auto grid size-10 shrink-0 place-items-center rounded-2xl bg-celeste-suave text-celeste-fuerte">
+                  <Stethoscope className="size-5" />
+                </span>
+              </div>
+              <div className="relative flex flex-wrap items-center justify-between gap-3 border-t border-border/70 pt-4">
+                <p className="flex items-center gap-2 text-base">
+                  <CalendarHeart className="size-5 text-rojo-fuerte" />
+                  <span className="text-muted-foreground">Vinculado desde</span>
+                  <span className="font-semibold tabular-nums">{formatearFecha(v.fecha_afiliacion)}</span>
+                </p>
+                <Button size="sm" variant="outline" onClick={() => pedirDesvinculo(v)}>
+                  Desvincular
+                </Button>
+              </div>
+            </ItemCascada>
+          ))}
+        </ListaCascada>
       )}
 
       <ConfirmarDialog confirmacion={confirmacion} onCerrar={() => setConfirmacion(null)} />

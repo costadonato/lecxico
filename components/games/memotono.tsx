@@ -107,7 +107,7 @@ export function MemoTono({ onComplete, mode = "child" }: MemoTonoProps) {
       {/* Mascot */}
       <div className="flex items-center gap-4 p-4 bg-purple-50 rounded-xl border border-purple-200">
         <img
-          src={mode === "child" ? "/images/lex.png" : "/images/lumo.png"}
+          src={mode === "child" ? "/images/lex.webp" : "/images/lumo.webp"}
           alt={mode === "child" ? "Lex" : "Lumo"}
           className="w-16 h-16 object-contain mascot-no-bg"
         />
