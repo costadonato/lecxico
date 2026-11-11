@@ -2,14 +2,19 @@
 
 import { useState, useCallback, useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
-import { Loader2, ArrowLeft, ArrowRight, RotateCcw, Home, Volume2, Users } from "lucide-react"
+import { ArrowRight, Volume2 } from "lucide-react"
 import { bloqueCodigoPorOrden } from "@/lib/test/bloques"
 import { guardarTest } from "@/lib/test/guardar-test"
 import { useAccesoTest } from "@/lib/test/use-acceso-test"
 import { useSalidaDelTest } from "@/lib/test/use-salida-test"
+import { Button } from "@/components/ui/button"
 import { TestAccesoAviso } from "@/components/test-acceso-aviso"
-import { TestBandaNino } from "@/components/test-banda-nino"
-import { ResultadosTest } from "@/components/test/resultados-test"
+import { BarraProgresoEvaluacion } from "@/components/test/barra-progreso-evaluacion"
+import { BotonAudio } from "@/components/test/boton-audio"
+import { BotonOpcion } from "@/components/test/boton-opcion"
+import { FinalEvaluacion } from "@/components/test/final-evaluacion"
+import { MarcoEvaluacion } from "@/components/test/marco-evaluacion"
+import { ChipEstimulo, TarjetaPregunta, TituloConsigna } from "@/components/test/tarjeta-pregunta"
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -255,11 +260,6 @@ const BLOCKS = [
   { id: 8, name: "Lectura de Pseudopalabras" },
 ]
 
-/* Diagonal gradient: near-black red → dark red → deep indigo */
-const backgroundStyle = {
-  background: "linear-gradient(135deg, #1a0000 0%, #7f1d1d 50%, #1e1e2e 100%)",
-}
-
 /**
  * A stored answer: the index of the chosen option, or — for questions built up
  * click by click — the picks in the order the child made them.
@@ -448,15 +448,10 @@ function TestPrimaria() {
   /* ---- empty-data guard ---- */
   if (!current) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4 text-center" style={backgroundStyle}>
-        <h1 className="text-2xl font-bold text-white">Evaluación de indicadores de dislexia · Nivel Primario</h1>
-        <p className="text-white/70">Todavía no hay preguntas cargadas para este nivel.</p>
-        <button
-          onClick={() => router.push("/test")}
-          className="flex items-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-6 py-3 text-sm font-semibold text-white transition-colors duration-200"
-        >
-          Volver
-        </button>
+      <div className="fondo-nino flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
+        <h1 className="text-2xl font-bold text-foreground">Evaluación de indicadores de dislexia · Nivel Primario</h1>
+        <p className="text-muted-foreground">Todavía no hay preguntas cargadas para este nivel.</p>
+        <Button onClick={() => router.push("/test")}>Volver</Button>
       </div>
     )
   }
@@ -674,94 +669,27 @@ function TestPrimaria() {
     }))
 
     return (
-      <div className="min-h-screen relative overflow-hidden" style={backgroundStyle}>
-        {/* ---- Ambient blurred orbs (depth) ---- */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-32 -left-32 w-[28rem] h-[28rem] rounded-full bg-red-500 opacity-20 blur-3xl" />
-          <div className="absolute top-1/3 -right-32 w-[26rem] h-[26rem] rounded-full bg-pink-500 opacity-20 blur-3xl" />
-          <div className="absolute -bottom-40 left-1/2 -translate-x-1/2 w-[30rem] h-[30rem] rounded-full bg-orange-500 opacity-20 blur-3xl" />
-        </div>
-
-        {/* ---- Navbar ---- */}
-        <header className="relative z-10 h-16 bg-red-600 shadow-lg">
-          <div className="container mx-auto h-full px-4 flex items-center justify-between">
-            <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Lecxico</h1>
-            <div className="flex items-center gap-4">
-              <span className="hidden sm:inline text-white font-medium">Resultados de la evaluación</span>
-              <button
-                onClick={() => salir("/test")}
-                className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Volver
-              </button>
-            </div>
-          </div>
-        </header>
-        <TestBandaNino nino={acceso.nino} nivel="primario" />
+      <MarcoEvaluacion
+        etiqueta="Resultados de la evaluación"
+        onVolver={() => salir("/test")}
+        nino={acceso.nino}
+        nivel="primario"
+        decorado
+      >
         {dialogoSalida}
-
-        <main className="relative z-10 max-w-2xl mx-auto space-y-8 py-10 px-4">
-          <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-white">Resultados de la evaluación de indicadores de dislexia</h2>
-          </div>
-
-          <ResultadosTest
-            nivel="primario"
-            porcentajeTotal={totalPct}
-            bloques={bloquesResultado}
-          />
-
-          {/* Save status indicator */}
-          {(saving || saved) && (
-            <div className="flex items-center justify-center gap-2 text-sm text-white/70">
-              {saving ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Guardando resultados...
-                </>
-              ) : (
-                "Resultados guardados ✓"
-              )}
-            </div>
-          )}
-          {saveError && !saving && (
-            <div className="rounded-xl border border-red-400/60 bg-red-500/20 p-4 text-center space-y-3">
-              <p className="text-sm text-white">No se pudieron guardar los resultados: {saveError}</p>
-              <button
-                onClick={handleSave}
-                className="inline-flex items-center gap-2 rounded-lg bg-white/20 hover:bg-white/30 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200"
-              >
-                <RotateCcw className="w-4 h-4" /> Reintentar
-              </button>
-            </div>
-          )}
-
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 pb-10">
-            <button
-              onClick={handleRestart}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
-            >
-              <RotateCcw className="w-4 h-4" /> Repetir evaluación
-            </button>
-            {saved && (
-              <button
-                onClick={() => router.push("/test")}
-                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
-              >
-                <Users className="w-4 h-4" /> Evaluar a otro niño
-              </button>
-            )}
-            <button
-              onClick={() => salir("/dashboard")}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
-            >
-              <Home className="w-4 h-4" /> Volver al inicio
-            </button>
-          </div>
-        </main>
-      </div>
+        <FinalEvaluacion
+          nivel="primario"
+          porcentajeTotal={totalPct}
+          bloques={bloquesResultado}
+          guardando={saving}
+          guardado={saved}
+          errorGuardado={saveError}
+          onReintentar={handleSave}
+          onRepetir={handleRestart}
+          onEvaluarOtro={() => router.push("/test")}
+          onVolverInicio={() => salir("/dashboard")}
+        />
+      </MarcoEvaluacion>
     )
   }
 
@@ -781,186 +709,86 @@ function TestPrimaria() {
     : !canProceed
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex flex-col" style={backgroundStyle}>
-      {/* ---- Ambient blurred orbs (depth) ---- */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-[28rem] h-[28rem] rounded-full bg-red-500 opacity-20 blur-3xl" />
-        <div className="absolute top-1/3 -right-32 w-[26rem] h-[26rem] rounded-full bg-pink-500 opacity-20 blur-3xl" />
-        <div className="absolute -bottom-40 left-1/2 -translate-x-1/2 w-[30rem] h-[30rem] rounded-full bg-orange-500 opacity-20 blur-3xl" />
-      </div>
-
-      {/* ---- Navbar ---- */}
-      <header className="relative z-10 h-16 bg-red-600 shadow-lg shrink-0">
-        <div className="container mx-auto h-full px-4 flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Lecxico</h1>
-          <div className="flex items-center gap-4">
-            <span className="hidden sm:inline text-white font-medium">{blockName}</span>
-            <button
-              onClick={() => salir("/test")}
-              className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Volver
-            </button>
-          </div>
-        </div>
-      </header>
-      <TestBandaNino nino={acceso.nino} nivel="primario" />
+    <MarcoEvaluacion
+      etiqueta={blockName}
+      onVolver={() => salir("/test")}
+      nino={acceso.nino}
+      nivel="primario"
+    >
       {dialogoSalida}
 
       {/* ---- Progress bar with dots ---- */}
-      <div className="relative z-10 w-full px-4 py-6">
-        <div className="relative flex items-center justify-between max-w-4xl mx-auto">
-          {/* Background line */}
-          <div className="absolute top-1/2 left-0 right-0 h-[6px] bg-white/20 -translate-y-1/2 rounded-full" />
-          {/* Filled line */}
-          <div
-            className="absolute top-1/2 left-0 h-[6px] bg-red-400 -translate-y-1/2 rounded-full transition-all duration-300"
-            style={{ width: `${((currentIndex) / (TOTAL_QUESTIONS - 1)) * 100}%` }}
-          />
-          {/* Dots */}
-          {questions.map((_, idx) => {
-            const isCompleted = idx < currentIndex
-            const isCurrent = idx === currentIndex
-            return (
-              <div
-                key={idx}
-                className={`
-                  relative z-10 rounded-full transition-all duration-300 flex items-center justify-center
-                  ${isCurrent
-                    ? "w-8 h-8 bg-white"
-                    : isCompleted
-                      ? "w-5 h-5 bg-red-400"
-                      : "w-5 h-5 bg-white/20"
-                  }
-                `}
-              >
-                {isCurrent && (
-                  <span className="text-xs font-bold text-red-600">{idx + 1}</span>
-                )}
-              </div>
-            )
-          })}
-        </div>
-        <p className="text-center text-sm font-semibold text-white/70 mt-3">
-          {blockName}
-        </p>
-      </div>
+      <BarraProgresoEvaluacion total={TOTAL_QUESTIONS} actual={currentIndex} etiqueta={blockName} />
 
       {/* ---- Question card ---- */}
-      <div className="relative z-10 flex-1 flex items-center justify-center px-4 pb-8">
-        <div
+      <div className="flex flex-1 items-center justify-center px-4 pb-8">
+        <TarjetaPregunta
           key={`${currentIndex}-${storySubIndex}`}
-          className="w-full max-w-2xl rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex flex-col p-8 animate-in fade-in slide-in-from-bottom-4 duration-300"
-          style={{ minHeight: "60vh" }}
-        >
-          {/* Block name badge + audio button */}
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <span className="inline-block text-xs font-semibold text-white/80 bg-white/10 px-3 py-1 rounded-full">
-              {blockName}
-            </span>
-            {isHeardWord && (
-              <button
-                onClick={speakQuestion}
-                className={`
-                  inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all
-                  ${speaking
-                    ? "bg-white/30 text-white animate-pulse"
-                    : "bg-white/20 text-white hover:bg-white/30"
-                  }
-                `}
-              >
-                <Volume2 className="w-4 h-4" />
+          bloque={blockName}
+          audio={
+            isHeardWord && (
+              <BotonAudio onClick={speakQuestion} activo={speaking}>
                 {speaking ? "Escuchando..." : "Escuchar de nuevo"}
-              </button>
-            )}
-          </div>
-
+              </BotonAudio>
+            )
+          }
+        >
           {/* Context / story */}
           {current.type === "same_different" ? (
             /* Ejercicio A: only the two words, each with its own audio button */
-            <div className="mb-4 flex items-center justify-center gap-4 flex-wrap">
+            <div className="mb-4 flex flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
               <div className="flex flex-col items-center gap-2">
-                <span className="bg-white/20 rounded-xl px-5 py-2 text-2xl sm:text-3xl font-extrabold text-white tracking-wide">{current.word1}</span>
-                <button
-                  onClick={() => speak(current.word1)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition-all"
-                >
-                  <Volume2 className="w-4 h-4" />
-                  Escuchar
-                </button>
+                <ChipEstimulo className="px-5 py-2 text-2xl font-extrabold tracking-wide sm:text-3xl">{current.word1}</ChipEstimulo>
+                <BotonAudio onClick={() => speak(current.word1)}>Escuchar</BotonAudio>
               </div>
-              <span className="text-3xl sm:text-4xl font-bold text-white/40">–</span>
+              <span className="hidden text-3xl font-bold text-muted-foreground/60 sm:inline sm:text-4xl">–</span>
               <div className="flex flex-col items-center gap-2">
-                <span className="bg-white/20 rounded-xl px-5 py-2 text-2xl sm:text-3xl font-extrabold text-white tracking-wide">{current.word2}</span>
-                <button
-                  onClick={() => speak(current.word2)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition-all"
-                >
-                  <Volume2 className="w-4 h-4" />
-                  Escuchar
-                </button>
+                <ChipEstimulo className="px-5 py-2 text-2xl font-extrabold tracking-wide sm:text-3xl">{current.word2}</ChipEstimulo>
+                <BotonAudio onClick={() => speak(current.word2)}>Escuchar</BotonAudio>
               </div>
             </div>
           ) : showingStoryText && current.type === "reading_comprehension" ? (
             <div className="mb-4 w-full">
               {/* Bloque 5: la historia también se puede escuchar */}
               <div className="mb-2 flex justify-end">
-                <button
-                  onClick={() => speak(current.text)}
-                  className={`
-                    inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all
-                    ${speaking
-                      ? "bg-white/30 text-white animate-pulse"
-                      : "bg-white/20 text-white hover:bg-white/30"
-                    }
-                  `}
-                >
-                  <Volume2 className="w-4 h-4" />
+                <BotonAudio onClick={() => speak(current.text)} activo={speaking}>
                   {speaking ? "Reproduciendo..." : "Escuchar historia"}
-                </button>
+                </BotonAudio>
               </div>
-              <div className="bg-white/20 rounded-xl p-6 max-h-72 overflow-y-auto text-left text-base sm:text-lg leading-relaxed text-white whitespace-pre-line">
+              <div className="max-h-72 overflow-y-auto whitespace-pre-line rounded-2xl border border-border/70 bg-muted p-5 text-left text-base leading-relaxed text-foreground sm:p-6 sm:text-lg">
                 {current.text}
               </div>
             </div>
           ) : current.type === "syllable_count" ? (
             <div className="mb-4 flex flex-col items-center gap-2">
               <span className="text-5xl sm:text-6xl">{current.emoji}</span>
-              <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl sm:text-4xl font-bold tracking-widest text-white">
+              <ChipEstimulo className="px-8 py-4 text-3xl font-bold tracking-widest sm:text-4xl">
                 {current.syllableDisplay ?? current.word}
-              </span>
+              </ChipEstimulo>
             </div>
           ) : current.type === "mirror_letters" ? (
             <div className="mb-4 flex flex-col items-center gap-2">
               <span className="text-5xl sm:text-6xl">{current.emoji}</span>
-              <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl sm:text-4xl font-bold tracking-widest text-white">
+              <ChipEstimulo className="px-8 py-4 text-3xl font-bold tracking-widest sm:text-4xl">
                 {current.word}
-              </span>
+              </ChipEstimulo>
             </div>
           ) : current.type === "sequence_order" ? (
             /* Ejercicio I: the words are only heard, never shown */
             <div className="mb-4 flex justify-center">
-              <button
+              <BotonAudio
                 onClick={() => speakSequence(current.sequence)}
                 disabled={speaking || playCount >= 2}
-                className={`
-                  inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
-                  ${speaking
-                    ? "bg-white/30 text-white animate-pulse"
-                    : playCount >= 2
-                      ? "bg-white/10 text-white/40 cursor-not-allowed"
-                      : "bg-white/20 text-white hover:bg-white/30"
-                  }
-                `}
+                activo={speaking}
+                agotado={playCount >= 2}
+                className="px-5"
               >
-                <Volume2 className="w-5 h-5" />
                 {speaking
                   ? "Reproduciendo..."
                   : playCount >= 2
                     ? "Sin reproducciones"
                     : `Escuchar secuencia (quedan ${2 - playCount})`}
-              </button>
+              </BotonAudio>
             </div>
           ) : current.type === "syllable_drag" ? (
             /* Ejercicio H: only the picture — the word has to be recalled, not read */
@@ -970,33 +798,27 @@ function TestPrimaria() {
           ) : current.type === "pseudo_audio" ? (
             /* Ejercicio P: the written pseudoword the audios have to match */
             <div className="mb-4 flex justify-center">
-              <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl font-bold tracking-widest text-white">
+              <ChipEstimulo className="px-8 py-4 text-3xl font-bold tracking-widest">
                 {current.writtenWord}
-              </span>
+              </ChipEstimulo>
             </div>
           ) : current.type === "professional_rated" && current.displayWord ? (
             /* Bloque 8: the pseudoword to read aloud */
             <div className="mb-4 flex justify-center">
-              <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl font-bold tracking-widest text-white">
+              <ChipEstimulo className="px-8 py-4 text-3xl font-bold tracking-widest">
                 {current.displayWord}
-              </span>
+              </ChipEstimulo>
             </div>
           ) : isSpokenSyllable ? (
             /* Ejercicio L: the syllable is only heard — replay it as often as needed */
             <div className="mb-4 flex justify-center">
-              <button
+              <BotonAudio
                 onClick={() => autoPlayText && speak(autoPlayText)}
-                className={`
-                  inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
-                  ${speaking
-                    ? "bg-white/30 text-white animate-pulse"
-                    : "bg-white/20 text-white hover:bg-white/30"
-                  }
-                `}
+                activo={speaking}
+                className="px-5"
               >
-                <Volume2 className="w-5 h-5" />
                 {speaking ? "Escuchando..." : "Escuchar de nuevo"}
-              </button>
+              </BotonAudio>
             </div>
           ) : isHeardWord ? (
             /* Ejercicio B: the word is heard, so nothing about it is shown */
@@ -1004,30 +826,23 @@ function TestPrimaria() {
           ) : current.type === "multiple_choice" && current.block === 4 && "spokenWord" in current && current.spokenWord ? (
             /* Ejercicio J: the pseudoword is only heard — máximo 2 reproducciones voluntarias */
             <div className="mb-4 flex justify-center">
-              <button
+              <BotonAudio
                 onClick={() => {
                   if (playCount >= 2 || !current.spokenWord) return
                   setPlayCount((prev) => prev + 1)
                   speak(current.spokenWord.toLowerCase())
                 }}
                 disabled={speaking || playCount >= 2}
-                className={`
-                  inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
-                  ${speaking
-                    ? "bg-white/30 text-white animate-pulse"
-                    : playCount >= 2
-                      ? "bg-white/10 text-white/40 cursor-not-allowed"
-                      : "bg-white/20 text-white hover:bg-white/30"
-                  }
-                `}
+                activo={speaking}
+                agotado={playCount >= 2}
+                className="px-5"
               >
-                <Volume2 className="w-5 h-5" />
                 {speaking
                   ? "Escuchando..."
                   : playCount >= 2
                     ? "Sin reproducciones"
                     : `Escuchar palabra (quedan ${2 - playCount})`}
-              </button>
+              </BotonAudio>
             </div>
           ) : current.type === "multiple_choice" && current.block === 7 && current.context ? (
             /* Ejercicio O: just the picture of the word to spell */
@@ -1038,73 +853,60 @@ function TestPrimaria() {
             /* Ejercicio M: picture above, incomplete word below */
             <div className="mb-4 flex flex-col items-center gap-2">
               <span className="text-5xl sm:text-6xl">{current.context.split(" ")[0]}</span>
-              <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl sm:text-4xl font-bold tracking-widest text-white">
+              <ChipEstimulo className="px-8 py-4 text-3xl font-bold tracking-widest sm:text-4xl">
                 {current.context.split(" ").slice(1).join(" ")}
-              </span>
+              </ChipEstimulo>
             </div>
           ) : current.type === "multiple_choice" && current.context ? (
             /* Ejercicios D y J: the letters / pseudoword to work from */
             <div className="mb-4 flex flex-col items-center gap-2">
-              <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-2xl sm:text-3xl font-bold tracking-widest text-white">
+              <ChipEstimulo className="px-8 py-4 text-2xl font-bold tracking-widest sm:text-3xl">
                 {current.context}
-              </span>
+              </ChipEstimulo>
             </div>
           ) : null}
 
           {/* Prompt */}
           <div className="mb-6 flex items-center justify-center">
-            <h2 className={`font-bold text-white text-center ${promptLarge ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}>
-              {displayPrompt}
-            </h2>
+            <TituloConsigna grande={promptLarge}>{displayPrompt}</TituloConsigna>
           </div>
 
           {/* Options area */}
           {!showingStoryText && current.type === "sequence_order" ? (
             /* Ejercicio I: pick every word, the badge shows the order chosen */
-            <div className="flex-1 flex flex-col justify-center py-2">
-              <div className="grid gap-4 grid-cols-1">
+            <div className="flex flex-1 flex-col justify-center py-2">
+              <div className="grid grid-cols-1 gap-4">
                 {current.options.map((opt, idx) => {
                   const order = sequenceSelection.indexOf(idx)
                   const isPicked = order !== -1
                   const optEmoji = questionEmojis[opt]
                   return (
-                    <button
+                    <BotonOpcion
                       key={idx}
                       onClick={() => handleSequenceSelect(idx)}
                       disabled={speaking}
-                      className={`
-                        relative rounded-2xl border py-5 px-6 text-lg font-bold transition-all duration-200 flex flex-col items-center gap-2
-                        ${isPicked
-                          ? "bg-red-500 border-red-400 text-white"
-                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                        }
-                        ${speaking ? "opacity-40 cursor-not-allowed" : ""}
-                      `}
+                      seleccionada={isPicked}
+                      orden={isPicked ? order + 1 : undefined}
                     >
-                      {isPicked && (
-                        <span className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-white text-red-600 text-sm font-extrabold">
-                          {order + 1}°
-                        </span>
-                      )}
                       {optEmoji && <span className="text-4xl sm:text-5xl">{optEmoji}</span>}
                       <span>{opt}</span>
-                    </button>
+                    </BotonOpcion>
                   )
                 })}
               </div>
             </div>
           ) : !showingStoryText && current.type === "syllable_drag" ? (
             /* Ejercicio H: slots on top, the syllables still available underneath */
-            <div className="flex-1 flex flex-col justify-center gap-6 py-2">
-              <div className="flex items-center justify-center gap-3 flex-wrap bg-white/10 rounded-xl p-4">
+            <div className="flex flex-1 flex-col justify-center gap-6 py-2">
+              <div className="flex flex-wrap items-center justify-center gap-3 rounded-2xl bg-muted p-4">
                 {current.syllables.map((_, slot) => (
                   <span
                     key={slot}
                     className={`
-                      min-w-[5rem] rounded-lg px-4 py-3 text-center text-2xl font-extrabold tracking-widest
+                      min-w-[5rem] rounded-xl border-2 px-4 py-3 text-center text-2xl font-extrabold tracking-widest
                       ${builtWord[slot]
-                        ? "bg-white text-red-600"
-                        : "bg-white/10 text-white/40"
+                        ? "border-rojo bg-rojo-suave text-rojo-fuerte"
+                        : "border-dashed border-input/60 bg-card text-muted-foreground/60"
                       }
                     `}
                   >
@@ -1113,57 +915,47 @@ function TestPrimaria() {
                 ))}
               </div>
 
-              <div className="flex items-center justify-center gap-3 flex-wrap">
+              <div className="flex flex-wrap items-center justify-center gap-3">
                 {remainingSyllables.map((syl, idx) => (
-                  <button
+                  <BotonOpcion
                     key={`${syl}-${idx}`}
                     onClick={() => handleSyllablePlace(syl)}
-                    className="rounded-2xl border border-white/20 bg-white/10 px-6 py-4 text-2xl font-extrabold tracking-widest text-white transition-all duration-200 hover:bg-white/20"
+                    className="px-6 py-4 text-2xl font-extrabold tracking-widest"
                   >
                     {syl}
-                  </button>
+                  </BotonOpcion>
                 ))}
               </div>
 
               <div className="flex justify-center">
-                <button
-                  onClick={() => setBuiltWord([])}
-                  disabled={builtWord.length === 0}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold bg-white/20 text-white transition-all hover:bg-white/30 disabled:opacity-40 disabled:cursor-not-allowed"
-                >
+                <Button variant="outline" onClick={() => setBuiltWord([])} disabled={builtWord.length === 0}>
                   ✕ Borrar
-                </button>
+                </Button>
               </div>
             </div>
           ) : !showingStoryText && current.type === "pseudo_audio" ? (
             /* Ejercicio P: three audios, the written form stays above */
-            <div className="flex-1 flex flex-col justify-center gap-4 py-2">
+            <div className="flex flex-1 flex-col justify-center gap-4 py-2">
               {current.audioOptions.map((audio, idx) => {
                 const isSelected = selectedOption === idx
                 const isPlaying = playingAudio === idx
                 return (
-                  <button
+                  <BotonOpcion
                     key={idx}
                     onClick={() => { handleSelect(idx); speakAudioOption(idx, audio) }}
-                    className={`
-                      rounded-2xl border py-5 px-6 text-lg font-bold transition-all duration-200 flex items-center justify-center gap-3
-                      ${isSelected
-                        ? "bg-red-500 border-red-400 text-white"
-                        : "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                      }
-                      ${isPlaying ? "animate-pulse" : ""}
-                    `}
+                    seleccionada={isSelected}
+                    className={`flex-row gap-3 ${isPlaying ? "animate-pulse" : ""}`}
                   >
-                    <Volume2 className="w-5 h-5" />
+                    <Volume2 className="size-5" />
                     Opción {idx + 1}
-                  </button>
+                  </BotonOpcion>
                 )
               })}
             </div>
           ) : !showingStoryText && current.type === "professional_rated" ? (
             /* Ejercicio E: the professional rates the child's spoken answer */
-            <div className="flex-1 flex flex-col justify-center py-2">
-              <div className="grid gap-4 grid-cols-2">
+            <div className="flex flex-1 flex-col justify-center py-2">
+              <div className="grid grid-cols-2 gap-4">
                 {[
                   current.ratingLabels?.correct ?? "Bien respondido",
                   current.ratingLabels?.incorrect ?? "Mal respondido",
@@ -1171,28 +963,22 @@ function TestPrimaria() {
                   const isSelected = selectedOption === idx
                   const isGood = idx === 0
                   return (
-                    <button
+                    <BotonOpcion
                       key={idx}
                       onClick={() => handleSelect(idx)}
-                      className={`
-                        rounded-2xl py-8 px-8 text-xl sm:text-2xl font-extrabold transition-all duration-200 flex flex-col items-center justify-center gap-2 border
-                        ${isSelected
-                          ? isGood
-                            ? "bg-green-500/80 border-green-400 text-white"
-                            : "bg-red-500/80 border-red-400 text-white"
-                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                        }
-                      `}
+                      seleccionada={isSelected}
+                      tono={isGood ? "menta" : "rojo"}
+                      className="px-3 py-8 text-center text-xl font-extrabold sm:px-8 sm:text-2xl"
                     >
                       <span className="text-4xl">{isGood ? "✓" : "✗"}</span>
                       {label}
-                    </button>
+                    </BotonOpcion>
                   )
                 })}
               </div>
             </div>
           ) : !showingStoryText && (
-            <div className="flex-1 flex flex-col justify-center py-2">
+            <div className="flex flex-1 flex-col justify-center py-2">
               <div className={`grid gap-4 ${displayOptions.length <= 2 ? "grid-cols-2" : displayOptions.length === 3 ? "grid-cols-1" : "grid-cols-2"}`}>
                 {displayOptions.map((opt, idx) => {
                   const isSelected = selectedOption === idx
@@ -1201,41 +987,30 @@ function TestPrimaria() {
                   if (!activeStoryQuestion && current.type === "same_different") {
                     const isSame = idx === 0
                     return (
-                      <button
+                      <BotonOpcion
                         key={idx}
                         onClick={() => handleSelect(idx)}
-                        className={`
-                          rounded-2xl py-8 px-8 text-2xl font-extrabold transition-all duration-200 flex flex-col items-center justify-center gap-2 border
-                          ${isSelected
-                            ? isSame
-                              ? "bg-green-500/80 border-green-400 text-white"
-                              : "bg-red-500/80 border-red-400 text-white"
-                            : "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                          }
-                        `}
+                        seleccionada={isSelected}
+                        tono={isSame ? "menta" : "rojo"}
+                        className="px-4 py-8 text-2xl font-extrabold sm:px-8"
                       >
                         <span className="text-4xl">{isSame ? "👍" : "👎"}</span>
                         {isSame ? "Sí" : "No"}
-                      </button>
+                      </BotonOpcion>
                     )
                   }
 
                   // mirror_letters: 2 large lowercase letter buttons
                   if (!activeStoryQuestion && current.type === "mirror_letters") {
                     return (
-                      <button
+                      <BotonOpcion
                         key={idx}
                         onClick={() => handleSelect(idx)}
-                        className={`
-                          rounded-2xl py-10 px-8 text-5xl font-extrabold transition-all duration-200 flex items-center justify-center border
-                          ${isSelected
-                            ? "bg-red-500 border-red-400 text-white"
-                            : "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                          }
-                        `}
+                        seleccionada={isSelected}
+                        className="px-8 py-10 text-5xl font-extrabold"
                       >
                         {String(opt).toLowerCase()}
-                      </button>
+                      </BotonOpcion>
                     )
                   }
 
@@ -1243,20 +1018,10 @@ function TestPrimaria() {
                   const optLabel = String(opt)
                   const optEmoji = optionsShowEmoji ? questionEmojis[optLabel] : undefined
                   return (
-                    <button
-                      key={idx}
-                      onClick={() => handleSelect(idx)}
-                      className={`
-                        rounded-2xl border py-5 px-6 text-lg font-bold transition-all duration-200 flex flex-col items-center gap-2
-                        ${isSelected
-                          ? "bg-red-500 border-red-400 text-white"
-                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                        }
-                      `}
-                    >
+                    <BotonOpcion key={idx} onClick={() => handleSelect(idx)} seleccionada={isSelected}>
                       {optEmoji && <span className="text-4xl sm:text-5xl">{optEmoji}</span>}
                       <span>{optLabel}</span>
-                    </button>
+                    </BotonOpcion>
                   )
                 })}
               </div>
@@ -1264,24 +1029,14 @@ function TestPrimaria() {
           )}
 
           {/* Next button */}
-          <div className="pt-4 flex justify-end">
-            <button
-              disabled={nextDisabled}
-              onClick={handleNext}
-              className={`
-                flex items-center gap-2 rounded-xl px-8 py-4 text-lg font-bold transition-all duration-200
-                ${nextDisabled
-                  ? "bg-white/10 text-white/40 cursor-not-allowed"
-                  : "bg-red-500 hover:bg-red-400 text-white shadow-lg"
-                }
-              `}
-            >
+          <div className="flex justify-end pt-4">
+            <Button size="lg" disabled={nextDisabled} onClick={handleNext}>
               {isFinalStep ? "Finalizar" : "Siguiente"}
-              <ArrowRight className="w-5 h-5" />
-            </button>
+              <ArrowRight className="size-5" />
+            </Button>
           </div>
-        </div>
+        </TarjetaPregunta>
       </div>
-    </div>
+    </MarcoEvaluacion>
   )
 }
