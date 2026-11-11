@@ -2,14 +2,19 @@
 
 import { useState, useCallback, useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
-import { Loader2, ArrowLeft, ArrowRight, RotateCcw, Home, Volume2, Users } from "lucide-react"
+import { ArrowRight, Volume2 } from "lucide-react"
 import { bloqueCodigoPorOrden } from "@/lib/test/bloques"
 import { guardarTest } from "@/lib/test/guardar-test"
 import { useAccesoTest } from "@/lib/test/use-acceso-test"
 import { useSalidaDelTest } from "@/lib/test/use-salida-test"
+import { Button } from "@/components/ui/button"
 import { TestAccesoAviso } from "@/components/test-acceso-aviso"
-import { TestBandaNino } from "@/components/test-banda-nino"
-import { ResultadosTest } from "@/components/test/resultados-test"
+import { BarraProgresoEvaluacion } from "@/components/test/barra-progreso-evaluacion"
+import { BotonAudio } from "@/components/test/boton-audio"
+import { BotonOpcion } from "@/components/test/boton-opcion"
+import { FinalEvaluacion } from "@/components/test/final-evaluacion"
+import { MarcoEvaluacion } from "@/components/test/marco-evaluacion"
+import { ChipEstimulo, TarjetaPregunta, TituloConsigna } from "@/components/test/tarjeta-pregunta"
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -120,11 +125,6 @@ const BLOCKS = [
   { id: 4, name: "Memoria Auditiva" },
   { id: 5, name: "Denominación Rápida" },
 ]
-
-/* Diagonal gradient: near-black red → dark red → deep indigo */
-const backgroundStyle = {
-  background: "linear-gradient(135deg, #1a0000 0%, #7f1d1d 50%, #1e1e2e 100%)",
-}
 
 /* rapid_naming: color name → CSS color for the grid squares */
 const RAPID_COLORS: Record<string, string> = {
@@ -412,94 +412,27 @@ function TestInicial() {
     }))
 
     return (
-      <div className="min-h-screen relative overflow-hidden" style={backgroundStyle}>
-        {/* ---- Ambient blurred orbs (depth) ---- */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-32 -left-32 w-[28rem] h-[28rem] rounded-full bg-red-500 opacity-20 blur-3xl" />
-          <div className="absolute top-1/3 -right-32 w-[26rem] h-[26rem] rounded-full bg-pink-500 opacity-20 blur-3xl" />
-          <div className="absolute -bottom-40 left-1/2 -translate-x-1/2 w-[30rem] h-[30rem] rounded-full bg-orange-500 opacity-20 blur-3xl" />
-        </div>
-
-        {/* ---- Navbar ---- */}
-        <header className="relative z-10 h-16 bg-red-600 shadow-lg">
-          <div className="container mx-auto h-full px-4 flex items-center justify-between">
-            <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Lecxico</h1>
-            <div className="flex items-center gap-4">
-              <span className="hidden sm:inline text-white font-medium">Resultados de la evaluación</span>
-              <button
-                onClick={() => salir("/test")}
-                className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Volver
-              </button>
-            </div>
-          </div>
-        </header>
-        <TestBandaNino nino={acceso.nino} nivel="inicial" />
+      <MarcoEvaluacion
+        etiqueta="Resultados de la evaluación"
+        onVolver={() => salir("/test")}
+        nino={acceso.nino}
+        nivel="inicial"
+        decorado
+      >
         {dialogoSalida}
-
-        <main className="relative z-10 max-w-2xl mx-auto space-y-8 py-10 px-4">
-          <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-white">Resultados de la evaluación de indicadores de dislexia</h2>
-          </div>
-
-          <ResultadosTest
-            nivel="inicial"
-            porcentajeTotal={totalPct}
-            bloques={bloquesResultado}
-          />
-
-          {/* Save status indicator */}
-          {(saving || saved) && (
-            <div className="flex items-center justify-center gap-2 text-sm text-white/70">
-              {saving ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Guardando resultados...
-                </>
-              ) : (
-                "Resultados guardados ✓"
-              )}
-            </div>
-          )}
-          {saveError && !saving && (
-            <div className="rounded-xl border border-red-400/60 bg-red-500/20 p-4 text-center space-y-3">
-              <p className="text-sm text-white">No se pudieron guardar los resultados: {saveError}</p>
-              <button
-                onClick={handleSave}
-                className="inline-flex items-center gap-2 rounded-lg bg-white/20 hover:bg-white/30 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200"
-              >
-                <RotateCcw className="w-4 h-4" /> Reintentar
-              </button>
-            </div>
-          )}
-
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 pb-10">
-            <button
-              onClick={handleRestart}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
-            >
-              <RotateCcw className="w-4 h-4" /> Repetir evaluación
-            </button>
-            {saved && (
-              <button
-                onClick={() => router.push("/test")}
-                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
-              >
-                <Users className="w-4 h-4" /> Evaluar a otro niño
-              </button>
-            )}
-            <button
-              onClick={() => salir("/dashboard")}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-400 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200"
-            >
-              <Home className="w-4 h-4" /> Volver al inicio
-            </button>
-          </div>
-        </main>
-      </div>
+        <FinalEvaluacion
+          nivel="inicial"
+          porcentajeTotal={totalPct}
+          bloques={bloquesResultado}
+          guardando={saving}
+          guardado={saved}
+          errorGuardado={saveError}
+          onReintentar={handleSave}
+          onRepetir={handleRestart}
+          onEvaluarOtro={() => router.push("/test")}
+          onVolverInicio={() => salir("/dashboard")}
+        />
+      </MarcoEvaluacion>
     )
   }
 
@@ -507,120 +440,43 @@ function TestInicial() {
   /*  QUESTION SCREEN                                                  */
   /* ================================================================ */
   return (
-    <div className="min-h-screen relative overflow-hidden flex flex-col" style={backgroundStyle}>
-      {/* ---- Ambient blurred orbs (depth) ---- */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-[28rem] h-[28rem] rounded-full bg-red-500 opacity-20 blur-3xl" />
-        <div className="absolute top-1/3 -right-32 w-[26rem] h-[26rem] rounded-full bg-pink-500 opacity-20 blur-3xl" />
-        <div className="absolute -bottom-40 left-1/2 -translate-x-1/2 w-[30rem] h-[30rem] rounded-full bg-orange-500 opacity-20 blur-3xl" />
-      </div>
-
-      {/* ---- Navbar ---- */}
-      <header className="relative z-10 h-16 bg-red-600 shadow-lg shrink-0">
-        <div className="container mx-auto h-full px-4 flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Lecxico</h1>
-          <div className="flex items-center gap-4">
-            <span className="hidden sm:inline text-white font-medium">{current.blockName}</span>
-            <button
-              onClick={() => salir("/test")}
-              className="flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Volver
-            </button>
-          </div>
-        </div>
-      </header>
-      <TestBandaNino nino={acceso.nino} nivel="inicial" />
+    <MarcoEvaluacion
+      etiqueta={current.blockName}
+      onVolver={() => salir("/test")}
+      nino={acceso.nino}
+      nivel="inicial"
+    >
       {dialogoSalida}
 
       {/* ---- Progress bar with dots ---- */}
-      <div className="relative z-10 w-full px-4 py-6">
-        <div className="relative flex items-center justify-between max-w-4xl mx-auto">
-          {/* Background line */}
-          <div className="absolute top-1/2 left-0 right-0 h-[6px] bg-white/20 -translate-y-1/2 rounded-full" />
-          {/* Filled line */}
-          <div
-            className="absolute top-1/2 left-0 h-[6px] bg-red-400 -translate-y-1/2 rounded-full transition-all duration-300"
-            style={{ width: `${((currentIndex) / (TOTAL_QUESTIONS - 1)) * 100}%` }}
-          />
-          {/* Dots */}
-          {questions.map((_, idx) => {
-            const isCompleted = idx < currentIndex
-            const isCurrent = idx === currentIndex
-            return (
-              <div
-                key={idx}
-                className={`
-                  relative z-10 rounded-full transition-all duration-300 flex items-center justify-center
-                  ${isCurrent
-                    ? "w-8 h-8 bg-white"
-                    : isCompleted
-                      ? "w-5 h-5 bg-red-400"
-                      : "w-5 h-5 bg-white/20"
-                  }
-                `}
-              >
-                {isCurrent && (
-                  <span className="text-xs font-bold text-red-600">{idx + 1}</span>
-                )}
-              </div>
-            )
-          })}
-        </div>
-        <p className="text-center text-sm font-semibold text-white/70 mt-3">
-          {current.blockName}
-        </p>
-      </div>
+      <BarraProgresoEvaluacion total={TOTAL_QUESTIONS} actual={currentIndex} etiqueta={current.blockName} />
 
       {/* ---- Question card ---- */}
-      <div className="relative z-10 flex-1 flex items-center justify-center px-4 pb-8">
-        <div
+      <div className="flex flex-1 items-center justify-center px-4 pb-8">
+        <TarjetaPregunta
           key={currentIndex}
-          className="w-full max-w-2xl rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex flex-col p-8 animate-in fade-in slide-in-from-bottom-4 duration-300"
-          style={{ minHeight: "60vh" }}
-        >
-          {/* Block name badge + audio button */}
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <span className="inline-block text-xs font-semibold text-white/80 bg-white/10 px-3 py-1 rounded-full">
-              {current.blockName}
-            </span>
-            {!isBlock1 && (
-              <button
-                onClick={speakQuestion}
-                className={`
-                  inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all
-                  ${speaking
-                    ? "bg-white/30 text-white animate-pulse"
-                    : "bg-white/20 text-white hover:bg-white/30"
-                  }
-                `}
-              >
-                <Volume2 className="w-4 h-4" />
+          bloque={current.blockName}
+          audio={
+            !isBlock1 && (
+              <BotonAudio onClick={speakQuestion} activo={speaking}>
                 {speaking ? "Escuchando..." : "Escuchar"}
-              </button>
-            )}
-          </div>
-
+              </BotonAudio>
+            )
+          }
+        >
           {current.type !== "rapid_naming" ? (
           <>
           {/* Context (block 1: words only, no emojis) */}
           {current.context && current.block === 1 && !isWordImage ? (
-            <div className="mb-4 flex items-center justify-center gap-4 flex-wrap">
+            <div className="mb-4 flex flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
               {current.context.split(" — ").map((word, i, arr) => (
                 <div key={i} className="flex items-center gap-4">
                   <div className="flex flex-col items-center gap-2">
-                    <span className="bg-white/20 rounded-xl px-5 py-2 text-2xl sm:text-3xl font-extrabold text-white tracking-wide">{word}</span>
-                    <button
-                      onClick={() => speak(word)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition-all"
-                    >
-                      <Volume2 className="w-4 h-4" />
-                      Escuchar
-                    </button>
+                    <ChipEstimulo className="px-5 py-2 text-2xl font-extrabold tracking-wide sm:text-3xl">{word}</ChipEstimulo>
+                    <BotonAudio onClick={() => speak(word)}>Escuchar</BotonAudio>
                   </div>
                   {i < arr.length - 1 && (
-                    <span className="text-3xl sm:text-4xl font-bold text-white/40">–</span>
+                    <span className="hidden text-3xl font-bold text-muted-foreground/60 sm:inline sm:text-4xl">–</span>
                   )}
                 </div>
               ))}
@@ -630,9 +486,9 @@ function TestInicial() {
               {questionEmojis[current.id]?.prompt && (
                 <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].prompt}</span>
               )}
-              <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl sm:text-4xl font-bold tracking-widest text-white">
+              <ChipEstimulo className="px-8 py-4 text-3xl font-bold tracking-widest sm:text-4xl">
                 {current.context}
-              </span>
+              </ChipEstimulo>
             </div>
           ) : null}
 
@@ -640,52 +496,35 @@ function TestInicial() {
           {isWordImage || isSyllableMatch ? (
             <div className="mb-6 flex flex-col items-center gap-3">
               {isSyllableMatch && (
-                <h2 className="text-xl sm:text-2xl font-bold text-white text-center">
-                  ¿Qué palabra empieza por la misma sílaba?
-                </h2>
+                <TituloConsigna>¿Qué palabra empieza por la misma sílaba?</TituloConsigna>
               )}
-              <span className="inline-block bg-white/20 rounded-xl px-8 py-4 text-3xl sm:text-4xl font-extrabold tracking-widest text-white">
+              <ChipEstimulo className="px-8 py-4 text-3xl font-extrabold tracking-widest sm:text-4xl">
                 {current.prompt}
-              </span>
+              </ChipEstimulo>
               {current.context && (
-                <p className="text-lg sm:text-xl font-semibold text-white text-center">
+                <p className="text-center text-lg font-semibold text-foreground sm:text-xl">
                   {current.context}
                 </p>
               )}
-              <button
-                onClick={() => speak(current.prompt)}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition-all"
-              >
-                <Volume2 className="w-4 h-4" />
-                Escuchar
-              </button>
+              <BotonAudio onClick={() => speak(current.prompt)}>Escuchar</BotonAudio>
             </div>
           ) : isSequenceOrder ? (
             /* Sequence-order (block 4, ejercicio F): instruction + play-sequence button */
             <div className="mb-6 flex flex-col items-center gap-4">
-              <h2 className="text-xl sm:text-2xl font-bold text-white text-center">
-                {current.prompt}
-              </h2>
-              <button
+              <TituloConsigna>{current.prompt}</TituloConsigna>
+              <BotonAudio
                 onClick={speakSequence}
                 disabled={speaking || playCount >= 3}
-                className={`
-                  inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all
-                  ${speaking
-                    ? "bg-white/30 text-white animate-pulse"
-                    : playCount >= 3
-                      ? "bg-white/10 text-white/40 cursor-not-allowed"
-                      : "bg-white/20 text-white hover:bg-white/30"
-                  }
-                `}
+                activo={speaking}
+                agotado={playCount >= 3}
+                className="px-5"
               >
-                <Volume2 className="w-5 h-5" />
                 {speaking
                   ? "Reproduciendo..."
                   : playCount >= 3
                     ? "Sin reproducciones"
                     : `Escuchar secuencia (quedan ${3 - playCount})`}
-              </button>
+              </BotonAudio>
             </div>
           ) : (
             /* Prompt */
@@ -693,9 +532,7 @@ function TestInicial() {
               {!current.context && questionEmojis[current.id]?.prompt && (
                 <span className="text-5xl sm:text-6xl">{questionEmojis[current.id].prompt}</span>
               )}
-              <h2 className="text-xl sm:text-2xl font-bold text-white text-center">
-                {current.prompt}
-              </h2>
+              <TituloConsigna>{current.prompt}</TituloConsigna>
               {current.block === 2 && questionEmojis[current.id]?.prompt && (
                 <span className="text-4xl sm:text-5xl">{questionEmojis[current.id].prompt}</span>
               )}
@@ -703,7 +540,7 @@ function TestInicial() {
           )}
 
           {/* Options area */}
-          <div className="flex-1 flex flex-col justify-center py-2">
+          <div className="flex flex-1 flex-col justify-center py-2">
             <div className={`grid gap-4 ${current.options.length <= 2 ? "grid-cols-2" : current.options.length === 3 ? "grid-cols-1" : "grid-cols-2"}`}>
               {current.options.map((opt, idx) => {
                 const isSelected = selectedOption === idx
@@ -714,27 +551,16 @@ function TestInicial() {
                   const order = sequenceSelection.indexOf(idx)
                   const isPicked = order !== -1
                   return (
-                    <button
+                    <BotonOpcion
                       key={idx}
                       onClick={() => handleSequenceSelect(idx)}
                       disabled={speaking}
-                      className={`
-                        relative rounded-2xl border py-5 px-6 text-lg font-bold transition-all duration-200 flex flex-col items-center gap-2
-                        ${isPicked
-                          ? "bg-red-500 border-red-400 text-white"
-                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                        }
-                        ${speaking ? "opacity-40 cursor-not-allowed" : ""}
-                      `}
+                      seleccionada={isPicked}
+                      orden={isPicked ? order + 1 : undefined}
                     >
-                      {isPicked && (
-                        <span className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-white text-red-600 text-sm font-extrabold">
-                          {order + 1}°
-                        </span>
-                      )}
                       {optEmoji && <span className="text-4xl sm:text-5xl">{optEmoji}</span>}
                       <span>{opt}</span>
-                    </button>
+                    </BotonOpcion>
                   )
                 }
 
@@ -742,20 +568,10 @@ function TestInicial() {
                 if (isWordImage) {
                   const optEmoji = questionEmojis[current.id]?.options?.[idx]
                   return (
-                    <button
-                      key={idx}
-                      onClick={() => handleSelect(idx)}
-                      className={`
-                        rounded-2xl border py-5 px-6 text-lg font-bold transition-all duration-200 flex flex-col items-center gap-2
-                        ${isSelected
-                          ? "bg-red-500 border-red-400 text-white"
-                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                        }
-                      `}
-                    >
+                    <BotonOpcion key={idx} onClick={() => handleSelect(idx)} seleccionada={isSelected}>
                       {optEmoji && <span className="text-4xl sm:text-5xl">{optEmoji}</span>}
                       <span>{opt}</span>
-                    </button>
+                    </BotonOpcion>
                   )
                 }
 
@@ -763,48 +579,32 @@ function TestInicial() {
                 if (isBlock1) {
                   const isYes = idx === 0
                   return (
-                    <button
+                    <BotonOpcion
                       key={idx}
                       onClick={() => handleSelect(idx)}
-                      className={`
-                        rounded-2xl py-8 px-8 text-2xl font-extrabold transition-all duration-200 flex flex-col items-center justify-center gap-2 border
-                        ${isSelected
-                          ? isYes
-                            ? "bg-green-500/80 border-green-400 text-white"
-                            : "bg-red-500/80 border-red-400 text-white"
-                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                        }
-                      `}
+                      seleccionada={isSelected}
+                      tono={isYes ? "menta" : "rojo"}
+                      className="px-4 py-8 text-2xl font-extrabold sm:px-8"
                     >
                       <span className="text-4xl">{isYes ? "👍" : "👎"}</span>
                       {isYes ? "Sí" : "No"}
-                    </button>
+                    </BotonOpcion>
                   )
                 }
 
                 // Default option buttons (with emoji for block 2)
                 const optEmoji = questionEmojis[current.id]?.options?.[idx]
                 return (
-                  <button
-                    key={idx}
-                    onClick={() => handleSelect(idx)}
-                    className={`
-                      rounded-2xl border py-5 px-6 text-lg font-bold transition-all duration-200 flex flex-col items-center gap-2
-                      ${isSelected
-                        ? "bg-red-500 border-red-400 text-white"
-                        : "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                      }
-                    `}
-                  >
+                  <BotonOpcion key={idx} onClick={() => handleSelect(idx)} seleccionada={isSelected}>
                     {optEmoji && <span className="text-4xl sm:text-5xl">{optEmoji}</span>}
                     <span className="flex items-center gap-2">
                       {opt}
                       <Volume2
-                        className="w-4 h-4 opacity-50 hover:opacity-100 transition-opacity"
+                        className="size-4 opacity-50 transition-opacity hover:opacity-100"
                         onClick={(e) => { e.stopPropagation(); speak(opt) }}
                       />
                     </span>
-                  </button>
+                  </BotonOpcion>
                 )
               })}
             </div>
@@ -812,23 +612,18 @@ function TestInicial() {
           </>
           ) : (
             /* Bloque 5 — Denominación Rápida (rapid_naming) */
-            <div className="flex-1 flex flex-col justify-center py-2">
-              <h2 className="text-xl sm:text-2xl font-bold text-white text-center mb-6">
-                {current.prompt}
-              </h2>
+            <div className="flex flex-1 flex-col justify-center py-2">
+              <TituloConsigna className="mb-6">{current.prompt}</TituloConsigna>
 
               {!revealed ? (
-                <div className="flex-1 flex items-center justify-center">
-                  <button
-                    onClick={handleReveal}
-                    className="rounded-xl bg-red-500 hover:bg-red-400 text-white font-bold px-8 py-4 text-lg transition-colors duration-200"
-                  >
+                <div className="flex flex-1 items-center justify-center">
+                  <Button size="lg" onClick={handleReveal}>
                     Mostrar secuencia
-                  </button>
+                  </Button>
                 </div>
               ) : (
-                <div className="w-full max-w-md mx-auto">
-                  <p className={`text-center text-lg font-bold mb-4 ${timeLeft !== null && timeLeft <= 5 && !locked ? "text-red-300" : "text-white/80"}`}>
+                <div className="mx-auto w-full max-w-md">
+                  <p className={`mb-4 text-center text-lg font-bold ${timeLeft !== null && timeLeft <= 5 && !locked ? "text-rojo-fuerte dark:text-primary" : "text-muted-foreground"}`}>
                     {locked ? "¡Tiempo!" : `Tiempo: ${timeLeft}s`}
                   </p>
 
@@ -841,18 +636,18 @@ function TestInicial() {
                           onClick={() => handleItemToggle(idx)}
                           disabled={locked}
                           className={`
-                            rounded-lg transition-all
-                            ${isPicked ? "ring-4 ring-white scale-95" : ""}
+                            rounded-lg transition-all focus-visible:outline-[3px] focus-visible:outline-offset-[6px] focus-visible:outline-ring
+                            ${isPicked ? "ring-[3px] ring-foreground ring-offset-2 ring-offset-card scale-95" : ""}
                             ${locked ? "opacity-90 cursor-not-allowed" : ""}
                           `}
                         >
                           {current.itemKind === "color" ? (
                             <span
-                              className="block aspect-square w-full rounded-lg border border-white/30"
+                              className="block aspect-square w-full rounded-lg border-2 border-input"
                               style={{ backgroundColor: RAPID_COLORS[item] }}
                             />
                           ) : (
-                            <span className="aspect-square w-full flex items-center justify-center text-4xl sm:text-5xl bg-white/10 rounded-lg">
+                            <span className="flex aspect-square w-full items-center justify-center rounded-lg border border-border bg-muted text-4xl sm:text-5xl">
                               {item}
                             </span>
                           )}
@@ -862,13 +657,10 @@ function TestInicial() {
                   </div>
 
                   {!locked && (
-                    <div className="flex justify-center mt-6">
-                      <button
-                        onClick={handleFinishRapid}
-                        className="rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold px-8 py-3 transition-colors duration-200"
-                      >
+                    <div className="mt-6 flex justify-center">
+                      <Button variant="outline" size="lg" onClick={handleFinishRapid}>
                         Listo
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -877,24 +669,14 @@ function TestInicial() {
           )}
 
           {/* Next button */}
-          <div className="pt-4 flex justify-end">
-            <button
-              disabled={!canProceed}
-              onClick={handleNext}
-              className={`
-                flex items-center gap-2 rounded-xl px-8 py-4 text-lg font-bold transition-all duration-200
-                ${!canProceed
-                  ? "bg-white/10 text-white/40 cursor-not-allowed"
-                  : "bg-red-500 hover:bg-red-400 text-white shadow-lg"
-                }
-              `}
-            >
+          <div className="flex justify-end pt-4">
+            <Button size="lg" disabled={!canProceed} onClick={handleNext}>
               {currentIndex + 1 === TOTAL_QUESTIONS ? "Finalizar" : "Siguiente"}
-              <ArrowRight className="w-5 h-5" />
-            </button>
+              <ArrowRight className="size-5" />
+            </Button>
           </div>
-        </div>
+        </TarjetaPregunta>
       </div>
-    </div>
+    </MarcoEvaluacion>
   )
 }

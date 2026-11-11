@@ -15,13 +15,16 @@ import { BLOQUE_NOMBRES, NIVEL_LABEL, type Nivel } from "@/lib/test/bloques"
 import { cn } from "@/lib/utils"
 
 /**
- * Resultados de una evaluación ya guardada, para las páginas de gestión
- * (detalle desde el historial del profesional y del niño). Muestra los mismos
- * datos que ResultadosTest (porcentaje general, correctas y tabla por
- * bloque) con el estilo nuevo. Es sobrio a propósito: sin festejos.
+ * Resultados de una evaluación: porcentaje general, respuestas correctas y
+ * tabla por bloque. Solo usa datos que se guardan en la base (test +
+ * test_bloque_resultado), así que sirve igual para la pantalla final de la
+ * evaluación (components/test/final-evaluacion.tsx) y para una evaluación
+ * del historial (detalle del profesional y del niño). "X de Y respuestas
+ * correctas" sale de sumar correctas y total de los bloques.
  *
- * La pantalla final DURANTE la evaluación sigue usando ResultadosTest
- * (components/test/resultados-test.tsx), que no se modificó.
+ * No muestra la conclusión (indicadores sí/no): se sigue guardando en
+ * test.conclusion, pero en pantalla solo va una aclaración neutra.
+ * Es sobrio a propósito: sin festejos.
  */
 export function ResultadosEvaluacion({
   nivel,
