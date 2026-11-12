@@ -4,6 +4,7 @@ import { Lexend } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { ProveedorMovimiento } from "@/components/motion/proveedor-movimiento"
+import { SITIO_URL } from "@/lib/sitio"
 import "./globals.css"
 
 // Lexend: diseñada para reducir el estrés visual al leer (útil con dislexia).
@@ -17,47 +18,39 @@ export const viewport: Viewport = {
   themeColor: "#fbf6ee",
 }
 
+const TITULO = "Lecxico — Evaluación de indicadores de dislexia y entrenamiento lector"
+const DESCRIPCION =
+  "Plataforma para profesionales que trabajan con niños de 4 a 8 años: evaluación de indicadores de dislexia por bloques, entrenamiento guiado y seguimiento compartido. Los resultados son orientativos."
+
 export const metadata: Metadata = {
-  title: "Lecxico - Plataforma Educativa para Dislexia",
-  description:
-    "Primera plataforma argentina para niños y adolescentes con dislexia. Mejora tu fluidez lectora con ejercicios gamificados y actividades psicopedagógicas validadas científicamente.",
+  metadataBase: new URL(SITIO_URL),
+  title: TITULO,
+  description: DESCRIPCION,
   keywords: [
     "dislexia",
-    "educación",
+    "indicadores de dislexia",
     "lectura",
     "niños",
-    "adolescentes",
-    "gamificación",
-    "neurociencia",
-    "Argentina",
     "psicopedagogía",
+    "fonoaudiología",
+    "entrenamiento lector",
+    "Argentina",
   ],
-  authors: [{ name: "Lecxico", url: "https://lecxico.com" }],
+  authors: [{ name: "Lecxico" }],
   creator: "Lecxico",
   publisher: "Lecxico",
   openGraph: {
-    title: "Lecxico - Plataforma Educativa para Dislexia",
-    description:
-      "Primera plataforma argentina para niños y adolescentes con dislexia. Mejora tu fluidez lectora con ejercicios gamificados.",
-    url: "https://lecxico.com",
+    title: TITULO,
+    description: DESCRIPCION,
+    url: "/",
     siteName: "Lecxico",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Lecxico - Plataforma Educativa para Dislexia con Lex y Lumo",
-      },
-    ],
     locale: "es_AR",
     type: "website",
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Lecxico - Plataforma Educativa para Dislexia",
-    description: "Primera plataforma argentina para niños y adolescentes con dislexia.",
-    images: ["/twitter-image.png"],
-    creator: "@lecxico",
+    card: "summary",
+    title: TITULO,
+    description: DESCRIPCION,
   },
   robots: {
     index: true,
@@ -70,11 +63,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  verification: {
-    google: "your-google-verification-code",
-    yandex: "your-yandex-verification-code",
-  },
-    generator: 'v0.app'
 }
 
 export default function RootLayout({

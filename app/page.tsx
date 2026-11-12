@@ -1,5 +1,17 @@
 import { Button } from "@/components/ui/button"
-import { Brain, Gamepad2, TrendingUp, Users, Sparkles, Globe, Calculator } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import {
+  BarChart3,
+  Brain,
+  Check,
+  ClipboardCheck,
+  Gamepad2,
+  GraduationCap,
+  Home,
+  ShieldCheck,
+  Sparkles,
+  Users,
+} from "lucide-react"
 import Link from "next/link"
 import { Footer } from "@/components/footer"
 import { EncabezadoPublico } from "@/components/encabezado-publico"
@@ -7,6 +19,7 @@ import { Flotante, FondoDecorado } from "@/components/fondo-decorado"
 import { ItemCascada, ListaCascada, NumeroAnimado } from "@/components/motion"
 import { Personaje } from "@/components/personajes/personaje"
 import { Resaltado } from "@/components/resaltado"
+import { BLOQUE_NOMBRES, BLOQUES_POR_NIVEL, type Nivel } from "@/lib/test/bloques"
 import { cn } from "@/lib/utils"
 
 const TONOS = {
@@ -17,107 +30,138 @@ const TONOS = {
   lavanda: { chip: "bg-lavanda-suave text-lavanda-fuerte", borde: "hover:border-lavanda/60" },
 }
 
-const CARACTERISTICAS: { icono: typeof Brain; tono: keyof typeof TONOS; titulo: string; descripcion: string }[] = [
+/** Cantidad de bloques distintos entre los dos niveles (se actualiza sola). */
+const TOTAL_BLOQUES = new Set(Object.values(BLOQUES_POR_NIVEL).flat()).size
+
+const CARACTERISTICAS: {
+  icono: typeof Brain
+  tono: keyof typeof TONOS
+  titulo: string
+  descripcion: string
+  enDesarrollo?: boolean
+}[] = [
   {
-    icono: Brain,
+    icono: ClipboardCheck,
     tono: "rojo",
-    titulo: "Basado en Neurociencia",
-    descripcion: "Ejercicios psicopedagógicos validados científicamente para mejorar la fluidez lectora",
+    titulo: "Evaluación por bloques",
+    descripcion: "El profesional toma la evaluación de indicadores, con un recorrido para cada nivel.",
+  },
+  {
+    icono: BarChart3,
+    tono: "celeste",
+    titulo: "Franjas orientativas",
+    descripcion: "Los resultados se ubican en franjas y orientan una recomendación. No son un diagnóstico.",
+    enDesarrollo: true,
   },
   {
     icono: Gamepad2,
-    tono: "celeste",
-    titulo: "Gamificación",
-    descripcion: "Aprende jugando con actividades interactivas y divertidas que mantienen la motivación",
+    tono: "sol",
+    titulo: "Entrenamiento con juegos",
+    descripcion: "Juegos vinculados a los bloques, en 3 grados de dificultad.",
+    enDesarrollo: true,
+  },
+  {
+    icono: Home,
+    tono: "menta",
+    titulo: "Práctica en casa",
+    descripcion: "El niño practica con su tutor o con las tareas que le asigna el profesional.",
+    enDesarrollo: true,
   },
   {
     icono: Users,
-    tono: "sol",
-    titulo: "Doble Interfaz",
-    descripcion: "Modo infantil (6-12 años) y modo adolescente (13-17 años) adaptados a cada edad",
-  },
-  {
-    icono: TrendingUp,
-    tono: "menta",
-    titulo: "Seguimiento de Progreso",
-    descripcion: "Estadísticas detalladas para padres y docentes sobre el avance del estudiante",
-  },
-  {
-    icono: Brain,
     tono: "lavanda",
-    titulo: "Ejercicios Personalizados",
-    descripcion: "Actividades adaptadas al nivel y ritmo de aprendizaje de cada estudiante",
+    titulo: "Seguimiento compartido",
+    descripcion: "Los profesionales que el tutor autoriza ven el progreso. El tutor puede pedir un informe.",
+    enDesarrollo: true,
+  },
+  {
+    icono: ShieldCheck,
+    tono: "rojo",
+    titulo: "Consentimiento del tutor",
+    descripcion: "El tutor da su consentimiento al crear la cuenta del niño. Solo se accede con un vínculo aceptado.",
+  },
+  {
+    icono: GraduationCap,
+    tono: "celeste",
+    titulo: "Revisado con especialistas",
+    descripcion: "Los ejercicios se revisan con especialistas en psicopedagogía.",
   },
   {
     icono: Sparkles,
-    tono: "rojo",
-    titulo: "Mascotas Interactivas",
-    descripcion: "Lex y Lumo te acompañan en cada paso de tu aventura de aprendizaje",
-  },
-  {
-    icono: Globe,
-    tono: "celeste",
-    titulo: "English Adaptado",
-    descripcion: "Juegos de inglés con fonética simple y vocabulario básico, diseñados para niños con dislexia",
-  },
-  {
-    icono: Calculator,
     tono: "sol",
-    titulo: "Matemáticas Divertidas",
-    descripcion: "Juegos de matemáticas con representación visual y conteo interactivo para facilitar el aprendizaje",
+    titulo: "Lex y Lumo",
+    descripcion: "Lex y Lumo acompañan al niño en cada actividad.",
   },
 ]
 
-const JUEGOS = [
+const NIVELES: {
+  nivel: Nivel
+  titulo: string
+  edad: string
+  icono: typeof Brain
+  fondo: string
+  tono: keyof typeof TONOS
+}[] = [
   {
-    icono: Brain,
-    titulo: "Lectura / Dislexia",
-    descripcion: "9 juegos interactivos de lectura y comprensión",
-    boton: "Ver Juegos de Lectura",
+    nivel: "inicial",
+    titulo: "Pre-lectores",
+    edad: "Sala de 4 y Sala de 5",
+    icono: Sparkles,
     fondo: "bg-rojo",
-    variante: "default" as const,
-    claseBoton: "",
+    tono: "rojo",
   },
   {
-    icono: Calculator,
-    titulo: "Matemáticas / Discalculia",
-    descripcion: "6 juegos de matemáticas con representación visual",
-    boton: "Ver Juegos de Matemáticas",
+    nivel: "primario",
+    titulo: "Primeros lectores",
+    edad: "1.º a 3.er grado",
+    icono: GraduationCap,
     fondo: "bg-celeste-fuerte",
-    variante: "celeste" as const,
-    claseBoton: "",
-  },
-  {
-    icono: Globe,
-    titulo: "English Adaptado",
-    descripcion: "4 games with simple phonics, basic vocabulary, and dyslexia-friendly design",
-    boton: "View English Games",
-    fondo: "bg-lavanda-fuerte",
-    variante: "default" as const,
-    claseBoton: "bg-lavanda-fuerte hover:bg-lavanda-fuerte/90",
+    tono: "celeste",
   },
 ]
 
 const PASOS = [
   {
     numero: 1,
-    titulo: "Regístrate",
-    descripcion: "Crea tu perfil personalizado y elige tu modo: infantil o adolescente",
+    titulo: "Registro y vínculo",
+    descripcion: "El profesional crea su cuenta y pide el vínculo con el niño.",
     color: "bg-rojo text-white",
   },
   {
     numero: 2,
-    titulo: "Practica",
-    descripcion: "Completa ejercicios divertidos adaptados a tu nivel y ritmo de aprendizaje",
+    titulo: "Acepta el tutor",
+    descripcion: "El tutor acepta el vínculo. Su consentimiento se da al crear la cuenta del niño.",
     color: "bg-celeste-fuerte text-white",
   },
   {
     numero: 3,
-    titulo: "Mejora",
-    descripcion: "Observa tu progreso y celebra tus logros con Lex y Lumo",
+    titulo: "Evaluación",
+    descripcion: "El profesional toma la evaluación por bloques, según el nivel del niño.",
     color: "bg-sol text-foreground",
   },
+  {
+    numero: 4,
+    titulo: "Recomendación y práctica",
+    descripcion: "Los resultados orientan un entrenamiento. El niño practica siempre acompañado.",
+    color: "bg-menta-fuerte text-white",
+    enDesarrollo: true,
+  },
+  {
+    numero: 5,
+    titulo: "Seguimiento",
+    descripcion: "Los profesionales autorizados por el tutor siguen el progreso del niño.",
+    color: "bg-lavanda-fuerte text-white",
+    enDesarrollo: true,
+  },
 ]
+
+function ChipEnDesarrollo({ className }: { className?: string }) {
+  return (
+    <Badge variant="sol" className={cn("px-2.5 py-1 text-xs", className)}>
+      En desarrollo
+    </Badge>
+  )
+}
 
 export default function LandingPage() {
   return (
@@ -131,52 +175,53 @@ export default function LandingPage() {
           <div className="container mx-auto grid items-center gap-12 px-4 pb-20 pt-10 md:grid-cols-2 md:pb-28 md:pt-16">
             {/* Entrada con CSS (no motion): el título se ve aunque el JavaScript todavía no haya cargado. */}
             <div className="space-y-7 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
-              <span className="inline-flex items-center gap-2 rounded-full border border-rojo/15 bg-card/80 px-4 py-2 text-sm font-semibold text-rojo-fuerte shadow-suave">
-                <BanderaArgentina />
-                Primera plataforma argentina
+              <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-rojo/15 bg-card/80 px-4 py-2 text-sm font-semibold text-rojo-fuerte shadow-suave">
+                <GraduationCap className="size-4 shrink-0" aria-hidden="true" />
+                Trabajo Final · Ingeniería en Informática · UNCa
               </span>
               <h1 className="text-balance text-4xl font-bold leading-[1.15] sm:text-5xl lg:text-6xl">
-                Aprende a leer de forma{" "}
+                Evaluar{" "}
                 <Resaltado color="sol" className="text-primary">
-                  divertida
+                  indicadores
                 </Resaltado>{" "}
-                y{" "}
+                de dislexia y{" "}
                 <Resaltado color="celeste" className="text-celeste-fuerte" retraso={0.8}>
-                  efectiva
-                </Resaltado>
+                  acompañar
+                </Resaltado>{" "}
+                el aprendizaje lector
               </h1>
               <p className="max-w-xl text-pretty text-xl leading-relaxed text-muted-foreground">
-                <span className="font-semibold text-primary">¡Hola! Somos Lex y Lumo</span>, y estamos aquí para
-                convertir cada palabra en una aventura. Juntos descubriremos que leer es tu{" "}
-                <span className="font-semibold text-celeste-fuerte">superpoder secreto</span>. ¿Listo para comenzar?
+                Una plataforma para profesionales que trabajan con niños de 4 a 8 años. Evaluación por bloques,
+                entrenamiento guiado por los resultados y seguimiento compartido.{" "}
+                <span className="font-semibold text-primary">Lex y Lumo</span> acompañan al niño.
               </p>
               <div className="flex flex-col gap-4 sm:flex-row">
                 <Button size="lg" className="shadow-brillo-rojo" asChild>
-                  <Link href="/register">
-                    Comenzar Gratis
-                    <Sparkles className="ml-1 size-5" />
-                  </Link>
+                  <Link href="/register">Crear cuenta</Link>
+                </Button>
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="/login">Iniciar sesión</Link>
                 </Button>
               </div>
               <dl className="grid max-w-md grid-cols-3 gap-3 pt-2">
                 <div className="rounded-2xl border border-border/70 bg-card/80 p-3 text-center shadow-suave">
                   <dt className="sr-only">Edades</dt>
-                  <dd className="text-2xl font-bold text-primary sm:text-3xl">6-17</dd>
+                  <dd className="text-2xl font-bold text-primary sm:text-3xl">4 a 8</dd>
                   <dd className="text-sm text-muted-foreground">años</dd>
                 </div>
                 <div className="rounded-2xl border border-border/70 bg-card/80 p-3 text-center shadow-suave">
-                  <dt className="sr-only">Base científica</dt>
+                  <dt className="sr-only">Niveles</dt>
                   <dd className="text-2xl font-bold text-celeste-fuerte sm:text-3xl">
-                    <NumeroAnimado valor={100} sufijo="%" />
+                    <NumeroAnimado valor={Object.keys(BLOQUES_POR_NIVEL).length} duracion={0.8} />
                   </dd>
-                  <dd className="text-sm text-muted-foreground">Científico</dd>
+                  <dd className="text-sm text-muted-foreground">niveles</dd>
                 </div>
                 <div className="rounded-2xl border border-border/70 bg-card/80 p-3 text-center shadow-suave">
-                  <dt className="sr-only">Modos</dt>
+                  <dt className="sr-only">Bloques de evaluación</dt>
                   <dd className="text-2xl font-bold text-sol-fuerte sm:text-3xl">
-                    <NumeroAnimado valor={2} duracion={0.8} />
+                    <NumeroAnimado valor={TOTAL_BLOQUES} duracion={0.8} />
                   </dd>
-                  <dd className="text-sm text-muted-foreground">Modos</dd>
+                  <dd className="text-sm text-muted-foreground">bloques de evaluación</dd>
                 </div>
               </dl>
             </div>
@@ -207,7 +252,7 @@ export default function LandingPage() {
 
               <Flotante className="absolute -right-1 top-[14%] sm:-right-3" duracion={5} amplitud={10}>
                 <span className="grid size-16 place-items-center rounded-2xl bg-sol text-foreground shadow-media sm:size-20">
-                  <Gamepad2 className="size-8 sm:size-10" />
+                  <ClipboardCheck className="size-8 sm:size-10" />
                 </span>
               </Flotante>
               <Flotante className="absolute bottom-[8%] left-0 sm:-left-3" duracion={6} amplitud={10} retraso={1}>
@@ -224,13 +269,13 @@ export default function LandingPage() {
       <section id="features" className="relative py-20">
         <div className="container mx-auto px-4">
           <div className="mx-auto mb-14 max-w-3xl text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold md:text-5xl">Características que hacen la diferencia</h2>
+            <h2 className="mb-4 text-balance text-3xl font-bold md:text-5xl">Pensado para el trabajo del profesional</h2>
             <p className="text-pretty text-xl text-muted-foreground">
-              Diseñado específicamente para niños y adolescentes con dislexia
+              Las funciones marcadas “En desarrollo” todavía no están disponibles.
             </p>
           </div>
           <ListaCascada enVista className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {CARACTERISTICAS.map(({ icono: Icono, tono, titulo, descripcion }) => (
+            {CARACTERISTICAS.map(({ icono: Icono, tono, titulo, descripcion, enDesarrollo }) => (
               <ItemCascada
                 key={titulo}
                 elevar
@@ -239,8 +284,11 @@ export default function LandingPage() {
                   TONOS[tono].borde,
                 )}
               >
-                <div className={cn("mb-5 grid size-14 place-items-center rounded-2xl", TONOS[tono].chip)}>
-                  <Icono className="size-7" />
+                <div className="mb-5 flex items-start justify-between gap-2">
+                  <div className={cn("grid size-14 shrink-0 place-items-center rounded-2xl", TONOS[tono].chip)}>
+                    <Icono className="size-7" />
+                  </div>
+                  {enDesarrollo && <ChipEnDesarrollo />}
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{titulo}</h3>
                 <p className="text-base leading-relaxed text-muted-foreground">{descripcion}</p>
@@ -248,32 +296,50 @@ export default function LandingPage() {
             ))}
           </ListaCascada>
 
-          {/* Juegos */}
-          <div className="mx-auto mt-24 max-w-6xl">
-            <h3 className="mb-10 text-center text-3xl font-bold">Explora Nuestros Juegos</h3>
-            <ListaCascada enVista className="grid gap-6 md:grid-cols-3">
-              {JUEGOS.map(({ icono: Icono, ...j }) => (
-                <ItemCascada
-                  key={j.titulo}
-                  elevar
-                  className="flex flex-col overflow-hidden rounded-3xl border border-border/80 bg-card shadow-media"
-                >
-                  <div className={cn("relative grid h-36 place-items-center overflow-hidden", j.fondo)}>
-                    <span aria-hidden="true" className="absolute -left-6 -top-10 size-32 rounded-full bg-white/15" />
-                    <span aria-hidden="true" className="absolute -bottom-12 -right-4 size-36 rounded-full bg-white/10" />
-                    <span className="relative grid size-20 place-items-center rounded-3xl bg-white/20 text-white ring-4 ring-white/25">
-                      <Icono className="size-10" />
-                    </span>
-                  </div>
-                  <div className="flex flex-1 flex-col items-center gap-3 p-6 text-center">
-                    <h4 className="text-2xl font-bold">{j.titulo}</h4>
-                    <p className="flex-1 text-base leading-relaxed text-muted-foreground">{j.descripcion}</p>
-                    <Button className={cn("mt-2", j.claseBoton)} variant={j.variante} asChild>
-                      <Link href="/games/catalog">{j.boton}</Link>
-                    </Button>
-                  </div>
-                </ItemCascada>
-              ))}
+          {/* Niveles */}
+          <div id="levels" className="mx-auto mt-24 max-w-5xl scroll-mt-24">
+            <h3 className="mb-3 text-center text-3xl font-bold">Dos niveles</h3>
+            <p className="mb-10 text-center text-lg text-muted-foreground">
+              Cada niño hace la evaluación que le corresponde por su etapa escolar.
+            </p>
+            <ListaCascada enVista className="grid gap-6 md:grid-cols-2">
+              {NIVELES.map(({ nivel, titulo, edad, icono: Icono, fondo, tono }) => {
+                const bloques = BLOQUES_POR_NIVEL[nivel]
+                return (
+                  <ItemCascada
+                    key={nivel}
+                    elevar
+                    className="flex flex-col overflow-hidden rounded-3xl border border-border/80 bg-card shadow-media"
+                  >
+                    <div className={cn("relative flex items-center gap-4 overflow-hidden px-6 py-7 text-white", fondo)}>
+                      <span aria-hidden="true" className="absolute -left-6 -top-10 size-32 rounded-full bg-white/15" />
+                      <span aria-hidden="true" className="absolute -bottom-12 -right-4 size-36 rounded-full bg-white/10" />
+                      <span className="relative grid size-16 shrink-0 place-items-center rounded-3xl bg-white/20 ring-4 ring-white/25">
+                        <Icono className="size-8" />
+                      </span>
+                      <div className="relative">
+                        <h4 className="text-2xl font-bold">{titulo}</h4>
+                        <p className="text-lg text-white/90">{edad}</p>
+                      </div>
+                    </div>
+                    <div className="flex-1 space-y-4 p-6">
+                      <p className="font-semibold text-foreground">{bloques.length} bloques de evaluación</p>
+                      <ul className="space-y-2.5">
+                        {bloques.map((codigo) => (
+                          <li key={codigo} className="flex items-start gap-3 text-base">
+                            <span
+                              className={cn("mt-0.5 grid size-6 shrink-0 place-items-center rounded-full", TONOS[tono].chip)}
+                            >
+                              <Check className="size-3.5" aria-hidden="true" />
+                            </span>
+                            {BLOQUE_NOMBRES[codigo]}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </ItemCascada>
+                )
+              })}
             </ListaCascada>
           </div>
         </div>
@@ -286,19 +352,11 @@ export default function LandingPage() {
           <div className="mx-auto mb-14 max-w-3xl text-center">
             <h2 className="mb-4 text-balance text-3xl font-bold md:text-5xl">Cómo funciona Lecxico</h2>
             <p className="text-pretty text-xl leading-relaxed text-muted-foreground">
-              Tres simples pasos para comenzar tu aventura de lectura
+              Del registro al seguimiento, en cinco pasos
             </p>
           </div>
-          <div className="relative mx-auto max-w-5xl">
-            <svg
-              aria-hidden="true"
-              className="absolute left-[16%] right-[16%] top-8 hidden h-4 w-[68%] text-border md:block"
-              viewBox="0 0 600 16"
-              preserveAspectRatio="none"
-            >
-              <path d="M0 8 H600" stroke="currentColor" strokeWidth={4} strokeDasharray="2 14" strokeLinecap="round" />
-            </svg>
-            <ListaCascada enVista paso={0.15} className="relative grid gap-10 md:grid-cols-3">
+          <div className="relative mx-auto max-w-6xl">
+            <ListaCascada enVista paso={0.15} className="relative grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
               {PASOS.map((p) => (
                 <ItemCascada key={p.numero} className="space-y-4 text-center">
                   <div
@@ -309,8 +367,9 @@ export default function LandingPage() {
                   >
                     {p.numero}
                   </div>
-                  <h3 className="text-2xl font-bold">{p.titulo}</h3>
+                  <h3 className="text-xl font-bold">{p.titulo}</h3>
                   <p className="mx-auto max-w-xs leading-relaxed text-muted-foreground">{p.descripcion}</p>
+                  {p.enDesarrollo && <ChipEnDesarrollo />}
                 </ItemCascada>
               ))}
             </ListaCascada>
@@ -319,23 +378,20 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="px-4 py-20">
+      <section className="px-4 pb-8 pt-20">
         <div className="fondo-rojo relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] px-6 py-14 shadow-elevada sm:px-12 md:py-16">
           <div aria-hidden="true" className="textura-puntos absolute inset-0 opacity-30 invert" />
           <div className="relative grid items-center gap-8 md:grid-cols-[1fr_auto]">
             <div className="space-y-6 text-center md:text-left">
               <h2 className="text-balance text-3xl font-bold text-white md:text-5xl">
-                ¿Listo para comenzar tu aventura de lectura?
+                ¿Trabajás con niños que están aprendiendo a leer?
               </h2>
               <p className="text-pretty text-xl leading-relaxed text-white/90">
-                Únete a Lecxico hoy y descubre una forma nueva y emocionante de aprender a leer
+                Creá tu cuenta y vinculá a los niños con los que trabajás.
               </p>
               <div className="flex flex-col justify-center gap-4 pt-2 sm:flex-row md:justify-start">
                 <Button size="lg" variant="claro" asChild>
-                  <Link href="/register">
-                    Comenzar Gratis
-                    <Sparkles className="ml-1 size-5" />
-                  </Link>
+                  <Link href="/register">Crear cuenta</Link>
                 </Button>
                 <Button
                   size="lg"
@@ -343,7 +399,7 @@ export default function LandingPage() {
                   className="border-white/40 bg-white/10 text-white shadow-none hover:border-white/60 hover:bg-white/20 hover:text-white"
                   asChild
                 >
-                  <Link href="#about">Conocer Más</Link>
+                  <Link href="/dislexia">Qué es la dislexia</Link>
                 </Button>
               </div>
             </div>
@@ -355,19 +411,20 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Aviso */}
+      <section className="px-4 pb-20">
+        <div className="mx-auto max-w-3xl space-y-2 text-center text-sm leading-relaxed text-muted-foreground">
+          <p className="font-semibold text-foreground">
+            Lecxico ofrece resultados orientativos. No reemplaza la evaluación diagnóstica de un profesional.
+          </p>
+          <p>
+            Prototipo en entorno de prueba, desarrollado como Trabajo Final de Ingeniería en Informática (FTyCA-UNCa),
+            basado en el concepto Lecxico de Bautista Stampone.
+          </p>
+        </div>
+      </section>
+
       <Footer />
     </div>
-  )
-}
-
-/** Bandera argentina (reemplaza al emoji, que en Windows se ve como "AR"). */
-function BanderaArgentina() {
-  return (
-    <svg viewBox="0 0 18 12" className="h-3.5 w-auto shrink-0 overflow-hidden rounded-[3px] shadow-suave" role="img" aria-label="Argentina">
-      <rect width={18} height={12} className="fill-white" />
-      <rect width={18} height={4} className="fill-bandera-celeste" />
-      <rect y={8} width={18} height={4} className="fill-bandera-celeste" />
-      <circle cx={9} cy={6} r={1.3} className="fill-bandera-sol" />
-    </svg>
   )
 }

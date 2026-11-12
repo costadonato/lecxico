@@ -1,56 +1,20 @@
 import type { MetadataRoute } from "next"
+import { SITIO_URL } from "@/lib/sitio"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://lecxico.com"
-
-  return [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/pricing`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/guides`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/support`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
+  const rutas: { ruta: string; changeFrequency: "weekly" | "monthly" | "yearly"; priority: number }[] = [
+    { ruta: "", changeFrequency: "weekly", priority: 1 },
+    { ruta: "/dislexia", changeFrequency: "monthly", priority: 0.8 },
+    { ruta: "/login", changeFrequency: "yearly", priority: 0.5 },
+    { ruta: "/register", changeFrequency: "yearly", priority: 0.6 },
+    { ruta: "/terminos", changeFrequency: "yearly", priority: 0.3 },
+    { ruta: "/privacidad", changeFrequency: "yearly", priority: 0.3 },
   ]
+
+  return rutas.map(({ ruta, changeFrequency, priority }) => ({
+    url: `${SITIO_URL}${ruta}`,
+    lastModified: new Date(),
+    changeFrequency,
+    priority,
+  }))
 }

@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next"
+import { SITIO_URL } from "@/lib/sitio"
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = "https://lecxico.com"
-
   return {
     rules: [
       {
@@ -11,6 +10,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/", "/dashboard/", "/parent/", "/games/*/results", "/_next/", "/admin/"],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${SITIO_URL}/sitemap.xml`,
   }
 }
