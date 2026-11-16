@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowRight, Volume2 } from "lucide-react"
 import { resumenPorcentual } from "@/lib/test/analisis"
-import { bloqueCodigoPorOrden } from "@/lib/test/bloques"
+import { BLOQUES_POR_NIVEL, BLOQUE_NOMBRES, bloqueCodigoPorOrden } from "@/lib/test/bloques"
 import { DENOMINACION_POR_NIVEL, type EjercicioDenominacion as EjercicioDenominacionConfig } from "@/lib/test/denominacion-config"
 import { resultadoBloqueDenominacion, type ResultadoEjercicio } from "@/lib/test/denominacion"
 import { guardarTest } from "@/lib/test/guardar-test"
@@ -143,7 +143,7 @@ interface ProfessionalRatedQuestion {
   ratingLabels?: { correct: string; incorrect: string }
 }
 
-/** Bloque 5: one rapid-naming grid, run by the professional (time + errors) */
+/** Bloque 9: one rapid-naming grid, run by the professional (time + errors) */
 interface DenominacionQuestion {
   id: number
   block: number
@@ -213,14 +213,9 @@ const questions: Question[] = [
   { id: 23, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PILA', 'LIPA', 'LIBA'], correct: 'LIPA', spokenWord: 'LIPA' },
   { id: 24, block: 4, type: 'multiple_choice', question: '¿Cuál de estas opciones es la palabra que escuchaste?', options: ['PELATO', 'TALOPE', 'TAPELO'], correct: 'TAPELO', spokenWord: 'TAPELO' },
 
-  // BLOQUE 5 — Denominación Rápida (una cuadrícula por paso)
-  ...DENOMINACION.ejercicios.map((ejercicio, i): DenominacionQuestion => ({
-    id: 25 + i, block: 5, type: "denominacion", ejercicio,
-  })),
-
-  // BLOQUE 6 — Comprensión Lectora
+  // BLOQUE 5 — Comprensión Lectora
   {
-    id: 27, block: 6, type: 'reading_comprehension',
+    id: 25, block: 5, type: 'reading_comprehension',
     text: 'Sofía tiene un perro llamado Toto. Toto es muy juguetón y le encanta correr. Un día, Sofía y Toto fueron al parque a jugar. Allí, Toto encontró una pelota roja brillante. La agarró con la boca y la trajo de vuelta a Sofía. ¡Sofía estaba muy feliz!',
     storyQuestions: [
       { question: '¿Cómo se llama el perro de Sofía?', options: ['Pepe', 'Toto', 'Nino'], correct: 'Toto' },
@@ -229,30 +224,35 @@ const questions: Question[] = [
     ]
   },
 
-  // BLOQUE 7 — Correspondencia Sonido-Letra
+  // BLOQUE 6 — Correspondencia Sonido-Letra
   // Ejercicio L — ¿Con qué letra empieza esta sílaba?
-  { id: 28, block: 7, type: 'letter_fill', question: '¿Con qué letra empieza esta sílaba?', word: '/ma/', options: ['M', 'N', 'B', 'P'], correct: 'M' },
-  { id: 29, block: 7, type: 'letter_fill', question: '¿Con qué letra empieza esta sílaba?', word: '/pa/', options: ['B', 'D', 'P', 'T'], correct: 'P' },
+  { id: 26, block: 6, type: 'letter_fill', question: '¿Con qué letra empieza esta sílaba?', word: '/ma/', options: ['M', 'N', 'B', 'P'], correct: 'M' },
+  { id: 27, block: 6, type: 'letter_fill', question: '¿Con qué letra empieza esta sílaba?', word: '/pa/', options: ['B', 'D', 'P', 'T'], correct: 'P' },
   // Ejercicio M — Letra faltante
-  { id: 30, block: 7, type: 'letter_fill', question: '¿Qué letra falta?', context: '👤 CA_EZA', word: 'CA_EZA', options: ['B', 'E', 'R', 'D'], correct: 'B' },
-  { id: 31, block: 7, type: 'letter_fill', question: '¿Qué letra falta?', context: '🦆 _ATO', word: '_ATO', options: ['P', 'G', 'B', 'D'], correct: 'P' },
+  { id: 28, block: 6, type: 'letter_fill', question: '¿Qué letra falta?', context: '👤 CA_EZA', word: 'CA_EZA', options: ['B', 'E', 'R', 'D'], correct: 'B' },
+  { id: 29, block: 6, type: 'letter_fill', question: '¿Qué letra falta?', context: '🦆 _ATO', word: '_ATO', options: ['P', 'G', 'B', 'D'], correct: 'P' },
   // Ejercicio N — Letras espejo
-  { id: 32, block: 7, type: 'mirror_letters', question: '¿Qué letra va aquí?', word: '_ado', emoji: '🎲', options: ['b', 'd'], correct: 'd' },
-  { id: 33, block: 7, type: 'mirror_letters', question: '¿Qué letra va aquí?', word: '_eso', emoji: '💋', options: ['b', 'd'], correct: 'b' },
+  { id: 30, block: 6, type: 'mirror_letters', question: '¿Qué letra va aquí?', word: '_ado', emoji: '🎲', options: ['b', 'd'], correct: 'd' },
+  { id: 31, block: 6, type: 'mirror_letters', question: '¿Qué letra va aquí?', word: '_eso', emoji: '💋', options: ['b', 'd'], correct: 'b' },
 
-  // BLOQUE 8 — Reconocimiento Visual
-  { id: 34, block: 8, type: 'multiple_choice', question: '¿Cuál está bien escrita?', options: ['PEROO', 'PERO', 'PERRO'], correct: 'PERRO', context: '🐕' },
-  { id: 35, block: 8, type: 'multiple_choice', question: '¿Cuál está bien escrita?', options: ['AOTO', 'AUTO', 'AUTOO'], correct: 'AUTO', context: '🚗' },
+  // BLOQUE 7 — Reconocimiento Visual
+  { id: 32, block: 7, type: 'multiple_choice', question: '¿Cuál está bien escrita?', options: ['PEROO', 'PERO', 'PERRO'], correct: 'PERRO', context: '🐕' },
+  { id: 33, block: 7, type: 'multiple_choice', question: '¿Cuál está bien escrita?', options: ['AOTO', 'AUTO', 'AUTOO'], correct: 'AUTO', context: '🚗' },
 
-  // BLOQUE 9 — Lectura de Pseudopalabras
-  { id: 36, block: 9, type: 'pseudo_audio', writtenWord: 'TOPI', audioOptions: ['topi', 'poti', 'tovi'], correct: 'topi' },
-  { id: 37, block: 9, type: 'pseudo_audio', writtenWord: 'FUMISA', audioOptions: ['fumosa', 'misafu', 'fumisa'], correct: 'fumisa' },
+  // BLOQUE 8 — Lectura de Pseudopalabras
+  { id: 34, block: 8, type: 'pseudo_audio', writtenWord: 'TOPI', audioOptions: ['topi', 'poti', 'tovi'], correct: 'topi' },
+  { id: 35, block: 8, type: 'pseudo_audio', writtenWord: 'FUMISA', audioOptions: ['fumosa', 'misafu', 'fumisa'], correct: 'fumisa' },
   // Lectura en voz alta evaluada por el profesional (dificultad incremental)
-  { id: 38, block: 9, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'TASO', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
-  { id: 39, block: 9, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'MELUPA', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
-  { id: 40, block: 9, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'RIDOTE', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
-  { id: 41, block: 9, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'BALCUTINA', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
-  { id: 42, block: 9, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'PLONDRESAMO', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 36, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'TASO', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 37, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'MELUPA', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 38, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'RIDOTE', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 39, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'BALCUTINA', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+  { id: 40, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'PLONDRESAMO', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+
+  // BLOQUE 9 — Denominación Rápida (una cuadrícula por paso; va al final)
+  ...DENOMINACION.ejercicios.map((ejercicio, i): DenominacionQuestion => ({
+    id: 41 + i, block: 9, type: "denominacion", ejercicio,
+  })),
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -270,17 +270,8 @@ const questionEmojis: Record<string, string> = {
   'TOMATE': '🍅',
 }
 
-const BLOCKS = [
-  { id: 1, name: "Discriminación Auditiva" },
-  { id: 2, name: "Conciencia Fonológica" },
-  { id: 3, name: "Conciencia Silábica" },
-  { id: 4, name: "Memoria Auditiva" },
-  { id: 5, name: "Denominación Rápida" },
-  { id: 6, name: "Comprensión Lectora" },
-  { id: 7, name: "Correspondencia Sonido-Letra" },
-  { id: 8, name: "Reconocimiento Visual" },
-  { id: 9, name: "Lectura de Pseudopalabras" },
-]
+/** Bloques en el orden del test, con su nombre visible (lib/test/bloques.ts: el mismo orden que se guarda). */
+const BLOCKS = BLOQUES_POR_NIVEL.primario.map((codigo, i) => ({ id: i + 1, name: BLOQUE_NOMBRES[codigo] }))
 
 /**
  * A stored answer: the index of the chosen option, or — for questions built up
@@ -357,7 +348,7 @@ function TestPrimaria() {
   const testEnCurso = acceso.estado === "permitido" && !saved && (currentIndex > 0 || finished)
   const { salir, dialogo: dialogoSalida } = useSalidaDelTest(testEnCurso)
 
-  /* ---- Bloque 5: resultado de cada cuadrícula de denominación, por id de ejercicio ---- */
+  /* ---- Bloque 9: resultado de cada cuadrícula de denominación, por id de ejercicio ---- */
   const [denominacion, setDenominacion] = useState<Record<string, ResultadoEjercicio>>({})
 
   /* ---- reading_comprehension sub-navigation ---- */
@@ -557,7 +548,7 @@ function TestPrimaria() {
     }
   }
 
-  /* Bloque 5: the professional confirmed a grid (time + errors) */
+  /* Bloque 9: the professional confirmed a grid (time + errors) */
   const handleDenominacion = (resultado: ResultadoEjercicio) => {
     setDenominacion((prev) => ({ ...prev, [resultado.ejercicio]: resultado }))
     goToNextTopLevel()
@@ -626,7 +617,7 @@ function TestPrimaria() {
           if (ans !== null && ans !== undefined && isOptionCorrect(q, ans)) correct++
         }
       })
-      /* Bloque 5 also stores total time, total errors and each grid's detail */
+      /* Denominación rápida also stores total time, total errors and each grid's detail */
       const medicion = bloqueCodigoPorOrden("primario", block.id) === "denominacion_rapida"
         ? resultadoBloqueDenominacion(DENOMINACION.ejercicios.flatMap((e) => denominacion[e.id] ?? []))
         : null
@@ -713,6 +704,7 @@ function TestPrimaria() {
       total: b.total,
       tiempo_ms: b.medicion?.tiempoMs ?? null,
       errores: b.medicion?.errores ?? null,
+      detalle: b.medicion?.detalle ?? null,
     }))
 
     return (
@@ -741,7 +733,7 @@ function TestPrimaria() {
   }
 
   /* ================================================================ */
-  /*  BLOQUE 5 — DENOMINACIÓN RÁPIDA (one grid per step)               */
+  /*  BLOQUE 9 — DENOMINACIÓN RÁPIDA (one grid per step)               */
   /* ================================================================ */
   if (current.type === "denominacion") {
     const numero = DENOMINACION.ejercicios.indexOf(current.ejercicio) + 1
@@ -822,7 +814,7 @@ function TestPrimaria() {
             </div>
           ) : showingStoryText && current.type === "reading_comprehension" ? (
             <div className="mb-4 w-full">
-              {/* Bloque 6: la historia también se puede escuchar */}
+              {/* Bloque 5: la historia también se puede escuchar */}
               <div className="mb-2 flex justify-end">
                 <BotonAudio onClick={() => speak(current.text)} activo={speaking}>
                   {speaking ? "Reproduciendo..." : "Escuchar historia"}
@@ -876,7 +868,7 @@ function TestPrimaria() {
               </ChipEstimulo>
             </div>
           ) : current.type === "professional_rated" && current.displayWord ? (
-            /* Bloque 9: the pseudoword to read aloud */
+            /* Bloque 8: the pseudoword to read aloud */
             <div className="mb-4 flex justify-center">
               <ChipEstimulo className="px-8 py-4 text-3xl font-bold tracking-widest">
                 {current.displayWord}
@@ -917,7 +909,7 @@ function TestPrimaria() {
                     : `Escuchar palabra (quedan ${2 - playCount})`}
               </BotonAudio>
             </div>
-          ) : current.type === "multiple_choice" && current.block === 8 && current.context ? (
+          ) : current.type === "multiple_choice" && current.block === 7 && current.context ? (
             /* Ejercicio O: just the picture of the word to spell */
             <div className="mb-4 flex justify-center">
               <span className="text-6xl sm:text-7xl">{current.context}</span>

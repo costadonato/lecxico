@@ -313,20 +313,20 @@ join public.test_bloque_resultado b on b.test_id = t.id
 where t.nino_id = '00000000-0000-4000-8000-0000000000b1'
   and exists (select 1 from public.test_bloque_resultado d where d.test_id = t.id and d.tiempo_ms is not null);
 
--- Evaluación primaria completa: 9 bloques, denominación rápida en el 5.
+-- Evaluación primaria completa: 9 bloques, denominación rápida al final (orden 9).
 select pg_temp.probar('evaluación primaria completa (9 bloques)',
   '00000000-0000-4000-8000-0000000000a1', 'authenticated', '00000000-0000-4000-8000-0000000000b2', 'primario',
   '[{"bloque_codigo":"discriminacion_auditiva","orden":1,"correctas":4,"total":5},
     {"bloque_codigo":"conciencia_fonologica","orden":2,"correctas":5,"total":7},
     {"bloque_codigo":"conciencia_silabica","orden":3,"correctas":6,"total":6},
     {"bloque_codigo":"memoria_fonologica","orden":4,"correctas":5,"total":6},
-    {"bloque_codigo":"denominacion_rapida","orden":5,"correctas":96,"total":100,"tiempo_ms":95000,"errores":4,
+    {"bloque_codigo":"comprension_lectora","orden":5,"correctas":2,"total":3},
+    {"bloque_codigo":"correspondencia_sonido_letra","orden":6,"correctas":5,"total":6},
+    {"bloque_codigo":"reconocimiento_visual","orden":7,"correctas":2,"total":2},
+    {"bloque_codigo":"lectura_pseudopalabras","orden":8,"correctas":5,"total":7},
+    {"bloque_codigo":"denominacion_rapida","orden":9,"correctas":96,"total":100,"tiempo_ms":95000,"errores":4,
      "detalle":[{"ejercicio":"primario-1","tiempo_ms":50000,"errores":3,"correctas":47,"total":50},
-                {"ejercicio":"primario-2","tiempo_ms":45000,"errores":1,"correctas":49,"total":50}]},
-    {"bloque_codigo":"comprension_lectora","orden":6,"correctas":2,"total":3},
-    {"bloque_codigo":"correspondencia_sonido_letra","orden":7,"correctas":5,"total":6},
-    {"bloque_codigo":"reconocimiento_visual","orden":8,"correctas":2,"total":2},
-    {"bloque_codigo":"lectura_pseudopalabras","orden":9,"correctas":5,"total":7}]',
+                {"ejercicio":"primario-2","tiempo_ms":45000,"errores":1,"correctas":49,"total":50}]}]',
   null);
 
 -- Un "detalle": null explícito en otro bloque se toma como ausente.

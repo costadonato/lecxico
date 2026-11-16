@@ -1,10 +1,11 @@
 "use client"
 
-import { Info } from "lucide-react"
-import { motion, useReducedMotion } from "motion/react"
+import { Fragment, useId, useState } from "react"
+import { Info, Minus, Plus } from "lucide-react"
+import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
-import { Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableCell, TableHead, TableHeader, TableRow, claseFilaTabla } from "@/components/ui/table"
 import { BarraPorcentaje } from "@/components/motion/barra-porcentaje"
 import { NumeroAnimado } from "@/components/motion/numero-animado"
 import { EASE_SUAVE } from "@/components/motion/transiciones"
@@ -13,6 +14,7 @@ import { estiloNivel } from "@/lib/niveles"
 import { porcentajeBloque, resumenPorcentual, type BloqueResultado } from "@/lib/test/analisis"
 import { BLOQUE_NOMBRES, NIVEL_LABEL, type Nivel } from "@/lib/test/bloques"
 import { formatearTiempo } from "@/lib/test/denominacion"
+import type { DetalleEjercicioDenominacion } from "@/lib/types/database"
 import { cn } from "@/lib/utils"
 
 /**
@@ -29,13 +31,15 @@ import { cn } from "@/lib/utils"
  * Es sobrio a propósito: sin festejos.
  *
  * Denominación rápida (desde S9) guarda además tiempo y errores: en su fila
- * se muestran en lugar de la barra de porcentaje. Las evaluaciones
- * anteriores (sin tiempo) se muestran como cualquier otro bloque.
+ * se muestran en lugar de la barra de porcentaje, y un botón "+" despliega
+ * una sub-fila por ejercicio (leída de `detalle`). Las evaluaciones
+ * anteriores (sin tiempo ni detalle) se muestran como cualquier otro bloque.
  */
 export type BloqueConMedicion = BloqueResultado & {
   /** Solo denominación rápida; null o ausente en el resto y en evaluaciones viejas. */
   tiempo_ms?: number | null
   errores?: number | null
+  detalle?: DetalleEjercicioDenominacion[] | null
 }
 
 /** La fila tiene tiempo y errores para mostrar (denominación rápida desde S9). */
@@ -84,6 +88,7 @@ export function ResultadosEvaluacion({
           </TableHeader>
           <CuerpoTablaAnimado>
             {filas.map((b) => {
+              if (tieneMedicion(b)) return <FilaDenominacion key={b.bloque_codigo} bloque={b} />
               const pct = porcentajeBloque(b.correctas, b.total)
               return (
                 <FilaTablaAnimada key={b.bloque_codigo}>
@@ -93,31 +98,16 @@ export function ResultadosEvaluacion({
                   <TableCell data-label="Correctas" className="text-center tabular-nums text-muted-foreground">
                     {b.correctas} / {b.total}
                   </TableCell>
-                  {tieneMedicion(b) ? (
-                    <TableCell data-label="Tiempo y errores">
-                      <span className="flex flex-wrap items-center gap-x-4 gap-y-1 font-semibold max-md:justify-end">
-                        <span>
-                          <span className="font-normal text-muted-foreground">Tiempo </span>
-                          <span className="tabular-nums">{formatearTiempo(b.tiempo_ms)}</span>
-                        </span>
-                        <span>
-                          <span className="font-normal text-muted-foreground">Errores </span>
-                          <span className="tabular-nums">{b.errores}</span>
-                        </span>
-                      </span>
-                    </TableCell>
-                  ) : (
-                    <TableCell data-label="Porcentaje">
-                      <span className="flex items-center gap-3 max-md:justify-end">
-                        <NumeroAnimado
-                          valor={pct}
-                          sufijo="%"
-                          className={cn("inline-block min-w-12 text-right font-bold", estiloNivel(pct).texto)}
-                        />
-                        <BarraPorcentaje valor={pct} className="w-28 max-md:w-20" />
-                      </span>
-                    </TableCell>
-                  )}
+                  <TableCell data-label="Porcentaje">
+                    <span className="flex items-center gap-3 max-md:justify-end">
+                      <NumeroAnimado
+                        valor={pct}
+                        sufijo="%"
+                        className={cn("inline-block min-w-12 text-right font-bold", estiloNivel(pct).texto)}
+                      />
+                      <BarraPorcentaje valor={pct} className="w-28 max-md:w-20" />
+                    </span>
+                  </TableCell>
                 </FilaTablaAnimada>
               )
             })}
@@ -130,6 +120,91 @@ export function ResultadosEvaluacion({
         Esta evaluación es orientativa y no reemplaza un diagnóstico profesional.
       </p>
     </div>
+  )
+}
+
+/** Tiempo (m:ss) y errores, para la fila de denominación rápida y sus sub-filas. */
+function TiempoYErrores({ tiempoMs, errores }: { tiempoMs: number; errores: number }) {
+  return (
+    <span className="flex flex-wrap items-center gap-x-4 gap-y-1 font-semibold max-md:justify-end">
+      <span>
+        <span className="font-normal text-muted-foreground">Tiempo </span>
+        <span className="tabular-nums">{formatearTiempo(tiempoMs)}</span>
+      </span>
+      <span>
+        <span className="font-normal text-muted-foreground">Errores </span>
+        <span className="tabular-nums">{errores}</span>
+      </span>
+    </span>
+  )
+}
+
+/**
+ * Fila de denominación rápida: total del bloque (correctas / total, tiempo y
+ * errores) y, si hay `detalle`, un botón "+" al final que despliega debajo
+ * una sub-fila por ejercicio. Con reducir movimiento, MotionConfig
+ * (ProveedorMovimiento) deja solo el fundido, sin desplazamiento.
+ */
+function FilaDenominacion({ bloque }: { bloque: BloqueConMedicion & { tiempo_ms: number; errores: number } }) {
+  const [abierto, setAbierto] = useState(false)
+  const base = useId()
+  const detalle = bloque.detalle ?? []
+  const idFila = (i: number) => `${base}-ejercicio-${i + 1}`
+
+  return (
+    <Fragment>
+      <FilaTablaAnimada>
+        <TableCell data-label="Bloque" className="whitespace-normal font-semibold">
+          {BLOQUE_NOMBRES[bloque.bloque_codigo]}
+        </TableCell>
+        <TableCell data-label="Correctas" className="text-center tabular-nums text-muted-foreground">
+          {bloque.correctas} / {bloque.total}
+        </TableCell>
+        <TableCell data-label="Tiempo y errores">
+          <span className="flex items-center justify-between gap-3 max-md:justify-end">
+            <TiempoYErrores tiempoMs={bloque.tiempo_ms} errores={bloque.errores} />
+            {detalle.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setAbierto((a) => !a)}
+                aria-expanded={abierto}
+                aria-controls={detalle.map((_, i) => idFila(i)).join(" ")}
+                aria-label="Ver el detalle por ejercicio"
+                className="grid size-8 shrink-0 place-items-center rounded-full border border-foreground/30 bg-card text-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-4 focus-visible:ring-ring/40"
+              >
+                {abierto ? <Minus className="size-4" aria-hidden="true" /> : <Plus className="size-4" aria-hidden="true" />}
+              </button>
+            )}
+          </span>
+        </TableCell>
+      </FilaTablaAnimada>
+
+      <AnimatePresence initial={false}>
+        {abierto &&
+          detalle.map((e, i) => (
+            <motion.tr
+              key={e.ejercicio}
+              id={idFila(i)}
+              data-slot="table-row"
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2, ease: EASE_SUAVE, delay: i * 0.04 }}
+              className={cn(claseFilaTabla, "bg-muted/50 text-sm max-md:ml-4 max-md:w-[calc(100%-1rem)]!")}
+            >
+              <TableCell data-label="Ejercicio" className="whitespace-normal pl-8 font-medium text-muted-foreground max-md:pl-0">
+                Ejercicio {i + 1}
+              </TableCell>
+              <TableCell data-label="Correctas" className="text-center tabular-nums text-muted-foreground">
+                {e.correctas} / {e.total}
+              </TableCell>
+              <TableCell data-label="Tiempo y errores">
+                <TiempoYErrores tiempoMs={e.tiempo_ms} errores={e.errores} />
+              </TableCell>
+            </motion.tr>
+          ))}
+      </AnimatePresence>
+    </Fragment>
   )
 }
 

@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowRight, Volume2 } from "lucide-react"
 import { resumenPorcentual } from "@/lib/test/analisis"
-import { bloqueCodigoPorOrden } from "@/lib/test/bloques"
+import { BLOQUES_POR_NIVEL, BLOQUE_NOMBRES, bloqueCodigoPorOrden } from "@/lib/test/bloques"
 import { DENOMINACION_POR_NIVEL, type EjercicioDenominacion as EjercicioDenominacionConfig } from "@/lib/test/denominacion-config"
 import { resultadoBloqueDenominacion, type ResultadoEjercicio } from "@/lib/test/denominacion"
 import { guardarTest } from "@/lib/test/guardar-test"
@@ -112,13 +112,8 @@ const questionEmojis: Record<number, { context?: string[]; prompt?: string; opti
   19: { options: ["☁️", "🪑", "☀️"] },
   20: { options: ["🎲", "🐕", "🌙", "🧉"] },
 }
-const BLOCKS = [
-  { id: 1, name: "Discriminación Auditiva" },
-  { id: 2, name: "Conciencia Fonológica" },
-  { id: 3, name: "Conciencia Silábica" },
-  { id: 4, name: "Memoria Auditiva" },
-  { id: 5, name: "Denominación Rápida" },
-]
+/** Bloques en el orden del test, con su nombre visible (lib/test/bloques.ts: el mismo orden que se guarda). */
+const BLOCKS = BLOQUES_POR_NIVEL.inicial.map((codigo, i) => ({ id: i + 1, name: BLOQUE_NOMBRES[codigo] }))
 
 /** True when the stored answer matches the question's expected answer. */
 function isAnswerCorrect(q: Question, ans: number | number[] | null): boolean {
@@ -390,6 +385,7 @@ function TestInicial() {
       total: b.total,
       tiempo_ms: b.medicion?.tiempoMs ?? null,
       errores: b.medicion?.errores ?? null,
+      detalle: b.medicion?.detalle ?? null,
     }))
 
     return (

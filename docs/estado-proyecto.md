@@ -40,7 +40,7 @@ Meta: desarrollo cerrado el viernes 4/12/2026; verificación y documentación de
 
 **Stack:** Next.js 15 (App Router) + React 19 + TypeScript + Tailwind 4 + shadcn/ui + Motion + Supabase (Postgres + Auth) con `@supabase/ssr`. Vitest para pruebas. Despliegue de prueba en Vercel desde `main`: https://lecxico-three.vercel.app. Repositorio: https://github.com/costadonato/lecxico.
 
-**Pruebas:** `npm test` corre las pruebas de Vitest (`lib/**/*.test.ts`) y `npm run coverage` suma la cobertura V8 de los módulos de lógica listados en `vitest.config.mts` (hoy `analisis.ts`, `denominacion.ts` y `denominacion-config.ts`), con umbrales de 80 % de líneas y 90 % de ramas (reporte HTML en `coverage/`).
+**Pruebas:** `npm test` corre las pruebas de Vitest (`lib/**/*.test.ts`) y `npm run coverage` suma la cobertura V8 de los módulos de lógica listados en `vitest.config.mts` (hoy `analisis.ts`, `bloques.ts`, `denominacion.ts` y `denominacion-config.ts`), con umbrales de 80 % de líneas y 90 % de ramas (reporte HTML en `coverage/`).
 
 **Pruebas de migraciones:** `supabase/tests/00_simular_supabase.sql` arma en un Postgres local lo que las migraciones esperan de Supabase (`auth.users`, `auth.uid()`, roles `anon` y `authenticated`, la tabla previa `entrenamientos`). Orden: ese archivo → migraciones → `supabase/tests/NNNN_*.sql`. Cada archivo de pruebas corre en una transacción con `rollback`, muestra una tabla con cada escenario y corta con "FALLARON …" si alguno no dio lo esperado. Sin Postgres instalado se puede usar PGlite (`@electric-sql/pglite`, Postgres en WASM) desde Node, fuera del repo.
 
@@ -100,7 +100,7 @@ La definición funcional es la de la propuesta V8 (reuniones del 14/10 y 28/10/2
 - El nivel se deriva de la etapa escolar: sala de 4 y 5 → inicial (pre-lectores); 1.º, 2.º y 3.º grado → primario (primeros lectores).
 - Si se interrumpe, se descarta. Salir a mitad de camino pide confirmación.
 - Los resultados se guardan por bloque, con correctas y total. En denominación rápida se guardan además el tiempo total, los errores totales y el detalle de cada ejercicio (S9).
-- Primeros lectores tiene 9 bloques: denominación rápida es el quinto, como en inicial (S9). Las evaluaciones guardadas antes conservan su `bloque_codigo` y su `orden`.
+- Primeros lectores tiene 9 bloques. Denominación rápida va al final en los dos niveles: es el bloque 5 de 5 en inicial y el 9 de 9 en primario; los 8 bloques anteriores del primario no cambian de orden (S9). Las evaluaciones guardadas conservan su `bloque_codigo` y su `orden`.
 - En la interfaz se llama "Evaluación de indicadores de dislexia"; internamente sigue siendo `test`.
 
 **Denominación rápida (S9, definida con las especialistas)**
@@ -110,7 +110,7 @@ La definición funcional es la de la propuesta V8 (reuniones del 14/10 y 28/10/2
 - 2 ejercicios (cuadrículas distintas) por nivel; cada uno es un paso de la barra de progreso. La práctica solo antecede al primero.
 - Primario: letras A, E, S, D, P; números 2, 4, 6, 7, 9; colores rojo, azul, verde, amarillo, negro; 5 × 10 (50 estímulos). Inicial: solo vocales (A, E, I, O, U), mismos colores; **provisorios**: los números y el tamaño 4 × 6 (24 estímulos).
 - Las cuadrículas son fijas (`lib/test/denominacion-config.ts`): ciclo letra → número → color de corrido, conteos parejos dentro de cada categoría y sin repetir un estímulo en dos apariciones seguidas de su categoría (lo verifica `validarSecuencia`, con pruebas).
-- Puntaje por ejercicio: total = estímulos, correctas = total − errores. El bloque suma los dos ejercicios (tiempo, errores, correctas y total). En los resultados, la fila del bloque muestra tiempo (m:ss) y errores en lugar de la barra de porcentaje; las evaluaciones anteriores se ven como antes.
+- Puntaje por ejercicio: total = estímulos, correctas = total − errores. El bloque suma los dos ejercicios (tiempo, errores, correctas y total). En los resultados (pantalla final y detalle de una evaluación del historial), la fila del bloque muestra correctas / total, tiempo (m:ss) y errores en lugar de la barra de porcentaje. Al final de la fila, un botón "+" (aria-expanded, aria-controls, "Ver el detalle por ejercicio") despliega debajo una sub-fila por ejercicio leída de `detalle`: "Ejercicio N", correctas / total, tiempo y errores; abierto pasa a "−". La aparición es un fundido corto que, con reducir movimiento, no desplaza. Las evaluaciones sin `detalle` no muestran el botón, y las anteriores a S9 (sin tiempo) se ven como antes.
 - Se mide por tiempo y errores, no por porcentaje: queda fuera del porcentaje general y del puntaje total que se guardan (`porcentaje_total`, `puntaje_total`), de "X de Y respuestas correctas", de "bloques con más errores" y de la recomendación (`bloquesPorcentuales` y `resumenPorcentual` en `lib/test/analisis.ts`). Se excluye por código de bloque, así que vale también para las evaluaciones viejas sin tiempo. En la base se siguen guardando sus correctas y total.
 - No se muestra si se detectaron indicadores: solo el desglose por bloque y una línea neutra ("Esta evaluación es orientativa y no reemplaza un diagnóstico profesional").
 - **Hoy** la recomendación ordena los bloques del último test de menor a mayor acierto, sin denominación rápida. **(V8)** Pasa a franjas: dos valores de corte por bloque y nivel, fijados por revisión bibliográfica, ubican cada bloque en "correcto", "intermedio" o "a observar"; la recomendación señala los bloques en "intermedio" y "a observar", en el orden del test, con los juegos vinculados. Un bloque sin referencia bibliográfica queda "sin franja de referencia" y fuera de la recomendación. Solo lo ve el profesional.
@@ -157,9 +157,9 @@ entrenamientos ( id PK, user_id = niño (borrado en cascada), juego, puntaje, cr
 | Nivel | Bloques |
 | --- | --- |
 | Inicial (5) | discriminacion_auditiva · conciencia_fonologica · conciencia_silabica · memoria_fonologica ("Memoria Auditiva") · denominacion_rapida |
-| Primario (9) | discriminacion_auditiva · conciencia_fonologica · conciencia_silabica · memoria_fonologica · denominacion_rapida · comprension_lectora · correspondencia_sonido_letra · reconocimiento_visual · lectura_pseudopalabras |
+| Primario (9) | discriminacion_auditiva · conciencia_fonologica · conciencia_silabica · memoria_fonologica · comprension_lectora · correspondencia_sonido_letra · reconocimiento_visual · lectura_pseudopalabras · denominacion_rapida |
 
-Las evaluaciones primarias guardadas antes de S9 tienen 8 bloques, con comprensión lectora en el orden 5.
+Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mismo orden. Las constantes `BLOCKS` de las páginas de la evaluación se arman desde `BLOQUES_POR_NIVEL` y `BLOQUE_NOMBRES`, y `lib/test/bloques.test.ts` verifica el orden de los dos niveles.
 
 **Quién puede ver qué (RLS actual):**
 

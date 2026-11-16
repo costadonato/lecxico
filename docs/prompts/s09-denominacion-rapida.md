@@ -4,7 +4,7 @@
 
 Rama `s9-denominacion-rapida`. Leé primero `CLAUDE.md` y `docs/estado-proyecto.md`.
 
-Hoy el bloque "Denominación Rápida" existe solo en el nivel inicial y funciona como un juego de tocar ("Tocá el cuadrado ROJO", preguntas 21 a 24 de `app/test/inicial/page.tsx`, con `RAPID\_COLORS`, temporizador y puntaje fraccionario). Se reemplaza por completo.
+Hoy el bloque "Denominación Rápida" existe solo en el nivel inicial y funciona como un juego de tocar ("Tocá el cuadrado ROJO", preguntas 21 a 24 de `app/test/inicial/page.tsx`, con `RAPID\\\_COLORS`, temporizador y puntaje fraccionario). Se reemplaza por completo.
 
 **Formato nuevo (definido con las especialistas):** se muestra una cuadrícula que mezcla **letras, números y colores**. Los colores son cuadrados pintados, no palabras. El niño nombra en voz alta todos los estímulos, lo más rápido que puede, de izquierda a derecha y fila por fila. El profesional maneja la computadora: inicia el cronómetro, lo detiene cuando el niño nombra el último estímulo y, al final, escribe la cantidad de errores, que fue contando por su cuenta. **El tiempo no se muestra en pantalla durante el ejercicio**, para no distraer al niño. No se registran autocorrecciones.
 
@@ -19,10 +19,10 @@ El bloque se suma al nivel primario, que pasa de 8 a 9 bloques. Se registran el 
 
 * `CLAUDE.md`, `docs/estado-proyecto.md`
 * `app/test/inicial/page.tsx` (bloque 5 actual y cómo arma los resultados por bloque)
-* `app/test/primaria/page.tsx` (constante `BLOCKS`, campo `block` de cada pregunta y el tipo `professional\_rated`, que ya es una pregunta que califica el profesional)
-* `lib/test/bloques.ts` (`BLOQUES\_POR\_NIVEL`, `bloqueCodigoPorOrden`), `lib/test/guardar-test.ts`, `lib/test/analisis.ts`
+* `app/test/primaria/page.tsx` (constante `BLOCKS`, campo `block` de cada pregunta y el tipo `professional\\\_rated`, que ya es una pregunta que califica el profesional)
+* `lib/test/bloques.ts` (`BLOQUES\\\_POR\\\_NIVEL`, `bloqueCodigoPorOrden`), `lib/test/guardar-test.ts`, `lib/test/analisis.ts`
 * `components/test/` (marco, tarjeta, botones, `resultados-evaluacion.tsx`, `final-evaluacion.tsx`), `lib/ninos/detalle.ts`, `lib/types/database.ts`
-* `supabase/migrations/0001\_slice1\_esquema\_rls.sql` (tabla `test\_bloque\_resultado` y función `guardar\_test`)
+* `supabase/migrations/0001\\\_slice1\\\_esquema\\\_rls.sql` (tabla `test\\\_bloque\\\_resultado` y función `guardar\\\_test`)
 
 ## Reglas
 
@@ -33,7 +33,7 @@ El bloque se suma al nivel primario, que pasa de 8 a 9 bloques. Se registran el 
 
 ## Decisiones ya tomadas
 
-1. **Posición del bloque en primario:** quinto, como en inicial (discriminación auditiva, conciencia fonológica, conciencia silábica, memoria auditiva, **denominación rápida**, comprensión lectora, correspondencia sonido-letra, reconocimiento visual, lectura de pseudopalabras). Los bloques 5 a 8 actuales del primario pasan a ser 6 a 9: actualizar `BLOCKS`, el `block` de cada pregunta y `BLOQUES\_POR\_NIVEL` de forma consistente. Las evaluaciones ya guardadas no cambian, porque cada fila guarda su `bloque\_codigo` y su `orden`.
+1. **Posición del bloque en primario:** quinto, como en inicial (discriminación auditiva, conciencia fonológica, conciencia silábica, memoria auditiva, **denominación rápida**, comprensión lectora, correspondencia sonido-letra, reconocimiento visual, lectura de pseudopalabras). Los bloques 5 a 8 actuales del primario pasan a ser 6 a 9: actualizar `BLOCKS`, el `block` de cada pregunta y `BLOQUES\\\_POR\\\_NIVEL` de forma consistente. Las evaluaciones ya guardadas no cambian, porque cada fila guarda su `bloque\\\_codigo` y su `orden`.
 2. **Puntaje:** por ejercicio, `total` = cantidad de estímulos de la cuadrícula y `correctas` = `total - errores` (mínimo 0). El bloque suma sus dos ejercicios: tiempo total, errores totales, correctas y total.
 3. **Detalle por ejercicio:** se guardan también el tiempo y los errores de cada ejercicio por separado. Las franjas (S11) pueden necesitarlos.
 4. **Sin autocorrecciones ni conteo en pantalla:** el profesional solo escribe la cantidad final de errores.
@@ -45,10 +45,10 @@ El bloque se suma al nivel primario, que pasa de 8 a 9 bloques. Se registran el 
 * Tipos:
 
   * `Estimulo`: `{ categoria: "letra" | "numero" | "color", valor: string, nombre: string }`. Para un color, `valor` es la clave del color y `nombre` lo que dice el niño ("rojo").
-  * `EjercicioDenominacion`: `{ id, nombre, filas, columnas, secuencia: Estimulo\["valor"]\[] }`.
+  * `EjercicioDenominacion`: `{ id, nombre, filas, columnas, secuencia: Estimulo\\\["valor"]\\\[] }`.
   * `ConfigDenominacion`: estímulos del nivel por categoría, sus ejercicios y la fila de práctica.
 * Colores: un mapa propio (`rojo`, `azul`, `verde`, `amarillo`, `negro`) a valores de color bien saturados y distinguibles entre sí. No usar los tokens de la interfaz, para que el color del estímulo no cambie con el tema claro u oscuro.
-* `DENOMINACION\_POR\_NIVEL: Record<Nivel, ConfigDenominacion>`, con estos valores. Comentar arriba del archivo cuáles están confirmados y cuáles son provisorios:
+* `DENOMINACION\\\_POR\\\_NIVEL: Record<Nivel, ConfigDenominacion>`, con estos valores. Comentar arriba del archivo cuáles están confirmados y cuáles son provisorios:
 
   * **Primario:**
 
@@ -75,7 +75,7 @@ El bloque se suma al nivel primario, que pasa de 8 a 9 bloques. Se registran el 
 
 ### 2\. Lógica pura: `lib/test/denominacion.ts` + `lib/test/denominacion.test.ts`
 
-* `resultadoEjercicio({ tiempoMs, errores, total })` → correctas acotadas a `\[0, total]`.
+* `resultadoEjercicio({ tiempoMs, errores, total })` → correctas acotadas a `\\\[0, total]`.
 * `resultadoBloqueDenominacion(ejercicios)` → `{ tiempoMs, errores, correctas, total, detalle }` con la suma.
 * `formatearTiempo(ms)` → `"1:05"` (minutos:segundos), y `"0:48"` para menos de un minuto.
 * `validarSecuencia(config, ejercicio)`, que verifique las reglas del punto 1:
@@ -110,27 +110,27 @@ Un componente para un ejercicio, usado por las dos páginas. Flujo, en la misma 
 
 ### 4\. Páginas de la evaluación
 
-* `app/test/inicial/page.tsx`: reemplazar las preguntas 21 a 24 y todo lo exclusivo del juego viejo (`RAPID\_COLORS`, el temporizador y el puntaje fraccionario de `rapid\_naming`) por el bloque nuevo, con los dos ejercicios de `DENOMINACION\_POR\_NIVEL.inicial` uno tras otro. Que no quede código muerto del juego viejo.
-* `app/test/primaria/page.tsx`: agregar el bloque en la posición 5 con `DENOMINACION\_POR\_NIVEL.primario`, y renumerar los bloques siguientes.
+* `app/test/inicial/page.tsx`: reemplazar las preguntas 21 a 24 y todo lo exclusivo del juego viejo (`RAPID\\\_COLORS`, el temporizador y el puntaje fraccionario de `rapid\\\_naming`) por el bloque nuevo, con los dos ejercicios de `DENOMINACION\\\_POR\\\_NIVEL.inicial` uno tras otro. Que no quede código muerto del juego viejo.
+* `app/test/primaria/page.tsx`: agregar el bloque en la posición 5 con `DENOMINACION\\\_POR\\\_NIVEL.primario`, y renumerar los bloques siguientes.
 * La barra de progreso y la etiqueta del bloque funcionan igual que en el resto. Cada ejercicio cuenta como un paso.
 * Salir a mitad de un ejercicio usa la confirmación de salida que ya existe (`useSalidaDelTest`).
 
 ### 5\. Guardado
 
-* `lib/test/guardar-test.ts`: `ResultadoBloque` suma `tiempoMs?`, `errores?` y `detalle?`, y los envía como `tiempo\_ms`, `errores` y `detalle` solo en el bloque de denominación rápida.
+* `lib/test/guardar-test.ts`: `ResultadoBloque` suma `tiempoMs?`, `errores?` y `detalle?`, y los envía como `tiempo\\\_ms`, `errores` y `detalle` solo en el bloque de denominación rápida.
 * `lib/types/database.ts`: agregar las columnas nuevas.
 
-### 6\. Migración `supabase/migrations/0006\_s9\_denominacion\_rapida.sql`
+### 6\. Migración `supabase/migrations/0006\\\_s9\\\_denominacion\\\_rapida.sql`
 
 Comentada, idempotente, en `begin; … commit;`:
 
-* `test\_bloque\_resultado`: agregar `tiempo\_ms int`, `errores int` y `detalle jsonb`, todas nullables (las evaluaciones viejas no las tienen).
+* `test\\\_bloque\\\_resultado`: agregar `tiempo\\\_ms int`, `errores int` y `detalle jsonb`, todas nullables (las evaluaciones viejas no las tienen).
 * Constraints:
 
-  * `tiempo\_ms > 0` y `errores >= 0` cuando no son null;
-  * las tres columnas son null en cualquier bloque que no sea `denominacion\_rapida`;
+  * `tiempo\\\_ms > 0` y `errores >= 0` cuando no son null;
+  * las tres columnas son null en cualquier bloque que no sea `denominacion\\\_rapida`;
   * `errores <= total`.
-* `guardar\_test`: `create or replace` con la **misma firma** (así se conservan los permisos). Lee también `tiempo\_ms`, `errores` y `detalle` de cada bloque, y para `denominacion\_rapida` exige:
+* `guardar\\\_test`: `create or replace` con la **misma firma** (así se conservan los permisos). Lee también `tiempo\\\_ms`, `errores` y `detalle` de cada bloque, y para `denominacion\\\_rapida` exige:
 
   * tiempo y errores presentes;
   * `correctas = total - errores`;
@@ -140,7 +140,7 @@ Comentada, idempotente, en `begin; … commit;`:
 
 * Después del `create or replace`, repetir `revoke` de `public` y `anon` y `grant` a `authenticated`, por si acaso.
 
-### 7\. Pruebas de acceso: `supabase/tests/0006\_denominacion\_rapida.sql`
+### 7\. Pruebas de acceso: `supabase/tests/0006\\\_denominacion\\\_rapida.sql`
 
 Escenarios que deben fallar, cada uno con su resultado esperado comentado:
 
@@ -148,7 +148,7 @@ Escenarios que deben fallar, cada uno con su resultado esperado comentado:
 * con errores mayores al total;
 * con `correctas` que no coinciden;
 * tiempo o errores en otro bloque;
-* un usuario niño llamando a `guardar\_test`;
+* un usuario niño llamando a `guardar\\\_test`;
 * un profesional sin vínculo activo.
 
 Y uno que debe funcionar: una evaluación inicial completa con el bloque nuevo. Probá todo en el Postgres local que simula Supabase.
@@ -192,6 +192,7 @@ Y uno que debe funcionar: una evaluación inicial completa con el bloque nuevo. 
 * Resultado de las pruebas, de la cobertura, del build y de `tsc`.
 
 
+
 Ajustes:
 Ajuste de S9, sin commits:
 
@@ -206,4 +207,40 @@ Denominación rápida se mide por tiempo y errores, no por porcentaje. En lib/te
 La fila de denominación rápida se sigue mostrando con tiempo y errores, y en la base se siguen guardando correctas y total. Para evaluaciones viejas donde denominación no tiene tiempo, aplicá el mismo criterio (se excluye por código de bloque, no por tener tiempo).
 
 Agregá las pruebas en analisis.test.ts, mantené el 100 % de cobertura y actualizá docs/estado-proyecto.md. Después corré test, coverage, tsc y build.
+
+Ajustes de S9, sin commits:
+
+
+
+1\. Orden de los bloques: denominación rápida va al final en los dos niveles.
+
+&#x20;  - Inicial ya la tiene última (bloque 5 de 5): verificá que siga así.
+
+&#x20;  - Primario: pasala de la posición 5 a la 9. Los bloques que hoy son 6 a 9 (comprensión lectora, correspondencia sonido-letra, reconocimiento visual, lectura de pseudopalabras) vuelven a ser 5 a 8, como antes de S9.
+
+&#x20;  - Actualizá de forma consistente BLOQUES\_POR\_NIVEL, BLOCKS y el campo block de cada pregunta en app/test/primaria/page.tsx. Las evaluaciones ya guardadas no se tocan: cada fila tiene su propio orden.
+
+&#x20;  - Revisá que la barra de progreso, la etiqueta de cada bloque y el guardado (bloqueCodigoPorOrden) sigan coincidiendo, con una prueba en lib/test que verifique el orden de los dos niveles.
+
+
+
+2\. Detalle de denominación rápida en los resultados (components/test/resultados-evaluacion.tsx):
+
+&#x20;  - La fila de denominación rápida sigue mostrando el total: correctas / total, tiempo y errores.
+
+&#x20;  - Al final de la fila, un botón chico con un signo "+" que despliega debajo una sub-fila por ejercicio, leída de `detalle`: "Ejercicio 1", correctas / total, tiempo y errores. Al desplegar, el "+" pasa a "−".
+
+&#x20;  - Accesible: <button> con aria-expanded, aria-controls y aria-label ("Ver el detalle por ejercicio"), foco visible y operable con teclado.
+
+&#x20;  - Animación suave al desplegar, respetando reducir movimiento (components/motion).
+
+&#x20;  - Si `detalle` no está (evaluaciones viejas), no se muestra el "+".
+
+&#x20;  - Mismo comportamiento en la pantalla final de la evaluación y en el detalle de una evaluación del historial. Revisá 375 px y modo oscuro.
+
+&#x20;  - Si quedó hecho el ajuste anterior (desglose siempre visible debajo de la fila), reemplazalo por este.
+
+
+
+3\. Actualizá docs/estado-proyecto.md (orden de los bloques del primario y la vista del detalle). Después corré test, coverage, tsc y build.
 

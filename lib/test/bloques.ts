@@ -46,7 +46,9 @@ export function rutaDelTest(nivel: Nivel, ninoId: string): string {
 
 /**
  * Bloques de cada test, en orden. La posición + 1 es el `id` de las
- * constantes BLOCKS de app/test/inicial y app/test/primaria.
+ * constantes BLOCKS de app/test/inicial y app/test/primaria (que se arman
+ * desde acá) y el `block` de cada pregunta. Denominación rápida va última
+ * en los dos niveles.
  */
 export const BLOQUES_POR_NIVEL: Record<Nivel, readonly BloqueCodigo[]> = {
   inicial: [
@@ -61,11 +63,11 @@ export const BLOQUES_POR_NIVEL: Record<Nivel, readonly BloqueCodigo[]> = {
     "conciencia_fonologica",
     "conciencia_silabica",
     "memoria_fonologica", // se muestra como "Memoria Auditiva"
-    "denominacion_rapida", // S9: antes de S9 el primario tenía 8 bloques (los guardados conservan su orden)
     "comprension_lectora",
     "correspondencia_sonido_letra",
     "reconocimiento_visual",
     "lectura_pseudopalabras",
+    "denominacion_rapida", // S9: se suma al final (los bloques 1 a 8 no cambian de orden)
   ],
 }
 
