@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AuthShell } from "@/components/auth/auth-shell"
-import { Campo, CasillaTyC } from "@/components/auth/campos"
+import { Campo, CasillaCompromiso, CasillaTyC } from "@/components/auth/campos"
 import { CampoNombreUsuario } from "@/components/auth/campo-nombre-usuario"
 import { Cargando } from "@/components/estados"
 import { obtenerPerfilActual, perfilIncompleto } from "@/lib/auth/perfil"
@@ -41,6 +41,7 @@ export default function CompletarPerfilPage() {
   const [apellido, setApellido] = useState("")
   const [usuario, setUsuario] = useState("")
   const [acepta, setAcepta] = useState(false)
+  const [compromiso, setCompromiso] = useState(false)
   const [errores, setErrores] = useState<Record<string, string | undefined>>({})
   const [errorGeneral, setErrorGeneral] = useState<string | null>(null)
   const [guardando, setGuardando] = useState(false)
@@ -62,6 +63,7 @@ export default function CompletarPerfilPage() {
         setApellido(actual.profile.apellido || google.apellido)
         setUsuario(actual.profile.nombre_usuario ?? "")
         setAcepta(actual.profile.acepta_tyc)
+        setCompromiso(actual.profile.acepta_compromiso)
       })
       .catch((e) => {
         console.error("completar-perfil:", e)
@@ -69,6 +71,9 @@ export default function CompletarPerfilPage() {
       })
       .finally(() => setCargando(false))
   }, [router])
+
+  // Profesionales de Google o anteriores a la 0005 que todavía no lo aceptaron.
+  const pideCompromiso = profile?.rol === "profesional" && !profile.acepta_compromiso
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -86,6 +91,8 @@ export default function CompletarPerfilPage() {
             ? "No se pudo verificar el nombre de usuario. Probá de nuevo."
             : undefined,
       acepta: acepta ? undefined : "Tenés que aceptar los Términos y Condiciones y la Política de Privacidad.",
+      compromiso:
+        pideCompromiso && !compromiso ? "Tenés que aceptar el compromiso de uso responsable de los datos." : undefined,
     }
     setErrores(nuevos)
     if (Object.values(nuevos).some(Boolean) || estadoUsuario !== "disponible") {
@@ -93,11 +100,17 @@ export default function CompletarPerfilPage() {
       return
     }
 
-    // Solo columnas habilitadas para el usuario (0002); la fecha de
-    // aceptación la fija la base.
+    // Solo columnas habilitadas para el usuario (0002 y 0005); las fechas de
+    // aceptación las fija la base. El compromiso solo lo acepta un profesional.
     const { error } = await createClient()
       .from("profiles")
-      .update({ nombre: nombre.trim(), apellido: apellido.trim(), nombre_usuario: nombreUsuario.nombre, acepta_tyc: true })
+      .update({
+        nombre: nombre.trim(),
+        apellido: apellido.trim(),
+        nombre_usuario: nombreUsuario.nombre,
+        acepta_tyc: true,
+        ...(pideCompromiso ? { acepta_compromiso: true } : {}),
+      })
       .eq("id", profile.id)
 
     if (error) {
@@ -144,6 +157,9 @@ export default function CompletarPerfilPage() {
                 error={errores.usuario}
               />
               {!profile.acepta_tyc && <CasillaTyC id="acepta" checked={acepta} onChange={setAcepta} error={errores.acepta} />}
+              {pideCompromiso && (
+                <CasillaCompromiso id="compromiso" checked={compromiso} onChange={setCompromiso} error={errores.compromiso} />
+              )}
 
               {errorGeneral && (
                 <Alert variant="destructive">

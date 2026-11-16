@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import { Dumbbell, Lightbulb, User } from "lucide-react"
+import { Dumbbell, History, Lightbulb, User } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -69,6 +69,7 @@ export default function DetalleNinoPage() {
           <div className="space-y-6">
             <InformacionGeneral datos={carga.datos} />
             <Recomendacion datos={carga.datos} />
+            <AlcanceHistorial comparte={carga.datos.vinculo.comparte_historial} />
             <HistorialEvaluaciones
               tests={carga.datos.tests}
               urlDetalle={(testId) => `/ninos/${carga.datos.perfil.id}/tests/${testId}`}
@@ -135,7 +136,9 @@ function InformacionGeneral({ datos }: { datos: DetalleNino }) {
     ["Vinculado con vos desde", oGuion(vinculo.fecha_afiliacion)],
     ["Última conexión", oGuion(nino.ultima_conexion)],
     ["Último entrenamiento", oGuion(nino.ultimo_entrenamiento)],
-    ["Última evaluación", oGuion(nino.ultima_prueba)],
+    // De la evaluación visible más reciente: ninos.ultima_prueba cuenta las
+    // de cualquier profesional, aunque el tutor no haya compartido el historial.
+    ["Última evaluación", oGuion(datos.tests[0]?.fecha ?? null)],
   ]
 
   const ultimo = datos.tests[0]
@@ -192,7 +195,21 @@ function InformacionGeneral({ datos }: { datos: DetalleNino }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Recomendación (última evaluación, de cualquier profesional)         */
+/*  Qué parte del historial ve el profesional (elección del tutor)      */
+/* ------------------------------------------------------------------ */
+function AlcanceHistorial({ comparte }: { comparte: boolean }) {
+  return (
+    <p className="flex items-start gap-3 rounded-2xl border border-border/80 bg-card px-4 py-3 text-base">
+      <History className="mt-0.5 size-5 shrink-0 text-lavanda-fuerte" aria-hidden="true" />
+      {comparte
+        ? "El tutor compartió el historial completo: ves lo que registraron todos los profesionales del niño."
+        : "El tutor eligió no compartir el historial: ves solo lo que registraste vos."}
+    </p>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Recomendación (última evaluación visible)                           */
 /* ------------------------------------------------------------------ */
 function Recomendacion({ datos }: { datos: DetalleNino }) {
   const ultimo = datos.tests[0]

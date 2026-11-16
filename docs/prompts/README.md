@@ -9,5 +9,6 @@ Sirve para dos cosas: que cualquiera de los dos pueda retomar un slice sabiendo 
 | `estilos-evaluacion.md` | Estilos de la evaluación (PR #7) | Donato |
 | `s06-base-de-trabajo.md` | S6 Base de trabajo | Donato |
 | `s07-contenido-home.md` | S7 Contenido del home | Donato |
+| `s08-contrasena-acciones-tutor.md` | S8 Contraseña y acciones del tutor | Camila |
 
 Los prompts de los slices 1 a 5 están en el chat de Camila; si se recuperan, van con el nombre `s01-...` a `s05-...`.

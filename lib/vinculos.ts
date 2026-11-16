@@ -1,12 +1,18 @@
 "use client"
 
 /**
- * Vínculos profesional–niño desde el cliente. Las escrituras pasan por las
- * RPC de supabase/migrations/0003; sus errores traen un mensaje en español
- * pensado para mostrarse tal cual, así que se relanzan como Error(message).
+ * Vínculos profesional–niño desde el cliente.
+ * - Profesional: las escrituras pasan por las RPC de supabase/migrations/
+ *   0003 y 0005; sus errores traen un mensaje en español pensado para
+ *   mostrarse tal cual, así que se relanzan como Error(message).
+ * - Niño: aceptar, rechazar y dar de baja son acciones del tutor. Pasan por
+ *   las Server Actions de lib/tutor/acciones.ts, que verifican la
+ *   contraseña, y devuelven { ok, error }.
  */
 import { useEffect, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
+import { desvincularTutor, responderInvitacionTutor } from "@/lib/tutor/acciones"
+import type { ResultadoAccion } from "@/lib/tutor/errores"
 import type { VinculoDelNino, VinculoDelProfesional } from "@/lib/types/database"
 
 /** Mensaje tras invitar (o volver a vincular) a un niño; se usa en /ninos y en /test. */
@@ -58,7 +64,7 @@ export async function vinculosDelNino(estado: "pendiente" | "activa"): Promise<V
   const { data, error } = await supabase
     .from("profesional_nino")
     .select(
-      "id, estado, fecha_invitacion, fecha_afiliacion, profesional:profiles!profesional_nino_profesional_id_fkey(nombre, apellido, nombre_usuario)",
+      "id, estado, fecha_invitacion, fecha_afiliacion, comparte_historial, profesional:profiles!profesional_nino_profesional_id_fkey(nombre, apellido, nombre_usuario)",
     )
     .eq("nino_id", user.id)
     .eq("estado", estado)
@@ -67,17 +73,30 @@ export async function vinculosDelNino(estado: "pendiente" | "activa"): Promise<V
   return (data ?? []) as unknown as VinculoDelNino[]
 }
 
-export async function responderInvitacion(vinculoId: string, aceptar: boolean): Promise<void> {
-  const { error } = await createClient().rpc("responder_invitacion", { p_vinculo_id: vinculoId, p_aceptar: aceptar })
-  lanzar(error)
-  avisarCambioVinculos()
+/**
+ * Acepta (con la elección de compartir el historial) o rechaza una
+ * invitación. Es una acción del tutor: pasa por una Server Action que
+ * verifica la contraseña antes de ejecutarla.
+ */
+export async function responderInvitacion(datos: {
+  vinculoId: string
+  aceptar: boolean
+  password: string
+  comparteHistorial: boolean | null
+}): Promise<ResultadoAccion> {
+  const r = await responderInvitacionTutor(datos)
+  if (r.ok) avisarCambioVinculos()
+  return r
 }
 
-/* ------------------------------------------------------------------ */
-/*  Ambos                                                              */
-/* ------------------------------------------------------------------ */
+/** Baja de un vínculo activo pedida por el tutor (con la contraseña). */
+export async function desvincularComoTutor(vinculoId: string, password: string): Promise<ResultadoAccion> {
+  const r = await desvincularTutor({ vinculoId, password })
+  if (r.ok) avisarCambioVinculos()
+  return r
+}
 
-/** Baja lógica de un vínculo activo (la puede pedir el profesional o el niño). */
+/** Baja lógica de un vínculo activo pedida por el profesional (sin contraseña). */
 export async function desvincular(vinculoId: string): Promise<void> {
   const { error } = await createClient().rpc("desvincular", { p_vinculo_id: vinculoId })
   lanzar(error)

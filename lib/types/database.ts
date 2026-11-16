@@ -21,6 +21,10 @@ export interface Profile {
   nombre_usuario: string | null
   acepta_tyc: boolean
   fecha_aceptacion_tyc: string | null
+  /** Solo profesionales: compromiso de uso responsable de los datos (0005). No se revierte. */
+  acepta_compromiso: boolean
+  /** La fija la base al aceptar. */
+  fecha_aceptacion_compromiso: string | null
   created_at: string
 }
 
@@ -44,6 +48,12 @@ export interface ProfesionalNino {
   fecha_invitacion: string
   fecha_afiliacion: string | null
   fecha_baja: string | null
+  /**
+   * Elección del tutor al aceptar (0005): true = el profesional ve también
+   * lo que registraron los demás profesionales. Null mientras está pendiente;
+   * obligatorio en 'activa'; se conserva en 'inactiva'.
+   */
+  comparte_historial: boolean | null
 }
 
 export interface Test {
@@ -102,6 +112,8 @@ export interface VinculoDelNino {
   estado: EstadoVinculo
   fecha_invitacion: string
   fecha_afiliacion: string | null
+  /** Null mientras la invitación está pendiente. */
+  comparte_historial: boolean | null
   profesional: ProfesionalVisible | null
 }
 
@@ -113,7 +125,10 @@ export interface NinoParaTest {
   nombre_usuario: string
   etapa_escolar: EtapaEscolar
   nivel: Nivel
-  /** Del test más reciente del niño (de cualquier profesional); null si no tiene. */
+  /**
+   * De la evaluación más reciente que el profesional puede ver (las suyas, o
+   * las de cualquiera si el tutor compartió el historial); null si no hay.
+   */
   fecha_ultimo_test: string | null
   porcentaje_ultimo_test: number | null
 }
