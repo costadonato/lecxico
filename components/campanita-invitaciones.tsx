@@ -1,11 +1,13 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import { Bell, Loader2 } from "lucide-react"
+import { Bell } from "lucide-react"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { ConfirmarDialog, type Confirmacion } from "@/components/confirmar-dialog"
+import { DialogoContrasenaTutor } from "@/components/tutor/dialogo-contrasena-tutor"
+import { OpcionesHistorial, QueVaAVer, type EleccionHistorial } from "@/components/tutor/opciones-historial"
 import { Iniciales } from "@/components/iniciales"
 import { ItemCascada, ListaCascada } from "@/components/motion/lista-cascada"
 import { RESORTE } from "@/components/motion/transiciones"
@@ -22,7 +24,9 @@ import type { Rol, VinculoDelNino, VinculoDelProfesional } from "@/lib/types/dat
 
 /**
  * Campanita de invitaciones pendientes.
- * - Niño: invitaciones recibidas, con Aceptar / Rechazar.
+ * - Niño: invitaciones recibidas, con Aceptar / Rechazar. Son acciones del
+ *   tutor: las dos piden la contraseña de la cuenta, y al aceptar el tutor
+ *   elige si el profesional ve lo registrado por los demás profesionales.
  * - Profesional: invitaciones enviadas sin responder, con Cancelar.
  * Se refresca al cargar, al recuperar el foco y después de cada acción.
  * Cada invitación muestra el tiempo transcurrido ("hace 5 minutos"), que se
@@ -34,7 +38,9 @@ export function CampanitaInvitaciones({ rol }: { rol: Rol }) {
   const [enviadas, setEnviadas] = useState<VinculoDelProfesional[]>([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [aceptando, setAceptando] = useState<string | null>(null)
+  const [aceptando, setAceptando] = useState<VinculoDelNino | null>(null)
+  const [comparte, setComparte] = useState<EleccionHistorial | null>(null)
+  const [rechazando, setRechazando] = useState<VinculoDelNino | null>(null)
   const [confirmacion, setConfirmacion] = useState<Confirmacion | null>(null)
   const [abierto, setAbierto] = useState(false)
   const [ahora, setAhora] = useState(() => new Date())
@@ -64,25 +70,10 @@ export function CampanitaInvitaciones({ rol }: { rol: Rol }) {
 
   const cantidad = rol === "nino" ? recibidas.length : enviadas.length
 
-  const aceptar = async (id: string) => {
-    setAceptando(id)
-    setError(null)
-    try {
-      await responderInvitacion(id, true)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "No se pudo aceptar la invitación.")
-    } finally {
-      setAceptando(null)
-    }
+  const pedirAceptacion = (v: VinculoDelNino) => {
+    setComparte(null)
+    setAceptando(v)
   }
-
-  const pedirRechazo = (v: VinculoDelNino) =>
-    setConfirmacion({
-      titulo: "¿Rechazar la invitación?",
-      descripcion: `${nombreProfesional(v)} no va a quedar vinculado. Si más adelante querés vincularte, te tiene que invitar de nuevo.`,
-      textoConfirmar: "Rechazar",
-      accion: () => responderInvitacion(v.id, false),
-    })
 
   const pedirCancelacion = (v: VinculoDelProfesional) =>
     setConfirmacion({
@@ -166,11 +157,10 @@ export function CampanitaInvitaciones({ rol }: { rol: Rol }) {
                         {tiempoRelativo(v.fecha_invitacion, ahora)}
                       </p>
                       <div className="flex gap-2 pt-1">
-                        <Button size="sm" onClick={() => aceptar(v.id)} disabled={aceptando !== null}>
-                          {aceptando === v.id && <Loader2 className="mr-1 h-3 w-3 animate-spin" />}
+                        <Button size="sm" onClick={() => pedirAceptacion(v)}>
                           Aceptar
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => pedirRechazo(v)} disabled={aceptando !== null}>
+                        <Button size="sm" variant="outline" onClick={() => setRechazando(v)}>
                           Rechazar
                         </Button>
                       </div>
@@ -203,6 +193,48 @@ export function CampanitaInvitaciones({ rol }: { rol: Rol }) {
       </Popover>
 
       <ConfirmarDialog confirmacion={confirmacion} onCerrar={() => setConfirmacion(null)} />
+
+      {rol === "nino" && (
+        <>
+          <DialogoContrasenaTutor
+            abierto={aceptando !== null}
+            onCerrar={() => setAceptando(null)}
+            titulo={aceptando ? `Aceptar la invitación de ${nombreProfesional(aceptando)}` : ""}
+            descripcion={aceptando && <QueVaAVer profesional={nombreProfesional(aceptando)} />}
+            textoConfirmar="Aceptar invitación"
+            destructivo={false}
+            habilitado={comparte !== null}
+            accion={(password) =>
+              responderInvitacion({
+                vinculoId: aceptando!.id,
+                aceptar: true,
+                password,
+                comparteHistorial: comparte === "si",
+              })
+            }
+          >
+            <OpcionesHistorial valor={comparte} onCambio={setComparte} />
+          </DialogoContrasenaTutor>
+
+          <DialogoContrasenaTutor
+            abierto={rechazando !== null}
+            onCerrar={() => setRechazando(null)}
+            titulo="¿Rechazar la invitación?"
+            descripcion={
+              rechazando && (
+                <p>
+                  {nombreProfesional(rechazando)} no va a quedar vinculado. Si más adelante querés vincularte, te tiene que
+                  invitar de nuevo.
+                </p>
+              )
+            }
+            textoConfirmar="Rechazar"
+            accion={(password) =>
+              responderInvitacion({ vinculoId: rechazando!.id, aceptar: false, password, comparteHistorial: null })
+            }
+          />
+        </>
+      )}
     </>
   )
 }

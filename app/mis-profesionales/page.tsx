@@ -1,32 +1,32 @@
 "use client"
 
 import { useCallback, useState } from "react"
-import { AlertCircle, CalendarHeart, Stethoscope } from "lucide-react"
+import { AlertCircle, CalendarHeart, History, Stethoscope } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Cargando, EstadoVacio } from "@/components/estados"
 import { Iniciales } from "@/components/iniciales"
 import { ItemCascada, ListaCascada } from "@/components/motion/lista-cascada"
 import { PaginaApp } from "@/components/pagina-app"
-import { ConfirmarDialog, type Confirmacion } from "@/components/confirmar-dialog"
+import { DialogoContrasenaTutor } from "@/components/tutor/dialogo-contrasena-tutor"
 import { usePerfilPagina } from "@/lib/auth/use-perfil-pagina"
 import { formatearFecha } from "@/lib/fechas"
-import { desvincular, useRecargaVinculos, vinculosDelNino } from "@/lib/vinculos"
+import { desvincularComoTutor, useRecargaVinculos, vinculosDelNino } from "@/lib/vinculos"
 import type { VinculoDelNino } from "@/lib/types/database"
 
 export default function MisProfesionalesPage() {
   const pagina = usePerfilPagina("nino")
   return (
     <PaginaApp pagina={pagina} titulo="Mis profesionales">
-      {() => <TablaProfesionales />}
+      {({ profile }) => <TablaProfesionales nombreUsuario={profile.nombre_usuario} />}
     </PaginaApp>
   )
 }
 
-function TablaProfesionales() {
+function TablaProfesionales({ nombreUsuario }: { nombreUsuario: string | null }) {
   const [vinculos, setVinculos] = useState<VinculoDelNino[] | null>(null)
   const [errorCarga, setErrorCarga] = useState<string | null>(null)
-  const [confirmacion, setConfirmacion] = useState<Confirmacion | null>(null)
+  const [desvinculando, setDesvinculando] = useState<VinculoDelNino | null>(null)
 
   const recargar = useCallback(async () => {
     try {
@@ -46,24 +46,6 @@ function TablaProfesionales() {
 
   useRecargaVinculos(recargar)
 
-  const pedirDesvinculo = (v: VinculoDelNino) => {
-    const nombre = v.profesional ? `${v.profesional.nombre} ${v.profesional.apellido}`.trim() : "Este profesional"
-    setConfirmacion({
-      titulo: `¿Desvincular a ${nombre}?`,
-      descripcion: (
-        <>
-          <p>
-            {nombre} va a dejar de ver la información del niño: sus datos, los resultados de las evaluaciones y los
-            entrenamientos.
-          </p>
-          <p className="mt-2">Para volver a vincularse, el profesional tiene que enviar una invitación nueva.</p>
-        </>
-      ),
-      textoConfirmar: "Desvincular",
-      accion: () => desvincular(v.id),
-    })
-  }
-
   if (errorCarga) {
     return (
       <Alert variant="destructive">
@@ -82,7 +64,15 @@ function TablaProfesionales() {
         <EstadoVacio
           personaje="lex"
           descripcion={
-            <p>Todavía no tenés profesionales vinculados. Cuando uno te invite, vas a ver la invitación en la campanita.</p>
+            <div className="space-y-2">
+              <p>Todavía no tenés profesionales vinculados. Cuando uno te invite, vas a ver la invitación en la campanita.</p>
+              {nombreUsuario && (
+                <p>
+                  Para que un profesional te invite, pasale tu nombre de usuario:{" "}
+                  <span className="select-all font-semibold text-foreground">@{nombreUsuario}</span>.
+                </p>
+              )}
+            </div>
           }
         />
       ) : (
@@ -116,13 +106,17 @@ function TablaProfesionales() {
                   <Stethoscope className="size-5" />
                 </span>
               </div>
+              <p className="relative flex items-center gap-2 text-base">
+                <History className="size-5 text-lavanda-fuerte" aria-hidden="true" />
+                {v.comparte_historial ? "Comparte el historial" : "No comparte el historial"}
+              </p>
               <div className="relative flex flex-wrap items-center justify-between gap-3 border-t border-border/70 pt-4">
                 <p className="flex items-center gap-2 text-base">
                   <CalendarHeart className="size-5 text-rojo-fuerte" />
                   <span className="text-muted-foreground">Vinculado desde</span>
                   <span className="font-semibold tabular-nums">{formatearFecha(v.fecha_afiliacion)}</span>
                 </p>
-                <Button size="sm" variant="outline" onClick={() => pedirDesvinculo(v)}>
+                <Button size="sm" variant="outline" onClick={() => setDesvinculando(v)}>
                   Desvincular
                 </Button>
               </div>
@@ -131,7 +125,32 @@ function TablaProfesionales() {
         </ListaCascada>
       )}
 
-      <ConfirmarDialog confirmacion={confirmacion} onCerrar={() => setConfirmacion(null)} />
+      <DialogoContrasenaTutor
+        abierto={desvinculando !== null}
+        onCerrar={() => setDesvinculando(null)}
+        titulo={`¿Desvincular a ${nombreDe(desvinculando)}?`}
+        descripcion={
+          <>
+            <p>
+              {conMayuscula(nombreDe(desvinculando))} va a dejar de ver la información del niño: sus datos, los resultados de las
+              evaluaciones y los entrenamientos.
+            </p>
+            <p>Para volver a vincularse, el profesional tiene que enviar una invitación nueva.</p>
+          </>
+        }
+        textoConfirmar="Desvincular"
+        accion={(password) => desvincularComoTutor(desvinculando!.id, password)}
+      />
     </>
   )
+}
+
+/** "Nombre Apellido" del profesional, o un texto neutro si no se pudo leer. */
+function nombreDe(v: VinculoDelNino | null): string {
+  const nombre = v?.profesional ? `${v.profesional.nombre} ${v.profesional.apellido}`.trim() : ""
+  return nombre || "este profesional"
+}
+
+function conMayuscula(texto: string): string {
+  return texto.charAt(0).toUpperCase() + texto.slice(1)
 }

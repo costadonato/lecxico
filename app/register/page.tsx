@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle, ArrowLeft, Baby, Check, Loader2, Stethoscope, UserRound } from "lucide-react"
 import { AuthShell } from "@/components/auth/auth-shell"
 import { BotonGoogle } from "@/components/auth/boton-google"
-import { Campo, CasillaTyC } from "@/components/auth/campos"
+import { Campo, CasillaCompromiso, CasillaTyC } from "@/components/auth/campos"
 import { CampoNombreUsuario } from "@/components/auth/campo-nombre-usuario"
 import { LumoCara } from "@/components/personajes/lumo-cara"
 import { cn } from "@/lib/utils"
@@ -223,6 +223,7 @@ function FormProfesional({ onRegistrado }: { onRegistrado: OnRegistrado }) {
   const [password, setPassword] = useState("")
   const [confirmacion, setConfirmacion] = useState("")
   const [acepta, setAcepta] = useState(false)
+  const [compromiso, setCompromiso] = useState(false)
   const [errores, setErrores] = useState<Errores>({})
   const [errorGeneral, setErrorGeneral] = useState<string | null>(null)
   const [enviando, setEnviando] = useState(false)
@@ -232,6 +233,7 @@ function FormProfesional({ onRegistrado }: { onRegistrado: OnRegistrado }) {
     e.preventDefault()
     setErrorGeneral(null)
     const nuevos: Errores = {
+      compromiso: compromiso ? undefined : "Tenés que aceptar el compromiso de uso responsable de los datos.",
       nombre: nombre.trim() ? undefined : "Completá tu nombre.",
       apellido: apellido.trim() ? undefined : "Completá tu apellido.",
       email: !email.trim() ? "Completá tu email." : emailValido(email) ? undefined : "El email no es válido.",
@@ -253,6 +255,7 @@ function FormProfesional({ onRegistrado }: { onRegistrado: OnRegistrado }) {
       apellido: apellido.trim(),
       nombre_usuario: nombreUsuario.nombre,
       acepta_tyc: true,
+      acepta_compromiso: true,
     })
     setEnviando(false)
     if (r.tipo === "existe") setErrores({ email: "Ya existe una cuenta con ese email." })
@@ -287,6 +290,7 @@ function FormProfesional({ onRegistrado }: { onRegistrado: OnRegistrado }) {
               error={errores.password}
             />
             <CasillaTyC id="acepta" checked={acepta} onChange={setAcepta} error={errores.acepta} />
+            <CasillaCompromiso id="compromiso" checked={compromiso} onChange={setCompromiso} error={errores.compromiso} />
 
             {errorGeneral && <ErrorGeneral mensaje={errorGeneral} />}
 

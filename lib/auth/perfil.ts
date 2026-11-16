@@ -40,7 +40,15 @@ export async function obtenerPerfilActual(supabase: SupabaseClient): Promise<Per
   return { user, profile, nino }
 }
 
-/** Le falta el nombre de usuario o la aceptación de TyC (típico del alta por Google). */
+/**
+ * Le falta el nombre de usuario, la aceptación de TyC (típico del alta por
+ * Google) o, si es profesional, el compromiso de uso responsable de los
+ * datos (los de Google y los que ya existían antes de la 0005).
+ */
 export function perfilIncompleto(profile: Profile): boolean {
-  return !profile.nombre_usuario || !profile.acepta_tyc
+  return (
+    !profile.nombre_usuario ||
+    !profile.acepta_tyc ||
+    (profile.rol === "profesional" && !profile.acepta_compromiso)
+  )
 }

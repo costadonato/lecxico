@@ -18,7 +18,16 @@ export default defineConfig({
       // Solo los módulos de lógica que ya tienen pruebas. Cada slice agrega
       // acá los suyos (franjas, recomendación, desbloqueo de grados), así los
       // umbrales miden la métrica de la propuesta y no el resto de la app.
-      include: ["lib/test/analisis.ts", "lib/test/bloques.ts", "lib/test/denominacion.ts", "lib/test/denominacion-config.ts"],
+      include: [
+        "lib/test/analisis.ts",
+        "lib/test/bloques.ts",
+        "lib/test/denominacion.ts",
+        "lib/test/denominacion-config.ts",
+        "lib/auth/perfil.ts",
+        "lib/tutor/errores.ts",
+        "lib/tutor/etapa.ts",
+        "lib/tutor/validaciones.ts",
+      ],
       thresholds: {
         lines: 80,
         branches: 90,

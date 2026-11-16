@@ -6,18 +6,20 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ArrowLeft, User, Mail, Dumbbell, Gamepad2 } from "lucide-react"
+import { ArrowLeft, AtSign, User, Mail, Dumbbell, Gamepad2 } from "lucide-react"
 import { Cargando, EstadoVacio } from "@/components/estados"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
+import { NombreUsuarioCopiable } from "@/components/nombre-usuario-copiable"
 import { MarcoPagina } from "@/components/pagina-app"
 import { LumoCara } from "@/components/personajes/lumo-cara"
 import { CaraPersonaje } from "@/components/personajes/personaje"
 import { Seccion } from "@/components/seccion"
 import { CuerpoTablaAnimado, FilaTablaAnimada } from "@/components/tabla-animada"
 import { HistorialEvaluaciones } from "@/components/test/historial-evaluaciones"
+import { AccionesTutor } from "@/components/tutor/acciones-tutor"
 import { obtenerPerfilActual } from "@/lib/auth/perfil"
 import { cargarTestsConBloques, type TestConBloques } from "@/lib/ninos/detalle"
-import type { Entrenamiento, Profile } from "@/lib/types/database"
+import type { Entrenamiento, Nino, Profile } from "@/lib/types/database"
 
 export default function PerfilPage() {
   const router = useRouter()
@@ -25,6 +27,7 @@ export default function PerfilPage() {
 
   const [isLoading, setIsLoading] = useState(true)
   const [profile, setProfile] = useState<Profile | null>(null)
+  const [nino, setNino] = useState<Nino | null>(null)
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
@@ -49,6 +52,7 @@ export default function PerfilPage() {
       }
 
       setProfile(actual?.profile ?? null)
+      setNino(actual?.nino ?? null)
       setFirstName(actual?.profile?.nombre ?? "")
       setLastName(actual?.profile?.apellido ?? "")
       setEmail(user.email || "")
@@ -112,6 +116,16 @@ export default function PerfilPage() {
               </dt>
               <dd className="break-all text-lg font-semibold">{email}</dd>
             </div>
+            {profile?.nombre_usuario && (
+              <div className="rounded-2xl bg-muted/60 px-4 py-3 sm:col-span-2">
+                <dt className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <AtSign className="size-4" /> Nombre de usuario
+                </dt>
+                <dd className="text-lg font-semibold">
+                  <NombreUsuarioCopiable nombreUsuario={profile.nombre_usuario} />
+                </dd>
+              </div>
+            )}
           </dl>
         </div>
       </Seccion>
@@ -168,6 +182,8 @@ export default function PerfilPage() {
           />
         )}
       </Seccion>
+
+      {profile?.rol === "nino" && nino && <AccionesTutor etapaInicial={nino.etapa_escolar} />}
 
       {/* Volver */}
       <Button variant="outline" className="w-full" onClick={() => router.push("/dashboard")}>

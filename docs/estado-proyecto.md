@@ -1,6 +1,6 @@
 # Lecxico — Estado del proyecto
 
-Última actualización: 16/11/2026 (S9). Reemplaza al documento "Estado del proyecto tras la etapa de gestión de usuarios (slices 1 a 5)" del 9/10/2026.
+Última actualización: 16/11/2026 (S8 y S9). Reemplaza al documento "Estado del proyecto tras la etapa de gestión de usuarios (slices 1 a 5)" del 9/10/2026.
 
 **Cómo se usa:** es la fuente de contexto para cualquier chat o Claude Code que trabaje en el repo. Cada PR actualiza las secciones que toca (estado de slices, modelo de datos, decisiones, pendientes). Si este documento y el código no coinciden, manda el código; las migraciones de `supabase/migrations/` describen la base exactamente.
 
@@ -8,7 +8,7 @@ Documentos relacionados: `CLAUDE.md` (reglas para Claude Code), `docs/revisiones
 
 ## Resumen
 
-La gestión de usuarios está implementada y probada de punta a punta: registro por rol, autenticación, vinculación profesional–niño por invitación, evaluación tomada por el profesional al niño, historial y recomendación. La evaluación tiene los estilos del resto de la app. Denominación rápida ya tiene el formato nuevo en los dos niveles (S9, en revisión). Falta adaptar el resto a la definición vigente de la propuesta V8 (contraseña del tutor, historial compartido, franjas, perfil del niño sin resultados) y construir el entrenamiento, las tareas y el seguimiento.
+La gestión de usuarios está implementada y probada de punta a punta: registro por rol, autenticación, vinculación profesional–niño por invitación, evaluación tomada por el profesional al niño, historial y recomendación. La evaluación tiene los estilos del resto de la app. S8 suma la contraseña del tutor verificada en el servidor, el historial compartido, la eliminación de la cuenta del niño y el compromiso del profesional (migración 0005). Denominación rápida ya tiene el formato nuevo en los dos niveles (S9, migración 0006). Falta adaptar el resto a la definición vigente de la propuesta V8 (franjas, perfil del niño sin resultados) y construir el entrenamiento, las tareas y el seguimiento.
 
 ## Plan de slices
 
@@ -18,10 +18,10 @@ Meta: desarrollo cerrado el viernes 4/12/2026; verificación y documentación de
 | --- | --- | --- | --- | --- | --- |
 | 1 a 5 | Esquema y RLS, registro y auth, vinculación, selección del niño, detalle e historial | Camila | ago–oct | 0001 a 0004 | Hecho |
 | Estilos de la evaluación | `/test/inicial` y `/test/primaria` con los estilos del perfil del niño, tests sin cambios (PR #7) | Donato | 11/11 | — | Hecho |
-| S6 Base de trabajo | `CLAUDE.md`, `docs/`, Vitest con cobertura, limpieza | Donato | 12–15/11 | — | En curso |
-| S7 Contenido del home | Landing, footer y metadata con información real | Donato | 12–15/11 | — | En curso |
-| S8 Contraseña y acciones del tutor | Contraseña verificada en el servidor; elección de compartir historial; reglas de acceso a lo compartido; eliminación de la cuenta del niño; compromiso del profesional | Camila | 12–22/11 | 0005 | Pendiente |
-| S9 Denominación rápida | Cuadrícula de letras, números y colores; cronómetro y carga de errores; se suma a primeros lectores (9 bloques); guarda tiempo, errores y detalle por ejercicio | Donato | 16–22/11 | 0006 | En revisión |
+| S6 Base de trabajo | `CLAUDE.md`, `docs/`, Vitest con cobertura, limpieza | Donato | 12–15/11 | — | Hecho |
+| S7 Contenido del home | Landing, footer y metadata con información real | Donato | 12–15/11 | — | Hecho |
+| S8 Contraseña y acciones del tutor | Contraseña verificada en el servidor; elección de compartir historial; reglas de acceso a lo compartido; eliminación de la cuenta del niño; compromiso del profesional | Camila | 12–22/11 | 0005 | Hecho |
+| S9 Denominación rápida | Cuadrícula de letras, números y colores; cronómetro y carga de errores; se suma a primeros lectores (9 bloques); guarda tiempo, errores y detalle por ejercicio | Donato | 16–22/11 | 0006 | Hecho |
 | S10 Perfil del niño sin resultados | El perfil deja de mostrar evaluaciones; el niño pierde acceso a sus evaluaciones en la base | Donato | 16–22/11 | 0007 | Pendiente |
 | S11 Franjas y recomendación | Cortes en el código, franjas con pruebas, recomendación por franja | Camila | 23–26/11 | — | Pendiente |
 | S12 Datos del entrenamiento | Juegos, partidas y tareas; desbloqueo del 80 % en el servidor | Camila | 23–29/11 | 0008 | Pendiente |
@@ -40,15 +40,16 @@ Meta: desarrollo cerrado el viernes 4/12/2026; verificación y documentación de
 
 **Stack:** Next.js 15 (App Router) + React 19 + TypeScript + Tailwind 4 + shadcn/ui + Motion + Supabase (Postgres + Auth) con `@supabase/ssr`. Vitest para pruebas. Despliegue de prueba en Vercel desde `main`: https://lecxico-three.vercel.app. Repositorio: https://github.com/costadonato/lecxico.
 
-**Pruebas:** `npm test` corre las pruebas de Vitest (`lib/**/*.test.ts`) y `npm run coverage` suma la cobertura V8 de los módulos de lógica listados en `vitest.config.mts` (hoy `analisis.ts`, `bloques.ts`, `denominacion.ts` y `denominacion-config.ts`), con umbrales de 80 % de líneas y 90 % de ramas (reporte HTML en `coverage/`).
+**Pruebas:** `npm test` corre las pruebas de Vitest (`lib/**/*.test.ts`) y `npm run coverage` suma la cobertura V8 de los módulos de lógica listados en `vitest.config.mts` (hoy `lib/test/analisis.ts`, `bloques.ts`, `denominacion.ts` y `denominacion-config.ts`, `lib/auth/perfil.ts` y `lib/tutor/errores.ts`, `etapa.ts` y `validaciones.ts`), con umbrales de 80 % de líneas y 90 % de ramas (reporte HTML en `coverage/`).
 
-**Pruebas de migraciones:** `supabase/tests/00_simular_supabase.sql` arma en un Postgres local lo que las migraciones esperan de Supabase (`auth.users`, `auth.uid()`, roles `anon` y `authenticated`, la tabla previa `entrenamientos`). Orden: ese archivo → migraciones → `supabase/tests/NNNN_*.sql`. Cada archivo de pruebas corre en una transacción con `rollback`, muestra una tabla con cada escenario y corta con "FALLARON …" si alguno no dio lo esperado. Sin Postgres instalado se puede usar PGlite (`@electric-sql/pglite`, Postgres en WASM) desde Node, fuera del repo.
+**Pruebas de migraciones:** `supabase/tests/00_simular_supabase.sql` arma en un Postgres local lo que las migraciones esperan de Supabase (`auth.users`, `auth.uid()`, `auth.jwt()`, `auth.role()`, roles `anon`, `authenticated` y `service_role`, la tabla previa `entrenamientos` y la collation `und-x-icu` si falta). Orden: ese archivo → migraciones → `supabase/tests/NNNN_*.sql` (ver `supabase/tests/README.md`). Cada archivo de pruebas corre en una transacción con `rollback` y corta con "FALLARON …" si algún escenario no dio lo esperado. Sin Postgres instalado se puede usar PGlite (`@electric-sql/pglite`, Postgres en WASM) desde Node, fuera del repo.
 
 **Cuidados conocidos:**
 
 - `next.config.mjs` tiene `ignoreBuildErrors: true`: hay que correr `npx tsc --noEmit`. Quedan 4 errores previos en archivos de ejercicios (`exercise/[id]`, `daily-challenge-card`, `game-generators`).
 - No trabajar con el repo dentro de OneDrive: bloquea `.next` (errores tipo `EINVAL: readlink`). Clonar en una carpeta local.
-- `.env.local` no está en git. Cada uno tiene el suyo con `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` (y más adelante `SUPABASE_SERVICE_ROLE_KEY`).
+- `.env.local` no está en git. Cada uno tiene el suyo con `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` y, desde S8, `SUPABASE_SERVICE_ROLE_KEY`.
+- `SUPABASE_SERVICE_ROLE_KEY` (Supabase → Project Settings → API → clave `service_role`) saltea la RLS. Solo la usa el servidor de Next.js, por `lib/supabase/admin.ts` (con `server-only`): nunca con prefijo `NEXT_PUBLIC_` ni en un archivo con `"use client"`. Tiene que estar en `.env.local` y en Vercel (Settings → Environment Variables). Si falta, las acciones del tutor responden "No se pudo completar la acción" y el servidor loguea "Falta configurar SUPABASE_SERVICE_ROLE_KEY".
 - `supabase/seed_dev.sql` se usó solo en el slice 1. **No volver a correrlo:** borra y recrea perfiles con sus vínculos y evaluaciones. Para vincular usuarios de prueba se usa la app.
 
 **Configuración fuera del código:**
@@ -70,19 +71,21 @@ rollback;
 
 ## Definición vigente (propuesta V8)
 
-La definición funcional es la de la propuesta V8 (reuniones del 14/10 y 28/10/2026). Las marcadas **(V8)** todavía no están implementadas.
+La definición funcional es la de la propuesta V8 (reuniones del 14/10 y 28/10/2026). Las marcadas **(V8)** todavía no están implementadas. Las marcadas (S8) están en la rama de S8 y dependen de la 0005.
 
 **Usuarios y cuentas**
 
 - Dos roles: **profesional** y **niño**. La entidad se llama "niño" en todo el sistema; no hay adolescentes ni adultos.
-- El profesional se registra solo (email y contraseña, o Google). **(V8)** Al registrarse acepta un compromiso de uso responsable de los datos (casilla).
+- El profesional se registra solo (email y contraseña, o Google). Al registrarse acepta un compromiso de uso responsable de los datos (casilla obligatoria; texto en `lib/compromiso.ts`). La fecha la fija la base y no se revierte. Los que entran con Google y los profesionales anteriores a la 0005 lo aceptan en `/completar-perfil`; sin compromiso no se puede invitar. (S8)
 - La cuenta del niño la crea y la administra **el tutor**, con el email del tutor. Un email = una cuenta. El tutor no es un usuario aparte: su email y teléfono son datos del niño.
 - El niño no inicia sesión solo: la sesión la abre el tutor y el niño usa la plataforma siempre acompañado.
 - Hoy se inicia sesión con email en los dos roles. El nombre de usuario es único y sirve para que el profesional encuentre al niño.
 - Consentimiento = aceptación de Términos y Condiciones al registrarse, obligatoria; la fecha la fija la base y no se puede revertir.
 - Nombre y apellido se guardan con formato "Juan Pérez", aplicado por la base.
-- **(V8)** Las acciones del tutor exigen volver a ingresar la contraseña, que el servidor verifica antes de ejecutarlas: aceptar o rechazar invitaciones, elegir si comparte el historial, dar de baja vínculos, modificar la etapa escolar, pedir el informe y eliminar la cuenta del niño.
-- **(V8)** El tutor puede eliminar la cuenta del niño con todos sus datos.
+- Las acciones del tutor exigen volver a ingresar la contraseña, que el servidor verifica antes de ejecutarlas: aceptar o rechazar invitaciones, elegir si comparte el historial, dar de baja vínculos, modificar la etapa escolar y eliminar la cuenta del niño. **(V8)** Pedir el informe (S17) va a reutilizar el mismo diálogo (`components/tutor/dialogo-contrasena-tutor.tsx`) y la misma verificación (`conContrasenaTutor` de `lib/tutor/verificar-contrasena.ts`). (S8)
+  - Cómo: cada acción es una Server Action (`lib/tutor/acciones.ts`). Toma el usuario de la sesión (cookies), exige rol `nino`, prueba la contraseña con `signInWithPassword` en un cliente aparte sin persistencia (no toca la sesión del navegador), comprueba que sea el mismo usuario y cierra esa sesión temporal con `scope: "local"`. Recién ahí llama, con el cliente `service_role`, a una función `tutor_*` que solo puede ejecutar `service_role`. El id del niño sale siempre de la sesión.
+  - En la base, la sesión del niño ya no puede aceptar, rechazar ni dar de baja vínculos, ni cambiar la etapa escolar.
+- El tutor puede eliminar la cuenta del niño con todos sus datos, desde "Acciones del tutor" en `/perfil` (`auth.admin.deleteUser`; el resto se borra en cascada). (S8)
 
 **Vinculación**
 
@@ -90,8 +93,11 @@ La definición funcional es la de la propuesta V8 (reuniones del 14/10 y 28/10/2
 - Solo el profesional invita, buscando al niño por su nombre de usuario exacto. No se puede listar usuarios.
 - El tutor acepta o rechaza desde la campanita; rechazar borra la invitación. El profesional puede cancelar una invitación pendiente.
 - Antes de que el tutor acepte, el profesional no ve ningún dato del niño.
-- La baja la puede hacer cualquiera de los dos; volver a vincular = invitación nueva. Al darse de baja, el profesional pierde el acceso a todo, incluidas las evaluaciones que tomó él.
-- **(V8)** La invitación muestra quién invita y qué verá. Al aceptarla, el tutor elige si ese profesional accede a lo registrado por los demás profesionales; la elección vale para todo el vínculo. **Hoy** un profesional con vínculo activo ve todo el historial.
+- La baja la puede hacer cualquiera de los dos (el tutor, con la contraseña); volver a vincular = invitación nueva. Al darse de baja, el profesional pierde el acceso a todo, incluidas las evaluaciones que tomó él.
+- La invitación muestra quién invita y qué verá. Al aceptarla, el tutor elige si ese profesional accede a lo registrado por los demás profesionales (`profesional_nino.comparte_historial`). La elección vale para todo el vínculo: para cambiarla hay que dar de baja y recibir una invitación nueva. (S8)
+  - Con `true`, el profesional ve lo que registraron y registren los demás profesionales, antes y después de vincularse. Con `false`, solo lo suyo. Lo propio lo ve siempre que tenga vínculo activo, incluido lo de un vínculo anterior. Lo de un profesional que borró su cuenta (`profesional_id` null) cuenta como "de los demás".
+  - La regla está en `profesional_puede_ver_registro(nino, autor)`. Hoy la usan las evaluaciones (`test`, `test_bloque_resultado`, `ninos_para_test`). **S12** la usa para las tareas: las de otros profesionales solo se ven si el tutor compartió (tabla 5 de la propuesta). La práctica en casa no tiene autor profesional y la ven todos los profesionales con vínculo activo (`es_profesional_vinculado`).
+  - El tutor consulta lo que eligió en `/mis-profesionales`; el profesional lo ve en `/ninos/[id]`, junto al historial.
 - El aviso por correo de las invitaciones queda diferido; por ahora es solo la campanita.
 
 **Evaluación de indicadores**
@@ -131,13 +137,16 @@ Seis tablas, todas con RLS. Usuarios sin sesión (anon) no acceden a ninguna.
 
 ```
 profiles ( id uuid PK = auth.users.id, rol ('profesional'|'nino'), nombre, apellido,
-  nombre_usuario UNIQUE (minúsculas, ^[a-z0-9._]{3,30}$), acepta_tyc, fecha_aceptacion_tyc, created_at )
+  nombre_usuario UNIQUE (minúsculas, ^[a-z0-9._]{3,30}$), acepta_tyc, fecha_aceptacion_tyc,
+  acepta_compromiso (solo profesionales, 0005), fecha_aceptacion_compromiso, created_at )
 
 ninos ( profile_id PK, fecha_nacimiento, etapa_escolar ('sala_4'|'sala_5'|'primero'|'segundo'|'tercero'),
   tutor_email (sincronizado por trigger), tutor_telefono, ultima_conexion, ultimo_entrenamiento, ultima_prueba )
 
 profesional_nino ( id PK, profesional_id, nino_id, estado ('pendiente'|'activa'|'inactiva'),
-  fecha_invitacion, fecha_afiliacion (= fecha de vinculación), fecha_baja, UNIQUE (profesional_id, nino_id) )
+  fecha_invitacion, fecha_afiliacion (= fecha de vinculación), fecha_baja,
+  comparte_historial (0005: null en 'pendiente', obligatorio en 'activa', se conserva en 'inactiva'),
+  UNIQUE (profesional_id, nino_id) )
 
 test ( id PK, nino_id, profesional_id (null si el profesional borró su cuenta), nivel ('inicial'|'primario'),
   fecha, puntaje_total, porcentaje_total, conclusion, created_at )
@@ -165,13 +174,15 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 
 | Tabla | Lectura | Escritura |
 | --- | --- | --- |
-| profiles | La propia; un profesional, la del niño con vínculo activo; un niño, la de profesionales que lo invitaron o están vinculados | La propia, solo nombre, apellido, nombre_usuario y acepta_tyc |
-| ninos | El propio niño; un profesional con vínculo activo | El propio niño, solo fecha_nacimiento, etapa_escolar, tutor_telefono y ultima_conexion |
-| profesional_nino | Las dos partes | Solo mediante funciones |
-| test, test_bloque_resultado | El niño (se quita en S10); los profesionales con vínculo activo | Solo `guardar_test` |
+| profiles | La propia; un profesional, la del niño con vínculo activo; un niño, la de profesionales que lo invitaron o están vinculados | La propia, solo nombre, apellido, nombre_usuario, acepta_tyc y acepta_compromiso (solo profesionales; las fechas las fija la base) |
+| ninos | El propio niño; un profesional con vínculo activo | El propio niño, solo fecha_nacimiento, tutor_telefono y ultima_conexion. La etapa escolar, solo con `tutor_cambiar_etapa` (0005) |
+| profesional_nino | Las dos partes | Solo mediante funciones; las del tutor, solo `service_role` |
+| test, test_bloque_resultado | El niño (se quita en S10); el profesional con vínculo activo: las suyas, o todas si el tutor compartió el historial (`profesional_puede_ver_registro`, 0005) | Solo `guardar_test` |
 | entrenamientos | El niño; profesionales con vínculo activo | El propio niño (insert) |
 
-**Funciones:** `nivel_para_etapa`, `es_profesional_vinculado`, `es_profesional_del_nino_actual`, `guardar_test`, `nombre_usuario_disponible`, `invitar_nino`, `responder_invitacion`, `cancelar_invitacion`, `desvincular`, `vinculos_del_profesional`, `ninos_para_test`, `formatear_nombre`.
+**Funciones:** `nivel_para_etapa`, `es_profesional_vinculado`, `es_profesional_del_nino_actual`, `profesional_puede_ver_registro`, `guardar_test`, `nombre_usuario_disponible`, `invitar_nino`, `cancelar_invitacion`, `desvincular` (solo el profesional), `vinculos_del_profesional`, `ninos_para_test`, `formatear_nombre`.
+
+**Funciones del tutor (0005, solo `service_role`):** `tutor_responder_invitacion`, `tutor_desvincular`, `tutor_cambiar_etapa`. Las llama `lib/tutor/acciones.ts` después de verificar la contraseña. `responder_invitacion` se eliminó en la 0005.
 
 **Triggers:** `handle_new_user`, `sincronizar_tutor_email`, `proteger_campos_profile`, `formatear_nombres_profile`.
 
@@ -183,24 +194,33 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 | 0002_slice2_auth.sql | Usuario disponible, email del tutor sincronizado, TyC obligatorio, edición limitada por columnas | Aplicada |
 | 0003_slice3_vinculacion.sql | Funciones de invitación y vinculación; borra tablas viejas | Aplicada |
 | 0004_slice4_seleccion_nombres.sql | `ninos_para_test`, `formatear_nombre` | Aplicada |
-| 0006_s9_denominacion_rapida.sql | `test_bloque_resultado`: tiempo_ms, errores y detalle con sus constraints; `guardar_test` los exige en denominación rápida y los rechaza en los demás bloques (misma firma; mensajes sin "test"). Pruebas en `supabase/tests/0006_denominacion_rapida.sql` | Lista para aplicar |
-| 0005 (S8) · 0007 (S10) · 0008 (S12) · 0009 (S17) | Reservadas | — |
+| 0005_s8_contrasena_tutor.sql | Funciones del tutor solo para `service_role`, historial compartido, compromiso del profesional, etapa escolar fuera del alcance del niño | Aplicada |
+| 0006_s9_denominacion_rapida.sql | `test_bloque_resultado`: tiempo_ms, errores y detalle con sus constraints; `guardar_test` los exige en denominación rápida y los rechaza en los demás bloques (misma firma; mensajes sin "test"). Pruebas en `supabase/tests/0006_denominacion_rapida.sql` | Aplicada |
+| 0007 (S10) · 0008 (S12) · 0009 (S17) | Reservadas | — |
+
+### Coordinación entre slices (desde S8)
+
+- La 0005 se aplica antes que la 0006.
+- La `test_select` de la 0007 (S10) tiene que partir de la versión de la 0005: sacar solo la cláusula `nino_id = auth.uid()` y conservar `profesional_puede_ver_registro(nino_id, profesional_id)`. Lo mismo para `test_bloque_resultado_select`.
+- En `/perfil`, S8 suma el componente `AccionesTutor` y el nombre de usuario en Datos personales. S10 los conserva al sacar el historial.
+- Toda tabla nueva con datos del niño (S12, S17) tiene que borrarse en cascada al borrar la cuenta (FK a `profiles` o `auth.users` con `on delete cascade`): la eliminación de la cuenta solo borra el usuario de Auth.
+- Toda migración nueva que toque permisos trae sus escenarios en `supabase/tests/NNNN_....sql`.
 
 ## Pantallas y rutas
 
 | Ruta | Quién | Qué muestra |
 | --- | --- | --- |
 | `/`, `/dislexia` | Público | Landing e información sobre dislexia |
-| `/login`, `/register` | Público | Inicio de sesión y registro por rol |
+| `/login`, `/register` | Público | Inicio de sesión y registro por rol. `/login?cuenta=eliminada` avisa que se eliminó la cuenta del niño |
 | `/recuperar`, `/restablecer`, `/auth/callback` | Público | Recuperación de contraseña y confirmación de mail |
 | `/terminos`, `/privacidad` | Público | "Contenido en preparación" |
-| `/completar-perfil` | Con sesión | Profesional que entró con Google sin nombre de usuario |
+| `/completar-perfil` | Con sesión | Profesional que entró con Google sin nombre de usuario, o al que le falta aceptar el compromiso de uso responsable |
 | `/dashboard` | Los dos | Profesional: Evaluación, Mis niños. Niño: Entrenamiento, Mis profesionales, Mi perfil |
 | `/test` | Profesional | Tabla para elegir el niño a evaluar |
 | `/test/inicial?nino=<id>`, `/test/primaria?nino=<id>` | Profesional | La evaluación de cada nivel |
 | `/ninos`, `/ninos/[id]`, `/ninos/[id]/tests/[testId]` | Profesional | Gestión de niños, detalle con recomendación e historiales, desglose |
-| `/mis-profesionales` | Niño | Profesionales vinculados |
-| `/perfil`, `/perfil/evaluaciones/[testId]` | Niño | Datos personales e historial de evaluaciones (se retira en S10) |
+| `/mis-profesionales` | Niño | Profesionales vinculados, con lo que eligió el tutor sobre el historial; desvincular pide la contraseña |
+| `/perfil`, `/perfil/evaluaciones/[testId]` | Los dos | Datos personales con el nombre de usuario (copiable). Niño: historial de evaluaciones (se retira en S10) y "Acciones del tutor" (cambiar la etapa escolar, eliminar la cuenta) |
 | `/entrenamiento`, `/games/...`, `/exercise/[id]`, `/progress` | Niño | Juegos heredados del prototipo, sin conectar al modelo (se rehacen en S13) |
 
 ## Interfaz
@@ -211,7 +231,7 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 
 ## Pendientes chicos
 
-- [ ] Iniciar sesión con email o nombre de usuario. El prompt está armado; requiere `SUPABASE_SERVICE_ROLE_KEY` y una función que solo pueda usar `service_role`. Los errores no deben revelar si un usuario existe.
+- [ ] Iniciar sesión con email o nombre de usuario. El prompt está armado; requiere `SUPABASE_SERVICE_ROLE_KEY` (desde S8 está el cliente `lib/supabase/admin.ts`) y una función que solo pueda usar `service_role`. Los errores no deben revelar si un usuario existe.
 - [ ] `/dislexia`: el botón "Hacer la evaluación ahora" apunta a `/test-dislexia`, que no existe; el texto todavía habla de adolescentes.
 - [ ] Contenido real de `/terminos` y `/privacidad` (borrador v0.1, sin validez legal para producción).
 - [ ] Algunos mensajes de error de las funciones SQL todavía dicen "test" (la interfaz bloquea esos casos antes). `guardar_test` ya no (0006).

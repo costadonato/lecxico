@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Mail, Lock, Sparkles, Loader2, AlertCircle, BookOpen } from "lucide-react"
+import { Mail, Lock, Sparkles, Loader2, AlertCircle, BookOpen, Info } from "lucide-react"
 import { AuthShell } from "@/components/auth/auth-shell"
 import { BotonGoogle } from "@/components/auth/boton-google"
 import { rutaSegura } from "@/lib/auth/rutas"
@@ -19,6 +19,11 @@ import { rutaSegura } from "@/lib/auth/rutas"
 const MENSAJES_QUERY: Record<string, string> = {
   enlace:
     "El enlace no es válido o ya venció. Si estabas confirmando tu email, probá iniciar sesión: puede que ya haya quedado confirmado.",
+}
+
+/** Avisos informativos (no de error) que llegan por ?cuenta=... */
+const AVISOS_CUENTA: Record<string, string> = {
+  eliminada: "La cuenta del niño y todos sus datos se eliminaron.",
 }
 
 function mensajeErrorLogin(error: AuthError): string {
@@ -46,6 +51,7 @@ function Login() {
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(MENSAJES_QUERY[searchParams.get("error") ?? ""] ?? null)
+  const aviso = AVISOS_CUENTA[searchParams.get("cuenta") ?? ""] ?? null
   const [sinConfirmar, setSinConfirmar] = useState(false)
   const [reenvio, setReenvio] = useState<"idle" | "enviando" | "enviado" | "error">("idle")
 
@@ -114,6 +120,12 @@ function Login() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {aviso && !error && (
+                <Alert role="status" className="border-celeste/40 bg-celeste-suave/60">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-foreground">{aviso}</AlertDescription>
+                </Alert>
+              )}
               {error && (
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />

@@ -19,8 +19,12 @@ export interface DetalleNino {
   perfil: Profile
   nino: Nino
   /** Vínculo activo del profesional actual con el niño. */
-  vinculo: { id: string; fecha_afiliacion: string | null }
-  /** Todos los tests del niño (de cualquier profesional), del más reciente al más viejo. */
+  vinculo: { id: string; fecha_afiliacion: string | null; comparte_historial: boolean }
+  /**
+   * Las evaluaciones del niño que el usuario puede ver, de la más reciente a
+   * la más vieja. Para el profesional, la RLS (0005) deja solo las suyas, o
+   * las de todos si el tutor compartió el historial.
+   */
   tests: TestConBloques[]
   /** Del más reciente al más viejo. */
   entrenamientos: Entrenamiento[]
@@ -31,8 +35,10 @@ function lanzar(error: { message: string } | null) {
 }
 
 /**
- * Todas las evaluaciones de un niño (de cualquier profesional), de la más
- * reciente a la más vieja, con sus bloques traídos en UNA sola consulta.
+ * Las evaluaciones visibles de un niño, de la más reciente a la más vieja,
+ * con sus bloques traídos en UNA sola consulta. Qué es "visible" lo decide
+ * la RLS: el niño ve las suyas; el profesional con vínculo activo, las que
+ * tomó él, o las de todos si el tutor compartió el historial (0005).
  */
 export async function cargarTestsConBloques(supabase: SupabaseClient, ninoId: string): Promise<TestConBloques[]> {
   const { data, error } = await supabase
@@ -87,11 +93,11 @@ export async function cargarDetalleNino(ninoId: string): Promise<ResultadoCarga<
     supabase.from("ninos").select("*").eq("profile_id", ninoId).maybeSingle<Nino>(),
     supabase
       .from("profesional_nino")
-      .select("id, fecha_afiliacion")
+      .select("id, fecha_afiliacion, comparte_historial")
       .eq("profesional_id", user.id)
       .eq("nino_id", ninoId)
       .eq("estado", "activa")
-      .maybeSingle<{ id: string; fecha_afiliacion: string | null }>(),
+      .maybeSingle<{ id: string; fecha_afiliacion: string | null; comparte_historial: boolean }>(),
     cargarTestsConBloques(supabase, ninoId),
     supabase.from("entrenamientos").select("*").eq("user_id", ninoId).order("created_at", { ascending: false }),
   ])
