@@ -10,8 +10,9 @@ import { NumeroAnimado } from "@/components/motion/numero-animado"
 import { EASE_SUAVE } from "@/components/motion/transiciones"
 import { CuerpoTablaAnimado, FilaTablaAnimada } from "@/components/tabla-animada"
 import { estiloNivel } from "@/lib/niveles"
-import { porcentajeBloque, type BloqueResultado } from "@/lib/test/analisis"
+import { porcentajeBloque, resumenPorcentual, type BloqueResultado } from "@/lib/test/analisis"
 import { BLOQUE_NOMBRES, NIVEL_LABEL, type Nivel } from "@/lib/test/bloques"
+import { formatearTiempo } from "@/lib/test/denominacion"
 import { cn } from "@/lib/utils"
 
 /**
@@ -20,12 +21,27 @@ import { cn } from "@/lib/utils"
  * test_bloque_resultado), así que sirve igual para la pantalla final de la
  * evaluación (components/test/final-evaluacion.tsx) y para una evaluación
  * del historial (detalle del profesional y del niño). "X de Y respuestas
- * correctas" sale de sumar correctas y total de los bloques.
+ * correctas" sale de sumar correctas y total de los bloques porcentuales
+ * (todos menos denominación rápida; ver lib/test/analisis.ts).
  *
  * No muestra la conclusión (indicadores sí/no): se sigue guardando en
  * test.conclusion, pero en pantalla solo va una aclaración neutra.
  * Es sobrio a propósito: sin festejos.
+ *
+ * Denominación rápida (desde S9) guarda además tiempo y errores: en su fila
+ * se muestran en lugar de la barra de porcentaje. Las evaluaciones
+ * anteriores (sin tiempo) se muestran como cualquier otro bloque.
  */
+export type BloqueConMedicion = BloqueResultado & {
+  /** Solo denominación rápida; null o ausente en el resto y en evaluaciones viejas. */
+  tiempo_ms?: number | null
+  errores?: number | null
+}
+
+/** La fila tiene tiempo y errores para mostrar (denominación rápida desde S9). */
+const tieneMedicion = (b: BloqueConMedicion): b is BloqueConMedicion & { tiempo_ms: number; errores: number } =>
+  b.tiempo_ms != null && b.errores != null
+
 export function ResultadosEvaluacion({
   nivel,
   porcentajeTotal,
@@ -33,11 +49,12 @@ export function ResultadosEvaluacion({
 }: {
   nivel: Nivel
   porcentajeTotal: number
-  bloques: BloqueResultado[]
+  bloques: BloqueConMedicion[]
 }) {
   const filas = [...bloques].sort((a, b) => a.orden - b.orden)
-  const correctas = filas.reduce((acc, b) => acc + b.correctas, 0)
-  const total = filas.reduce((acc, b) => acc + b.total, 0)
+  // "X de Y respuestas correctas" sin denominación rápida (se mide por tiempo y errores).
+  const { correctas, total } = resumenPorcentual(filas)
+  const conMedicion = filas.some(tieneMedicion)
 
   return (
     <div className="space-y-6">
@@ -62,7 +79,7 @@ export function ResultadosEvaluacion({
             <TableRow>
               <TableHead>Bloque</TableHead>
               <TableHead className="text-center">Correctas</TableHead>
-              <TableHead>Porcentaje</TableHead>
+              <TableHead>{conMedicion ? "Resultado" : "Porcentaje"}</TableHead>
             </TableRow>
           </TableHeader>
           <CuerpoTablaAnimado>
@@ -76,16 +93,31 @@ export function ResultadosEvaluacion({
                   <TableCell data-label="Correctas" className="text-center tabular-nums text-muted-foreground">
                     {b.correctas} / {b.total}
                   </TableCell>
-                  <TableCell data-label="Porcentaje">
-                    <span className="flex items-center gap-3 max-md:justify-end">
-                      <NumeroAnimado
-                        valor={pct}
-                        sufijo="%"
-                        className={cn("inline-block min-w-12 text-right font-bold", estiloNivel(pct).texto)}
-                      />
-                      <BarraPorcentaje valor={pct} className="w-28 max-md:w-20" />
-                    </span>
-                  </TableCell>
+                  {tieneMedicion(b) ? (
+                    <TableCell data-label="Tiempo y errores">
+                      <span className="flex flex-wrap items-center gap-x-4 gap-y-1 font-semibold max-md:justify-end">
+                        <span>
+                          <span className="font-normal text-muted-foreground">Tiempo </span>
+                          <span className="tabular-nums">{formatearTiempo(b.tiempo_ms)}</span>
+                        </span>
+                        <span>
+                          <span className="font-normal text-muted-foreground">Errores </span>
+                          <span className="tabular-nums">{b.errores}</span>
+                        </span>
+                      </span>
+                    </TableCell>
+                  ) : (
+                    <TableCell data-label="Porcentaje">
+                      <span className="flex items-center gap-3 max-md:justify-end">
+                        <NumeroAnimado
+                          valor={pct}
+                          sufijo="%"
+                          className={cn("inline-block min-w-12 text-right font-bold", estiloNivel(pct).texto)}
+                        />
+                        <BarraPorcentaje valor={pct} className="w-28 max-md:w-20" />
+                      </span>
+                    </TableCell>
+                  )}
                 </FilaTablaAnimada>
               )
             })}

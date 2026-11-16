@@ -4,8 +4,7 @@ import { Home, Loader2, RotateCcw, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
 import { EntradaPagina } from "@/components/motion/entrada-pagina"
-import { ResultadosEvaluacion } from "@/components/test/resultados-evaluacion"
-import type { BloqueResultado } from "@/lib/test/analisis"
+import { ResultadosEvaluacion, type BloqueConMedicion } from "@/components/test/resultados-evaluacion"
 import type { Nivel } from "@/lib/test/bloques"
 
 /**
@@ -27,7 +26,7 @@ export function FinalEvaluacion({
 }: {
   nivel: Nivel
   porcentajeTotal: number
-  bloques: BloqueResultado[]
+  bloques: BloqueConMedicion[]
   guardando: boolean
   guardado: boolean
   errorGuardado: string | null

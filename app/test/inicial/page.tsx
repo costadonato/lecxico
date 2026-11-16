@@ -3,7 +3,10 @@
 import { useState, useCallback, useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowRight, Volume2 } from "lucide-react"
+import { resumenPorcentual } from "@/lib/test/analisis"
 import { bloqueCodigoPorOrden } from "@/lib/test/bloques"
+import { DENOMINACION_POR_NIVEL, type EjercicioDenominacion as EjercicioDenominacionConfig } from "@/lib/test/denominacion-config"
+import { resultadoBloqueDenominacion, type ResultadoEjercicio } from "@/lib/test/denominacion"
 import { guardarTest } from "@/lib/test/guardar-test"
 import { useAccesoTest } from "@/lib/test/use-acceso-test"
 import { useSalidaDelTest } from "@/lib/test/use-salida-test"
@@ -12,6 +15,7 @@ import { TestAccesoAviso } from "@/components/test-acceso-aviso"
 import { BarraProgresoEvaluacion } from "@/components/test/barra-progreso-evaluacion"
 import { BotonAudio } from "@/components/test/boton-audio"
 import { BotonOpcion } from "@/components/test/boton-opcion"
+import { EjercicioDenominacion } from "@/components/test/ejercicio-denominacion"
 import { FinalEvaluacion } from "@/components/test/final-evaluacion"
 import { MarcoEvaluacion } from "@/components/test/marco-evaluacion"
 import { ChipEstimulo, TarjetaPregunta, TituloConsigna } from "@/components/test/tarjeta-pregunta"
@@ -19,7 +23,7 @@ import { ChipEstimulo, TarjetaPregunta, TituloConsigna } from "@/components/test
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
 /* ------------------------------------------------------------------ */
-type QuestionType = "same_different" | "multiple_choice" | "syllable_count" | "letter_fill" | "word_image" | "syllable_match" | "sequence_order" | "rapid_naming"
+type QuestionType = "same_different" | "multiple_choice" | "syllable_count" | "letter_fill" | "word_image" | "syllable_match" | "sequence_order" | "denominacion"
 
 interface Question {
   id: number
@@ -36,20 +40,15 @@ interface Question {
   sequence?: string[]
   /** Expected selection order (indices into options) for sequence_order questions */
   correctOrder?: number[]
-  /** rapid_naming: ítems de la grilla (nombres de color o emojis) */
-  items?: string[]
-  /** rapid_naming: valor objetivo a seleccionar (nombre de color o emoji) */
-  target?: string
-  /** rapid_naming: cómo renderizar los ítems */
-  itemKind?: "color" | "object"
-  /** rapid_naming: columnas de la grilla */
-  columns?: number
-  /** rapid_naming: límite de tiempo en segundos */
-  timeLimit?: number
+  /** denominacion: la cuadrícula del ejercicio (lib/test/denominacion-config.ts) */
+  ejercicio?: EjercicioDenominacionConfig
 }
 
+/** Denominación Rápida del nivel inicial: 2 cuadrículas, una tras otra. */
+const DENOMINACION = DENOMINACION_POR_NIVEL.inicial
+
 /* ------------------------------------------------------------------ */
-/*  QUESTION DATA  (4 blocks × 5 questions = 20)                     */
+/*  QUESTION DATA  (5 bloques)                                         */
 /* ------------------------------------------------------------------ */
 const questions: Question[] = [
   // ── Bloque 1: Discriminación Auditiva ──────────────────────────────
@@ -83,15 +82,10 @@ const questions: Question[] = [
   { id: 19, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["SILLA", "SOL", "NUBE"], options: ["Nube", "Silla", "Sol"], correctOrder: [1, 2, 0] },
   { id: 20, block: 4, blockName: "Memoria Auditiva", type: "sequence_order", prompt: "Marca las palabras en el orden en que las escuchaste.", sequence: ["PERRO", "LUNA", "DADO", "MATE"], options: ["Dado", "Perro", "Luna", "Mate"], correctOrder: [1, 2, 0, 3] },
 
-  // ── Bloque 5: Denominación Rápida ──────────────────────────────────
-  { id: 21, block: 5, blockName: "Denominación Rápida", type: "rapid_naming", prompt: "Tocá el cuadrado ROJO", options: [], itemKind: "color", target: "red", columns: 6, timeLimit: 15,
-    items: ["blue","red","yellow","green","black","white"] },
-  { id: 22, block: 5, blockName: "Denominación Rápida", type: "rapid_naming", prompt: "Tocá todos los cuadrados AZULES", options: [], itemKind: "color", target: "blue", columns: 5, timeLimit: 30,
-    items: ["blue","red","yellow","green","black","red","blue","green","yellow","blue","white","green","blue","red","yellow"] },
-  { id: 23, block: 5, blockName: "Denominación Rápida", type: "rapid_naming", prompt: "Tocá la ESTRELLA", options: [], itemKind: "object", target: "⭐", columns: 6, timeLimit: 15,
-    items: ["🚗","🔑","⭐","☂️","✏️","🚗"] },
-  { id: 24, block: 5, blockName: "Denominación Rápida", type: "rapid_naming", prompt: "Tocá todos los PARAGUAS", options: [], itemKind: "object", target: "☂️", columns: 5, timeLimit: 30,
-    items: ["🚗","☂️","🔑","⭐","✏️","☂️","🚗","⭐","🔑","☂️","✏️","⭐","🚗","☂️","🔑"] },
+  // ── Bloque 5: Denominación Rápida (una cuadrícula por paso) ──────────
+  ...DENOMINACION.ejercicios.map((ejercicio, i): Question => ({
+    id: 21 + i, block: 5, blockName: "Denominación Rápida", type: "denominacion", prompt: "", options: [], ejercicio,
+  })),
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -126,12 +120,6 @@ const BLOCKS = [
   { id: 5, name: "Denominación Rápida" },
 ]
 
-/* rapid_naming: color name → CSS color for the grid squares */
-const RAPID_COLORS: Record<string, string> = {
-  red: "#dc2626", blue: "#2563eb", yellow: "#facc15",
-  green: "#16a34a", black: "#171717", white: "#ffffff",
-}
-
 /** True when the stored answer matches the question's expected answer. */
 function isAnswerCorrect(q: Question, ans: number | number[] | null): boolean {
   if (ans === null) return false
@@ -142,14 +130,18 @@ function isAnswerCorrect(q: Question, ans: number | number[] | null): boolean {
   return ans === q.correctIndex
 }
 
-/** Points earned / points available for a question (rapid_naming is fractionally scored). */
-function questionScore(q: Question, ans: number | number[] | null): { correct: number; total: number } {
-  if (q.type === "rapid_naming") {
-    const targets = (q.items ?? []).reduce((acc, it, i) => (it === q.target ? [...acc, i] : acc), [] as number[])
-    const total = targets.length
-    const picked = Array.isArray(ans) ? ans : []
-    const correct = picked.filter((i) => targets.includes(i)).length
-    return { correct, total }
+/**
+ * Points earned / points available for a question. A denominacion question
+ * scores its whole grid: total = stimuli, correct = total - errors.
+ */
+function questionScore(
+  q: Question,
+  ans: number | number[] | null,
+  denominacion: Record<string, ResultadoEjercicio>,
+): { correct: number; total: number } {
+  if (q.type === "denominacion") {
+    const r = q.ejercicio && denominacion[q.ejercicio.id]
+    return r ? { correct: r.correctas, total: r.total } : { correct: 0, total: 0 }
   }
   return { correct: isAnswerCorrect(q, ans) ? 1 : 0, total: 1 }
 }
@@ -183,19 +175,15 @@ function TestInicial() {
   /* ---- salir a mitad del test pide confirmación (no hay guardado parcial) ---- */
   const testEnCurso = acceso.estado === "permitido" && !saved && (currentIndex > 0 || finished)
   const { salir, dialogo: dialogoSalida } = useSalidaDelTest(testEnCurso)
-  /* ---- rapid_naming (Bloque 5) ---- */
-  const [selectedItems, setSelectedItems] = useState<number[]>([])
-  const [revealed, setRevealed] = useState(false)
-  const [timeLeft, setTimeLeft] = useState<number | null>(null)
-  const [locked, setLocked] = useState(false)
+  /* ---- Bloque 5: resultado de cada cuadrícula de denominación, por id de ejercicio ---- */
+  const [denominacion, setDenominacion] = useState<Record<string, ResultadoEjercicio>>({})
 
   const current = questions[currentIndex]
   const progress = ((currentIndex + 1) / TOTAL_QUESTIONS) * 100
   const isSequenceOrder = current.type === "sequence_order"
   /** Whether the current question has a complete answer ready to submit */
   const canProceed =
-    current.type === "rapid_naming" ? locked
-    : isSequenceOrder ? sequenceSelection.length === current.options.length
+    isSequenceOrder ? sequenceSelection.length === current.options.length
     : selectedOption !== null
 
   /* ---- handlers ---- */
@@ -210,36 +198,30 @@ function TestInicial() {
     )
   }
 
-  /* ---- rapid_naming handlers ---- */
-  const handleReveal = () => { setRevealed(true); setTimeLeft(current.timeLimit ?? 30) }
-  const handleItemToggle = (idx: number) => {
-    if (locked) return
-    setSelectedItems((prev) => prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx])
-  }
-  const handleFinishRapid = () => setLocked(true)
-
-  const handleNext = () => {
-    if (!canProceed) return
-
-    const updated = [...answers]
-    updated[currentIndex] =
-      current.type === "rapid_naming" ? [...selectedItems]
-      : isSequenceOrder ? [...sequenceSelection]
-      : selectedOption
-    setAnswers(updated)
-
+  const goToNext = () => {
     if (currentIndex + 1 < TOTAL_QUESTIONS) {
       setCurrentIndex(currentIndex + 1)
       setSelectedOption(null)
       setSequenceSelection([])
       setPlayCount(0)
-      setSelectedItems([])
-      setRevealed(false)
-      setTimeLeft(null)
-      setLocked(false)
     } else {
       setFinished(true)
     }
+  }
+
+  const handleNext = () => {
+    if (!canProceed) return
+
+    const updated = [...answers]
+    updated[currentIndex] = isSequenceOrder ? [...sequenceSelection] : selectedOption
+    setAnswers(updated)
+    goToNext()
+  }
+
+  /* Bloque 5: the professional confirmed a grid (time + errors) */
+  const handleDenominacion = (resultado: ResultadoEjercicio) => {
+    setDenominacion((prev) => ({ ...prev, [resultado.ejercicio]: resultado }))
+    goToNext()
   }
 
   /* ---- results computation ---- */
@@ -249,16 +231,23 @@ function TestInicial() {
       let correct = 0, total = 0
       blockQuestions.forEach((q) => {
         const idx = questions.indexOf(q)
-        const s = questionScore(q, answers[idx])
+        const s = questionScore(q, answers[idx], denominacion)
         correct += s.correct; total += s.total
       })
-      return { ...block, total, correct, pct: total > 0 ? Math.round((correct / total) * 100) : 0 }
+      /* Bloque 5 also stores total time, total errors and each grid's detail */
+      const medicion = bloqueCodigoPorOrden("inicial", block.id) === "denominacion_rapida"
+        ? resultadoBloqueDenominacion(DENOMINACION.ejercicios.flatMap((e) => denominacion[e.id] ?? []))
+        : null
+      return { ...block, total, correct, medicion }
     })
   }
 
-  const totalCorrect = questions.reduce((acc, q, idx) => acc + questionScore(q, answers[idx]).correct, 0)
-  const totalAnswerable = questions.reduce((acc, q, idx) => acc + questionScore(q, answers[idx]).total, 0)
-  const totalPct = totalAnswerable > 0 ? Math.round((totalCorrect / totalAnswerable) * 100) : 0
+  /* Puntaje y porcentaje general: sin denominación rápida (se mide por tiempo y errores) */
+  const resumen = resumenPorcentual(
+    computeResults().map((b) => ({ bloque_codigo: bloqueCodigoPorOrden("inicial", b.id), orden: b.id, correctas: b.correct, total: b.total })),
+  )
+  const totalCorrect = resumen.correctas
+  const totalPct = resumen.porcentaje
 
   /* ---- save to Supabase ---- */
   const handleSave = async () => {
@@ -274,6 +263,7 @@ function TestInicial() {
           orden: b.id,
           correctas: b.correct,
           total: b.total,
+          ...(b.medicion && { tiempoMs: b.medicion.tiempoMs, errores: b.medicion.errores, detalle: b.medicion.detalle }),
         })),
         puntajeTotal: totalCorrect,
         porcentajeTotal: totalPct,
@@ -294,10 +284,7 @@ function TestInicial() {
     setSelectedOption(null)
     setSequenceSelection([])
     setPlayCount(0)
-    setSelectedItems([])
-    setRevealed(false)
-    setTimeLeft(null)
-    setLocked(false)
+    setDenominacion({})
     setFinished(false)
     setSaved(false)
     setSaveError(null)
@@ -308,14 +295,6 @@ function TestInicial() {
     if (finished) handleSave()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finished])
-
-  /* ---- rapid_naming countdown timer ---- */
-  useEffect(() => {
-    if (current.type !== "rapid_naming" || !revealed || locked || timeLeft === null) return
-    if (timeLeft <= 0) { setLocked(true); return }
-    const t = setTimeout(() => setTimeLeft((prev) => (prev === null ? null : prev - 1)), 1000)
-    return () => clearTimeout(t)
-  }, [revealed, locked, timeLeft, current])
 
   /* ---- helper: is block 1 (auditory discrimination) ---- */
   const isBlock1 = current.block === 1
@@ -409,6 +388,8 @@ function TestInicial() {
       orden: b.id,
       correctas: b.correct,
       total: b.total,
+      tiempo_ms: b.medicion?.tiempoMs ?? null,
+      errores: b.medicion?.errores ?? null,
     }))
 
     return (
@@ -432,6 +413,32 @@ function TestInicial() {
           onEvaluarOtro={() => router.push("/test")}
           onVolverInicio={() => salir("/dashboard")}
         />
+      </MarcoEvaluacion>
+    )
+  }
+
+  /* ================================================================ */
+  /*  BLOQUE 5 — DENOMINACIÓN RÁPIDA (one grid per step)               */
+  /* ================================================================ */
+  if (current.type === "denominacion" && current.ejercicio) {
+    const numero = DENOMINACION.ejercicios.indexOf(current.ejercicio) + 1
+    return (
+      <MarcoEvaluacion etiqueta={current.blockName} onVolver={() => salir("/test")} nino={acceso.nino} nivel="inicial">
+        {dialogoSalida}
+        <BarraProgresoEvaluacion total={TOTAL_QUESTIONS} actual={currentIndex} etiqueta={current.blockName} />
+        <div className="flex flex-1 items-center justify-center px-4 pb-8">
+          <TarjetaPregunta key={currentIndex} bloque={current.blockName} className="max-w-4xl">
+            <EjercicioDenominacion
+              key={current.ejercicio.id}
+              config={DENOMINACION}
+              ejercicio={current.ejercicio}
+              numero={numero}
+              cantidad={DENOMINACION.ejercicios.length}
+              conPractica={numero === 1}
+              onConfirmar={handleDenominacion}
+            />
+          </TarjetaPregunta>
+        </div>
       </MarcoEvaluacion>
     )
   }
@@ -464,8 +471,6 @@ function TestInicial() {
             )
           }
         >
-          {current.type !== "rapid_naming" ? (
-          <>
           {/* Context (block 1: words only, no emojis) */}
           {current.context && current.block === 1 && !isWordImage ? (
             <div className="mb-4 flex flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
@@ -609,65 +614,6 @@ function TestInicial() {
               })}
             </div>
           </div>
-          </>
-          ) : (
-            /* Bloque 5 — Denominación Rápida (rapid_naming) */
-            <div className="flex flex-1 flex-col justify-center py-2">
-              <TituloConsigna className="mb-6">{current.prompt}</TituloConsigna>
-
-              {!revealed ? (
-                <div className="flex flex-1 items-center justify-center">
-                  <Button size="lg" onClick={handleReveal}>
-                    Mostrar secuencia
-                  </Button>
-                </div>
-              ) : (
-                <div className="mx-auto w-full max-w-md">
-                  <p className={`mb-4 text-center text-lg font-bold ${timeLeft !== null && timeLeft <= 5 && !locked ? "text-rojo-fuerte dark:text-primary" : "text-muted-foreground"}`}>
-                    {locked ? "¡Tiempo!" : `Tiempo: ${timeLeft}s`}
-                  </p>
-
-                  <div style={{ display: "grid", gridTemplateColumns: `repeat(${current.columns}, minmax(0, 1fr))`, gap: "0.75rem" }}>
-                    {current.items?.map((item, idx) => {
-                      const isPicked = selectedItems.includes(idx)
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => handleItemToggle(idx)}
-                          disabled={locked}
-                          className={`
-                            rounded-lg transition-all focus-visible:outline-[3px] focus-visible:outline-offset-[6px] focus-visible:outline-ring
-                            ${isPicked ? "ring-[3px] ring-foreground ring-offset-2 ring-offset-card scale-95" : ""}
-                            ${locked ? "opacity-90 cursor-not-allowed" : ""}
-                          `}
-                        >
-                          {current.itemKind === "color" ? (
-                            <span
-                              className="block aspect-square w-full rounded-lg border-2 border-input"
-                              style={{ backgroundColor: RAPID_COLORS[item] }}
-                            />
-                          ) : (
-                            <span className="flex aspect-square w-full items-center justify-center rounded-lg border border-border bg-muted text-4xl sm:text-5xl">
-                              {item}
-                            </span>
-                          )}
-                        </button>
-                      )
-                    })}
-                  </div>
-
-                  {!locked && (
-                    <div className="mt-6 flex justify-center">
-                      <Button variant="outline" size="lg" onClick={handleFinishRapid}>
-                        Listo
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-
           {/* Next button */}
           <div className="flex justify-end pt-4">
             <Button size="lg" disabled={!canProceed} onClick={handleNext}>

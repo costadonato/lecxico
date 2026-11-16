@@ -61,6 +61,7 @@ export const BLOQUES_POR_NIVEL: Record<Nivel, readonly BloqueCodigo[]> = {
     "conciencia_fonologica",
     "conciencia_silabica",
     "memoria_fonologica", // se muestra como "Memoria Auditiva"
+    "denominacion_rapida", // S9: antes de S9 el primario tenía 8 bloques (los guardados conservan su orden)
     "comprension_lectora",
     "correspondencia_sonido_letra",
     "reconocimiento_visual",

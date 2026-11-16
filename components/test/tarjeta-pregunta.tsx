@@ -15,11 +15,14 @@ import { cn } from "@/lib/utils"
 export function TarjetaPregunta({
   bloque,
   audio,
+  className,
   children,
 }: {
   bloque: string
   /** Botón de audio junto al nombre del bloque. */
   audio?: React.ReactNode
+  /** Clases extra (por ejemplo, un ancho máximo mayor para la cuadrícula de denominación rápida). */
+  className?: string
   children: React.ReactNode
 }) {
   return (
@@ -27,7 +30,10 @@ export function TarjetaPregunta({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: EASE_SUAVE }}
-      className="flex min-h-[60vh] w-full max-w-2xl flex-col rounded-3xl border border-border/80 bg-card p-5 text-card-foreground shadow-suave sm:p-8"
+      className={cn(
+        "flex min-h-[60vh] w-full max-w-2xl flex-col rounded-3xl border border-border/80 bg-card p-5 text-card-foreground shadow-suave sm:p-8",
+        className,
+      )}
     >
       <div className="mb-4 flex flex-wrap items-center justify-center gap-3">
         <Badge variant="neutro" className="px-3 py-1">

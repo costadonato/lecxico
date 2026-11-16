@@ -2,8 +2,11 @@ import { describe, expect, it } from "vitest"
 
 import {
   bloquesMasDebiles,
+  bloquesPorcentuales,
+  esBloquePorcentual,
   ordenRecomendacion,
   porcentajeBloque,
+  resumenPorcentual,
   type BloqueResultado,
 } from "@/lib/test/analisis"
 import type { BloqueCodigo } from "@/lib/test/bloques"
@@ -174,5 +177,76 @@ describe("ordenRecomendacion", () => {
     const resultado = ordenRecomendacion(bloques)
     expect(bloques).toEqual(copia)
     expect(resultado).not.toBe(bloques)
+  })
+})
+
+describe("bloques porcentuales (sin denominación rápida)", () => {
+  // Denominación rápida con el formato nuevo (S9) y con el viejo (sin tiempo):
+  // las dos se excluyen por código de bloque.
+  const denominacionNueva = { ...bloque("denominacion_rapida", 5, 45, 48), tiempo_ms: 61_000, errores: 3 }
+  const denominacionVieja = bloque("denominacion_rapida", 5, 1, 10)
+
+  it("esBloquePorcentual: todos menos denominación rápida", () => {
+    expect(esBloquePorcentual(bloque("discriminacion_auditiva", 1, 1, 2))).toBe(true)
+    expect(esBloquePorcentual(bloque("lectura_pseudopalabras", 9, 1, 2))).toBe(true)
+    expect(esBloquePorcentual(denominacionNueva)).toBe(false)
+    expect(esBloquePorcentual(denominacionVieja)).toBe(false)
+  })
+
+  it("bloquesPorcentuales quita denominación rápida y conserva el orden", () => {
+    const bloques = [
+      bloque("discriminacion_auditiva", 1, 4, 5),
+      bloque("memoria_fonologica", 4, 2, 3),
+      denominacionNueva,
+      bloque("comprension_lectora", 6, 3, 3),
+    ]
+    expect(codigos(bloquesPorcentuales(bloques))).toEqual([
+      "discriminacion_auditiva",
+      "memoria_fonologica",
+      "comprension_lectora",
+    ])
+  })
+
+  it("resumenPorcentual suma correctas y total sin denominación rápida", () => {
+    const bloques = [
+      bloque("discriminacion_auditiva", 1, 5, 6),
+      bloque("conciencia_fonologica", 2, 3, 3),
+      bloque("conciencia_silabica", 3, 6, 7),
+      bloque("memoria_fonologica", 4, 2, 4),
+      denominacionNueva,
+    ]
+    expect(resumenPorcentual(bloques)).toEqual({ correctas: 16, total: 20, porcentaje: 80 })
+  })
+
+  it("resumenPorcentual excluye también la denominación rápida vieja (sin tiempo)", () => {
+    const bloques = [bloque("discriminacion_auditiva", 1, 3, 4), denominacionVieja]
+    expect(resumenPorcentual(bloques)).toEqual({ correctas: 3, total: 4, porcentaje: 75 })
+  })
+
+  it("resumenPorcentual da 0 % si no hay bloques porcentuales", () => {
+    expect(resumenPorcentual([])).toEqual({ correctas: 0, total: 0, porcentaje: 0 })
+    expect(resumenPorcentual([denominacionNueva])).toEqual({ correctas: 0, total: 0, porcentaje: 0 })
+  })
+
+  it("bloquesMasDebiles no elige denominación rápida aunque tenga el menor acierto", () => {
+    const masDebil = bloque("conciencia_fonologica", 2, 2, 4)
+    expect(bloquesMasDebiles([bloque("discriminacion_auditiva", 1, 4, 4), masDebil, denominacionVieja])).toEqual([
+      masDebil,
+    ])
+    expect(bloquesMasDebiles([masDebil, { ...denominacionNueva, correctas: 0, errores: 48 }])).toEqual([masDebil])
+  })
+
+  it("bloquesMasDebiles da lista vacía si solo denominación rápida tiene errores", () => {
+    expect(bloquesMasDebiles([bloque("discriminacion_auditiva", 1, 4, 4), denominacionNueva])).toEqual([])
+  })
+
+  it("ordenRecomendacion deja afuera denominación rápida", () => {
+    const bloques = [
+      bloque("discriminacion_auditiva", 1, 5, 5),
+      denominacionVieja,
+      bloque("conciencia_fonologica", 2, 1, 4),
+      denominacionNueva,
+    ]
+    expect(codigos(ordenRecomendacion(bloques))).toEqual(["conciencia_fonologica", "discriminacion_auditiva"])
   })
 })

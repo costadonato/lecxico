@@ -1,6 +1,6 @@
 # Lecxico — Estado del proyecto
 
-Última actualización: 12/11/2026 (S6). Reemplaza al documento "Estado del proyecto tras la etapa de gestión de usuarios (slices 1 a 5)" del 9/10/2026.
+Última actualización: 16/11/2026 (S9). Reemplaza al documento "Estado del proyecto tras la etapa de gestión de usuarios (slices 1 a 5)" del 9/10/2026.
 
 **Cómo se usa:** es la fuente de contexto para cualquier chat o Claude Code que trabaje en el repo. Cada PR actualiza las secciones que toca (estado de slices, modelo de datos, decisiones, pendientes). Si este documento y el código no coinciden, manda el código; las migraciones de `supabase/migrations/` describen la base exactamente.
 
@@ -8,7 +8,7 @@ Documentos relacionados: `CLAUDE.md` (reglas para Claude Code), `docs/revisiones
 
 ## Resumen
 
-La gestión de usuarios está implementada y probada de punta a punta: registro por rol, autenticación, vinculación profesional–niño por invitación, evaluación tomada por el profesional al niño, historial y recomendación. La evaluación tiene los estilos del resto de la app. Falta adaptar todo a la definición vigente de la propuesta V8 (contraseña del tutor, historial compartido, denominación rápida en primeros lectores, franjas, perfil del niño sin resultados) y construir el entrenamiento, las tareas y el seguimiento.
+La gestión de usuarios está implementada y probada de punta a punta: registro por rol, autenticación, vinculación profesional–niño por invitación, evaluación tomada por el profesional al niño, historial y recomendación. La evaluación tiene los estilos del resto de la app. Denominación rápida ya tiene el formato nuevo en los dos niveles (S9, en revisión). Falta adaptar el resto a la definición vigente de la propuesta V8 (contraseña del tutor, historial compartido, franjas, perfil del niño sin resultados) y construir el entrenamiento, las tareas y el seguimiento.
 
 ## Plan de slices
 
@@ -21,15 +21,15 @@ Meta: desarrollo cerrado el viernes 4/12/2026; verificación y documentación de
 | S6 Base de trabajo | `CLAUDE.md`, `docs/`, Vitest con cobertura, limpieza | Donato | 12–15/11 | — | En curso |
 | S7 Contenido del home | Landing, footer y metadata con información real | Donato | 12–15/11 | — | En curso |
 | S8 Contraseña y acciones del tutor | Contraseña verificada en el servidor; elección de compartir historial; reglas de acceso a lo compartido; eliminación de la cuenta del niño; compromiso del profesional | Camila | 12–22/11 | 0005 | Pendiente |
-| S9 Denominación rápida | Cronómetro y carga de errores; se suma a primeros lectores (9 bloques); guarda tiempo y errores | Donato | 16–22/11 | 0006 | Pendiente |
-| S10 Perfil del niño sin resultados | El perfil deja de mostrar evaluaciones; el niño pierde acceso a sus evaluaciones en la base | Donato | 16–22/11 | 0006 | Pendiente |
+| S9 Denominación rápida | Cuadrícula de letras, números y colores; cronómetro y carga de errores; se suma a primeros lectores (9 bloques); guarda tiempo, errores y detalle por ejercicio | Donato | 16–22/11 | 0006 | En revisión |
+| S10 Perfil del niño sin resultados | El perfil deja de mostrar evaluaciones; el niño pierde acceso a sus evaluaciones en la base | Donato | 16–22/11 | 0007 | Pendiente |
 | S11 Franjas y recomendación | Cortes en el código, franjas con pruebas, recomendación por franja | Camila | 23–26/11 | — | Pendiente |
-| S12 Datos del entrenamiento | Juegos, partidas y tareas; desbloqueo del 80 % en el servidor | Camila | 23–29/11 | 0007 | Pendiente |
+| S12 Datos del entrenamiento | Juegos, partidas y tareas; desbloqueo del 80 % en el servidor | Camila | 23–29/11 | 0008 | Pendiente |
 | S13 Área de entrenamiento | Marco de juego, pantalla del niño, primeros juegos | Donato | 23–29/11 | — | Pendiente |
 | S14 Juegos restantes | 14 combinaciones bloque-nivel | Donato | 26/11–4/12 | — | Pendiente |
-| S15 Tareas del profesional | Armar y asignar tareas; la recomendación enlaza a juegos | Camila | 30/11–2/12 | usa 0007 | Pendiente |
+| S15 Tareas del profesional | Armar y asignar tareas; la recomendación enlaza a juegos | Camila | 30/11–2/12 | usa 0008 | Pendiente |
 | S16 Gráficos de seguimiento | Evolución por bloque y progreso del entrenamiento | Donato | 30/11–4/12 | — | Pendiente |
-| S17 Informes | PDF del profesional; informe a pedido del tutor por correo | Camila | 1–4/12 | 0008 | Pendiente |
+| S17 Informes | PDF del profesional; informe a pedido del tutor por correo | Camila | 1–4/12 | 0009 | Pendiente |
 | S18 Verificación | Matriz PA, cobertura, auditoría WCAG, comparación con la práctica actual | Los dos | 7–11/12 | — | Pendiente |
 
 **Criterio de corte (V8):** si hay atraso se asegura, en este orden: (1) evaluación y control de acceso; (2) recomendación; (3) entrenamiento mínimo, un juego por bloque y nivel; (4) seguimiento. Lo que no se complete pasa a trabajo futuro.
@@ -40,7 +40,9 @@ Meta: desarrollo cerrado el viernes 4/12/2026; verificación y documentación de
 
 **Stack:** Next.js 15 (App Router) + React 19 + TypeScript + Tailwind 4 + shadcn/ui + Motion + Supabase (Postgres + Auth) con `@supabase/ssr`. Vitest para pruebas. Despliegue de prueba en Vercel desde `main`: https://lecxico-three.vercel.app. Repositorio: https://github.com/costadonato/lecxico.
 
-**Pruebas:** `npm test` corre las pruebas de Vitest (`lib/**/*.test.ts`) y `npm run coverage` suma la cobertura V8 de los módulos de lógica listados en `vitest.config.ts`, con umbrales de 80 % de líneas y 90 % de ramas (reporte HTML en `coverage/`).
+**Pruebas:** `npm test` corre las pruebas de Vitest (`lib/**/*.test.ts`) y `npm run coverage` suma la cobertura V8 de los módulos de lógica listados en `vitest.config.mts` (hoy `analisis.ts`, `denominacion.ts` y `denominacion-config.ts`), con umbrales de 80 % de líneas y 90 % de ramas (reporte HTML en `coverage/`).
+
+**Pruebas de migraciones:** `supabase/tests/00_simular_supabase.sql` arma en un Postgres local lo que las migraciones esperan de Supabase (`auth.users`, `auth.uid()`, roles `anon` y `authenticated`, la tabla previa `entrenamientos`). Orden: ese archivo → migraciones → `supabase/tests/NNNN_*.sql`. Cada archivo de pruebas corre en una transacción con `rollback`, muestra una tabla con cada escenario y corta con "FALLARON …" si alguno no dio lo esperado. Sin Postgres instalado se puede usar PGlite (`@electric-sql/pglite`, Postgres en WASM) desde Node, fuera del repo.
 
 **Cuidados conocidos:**
 
@@ -97,11 +99,21 @@ La definición funcional es la de la propuesta V8 (reuniones del 14/10 y 28/10/2
 - Solo la toma un profesional, a un niño con vínculo activo, desde su propia cuenta y en presencia del niño.
 - El nivel se deriva de la etapa escolar: sala de 4 y 5 → inicial (pre-lectores); 1.º, 2.º y 3.º grado → primario (primeros lectores).
 - Si se interrumpe, se descarta. Salir a mitad de camino pide confirmación.
-- Los resultados se guardan por bloque, con correctas y total. **(V8)** En denominación rápida se guardan además el tiempo total y la cantidad de errores, que ingresa el profesional.
-- **(V8)** Primeros lectores pasa a 9 bloques al sumar denominación rápida rediseñada.
+- Los resultados se guardan por bloque, con correctas y total. En denominación rápida se guardan además el tiempo total, los errores totales y el detalle de cada ejercicio (S9).
+- Primeros lectores tiene 9 bloques: denominación rápida es el quinto, como en inicial (S9). Las evaluaciones guardadas antes conservan su `bloque_codigo` y su `orden`.
 - En la interfaz se llama "Evaluación de indicadores de dislexia"; internamente sigue siendo `test`.
+
+**Denominación rápida (S9, definida con las especialistas)**
+
+- Una cuadrícula que mezcla letras, números y colores (cuadrados pintados, sin palabras). El niño nombra todos los estímulos en voz alta, lo más rápido que puede, de izquierda a derecha y fila por fila.
+- Lo maneja el profesional: práctica (una fila con un estímulo de cada categoría; único momento en que se corrige al niño) → consigna con la cuadrícula tapada → "Comenzar" (empieza a medir) → "Terminar" cuando el niño nombra el último → carga la cantidad de errores (omisiones y nombres equivocados). El tiempo nunca se muestra durante el ejercicio ni al cargar los errores; aparece en los resultados. No se registran autocorrecciones. "Repetir ejercicio" descarta el tiempo.
+- 2 ejercicios (cuadrículas distintas) por nivel; cada uno es un paso de la barra de progreso. La práctica solo antecede al primero.
+- Primario: letras A, E, S, D, P; números 2, 4, 6, 7, 9; colores rojo, azul, verde, amarillo, negro; 5 × 10 (50 estímulos). Inicial: solo vocales (A, E, I, O, U), mismos colores; **provisorios**: los números y el tamaño 4 × 6 (24 estímulos).
+- Las cuadrículas son fijas (`lib/test/denominacion-config.ts`): ciclo letra → número → color de corrido, conteos parejos dentro de cada categoría y sin repetir un estímulo en dos apariciones seguidas de su categoría (lo verifica `validarSecuencia`, con pruebas).
+- Puntaje por ejercicio: total = estímulos, correctas = total − errores. El bloque suma los dos ejercicios (tiempo, errores, correctas y total). En los resultados, la fila del bloque muestra tiempo (m:ss) y errores en lugar de la barra de porcentaje; las evaluaciones anteriores se ven como antes.
+- Se mide por tiempo y errores, no por porcentaje: queda fuera del porcentaje general y del puntaje total que se guardan (`porcentaje_total`, `puntaje_total`), de "X de Y respuestas correctas", de "bloques con más errores" y de la recomendación (`bloquesPorcentuales` y `resumenPorcentual` en `lib/test/analisis.ts`). Se excluye por código de bloque, así que vale también para las evaluaciones viejas sin tiempo. En la base se siguen guardando sus correctas y total.
 - No se muestra si se detectaron indicadores: solo el desglose por bloque y una línea neutra ("Esta evaluación es orientativa y no reemplaza un diagnóstico profesional").
-- **Hoy** la recomendación ordena los bloques del último test de menor a mayor acierto. **(V8)** Pasa a franjas: dos valores de corte por bloque y nivel, fijados por revisión bibliográfica, ubican cada bloque en "correcto", "intermedio" o "a observar"; la recomendación señala los bloques en "intermedio" y "a observar", en el orden del test, con los juegos vinculados. Un bloque sin referencia bibliográfica queda "sin franja de referencia" y fuera de la recomendación. Solo lo ve el profesional.
+- **Hoy** la recomendación ordena los bloques del último test de menor a mayor acierto, sin denominación rápida. **(V8)** Pasa a franjas: dos valores de corte por bloque y nivel, fijados por revisión bibliográfica, ubican cada bloque en "correcto", "intermedio" o "a observar"; la recomendación señala los bloques en "intermedio" y "a observar", en el orden del test, con los juegos vinculados. Un bloque sin referencia bibliográfica queda "sin franja de referencia" y fuera de la recomendación. Solo lo ve el profesional.
 
 **Qué ve cada uno**
 
@@ -130,7 +142,11 @@ profesional_nino ( id PK, profesional_id, nino_id, estado ('pendiente'|'activa'|
 test ( id PK, nino_id, profesional_id (null si el profesional borró su cuenta), nivel ('inicial'|'primario'),
   fecha, puntaje_total, porcentaje_total, conclusion, created_at )
 
-test_bloque_resultado ( id PK, test_id, bloque_codigo, orden, correctas, total > 0, UNIQUE (test_id, bloque_codigo) )
+test_bloque_resultado ( id PK, test_id, bloque_codigo, orden, correctas, total > 0, UNIQUE (test_id, bloque_codigo),
+  tiempo_ms > 0, errores (0..total, correctas = total - errores), detalle jsonb (arreglo) )
+  -- tiempo_ms, errores y detalle (0006): solo en denominacion_rapida, los dos primeros juntos;
+  -- null en los demás bloques y en las evaluaciones anteriores a S9.
+  -- detalle = [{ejercicio, tiempo_ms, errores, correctas, total}, ...] (un elemento por cuadrícula)
 
 entrenamientos ( id PK, user_id = niño (borrado en cascada), juego, puntaje, created_at )
   -- existe con RLS pero ningún juego escribe; S12 la reemplaza
@@ -141,7 +157,9 @@ entrenamientos ( id PK, user_id = niño (borrado en cascada), juego, puntaje, cr
 | Nivel | Bloques |
 | --- | --- |
 | Inicial (5) | discriminacion_auditiva · conciencia_fonologica · conciencia_silabica · memoria_fonologica ("Memoria Auditiva") · denominacion_rapida |
-| Primario (8; 9 con S9) | discriminacion_auditiva · conciencia_fonologica · conciencia_silabica · memoria_fonologica · comprension_lectora · correspondencia_sonido_letra · reconocimiento_visual · lectura_pseudopalabras |
+| Primario (9) | discriminacion_auditiva · conciencia_fonologica · conciencia_silabica · memoria_fonologica · denominacion_rapida · comprension_lectora · correspondencia_sonido_letra · reconocimiento_visual · lectura_pseudopalabras |
+
+Las evaluaciones primarias guardadas antes de S9 tienen 8 bloques, con comprensión lectora en el orden 5.
 
 **Quién puede ver qué (RLS actual):**
 
@@ -165,7 +183,8 @@ entrenamientos ( id PK, user_id = niño (borrado en cascada), juego, puntaje, cr
 | 0002_slice2_auth.sql | Usuario disponible, email del tutor sincronizado, TyC obligatorio, edición limitada por columnas | Aplicada |
 | 0003_slice3_vinculacion.sql | Funciones de invitación y vinculación; borra tablas viejas | Aplicada |
 | 0004_slice4_seleccion_nombres.sql | `ninos_para_test`, `formatear_nombre` | Aplicada |
-| 0005 (S8) · 0006 (S9 y S10) · 0007 (S12) · 0008 (S17) | Reservadas | — |
+| 0006_s9_denominacion_rapida.sql | `test_bloque_resultado`: tiempo_ms, errores y detalle con sus constraints; `guardar_test` los exige en denominación rápida y los rechaza en los demás bloques (misma firma; mensajes sin "test"). Pruebas en `supabase/tests/0006_denominacion_rapida.sql` | Lista para aplicar |
+| 0005 (S8) · 0007 (S10) · 0008 (S12) · 0009 (S17) | Reservadas | — |
 
 ## Pantallas y rutas
 
@@ -186,7 +205,7 @@ entrenamientos ( id PK, user_id = niño (borrado en cascada), juego, puntaje, cr
 
 ## Interfaz
 
-- Componentes de la evaluación en `components/test/`: `marco-evaluacion`, `barra-progreso-evaluacion`, `tarjeta-pregunta`, `boton-opcion`, `boton-audio`, `final-evaluacion`, `resultados-evaluacion` (resultados reutilizables, tema oscuro y claro) e `historial-evaluaciones`.
+- Componentes de la evaluación en `components/test/`: `marco-evaluacion`, `barra-progreso-evaluacion`, `tarjeta-pregunta`, `boton-opcion`, `boton-audio`, `ejercicio-denominacion` (una cuadrícula de denominación rápida, de la práctica a la carga de errores), `final-evaluacion`, `resultados-evaluacion` (resultados reutilizables, tema oscuro y claro) e `historial-evaluaciones`.
 - Durante la evaluación: fondo liso (`fondo-nino`) sin formas flotantes; encabezado tipo píldora como `AppHeader`.
 - Pendiente para más adelante: darle más color a la interfaz (hoy predomina el crema).
 
@@ -195,6 +214,8 @@ entrenamientos ( id PK, user_id = niño (borrado en cascada), juego, puntaje, cr
 - [ ] Iniciar sesión con email o nombre de usuario. El prompt está armado; requiere `SUPABASE_SERVICE_ROLE_KEY` y una función que solo pueda usar `service_role`. Los errores no deben revelar si un usuario existe.
 - [ ] `/dislexia`: el botón "Hacer la evaluación ahora" apunta a `/test-dislexia`, que no existe; el texto todavía habla de adolescentes.
 - [ ] Contenido real de `/terminos` y `/privacidad` (borrador v0.1, sin validez legal para producción).
-- [ ] Algunos mensajes de error de las funciones SQL todavía dicen "test" (la interfaz bloquea esos casos antes).
+- [ ] Algunos mensajes de error de las funciones SQL todavía dicen "test" (la interfaz bloquea esos casos antes). `guardar_test` ya no (0006).
+- [ ] Las evaluaciones guardadas antes de S9 tienen un `porcentaje_total` que incluye la denominación rápida vieja (10 ítems en inicial). El anillo de resultados y el historial muestran ese valor guardado, mientras que "X de Y respuestas correctas" ya la excluye; en esas evaluaciones de inicial los dos números pueden no coincidir.
+- [ ] Confirmar con las especialistas los números y el tamaño de la cuadrícula de denominación rápida en inicial (provisorios).
 - [ ] Los 4 errores de TypeScript y, después, desactivar `ignoreBuildErrors`.
 - [ ] Mail de aviso de invitación al tutor (TODO en `invitar_nino`).
