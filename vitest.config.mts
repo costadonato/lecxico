@@ -20,6 +20,9 @@ export default defineConfig({
       // umbrales miden la métrica de la propuesta y no el resto de la app.
       include: [
         "lib/test/analisis.ts",
+        "lib/test/bloques.ts",
+        "lib/test/denominacion.ts",
+        "lib/test/denominacion-config.ts",
         "lib/auth/perfil.ts",
         "lib/tutor/errores.ts",
         "lib/tutor/etapa.ts",

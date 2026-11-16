@@ -3,7 +3,10 @@
 import { useState, useCallback, useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowRight, Volume2 } from "lucide-react"
-import { bloqueCodigoPorOrden } from "@/lib/test/bloques"
+import { resumenPorcentual } from "@/lib/test/analisis"
+import { BLOQUES_POR_NIVEL, BLOQUE_NOMBRES, bloqueCodigoPorOrden } from "@/lib/test/bloques"
+import { DENOMINACION_POR_NIVEL, type EjercicioDenominacion as EjercicioDenominacionConfig } from "@/lib/test/denominacion-config"
+import { resultadoBloqueDenominacion, type ResultadoEjercicio } from "@/lib/test/denominacion"
 import { guardarTest } from "@/lib/test/guardar-test"
 import { useAccesoTest } from "@/lib/test/use-acceso-test"
 import { useSalidaDelTest } from "@/lib/test/use-salida-test"
@@ -12,6 +15,7 @@ import { TestAccesoAviso } from "@/components/test-acceso-aviso"
 import { BarraProgresoEvaluacion } from "@/components/test/barra-progreso-evaluacion"
 import { BotonAudio } from "@/components/test/boton-audio"
 import { BotonOpcion } from "@/components/test/boton-opcion"
+import { EjercicioDenominacion } from "@/components/test/ejercicio-denominacion"
 import { FinalEvaluacion } from "@/components/test/final-evaluacion"
 import { MarcoEvaluacion } from "@/components/test/marco-evaluacion"
 import { ChipEstimulo, TarjetaPregunta, TituloConsigna } from "@/components/test/tarjeta-pregunta"
@@ -139,6 +143,14 @@ interface ProfessionalRatedQuestion {
   ratingLabels?: { correct: string; incorrect: string }
 }
 
+/** Bloque 9: one rapid-naming grid, run by the professional (time + errors) */
+interface DenominacionQuestion {
+  id: number
+  block: number
+  type: "denominacion"
+  ejercicio: EjercicioDenominacionConfig
+}
+
 type Question =
   | SameDifferentQuestion
   | MultipleChoiceQuestion
@@ -150,9 +162,13 @@ type Question =
   | SyllabDragQuestion
   | PseudoAudioQuestion
   | ProfessionalRatedQuestion
+  | DenominacionQuestion
+
+/** Denominación Rápida del nivel primario: 2 cuadrículas, una tras otra. */
+const DENOMINACION = DENOMINACION_POR_NIVEL.primario
 
 /* ------------------------------------------------------------------ */
-/*  QUESTION DATA  (7 blocks)                                          */
+/*  QUESTION DATA  (9 blocks)                                          */
 /* ------------------------------------------------------------------ */
 const questions: Question[] = [
   // BLOQUE 1 — Discriminación Auditiva
@@ -232,6 +248,11 @@ const questions: Question[] = [
   { id: 38, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'RIDOTE', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
   { id: 39, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'BALCUTINA', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
   { id: 40, block: 8, type: 'professional_rated', question: 'Leé la siguiente palabra en voz alta', displayWord: 'PLONDRESAMO', ratingLabels: { correct: 'Bien leído', incorrect: 'Mal leído' } },
+
+  // BLOQUE 9 — Denominación Rápida (una cuadrícula por paso; va al final)
+  ...DENOMINACION.ejercicios.map((ejercicio, i): DenominacionQuestion => ({
+    id: 41 + i, block: 9, type: "denominacion", ejercicio,
+  })),
 ]
 
 const TOTAL_QUESTIONS = questions.length
@@ -249,16 +270,8 @@ const questionEmojis: Record<string, string> = {
   'TOMATE': '🍅',
 }
 
-const BLOCKS = [
-  { id: 1, name: "Discriminación Auditiva" },
-  { id: 2, name: "Conciencia Fonológica" },
-  { id: 3, name: "Conciencia Silábica" },
-  { id: 4, name: "Memoria Auditiva" },
-  { id: 5, name: "Comprensión Lectora" },
-  { id: 6, name: "Correspondencia Sonido-Letra" },
-  { id: 7, name: "Reconocimiento Visual" },
-  { id: 8, name: "Lectura de Pseudopalabras" },
-]
+/** Bloques en el orden del test, con su nombre visible (lib/test/bloques.ts: el mismo orden que se guarda). */
+const BLOCKS = BLOQUES_POR_NIVEL.primario.map((codigo, i) => ({ id: i + 1, name: BLOQUE_NOMBRES[codigo] }))
 
 /**
  * A stored answer: the index of the chosen option, or — for questions built up
@@ -294,8 +307,9 @@ const isOptionCorrect = (q: Question, ans: Answer): boolean => {
         ans.length === q.correct.length &&
         q.correct.every((v, i) => ans[i] === v)
       )
-    /* Scored through its own storyQuestions, never as a single option */
+    /* Scored through its own storyQuestions / the grid's errors, never as a single option */
     case "reading_comprehension":
+    case "denominacion":
       return false
   }
 }
@@ -334,6 +348,9 @@ function TestPrimaria() {
   const testEnCurso = acceso.estado === "permitido" && !saved && (currentIndex > 0 || finished)
   const { salir, dialogo: dialogoSalida } = useSalidaDelTest(testEnCurso)
 
+  /* ---- Bloque 9: resultado de cada cuadrícula de denominación, por id de ejercicio ---- */
+  const [denominacion, setDenominacion] = useState<Record<string, ResultadoEjercicio>>({})
+
   /* ---- reading_comprehension sub-navigation ---- */
   /** -1 = showing the story text · 0..n-1 = answering storyQuestions[n] */
   const [storySubIndex, setStorySubIndex] = useState(-1)
@@ -350,7 +367,7 @@ function TestPrimaria() {
       : null
   const showingStoryText = !!current && current.type === "reading_comprehension" && storySubIndex === -1
 
-  const displayPrompt = !current
+  const displayPrompt = !current || current.type === "denominacion"
     ? ""
     : activeStoryQuestion
       ? activeStoryQuestion.question
@@ -466,7 +483,8 @@ function TestPrimaria() {
           current.type === "sequence_order" ||
           current.type === "syllable_drag" ||
           current.type === "pseudo_audio" ||
-          current.type === "professional_rated"
+          current.type === "professional_rated" ||
+          current.type === "denominacion"
         ? []
         : current.options
 
@@ -530,6 +548,12 @@ function TestPrimaria() {
     }
   }
 
+  /* Bloque 9: the professional confirmed a grid (time + errors) */
+  const handleDenominacion = (resultado: ResultadoEjercicio) => {
+    setDenominacion((prev) => ({ ...prev, [resultado.ejercicio]: resultado }))
+    goToNextTopLevel()
+  }
+
   const handleNext = () => {
     if (current.type === "reading_comprehension") {
       const storyQuestions = current.storyQuestions
@@ -582,6 +606,10 @@ function TestPrimaria() {
             const ans = storyAnswers[`${q.id}_${si}`]
             if (ans !== undefined && sq.options[ans] === sq.correct) correct++
           })
+        } else if (q.type === "denominacion") {
+          /* One grid: total = stimuli, correct = total - errors */
+          const r = denominacion[q.ejercicio.id]
+          if (r) { total += r.total; correct += r.correctas }
         } else {
           total += 1
           const idx = questions.indexOf(q)
@@ -589,14 +617,20 @@ function TestPrimaria() {
           if (ans !== null && ans !== undefined && isOptionCorrect(q, ans)) correct++
         }
       })
-      return { ...block, total, correct, pct: total > 0 ? Math.round((correct / total) * 100) : 0 }
+      /* Denominación rápida also stores total time, total errors and each grid's detail */
+      const medicion = bloqueCodigoPorOrden("primario", block.id) === "denominacion_rapida"
+        ? resultadoBloqueDenominacion(DENOMINACION.ejercicios.flatMap((e) => denominacion[e.id] ?? []))
+        : null
+      return { ...block, total, correct, medicion }
     })
   }
 
-  const totalResults = computeResults()
-  const totalCorrect = totalResults.reduce((acc, b) => acc + b.correct, 0)
-  const totalAnswerable = totalResults.reduce((acc, b) => acc + b.total, 0)
-  const totalPct = totalAnswerable > 0 ? Math.round((totalCorrect / totalAnswerable) * 100) : 0
+  /* Puntaje y porcentaje general: sin denominación rápida (se mide por tiempo y errores) */
+  const resumen = resumenPorcentual(
+    computeResults().map((b) => ({ bloque_codigo: bloqueCodigoPorOrden("primario", b.id), orden: b.id, correctas: b.correct, total: b.total })),
+  )
+  const totalCorrect = resumen.correctas
+  const totalPct = resumen.porcentaje
 
   /* ---- save to Supabase ---- */
   const handleSave = async () => {
@@ -612,6 +646,7 @@ function TestPrimaria() {
           orden: b.id,
           correctas: b.correct,
           total: b.total,
+          ...(b.medicion && { tiempoMs: b.medicion.tiempoMs, errores: b.medicion.errores, detalle: b.medicion.detalle }),
         })),
         puntajeTotal: totalCorrect,
         porcentajeTotal: totalPct,
@@ -639,6 +674,7 @@ function TestPrimaria() {
     setSaveError(null)
     setStorySubIndex(-1)
     setStoryAnswers({})
+    setDenominacion({})
   }
 
   /* ---- auto-save results as soon as the test finishes ---- */
@@ -666,6 +702,9 @@ function TestPrimaria() {
       orden: b.id,
       correctas: b.correct,
       total: b.total,
+      tiempo_ms: b.medicion?.tiempoMs ?? null,
+      errores: b.medicion?.errores ?? null,
+      detalle: b.medicion?.detalle ?? null,
     }))
 
     return (
@@ -689,6 +728,32 @@ function TestPrimaria() {
           onEvaluarOtro={() => router.push("/test")}
           onVolverInicio={() => salir("/dashboard")}
         />
+      </MarcoEvaluacion>
+    )
+  }
+
+  /* ================================================================ */
+  /*  BLOQUE 9 — DENOMINACIÓN RÁPIDA (one grid per step)               */
+  /* ================================================================ */
+  if (current.type === "denominacion") {
+    const numero = DENOMINACION.ejercicios.indexOf(current.ejercicio) + 1
+    return (
+      <MarcoEvaluacion etiqueta={blockName} onVolver={() => salir("/test")} nino={acceso.nino} nivel="primario">
+        {dialogoSalida}
+        <BarraProgresoEvaluacion total={TOTAL_QUESTIONS} actual={currentIndex} etiqueta={blockName} />
+        <div className="flex flex-1 items-center justify-center px-4 pb-8">
+          <TarjetaPregunta key={currentIndex} bloque={blockName} className="max-w-4xl">
+            <EjercicioDenominacion
+              key={current.ejercicio.id}
+              config={DENOMINACION}
+              ejercicio={current.ejercicio}
+              numero={numero}
+              cantidad={DENOMINACION.ejercicios.length}
+              conPractica={numero === 1}
+              onConfirmar={handleDenominacion}
+            />
+          </TarjetaPregunta>
+        </div>
       </MarcoEvaluacion>
     )
   }

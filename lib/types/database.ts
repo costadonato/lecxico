@@ -69,6 +69,16 @@ export interface Test {
   created_at: string
 }
 
+/** Un ejercicio (cuadrícula) de denominación rápida, dentro de test_bloque_resultado.detalle (0006). */
+export interface DetalleEjercicioDenominacion {
+  /** id del ejercicio en lib/test/denominacion-config.ts. */
+  ejercicio: string
+  tiempo_ms: number
+  errores: number
+  correctas: number
+  total: number
+}
+
 export interface TestBloqueResultado {
   id: string
   test_id: string
@@ -76,6 +86,10 @@ export interface TestBloqueResultado {
   orden: number
   correctas: number
   total: number
+  /** Solo denominacion_rapida (0006); null en los demás bloques y en evaluaciones anteriores. */
+  tiempo_ms: number | null
+  errores: number | null
+  detalle: DetalleEjercicioDenominacion[] | null
 }
 
 export interface Entrenamiento {

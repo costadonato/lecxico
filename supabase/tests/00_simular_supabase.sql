@@ -18,6 +18,8 @@
 --   * El esquema auth con auth.users (solo las columnas que usan los
 --     triggers), auth.uid() y auth.jwt() leyendo request.jwt.claims.
 --   * public.entrenamientos, que en Supabase existía antes de la 0001.
+--   * La collation "und-x-icu" que usa la 0004, si el Postgres local no
+--     tiene ICU (PGlite, por ejemplo).
 --
 -- Cómo simular una sesión (igual que en el SQL Editor):
 --   set local role authenticated;
@@ -57,12 +59,15 @@ alter default privileges in schema public grant all on functions to anon, authen
 create schema if not exists auth;
 grant usage on schema auth to anon, authenticated, service_role;
 
--- Solo las columnas que usan handle_new_user y sincronizar_tutor_email.
+-- Solo las columnas que usan los triggers y las funciones de las migraciones.
 create table if not exists auth.users (
   id                 uuid primary key default gen_random_uuid(),
   email              text,
   raw_user_meta_data jsonb,
-  created_at         timestamptz not null default now()
+  raw_app_meta_data  jsonb,
+  email_confirmed_at timestamptz,
+  created_at         timestamptz not null default now(),
+  updated_at         timestamptz not null default now()
 );
 
 -- Igual que en Supabase: el id del usuario de la sesión (claim "sub").
@@ -88,8 +93,17 @@ as $$
   )::jsonb;
 $$;
 
-grant execute on function auth.uid() to anon, authenticated, service_role;
-grant execute on function auth.jwt() to anon, authenticated, service_role;
+create or replace function auth.role()
+returns text
+language sql
+stable
+as $$
+  select nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role';
+$$;
+
+grant execute on function auth.uid()  to anon, authenticated, service_role;
+grant execute on function auth.jwt()  to anon, authenticated, service_role;
+grant execute on function auth.role() to anon, authenticated, service_role;
 
 
 -- ---------------------------------------------------------------------
@@ -103,5 +117,18 @@ create table if not exists public.entrenamientos (
   puntaje    int         not null default 0,
   created_at timestamptz not null default now()
 );
+
+
+-- ---------------------------------------------------------------------
+-- 4. Collation "und-x-icu" (la usa la 0004)
+-- ---------------------------------------------------------------------
+-- Supabase la trae. Un Postgres local sin ICU (por ejemplo PGlite) no:
+-- se crea un alias a "C", que no cambia el resultado de las pruebas de acceso.
+do $$
+begin
+  if not exists (select 1 from pg_collation where collname = 'und-x-icu') then
+    create collation public."und-x-icu" from "C";
+  end if;
+end $$;
 
 commit;

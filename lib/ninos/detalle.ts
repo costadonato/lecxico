@@ -51,6 +51,7 @@ export async function cargarTestsConBloques(supabase: SupabaseClient, ninoId: st
   const tests = (data ?? []) as Test[]
   if (tests.length === 0) return []
 
+  // select("*") trae también tiempo_ms, errores y detalle (denominación rápida, 0006).
   const { data: bloques, error: bloquesError } = await supabase
     .from("test_bloque_resultado")
     .select("*")
