@@ -112,9 +112,6 @@ export default function ChildGamesPage() {
             <Button variant="ghost" asChild>
               <Link href="/dashboard/child">Mi Dashboard</Link>
             </Button>
-            <Button variant="ghost" asChild>
-              <Link href="/progress">Mi Progreso</Link>
-            </Button>
           </div>
         </div>
       </header>

@@ -1,6 +1,6 @@
 # Lecxico — Estado del proyecto
 
-Última actualización: 16/11/2026 (S8 y S9). Reemplaza al documento "Estado del proyecto tras la etapa de gestión de usuarios (slices 1 a 5)" del 9/10/2026.
+Última actualización: 16/11/2026 (S8, S9 y S10). Reemplaza al documento "Estado del proyecto tras la etapa de gestión de usuarios (slices 1 a 5)" del 9/10/2026.
 
 **Cómo se usa:** es la fuente de contexto para cualquier chat o Claude Code que trabaje en el repo. Cada PR actualiza las secciones que toca (estado de slices, modelo de datos, decisiones, pendientes). Si este documento y el código no coinciden, manda el código; las migraciones de `supabase/migrations/` describen la base exactamente.
 
@@ -8,7 +8,7 @@ Documentos relacionados: `CLAUDE.md` (reglas para Claude Code), `docs/revisiones
 
 ## Resumen
 
-La gestión de usuarios está implementada y probada de punta a punta: registro por rol, autenticación, vinculación profesional–niño por invitación, evaluación tomada por el profesional al niño, historial y recomendación. La evaluación tiene los estilos del resto de la app. S8 suma la contraseña del tutor verificada en el servidor, el historial compartido, la eliminación de la cuenta del niño y el compromiso del profesional (migración 0005). Denominación rápida ya tiene el formato nuevo en los dos niveles (S9, migración 0006). Falta adaptar el resto a la definición vigente de la propuesta V8 (franjas, perfil del niño sin resultados) y construir el entrenamiento, las tareas y el seguimiento.
+La gestión de usuarios está implementada y probada de punta a punta: registro por rol, autenticación, vinculación profesional–niño por invitación, evaluación tomada por el profesional al niño, historial y recomendación. La evaluación tiene los estilos del resto de la app. S8 suma la contraseña del tutor verificada en el servidor, el historial compartido, la eliminación de la cuenta del niño y el compromiso del profesional (migración 0005). Denominación rápida ya tiene el formato nuevo en los dos niveles (S9, migración 0006). El perfil del niño ya no muestra evaluaciones ni entrenamientos, y el niño no puede leer sus evaluaciones en la base (S10, migración 0007, en revisión). Falta adaptar el resto a la definición vigente de la propuesta V8 (franjas) y construir el entrenamiento, las tareas y el seguimiento.
 
 ## Plan de slices
 
@@ -22,7 +22,7 @@ Meta: desarrollo cerrado el viernes 4/12/2026; verificación y documentación de
 | S7 Contenido del home | Landing, footer y metadata con información real | Donato | 12–15/11 | — | Hecho |
 | S8 Contraseña y acciones del tutor | Contraseña verificada en el servidor; elección de compartir historial; reglas de acceso a lo compartido; eliminación de la cuenta del niño; compromiso del profesional | Camila | 12–22/11 | 0005 | Hecho |
 | S9 Denominación rápida | Cuadrícula de letras, números y colores; cronómetro y carga de errores; se suma a primeros lectores (9 bloques); guarda tiempo, errores y detalle por ejercicio | Donato | 16–22/11 | 0006 | Hecho |
-| S10 Perfil del niño sin resultados | El perfil deja de mostrar evaluaciones; el niño pierde acceso a sus evaluaciones en la base | Donato | 16–22/11 | 0007 | Pendiente |
+| S10 Perfil del niño sin resultados | El perfil deja de mostrar evaluaciones y entrenamientos; el niño pierde acceso a sus evaluaciones en la base; se borran `/perfil/evaluaciones/[testId]` y `/progress` | Donato | 16–22/11 | 0007 | En revisión |
 | S11 Franjas y recomendación | Cortes en el código, franjas con pruebas, recomendación por franja | Camila | 23–26/11 | — | Pendiente |
 | S12 Datos del entrenamiento | Juegos, partidas y tareas; desbloqueo del 80 % en el servidor | Camila | 23–29/11 | 0008 | Pendiente |
 | S13 Área de entrenamiento | Marco de juego, pantalla del niño, primeros juegos | Donato | 23–29/11 | — | Pendiente |
@@ -123,7 +123,9 @@ La definición funcional es la de la propuesta V8 (reuniones del 14/10 y 28/10/2
 
 **Qué ve cada uno**
 
-- **Hoy** el perfil del niño muestra el historial de sus evaluaciones. **(V8)** El perfil del niño (que comparten niño y tutor) no muestra resultados de evaluaciones ni el progreso del entrenamiento: solo las actividades y el grado alcanzado en cada juego. El tutor accede a esa información con un informe a pedido que recibe por correo como enlace con acceso autenticado, que vence a los 7 días.
+- El perfil del niño (`/perfil`, que comparten niño y tutor) no muestra resultados de evaluaciones ni el progreso del entrenamiento (S10). Muestra los datos personales con el nombre de usuario, un aviso ("Los resultados de las evaluaciones los ve el profesional que acompaña al niño.") y "Acciones del tutor". En la base, el niño no lee `test` ni `test_bloque_resultado`, ni las suyas (0007).
+- Solo el profesional con vínculo activo ve las evaluaciones, su desglose, las franjas y la recomendación.
+- **(V8)** El niño va a ver las actividades y el grado alcanzado en cada juego dentro del área de entrenamiento (S13). El tutor accede a los resultados con un informe a pedido que recibe por correo como enlace con acceso autenticado, que vence a los 7 días (S17).
 
 **Entrenamiento (V8, a diseñar con las especialistas hasta el 20/11)**
 
@@ -177,8 +179,8 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 | profiles | La propia; un profesional, la del niño con vínculo activo; un niño, la de profesionales que lo invitaron o están vinculados | La propia, solo nombre, apellido, nombre_usuario, acepta_tyc y acepta_compromiso (solo profesionales; las fechas las fija la base) |
 | ninos | El propio niño; un profesional con vínculo activo | El propio niño, solo fecha_nacimiento, tutor_telefono y ultima_conexion. La etapa escolar, solo con `tutor_cambiar_etapa` (0005) |
 | profesional_nino | Las dos partes | Solo mediante funciones; las del tutor, solo `service_role` |
-| test, test_bloque_resultado | El niño (se quita en S10); el profesional con vínculo activo: las suyas, o todas si el tutor compartió el historial (`profesional_puede_ver_registro`, 0005) | Solo `guardar_test` |
-| entrenamientos | El niño; profesionales con vínculo activo | El propio niño (insert) |
+| test, test_bloque_resultado | Solo el profesional con vínculo activo: las suyas, o todas si el tutor compartió el historial (`profesional_puede_ver_registro`, 0005). El niño no lee ninguna, ni las suyas (0007) | Solo `guardar_test` |
+| entrenamientos | El niño (hasta S12); profesionales con vínculo activo | El propio niño (insert) |
 
 **Funciones:** `nivel_para_etapa`, `es_profesional_vinculado`, `es_profesional_del_nino_actual`, `profesional_puede_ver_registro`, `guardar_test`, `nombre_usuario_disponible`, `invitar_nino`, `cancelar_invitacion`, `desvincular` (solo el profesional), `vinculos_del_profesional`, `ninos_para_test`, `formatear_nombre`.
 
@@ -196,13 +198,15 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 | 0004_slice4_seleccion_nombres.sql | `ninos_para_test`, `formatear_nombre` | Aplicada |
 | 0005_s8_contrasena_tutor.sql | Funciones del tutor solo para `service_role`, historial compartido, compromiso del profesional, etapa escolar fuera del alcance del niño | Aplicada |
 | 0006_s9_denominacion_rapida.sql | `test_bloque_resultado`: tiempo_ms, errores y detalle con sus constraints; `guardar_test` los exige en denominación rápida y los rechaza en los demás bloques (misma firma; mensajes sin "test"). Pruebas en `supabase/tests/0006_denominacion_rapida.sql` | Aplicada |
-| 0007 (S10) · 0008 (S12) · 0009 (S17) | Reservadas | — |
+| 0007_s10_perfil_sin_resultados.sql | `test_select` y `test_bloque_resultado_select` sin la cláusula `nino_id = auth.uid()`: solo `profesional_puede_ver_registro`. Pruebas en `supabase/tests/0007_perfil_sin_resultados.sql` | Pendiente de aplicar |
+| 0008 (S12) · 0009 (S17) | Reservadas | — |
 
 ### Coordinación entre slices (desde S8)
 
-- La 0005 se aplica antes que la 0006.
-- La `test_select` de la 0007 (S10) tiene que partir de la versión de la 0005: sacar solo la cláusula `nino_id = auth.uid()` y conservar `profesional_puede_ver_registro(nino_id, profesional_id)`. Lo mismo para `test_bloque_resultado_select`.
-- En `/perfil`, S8 suma el componente `AccionesTutor` y el nombre de usuario en Datos personales. S10 los conserva al sacar el historial.
+- La 0005 se aplica antes que la 0006, y la 0006 antes que la 0007.
+- La 0007 (S10) recrea `test_select` y `test_bloque_resultado_select` a partir de la versión de la 0005: sacó solo la cláusula `nino_id = auth.uid()` y conserva `profesional_puede_ver_registro(nino_id, profesional_id)`. Quien vuelva a tocar esas políticas parte de la 0007.
+- En `/perfil`, S8 sumó `AccionesTutor` y el nombre de usuario en Datos personales; S10 los conserva.
+- Los archivos de `supabase/tests/` corren después de todas las migraciones: cuando una migración cambia una regla, se ajustan los escenarios anteriores que la probaban (S10 cambió el 4.6 de la 0005).
 - Toda tabla nueva con datos del niño (S12, S17) tiene que borrarse en cascada al borrar la cuenta (FK a `profiles` o `auth.users` con `on delete cascade`): la eliminación de la cuenta solo borra el usuario de Auth.
 - Toda migración nueva que toque permisos trae sus escenarios en `supabase/tests/NNNN_....sql`.
 
@@ -220,8 +224,8 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 | `/test/inicial?nino=<id>`, `/test/primaria?nino=<id>` | Profesional | La evaluación de cada nivel |
 | `/ninos`, `/ninos/[id]`, `/ninos/[id]/tests/[testId]` | Profesional | Gestión de niños, detalle con recomendación e historiales, desglose |
 | `/mis-profesionales` | Niño | Profesionales vinculados, con lo que eligió el tutor sobre el historial; desvincular pide la contraseña |
-| `/perfil`, `/perfil/evaluaciones/[testId]` | Los dos | Datos personales con el nombre de usuario (copiable). Niño: historial de evaluaciones (se retira en S10) y "Acciones del tutor" (cambiar la etapa escolar, eliminar la cuenta) |
-| `/entrenamiento`, `/games/...`, `/exercise/[id]`, `/progress` | Niño | Juegos heredados del prototipo, sin conectar al modelo (se rehacen en S13) |
+| `/perfil` | Los dos | Datos personales con el nombre de usuario (copiable). Niño: aviso de que los resultados los ve el profesional y "Acciones del tutor" (cambiar la etapa escolar, eliminar la cuenta). Sin evaluaciones ni entrenamientos (S10) |
+| `/entrenamiento`, `/games/...`, `/exercise/[id]` | Niño | Juegos heredados del prototipo, sin conectar al modelo (se rehacen en S13) |
 
 ## Interfaz
 
@@ -239,3 +243,5 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 - [ ] Confirmar con las especialistas los números y el tamaño de la cuadrícula de denominación rápida en inicial (provisorios).
 - [ ] Los 4 errores de TypeScript y, después, desactivar `ignoreBuildErrors`.
 - [ ] Mail de aviso de invitación al tutor (TODO en `invitar_nino`).
+- [ ] Hasta S12, el niño todavía puede leer `entrenamientos` en la base (la interfaz ya no la muestra desde S10). S12 reemplaza la tabla y aplica la misma regla que `test`.
+- [ ] Páginas heredadas de juegos (se rehacen en S13): `/games/child` y `/games/teen` enlazan a `/dashboard/child`, `/dashboard/teen` y `/support`, que no existen; `components/teen-start-card.tsx` y `child-tutorial-modal.tsx` hablan de "progreso", XP y estadísticas; `/exercise/[id]` muestra "Ver Resultados" y un puntaje al final del ejercicio.

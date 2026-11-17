@@ -17,8 +17,9 @@ import { cn } from "@/lib/utils"
 
 /**
  * Sección "Historial de evaluaciones": todas las evaluaciones, de la más
- * reciente a la más vieja. La usan el detalle del niño (profesional) y
- * /perfil (niño); cada uno indica a dónde lleva "Ver detalle".
+ * reciente a la más vieja. Solo la usa el detalle del niño del profesional
+ * (/ninos/[id]); urlDetalle indica a dónde lleva "Ver detalle". El perfil
+ * del niño no muestra evaluaciones (S10).
  */
 export function HistorialEvaluaciones({
   tests,

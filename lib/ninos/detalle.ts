@@ -1,7 +1,8 @@
 /**
- * Datos del detalle de un niño y de sus evaluaciones. Son consultas directas
- * con la RLS: el profesional solo lee perfil, ninos, evaluaciones, bloques y
- * entrenamientos de un niño con vínculo ACTIVO, y el niño solo los suyos.
+ * Datos del detalle de un niño y de sus evaluaciones, para el profesional.
+ * Son consultas directas con la RLS: el profesional solo lee perfil, ninos,
+ * evaluaciones, bloques y entrenamientos de un niño con vínculo ACTIVO. El
+ * niño no lee ninguna evaluación, ni las suyas (0007, S10).
  * Si algo no se puede leer se devuelve "sin-acceso", sin distinguir entre
  * "no existe" y "no se tiene acceso".
  */
@@ -37,8 +38,9 @@ function lanzar(error: { message: string } | null) {
 /**
  * Las evaluaciones visibles de un niño, de la más reciente a la más vieja,
  * con sus bloques traídos en UNA sola consulta. Qué es "visible" lo decide
- * la RLS: el niño ve las suyas; el profesional con vínculo activo, las que
- * tomó él, o las de todos si el tutor compartió el historial (0005).
+ * la RLS: el profesional con vínculo activo ve las que tomó él, o las de
+ * todos si el tutor compartió el historial (0005). Con la sesión del niño
+ * devuelve siempre una lista vacía (0007).
  */
 export async function cargarTestsConBloques(supabase: SupabaseClient, ninoId: string): Promise<TestConBloques[]> {
   const { data, error } = await supabase
@@ -70,8 +72,9 @@ export async function cargarTestsConBloques(supabase: SupabaseClient, ninoId: st
 }
 
 /**
- * Perfil del niño si el usuario actual lo puede leer: el profesional con
- * vínculo activo, o el propio niño.
+ * Perfil del niño si el usuario actual lo puede leer (profesional con
+ * vínculo activo). Con la sesión del niño también devuelve el suyo, pero
+ * las consultas de evaluaciones que siguen no le traen nada (0007).
  */
 async function perfilVisible(ninoId: string): Promise<Profile | null> {
   if (!UUID_RE.test(ninoId)) return null
@@ -125,7 +128,8 @@ export interface TestDeNino {
 
 /**
  * Una evaluación del historial, solo si pertenece a ese niño y el usuario
- * actual lo puede ver (profesional con vínculo activo, o el propio niño).
+ * actual la puede ver: el profesional con vínculo activo, según el
+ * historial compartido (0005). El niño no ve sus evaluaciones (0007).
  */
 export async function cargarTestDeNino(ninoId: string, testId: string): Promise<ResultadoCarga<TestDeNino>> {
   if (!UUID_RE.test(testId)) return { estado: "sin-acceso" }
