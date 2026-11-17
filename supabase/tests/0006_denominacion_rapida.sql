@@ -8,7 +8,7 @@
 --
 -- Cómo correrlo (Postgres local):
 --   1. supabase/tests/00_simular_supabase.sql
---   2. supabase/migrations/0001 a 0004 y 0006
+--   2. supabase/migrations/0001 a la última, en orden
 --   3. este archivo
 -- Todo corre en una transacción que termina en ROLLBACK: no deja datos.
 -- Al final muestra una tabla con cada escenario (columna ok) y, si alguno
@@ -44,11 +44,13 @@ insert into auth.users (id, email, raw_user_meta_data) values
    '{"rol":"nino","nombre":"Nico","apellido":"Primario","nombre_usuario":"n2.prueba","acepta_tyc":"true",
      "fecha_nacimiento":"2019-03-02","etapa_escolar":"primero","tutor_email":"tutor2@lecxico.test"}');
 
-insert into public.profesional_nino (profesional_id, nino_id, estado, fecha_afiliacion, fecha_baja) values
-  ('00000000-0000-4000-8000-0000000000a1', '00000000-0000-4000-8000-0000000000b1', 'activa',    now(), null),
-  ('00000000-0000-4000-8000-0000000000a1', '00000000-0000-4000-8000-0000000000b2', 'activa',    now(), null),
-  ('00000000-0000-4000-8000-0000000000a3', '00000000-0000-4000-8000-0000000000b1', 'pendiente', null,  null),
-  ('00000000-0000-4000-8000-0000000000a4', '00000000-0000-4000-8000-0000000000b1', 'inactiva',  now(), now());
+-- comparte_historial (0005): obligatorio en los vínculos activos
+-- (profesional_nino_comparte_historial_check); null en los demás.
+insert into public.profesional_nino (profesional_id, nino_id, estado, fecha_afiliacion, fecha_baja, comparte_historial) values
+  ('00000000-0000-4000-8000-0000000000a1', '00000000-0000-4000-8000-0000000000b1', 'activa',    now(), null,  true),
+  ('00000000-0000-4000-8000-0000000000a1', '00000000-0000-4000-8000-0000000000b2', 'activa',    now(), null,  true),
+  ('00000000-0000-4000-8000-0000000000a3', '00000000-0000-4000-8000-0000000000b1', 'pendiente', null,  null,  null),
+  ('00000000-0000-4000-8000-0000000000a4', '00000000-0000-4000-8000-0000000000b1', 'inactiva',  now(), now(), null);
 
 -- ---------------------------------------------------------------------
 -- Auxiliares

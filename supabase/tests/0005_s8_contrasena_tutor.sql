@@ -2,8 +2,10 @@
 -- Lecxico · Escenarios de acceso indebido de la 0005 (S8)
 -- =====================================================================
 --
--- Requiere 00_simular_supabase.sql y las migraciones 0001 a 0005
--- aplicadas en un Postgres local (ver supabase/tests/README.md).
+-- Requiere 00_simular_supabase.sql y las migraciones aplicadas en un
+-- Postgres local (ver supabase/tests/README.md). Se corre después de
+-- TODAS las migraciones, así que refleja la regla vigente (por ejemplo,
+-- desde la 0007 el niño ya no ve sus evaluaciones).
 --
 -- Todo corre en UNA transacción que termina en ROLLBACK: la base queda
 -- como estaba y el archivo se puede volver a correr.
@@ -274,8 +276,8 @@ select pruebas.ok('4.5 B con vínculo pendiente no tiene a N1 en ninos_para_test
   not exists (select 1 from public.ninos_para_test() where nino_id = pruebas.id('N1')));
 
 select pruebas.sesion('authenticated', pruebas.id('N1'));
-select pruebas.ok('4.6 el niño sigue viendo sus tres evaluaciones (la cláusula la saca S10)',
-  (select count(*) from public.test) = 3);
+select pruebas.ok('4.6 el niño no ve sus evaluaciones (S10)',
+  (select count(*) from public.test) = 0);
 
 -- El tutor da de baja a A.
 select pruebas.sesion('service_role');

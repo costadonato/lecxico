@@ -70,14 +70,9 @@ export function TeenStartCard({ userName = "Usuario", stats }: TeenStartCardProp
           </Link>
         </Button>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" asChild>
-            <Link href="/progress">Ver Progreso</Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href="/dashboard/teen">Dashboard</Link>
-          </Button>
-        </div>
+        <Button variant="outline" className="w-full" asChild>
+          <Link href="/dashboard/teen">Dashboard</Link>
+        </Button>
       </CardContent>
     </Card>
   )

@@ -81,9 +81,6 @@ export default function TeenGamesPage() {
               <Link href="/dashboard/teen">Dashboard</Link>
             </Button>
             <Button variant="ghost" asChild>
-              <Link href="/progress">Progreso</Link>
-            </Button>
-            <Button variant="ghost" asChild>
               <Link href="/support">Ayuda</Link>
             </Button>
           </div>

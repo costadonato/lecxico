@@ -2,24 +2,19 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ArrowLeft, AtSign, User, Mail, Dumbbell, Gamepad2 } from "lucide-react"
-import { Cargando, EstadoVacio } from "@/components/estados"
+import { ArrowLeft, AtSign, User, Mail } from "lucide-react"
+import { Cargando } from "@/components/estados"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
 import { NombreUsuarioCopiable } from "@/components/nombre-usuario-copiable"
 import { MarcoPagina } from "@/components/pagina-app"
 import { LumoCara } from "@/components/personajes/lumo-cara"
 import { CaraPersonaje } from "@/components/personajes/personaje"
 import { Seccion } from "@/components/seccion"
-import { CuerpoTablaAnimado, FilaTablaAnimada } from "@/components/tabla-animada"
-import { HistorialEvaluaciones } from "@/components/test/historial-evaluaciones"
 import { AccionesTutor } from "@/components/tutor/acciones-tutor"
 import { obtenerPerfilActual } from "@/lib/auth/perfil"
-import { cargarTestsConBloques, type TestConBloques } from "@/lib/ninos/detalle"
-import type { Entrenamiento, Nino, Profile } from "@/lib/types/database"
+import type { Nino, Profile } from "@/lib/types/database"
 
 export default function PerfilPage() {
   const router = useRouter()
@@ -31,9 +26,6 @@ export default function PerfilPage() {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
-  const [evaluaciones, setEvaluaciones] = useState<TestConBloques[]>([])
-  const [errorEvaluaciones, setErrorEvaluaciones] = useState(false)
-  const [entrenamientos, setEntrenamientos] = useState<Entrenamiento[]>([])
 
   useEffect(() => {
     const load = async () => {
@@ -56,25 +48,6 @@ export default function PerfilPage() {
       setFirstName(actual?.profile?.nombre ?? "")
       setLastName(actual?.profile?.apellido ?? "")
       setEmail(user.email || "")
-
-      // Historial de evaluaciones (con los bloques en una sola consulta)
-      try {
-        setEvaluaciones(await cargarTestsConBloques(supabase, user.id))
-      } catch (e) {
-        console.error("perfil evaluaciones:", e)
-        setErrorEvaluaciones(true)
-      }
-
-      // Últimos 10 entrenamientos
-      const { data: entData } = await supabase
-        .from("entrenamientos")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(10)
-
-      if (entData) setEntrenamientos(entData)
-
       setIsLoading(false)
     }
     load()
@@ -82,11 +55,6 @@ export default function PerfilPage() {
 
   if (isLoading) {
     return <Cargando pantallaCompleta />
-  }
-
-  const formatDate = (iso: string) => {
-    const d = new Date(iso)
-    return d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric" })
   }
 
   return (
@@ -130,58 +98,10 @@ export default function PerfilPage() {
         </div>
       </Seccion>
 
-      {/* ---- Historial de evaluaciones (sin recomendación) ---- */}
-      {errorEvaluaciones ? (
-        <MensajeAlerta tipo="error" texto="No se pudo cargar el historial de evaluaciones. Recargá la página." />
-      ) : (
-        <HistorialEvaluaciones tests={evaluaciones} urlDetalle={(testId) => `/perfil/evaluaciones/${testId}`} />
+      {/* ---- Resultados (V8: el perfil del niño no los muestra) ---- */}
+      {profile?.rol === "nino" && (
+        <MensajeAlerta tipo="info" texto="Los resultados de las evaluaciones los ve el profesional que acompaña al niño." />
       )}
-
-      {/* ---- Historial de entrenamientos ---- */}
-      <Seccion icono={<Dumbbell />} tono="menta" titulo="Historial de entrenamientos">
-        {entrenamientos.length > 0 ? (
-          <div className="overflow-hidden rounded-2xl border border-border/80 max-md:rounded-none max-md:border-0">
-            <Table tarjetasEnCelular>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Juego</TableHead>
-                  <TableHead className="text-center">Puntaje</TableHead>
-                  <TableHead className="text-right">Fecha</TableHead>
-                </TableRow>
-              </TableHeader>
-              <CuerpoTablaAnimado>
-                {entrenamientos.map((e) => (
-                  <FilaTablaAnimada key={e.id}>
-                    <TableCell data-label="Juego" className="font-medium">
-                      <span className="flex items-center gap-2 max-md:justify-end">
-                        <span className="grid size-8 place-items-center rounded-xl bg-sol-suave text-sol-fuerte">
-                          <Gamepad2 className="size-4" />
-                        </span>
-                        {e.juego}
-                      </span>
-                    </TableCell>
-                    <TableCell data-label="Puntaje" className="text-center font-bold tabular-nums">{e.puntaje}</TableCell>
-                    <TableCell data-label="Fecha" className="text-right tabular-nums text-muted-foreground">
-                      {formatDate(e.created_at)}
-                    </TableCell>
-                  </FilaTablaAnimada>
-                ))}
-              </CuerpoTablaAnimado>
-            </Table>
-          </div>
-        ) : (
-          <EstadoVacio
-            compacto
-            personaje="lex"
-            descripcion="Aún no realizaste ningún entrenamiento"
-            accion={
-              <Button asChild>
-                <Link href="/entrenamiento">Ir a entrenar</Link>
-              </Button>
-            }
-          />
-        )}
-      </Seccion>
 
       {profile?.rol === "nino" && nino && <AccionesTutor etapaInicial={nino.etapa_escolar} />}
 

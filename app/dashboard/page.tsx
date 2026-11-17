@@ -28,7 +28,7 @@ const TARJETAS = {
   },
   perfil: {
     title: "Mi Perfil",
-    description: "Revisá tu progreso y resultados",
+    description: "Tus datos y tu cuenta",
     icono: UserRound,
     tono: "lavanda",
     href: "/perfil",
