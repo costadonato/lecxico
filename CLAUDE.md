@@ -64,7 +64,7 @@ Antes de crear algo nuevo, buscá si ya existe y reutilizalo: `pagina-app.tsx` (
 - La plataforma **no emite diagnósticos**. Nada de "detecta dislexia", "diagnóstico" ni "científicamente validado"; los resultados son orientativos.
 - El niño no ve resultados de evaluaciones ni progreso; el profesional ve franjas y recomendación; el tutor recibe un informe a pedido.
 - Estilo: los tokens de color de `app/globals.css` (rojo, celeste, sol, menta, lavanda, mandarina, con `-fuerte` y `-suave`), Lexend, Lex y Lumo, animaciones de `components/motion` que respetan reducir movimiento. Durante la evaluación, fondo liso (`fondo-nino`) sin formas flotantes: distraen.
-- Accesibilidad WCAG 2.2 AA: contraste, foco visible, navegación por teclado, textos alternativos. Revisá en 375 px y en modo oscuro.
+- Accesibilidad WCAG 2.2 AA: contraste, foco visible, navegación por teclado, textos alternativos. Revisá en 375 px y en escritorio (la app no tiene modo oscuro activo).
 
 ## Pruebas
 

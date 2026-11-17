@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import {
   BarChart3,
   Brain,
@@ -13,6 +12,7 @@ import {
   Users,
 } from "lucide-react"
 import Link from "next/link"
+import { ChipEnDesarrollo } from "@/components/chip-en-desarrollo"
 import { Footer } from "@/components/footer"
 import { EncabezadoPublico } from "@/components/encabezado-publico"
 import { Flotante, FondoDecorado } from "@/components/fondo-decorado"
@@ -154,14 +154,6 @@ const PASOS = [
     enDesarrollo: true,
   },
 ]
-
-function ChipEnDesarrollo({ className }: { className?: string }) {
-  return (
-    <Badge variant="sol" className={cn("px-2.5 py-1 text-xs", className)}>
-      En desarrollo
-    </Badge>
-  )
-}
 
 export default function LandingPage() {
   return (
