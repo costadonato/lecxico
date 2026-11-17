@@ -214,7 +214,7 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 
 | Ruta | Quién | Qué muestra |
 | --- | --- | --- |
-| `/`, `/dislexia` | Público | Landing e información sobre dislexia |
+| `/`, `/dislexia` | Público | Landing e información sobre dislexia para familias y profesionales (`/dislexia` sin enlaces falsos ni promesas; cita IDA 2025 y DISFAM) |
 | `/login`, `/register` | Público | Inicio de sesión y registro por rol. `/login?cuenta=eliminada` avisa que se eliminó la cuenta del niño |
 | `/recuperar`, `/restablecer`, `/auth/callback` | Público | Recuperación de contraseña y confirmación de mail |
 | `/terminos`, `/privacidad` | Público | "Contenido en preparación" |
@@ -236,7 +236,7 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 ## Pendientes chicos
 
 - [ ] Iniciar sesión con email o nombre de usuario. El prompt está armado; requiere `SUPABASE_SERVICE_ROLE_KEY` (desde S8 está el cliente `lib/supabase/admin.ts`) y una función que solo pueda usar `service_role`. Los errores no deben revelar si un usuario existe.
-- [ ] `/dislexia`: el botón "Hacer la evaluación ahora" apunta a `/test-dislexia`, que no existe; el texto todavía habla de adolescentes.
+- [ ] Si algún día se activa el modo oscuro: revisar el contraste de los recuadros con fondos `-suave` (por ejemplo, en `/dislexia`, el texto de color claro sobre `celeste-suave`, `menta-suave` y `rojo-suave`).
 - [ ] Contenido real de `/terminos` y `/privacidad` (borrador v0.1, sin validez legal para producción).
 - [ ] Algunos mensajes de error de las funciones SQL todavía dicen "test" (la interfaz bloquea esos casos antes). `guardar_test` ya no (0006).
 - [ ] Las evaluaciones guardadas antes de S9 tienen un `porcentaje_total` que incluye la denominación rápida vieja (10 ítems en inicial). El anillo de resultados y el historial muestran ese valor guardado, mientras que "X de Y respuestas correctas" ya la excluye; en esas evaluaciones de inicial los dos números pueden no coincidir.
