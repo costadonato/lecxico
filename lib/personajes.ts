@@ -43,6 +43,34 @@ const POSES_LEX = {
     encuadre: { x: 163, y: 102, ancho: 711, alto: 866 },
     cara: { x: 432, y: 305, diametro: 350 },
   },
+  explicando: {
+    src: "/images/personajes/lex-explicando.webp",
+    ancho: 815,
+    alto: 1182,
+    alt: "Lex, el niño superhéroe de traje rojo, señalando hacia un costado como si mostrara algo",
+    cara: { x: 318, y: 283, diametro: 364 },
+  },
+  festejando: {
+    src: "/images/personajes/lex-festejando.webp",
+    ancho: 910,
+    alto: 1173,
+    alt: "Lex, el niño superhéroe de traje rojo, saltando de alegría con los brazos en alto",
+    cara: { x: 384, y: 302, diametro: 363 },
+  },
+  alentando: {
+    src: "/images/personajes/lex-alentando.webp",
+    ancho: 823,
+    alto: 1151,
+    alt: "Lex, el niño superhéroe de traje rojo, sonriendo con el pulgar arriba",
+    cara: { x: 298, y: 304, diametro: 418 },
+  },
+  pensando: {
+    src: "/images/personajes/lex-pensando.webp",
+    ancho: 712,
+    alto: 1169,
+    alt: "Lex, el niño superhéroe de traje rojo, pensando con una mano en el mentón",
+    cara: { x: 286, y: 268, diametro: 380 },
+  },
 } satisfies Record<string, Pose>
 
 const POSES_LUMO = {
@@ -53,6 +81,34 @@ const POSES_LUMO = {
     alt: "Lumo, un robot rojo con pantalla en la cara, saludando junto a una pantalla holográfica",
     encuadre: { x: 290, y: 116, ancho: 545, alto: 807 },
     cara: { x: 478, y: 282, diametro: 290 },
+  },
+  explicando: {
+    src: "/images/personajes/lumo-explicando.webp",
+    ancho: 789,
+    alto: 1046,
+    alt: "Lumo, el robot rojo, señalando hacia un costado como si mostrara algo",
+    cara: { x: 300, y: 156, diametro: 411 },
+  },
+  festejando: {
+    src: "/images/personajes/lumo-festejando.webp",
+    ancho: 761,
+    alto: 931,
+    alt: "Lumo, el robot rojo, saltando de alegría con los brazos en alto",
+    cara: { x: 410, y: 158, diametro: 375 },
+  },
+  alentando: {
+    src: "/images/personajes/lumo-alentando.webp",
+    ancho: 647,
+    alto: 1052,
+    alt: "Lumo, el robot rojo, sonriendo con el pulgar arriba",
+    cara: { x: 290, y: 150, diametro: 376 },
+  },
+  pensando: {
+    src: "/images/personajes/lumo-pensando.webp",
+    ancho: 437,
+    alto: 1021,
+    alt: "Lumo, el robot rojo, pensando con una mano en el mentón y tres puntitos en la pantalla",
+    cara: { x: 240, y: 146, diametro: 372 },
   },
 } satisfies Record<string, Pose>
 
