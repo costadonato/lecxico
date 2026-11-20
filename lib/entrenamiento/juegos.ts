@@ -45,6 +45,8 @@ export interface FichaNivel {
   /** Qué cambia en cada grado, para el profesional. */
   grados: Record<Grado, string>
   consigna: string
+  /** Consigna en consulta, si la mecánica cambia (Palabras de otro planeta: se lee en voz alta). */
+  consignaConsulta?: string
 }
 
 export interface FichaJuego {
@@ -211,6 +213,7 @@ export const JUEGOS: Record<CodigoJuego, FichaJuego> = {
         partida: g(8, 8, 8),
         unidad: "palabras",
         consigna: "Lex y Lumo encontraron palabras de otro planeta. Leé la palabra y elegí el audio que la dice bien.",
+        consignaConsulta: "Lex y Lumo encontraron palabras de otro planeta. Leé cada palabra en voz alta.",
         grados: {
           1: "2 sílabas directas; los audios cambian una sílaba",
           2: "3 sílabas con una trabada; los audios cambian una letra",
@@ -426,6 +429,11 @@ export const JUEGOS: Record<CodigoJuego, FichaJuego> = {
 }
 
 /** Los juegos de un nivel, en el orden de los bloques de la evaluación y con el principal primero. */
+/** La consigna que se muestra según el origen de la partida. */
+export function consignaDe(ficha: FichaNivel, origen: Origen): string {
+  return origen === "consulta" && ficha.consignaConsulta ? ficha.consignaConsulta : ficha.consigna
+}
+
 export function juegosDelNivel(nivel: Nivel, opciones: { incluirSoloConsulta: boolean }): FichaJuego[] {
   return Object.values(JUEGOS).filter((j) => j.niveles[nivel] && (opciones.incluirSoloConsulta || !j.soloConsulta))
 }

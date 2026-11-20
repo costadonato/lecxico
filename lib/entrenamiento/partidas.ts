@@ -17,7 +17,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js"
 import { esCodigoJuego } from "@/lib/entrenamiento/presentacion"
 import type { CodigoJuego, Grado, Origen } from "@/lib/entrenamiento/juegos"
-import type { DetalleRonda } from "@/lib/entrenamiento/rondas"
 
 export type LetraEntrenamiento = "mayuscula" | "minuscula"
 
@@ -65,12 +64,17 @@ export interface PartidaParaGuardar {
   origen: Origen
   correctas: number
   total: number
-  detalle: DetalleRonda[]
+  /**
+   * Una entrada por ronda ({ item, correcta, intentos }); en ¡Rápido, tocalo!
+   * suma `ms`, y en Nombrá rápido es una por cuadrícula
+   * (DetalleEjercicioDenominacion).
+   */
+  detalle: readonly object[]
   /** Solo con origen "tarea". */
   tareaId?: string | null
-  /** Solo los juegos que miden tiempo y errores (Nombrá rápido, S13b). */
-  tiempoMs?: number
-  errores?: number
+  /** Solo los juegos que miden tiempo y errores (Nombrá rápido y ¡Rápido, tocalo!, S13b). Van juntos. */
+  tiempoMs?: number | null
+  errores?: number | null
 }
 
 export interface PartidaGuardada {

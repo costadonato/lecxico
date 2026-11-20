@@ -6,11 +6,13 @@ import {
   ORIGEN_LABEL,
   esCodigoJuego,
   fraseDe,
+  juegoConPersonaje,
   juegoDisponible,
   juegosPorBloque,
   jugadaValida,
   leerGrado,
   nombreJuego,
+  partidaConReintento,
   rutaConsulta,
   rutaJugar,
   textoGradoBloqueado,
@@ -93,17 +95,32 @@ describe("textos y validaciones", () => {
     expect(leerGrado(undefined)).toBeNull()
   })
 
-  it("juegoDisponible: los tres de S13a", () => {
-    expect(juegoDisponible("detective")).toBe(true)
-    expect(juegoDisponible("palmas")).toBe(true)
-    expect(juegoDisponible("memotono")).toBe(false)
+  it("juegoDisponible: los tres de S13a y los cinco de S13b", () => {
+    for (const j of ["detective", "rima", "palmas", "memotono", "rompe", "planeta", "nombra", "tocalo"] as const) {
+      expect(juegoDisponible(j), j).toBe(true)
+    }
+    expect(juegoDisponible("lee")).toBe(false) // S14
+  })
+
+  it("solo Nombrá rápido se juega sin personaje", () => {
+    expect(juegoConPersonaje("nombra")).toBe(false)
+    expect(juegoConPersonaje("tocalo")).toBe(true)
+  })
+
+  it("partidaConReintento", () => {
+    expect(partidaConReintento("detective", "practica")).toBe(true)
+    expect(partidaConReintento("nombra", "consulta")).toBe(false)
+    expect(partidaConReintento("tocalo", "practica")).toBe(false)
+    expect(partidaConReintento("planeta", "consulta")).toBe(false)
+    expect(partidaConReintento("planeta", "tarea")).toBe(true)
   })
 
   it("jugadaValida: catálogo, disponibilidad, nivel y grado", () => {
     const base = { nivel: "inicial" as const, grado: 1 as const, modo: "nino" as const }
     expect(jugadaValida({ ...base, juego: "detective" })).toBe(true)
     expect(jugadaValida({ ...base, juego: "noexiste" })).toBe(false)
-    expect(jugadaValida({ ...base, juego: "memotono" })).toBe(false) // todavía no construido
+    expect(jugadaValida({ ...base, juego: "memotono" })).toBe(true)
+    expect(jugadaValida({ ...base, juego: "eco", nivel: "primario" })).toBe(false) // todavía no construido (S14)
     expect(jugadaValida({ ...base, juego: "detective", grado: null })).toBe(false)
     expect(jugadaValida({ ...base, nivel: "primario", juego: "palmas" })).toBe(false) // palmas es solo de inicial
   })
@@ -120,8 +137,14 @@ describe("textos y validaciones", () => {
     expect(jugadaValida({ juego: "rima", nivel: "primario", grado: 3, modo: "profesional" })).toBe(true)
   })
 
+  it("jugadaValida: el niño nunca abre Nombrá rápido (solo consulta); el profesional, sí", () => {
+    expect(jugadaValida({ juego: "nombra", nivel: "inicial", grado: 1, modo: "nino" })).toBe(false)
+    expect(jugadaValida({ juego: "nombra", nivel: "inicial", grado: 1, modo: "nino", enTarea: true, habilitado: 3 })).toBe(false)
+    expect(jugadaValida({ juego: "nombra", nivel: "primario", grado: 3, modo: "profesional" })).toBe(true)
+  })
+
   it("jugadaValida: el niño nunca abre un juego de solo consulta", () => {
-    // Nombrá rápido todavía no está construido; se simula con el catálogo.
+    // Se simula también con otro juego del catálogo.
     const original = JUEGOS.detective.soloConsulta
     JUEGOS.detective.soloConsulta = true
     try {

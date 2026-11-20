@@ -141,3 +141,48 @@ describe("resultadoRondas", () => {
     expect([r.correctas, r.total]).toEqual([7, 8])
   })
 })
+
+describe("resolver (sin reintento)", () => {
+  const RESUELVE_BIEN: AccionRonda = { tipo: "resolver", correcta: true }
+  const RESUELVE_MAL: AccionRonda = { tipo: "resolver", correcta: false }
+
+  it("un acierto resuelve la ronda con intentos: 1", () => {
+    const e = jugar(iniciarRondas(["a", "b"]), RESUELVE_BIEN)
+    expect(e.fase).toBe("acierto")
+    expect(e.detalle).toEqual([{ item: "a", correcta: true, intentos: 1 }])
+    expect(aciertoEnReintento(e)).toBe(false)
+  })
+
+  it("un error muestra la respuesta enseguida, sin reintento", () => {
+    const e = jugar(iniciarRondas(["a", "b"]), RESUELVE_MAL)
+    expect(e.fase).toBe("respuesta")
+    expect(e.detalle).toEqual([{ item: "a", correcta: false, intentos: 1 }])
+  })
+
+  it("ya resuelta, otro resolver se ignora (doble toque)", () => {
+    const e = jugar(iniciarRondas(["a", "b"]), RESUELVE_MAL)
+    expect(reducirRondas(e, RESUELVE_BIEN)).toBe(e)
+    const fin = jugar(iniciarRondas(["a"]), RESUELVE_BIEN, SIGUIENTE)
+    expect(fin.fase).toBe("terminada")
+    expect(reducirRondas(fin, RESUELVE_BIEN)).toBe(fin)
+  })
+
+  it("durante un reintento también resuelve en un intento", () => {
+    const e = jugar(iniciarRondas(["a"]), MAL, RESUELVE_BIEN)
+    expect(e.fase).toBe("acierto")
+    expect(e.detalle).toEqual([{ item: "a", correcta: true, intentos: 1 }])
+  })
+
+  it("una partida entera con resolver", () => {
+    const fin = jugar(iniciarRondas(["a", "b", "c"]), RESUELVE_BIEN, SIGUIENTE, RESUELVE_MAL, SIGUIENTE, RESUELVE_BIEN, SIGUIENTE)
+    expect(resultadoRondas(fin)).toEqual({
+      correctas: 2,
+      total: 3,
+      detalle: [
+        { item: "a", correcta: true, intentos: 1 },
+        { item: "b", correcta: false, intentos: 1 },
+        { item: "c", correcta: true, intentos: 1 },
+      ],
+    })
+  })
+})

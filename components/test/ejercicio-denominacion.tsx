@@ -5,6 +5,8 @@ import { Info, Play, RotateCcw, Square } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Dibujo } from "@/components/entrenamiento/dibujo"
+import type { LetraEntrenamiento } from "@/lib/entrenamiento/partidas"
 import {
   COLORES_ESTIMULO,
   buscarEstimulo,
@@ -34,6 +36,10 @@ const TIEMPO_MINIMO_MS = 1000
  * Teclado: al cambiar de fase el foco va al contenedor de la fase (no a un
  * botón), así Enter o la barra espaciadora no comienzan ni terminan nada por
  * accidente; los botones se alcanzan con Tab.
+ *
+ * Lo reusa Nombrá rápido (entrenamiento, S13b) con `letra`: las letras de
+ * la cuadrícula siguen el switch "A a" en lugar de ir siempre en mayúscula.
+ * Sin `letra` (la evaluación), todo queda como antes.
  */
 export function EjercicioDenominacion({
   config,
@@ -42,6 +48,7 @@ export function EjercicioDenominacion({
   cantidad,
   conPractica,
   onConfirmar,
+  letra,
 }: {
   config: ConfigDenominacion
   ejercicio: Ejercicio
@@ -52,6 +59,8 @@ export function EjercicioDenominacion({
   /** Mostrar la práctica antes de la cuadrícula (solo el primer ejercicio). */
   conPractica: boolean
   onConfirmar: (resultado: ResultadoEjercicio) => void
+  /** Solo el entrenamiento: las letras siguen el switch "A a". Sin letra, van en mayúscula. */
+  letra?: LetraEntrenamiento
 }) {
   const [fase, setFase] = useState<Fase>(conPractica ? "practica" : "preparado")
   const [tiempoMs, setTiempoMs] = useState<number | null>(null)
@@ -122,7 +131,7 @@ export function EjercicioDenominacion({
         <>
           {titulo}
           <TextoParaLeer>{textos.practica}</TextoParaLeer>
-          <Cuadricula config={config} valores={config.practica} columnas={config.practica.length} className="mx-auto my-6 max-w-xs" />
+          <Cuadricula config={config} valores={config.practica} columnas={config.practica.length} letra={letra} className="mx-auto my-6 max-w-xs" />
           <NotaProfesional>{textos.notaPractica}</NotaProfesional>
           <div className="mt-auto flex justify-end pt-6">
             <Button size="lg" onClick={() => setFase("preparado")}>
@@ -136,7 +145,7 @@ export function EjercicioDenominacion({
         <>
           {titulo}
           <TextoParaLeer>{textos.consigna}</TextoParaLeer>
-          <Cuadricula config={config} valores={ejercicio.secuencia} columnas={ejercicio.columnas} tapada className="my-6" />
+          <Cuadricula config={config} valores={ejercicio.secuencia} columnas={ejercicio.columnas} letra={letra} tapada className="my-6" />
           <div className="mt-auto flex justify-end">
             <Button size="lg" onClick={comenzar}>
               <Play /> Comenzar
@@ -147,7 +156,7 @@ export function EjercicioDenominacion({
 
       {fase === "en-curso" && (
         <>
-          <Cuadricula config={config} valores={ejercicio.secuencia} columnas={ejercicio.columnas} className="mb-6" />
+          <Cuadricula config={config} valores={ejercicio.secuencia} columnas={ejercicio.columnas} letra={letra} className="mb-6" />
           <div className="mt-auto flex justify-end">
             <Button variant="outline" onClick={terminar}>
               <Square /> Terminar
@@ -208,9 +217,11 @@ export function EjercicioDenominacion({
 }
 
 /**
- * Cuadrícula de estímulos. Letras y números en mayúscula y grandes; los
- * colores, cuadrados llenos del mismo tamaño que el texto, sin palabras (el
- * nombre del color va solo en el aria-label). El tamaño de letra depende del
+ * Cuadrícula de estímulos. Letras y números en mayúscula y grandes (con
+ * `letra`, las letras siguen el switch "A a"); los colores, cuadrados
+ * llenos del mismo tamaño que el texto, sin palabras (el nombre del color va
+ * solo en el aria-label); los dibujos (solo el entrenamiento), con
+ * <Dibujo> y su nombre en el aria-label. El tamaño de letra depende del
  * ancho disponible (unidades cqw), así en celular las celdas se achican y no
  * hay desplazamiento horizontal. `tapada` muestra celdas vacías.
  */
@@ -219,12 +230,14 @@ function Cuadricula({
   valores,
   columnas,
   tapada = false,
+  letra,
   className,
 }: {
   config: ConfigDenominacion
   valores: readonly string[]
   columnas: number
   tapada?: boolean
+  letra?: LetraEntrenamiento
   className?: string
 }) {
   const filas = Math.ceil(valores.length / columnas)
@@ -253,8 +266,12 @@ function Cuadricula({
                   className="block size-[0.8em] rounded-[0.15em] border border-foreground/40"
                   style={{ backgroundColor: COLORES_ESTIMULO[valor as ColorEstimulo] }}
                 />
+              ) : estimulo?.categoria === "dibujo" ? (
+                <span role="img" aria-label={estimulo.nombre} className="block size-[1.15em]">
+                  <Dibujo palabra={valor} decorativo className="size-full" />
+                </span>
               ) : (
-                <span className="uppercase">{valor}</span>
+                <span className={letra === "minuscula" ? "lowercase" : "uppercase"}>{valor}</span>
               )}
             </div>
           )

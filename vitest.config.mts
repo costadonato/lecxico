@@ -32,6 +32,11 @@ export default defineConfig({
         "lib/entrenamiento/rondas.ts",
         "lib/entrenamiento/presentacion.ts",
         "lib/entrenamiento/partidas.ts",
+        "lib/entrenamiento/partida.ts",
+        "lib/entrenamiento/memotono.ts",
+        "lib/entrenamiento/denominacion-entrenamiento.ts",
+        "lib/entrenamiento/tocalo.ts",
+        "lib/entrenamiento/audio.ts",
         "lib/personajes.ts",
       ],
       thresholds: {

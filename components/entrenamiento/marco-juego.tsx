@@ -9,7 +9,7 @@ import { BotonEscuchar } from "@/components/entrenamiento/boton-escuchar"
 import { COLOR_BLOQUE } from "@/components/entrenamiento/colores-bloque"
 import { Emoji } from "@/components/entrenamiento/dibujo"
 import { COMPONENTES_JUEGO } from "@/components/entrenamiento/juegos"
-import type { EventoRonda } from "@/components/entrenamiento/juegos/tipos"
+import type { EventoRonda, ResultadoJuego } from "@/components/entrenamiento/juegos/tipos"
 import { AreaLetra, ProveedorLetra, useLetra } from "@/components/entrenamiento/proveedor-letra"
 import { SwitchLetra } from "@/components/entrenamiento/switch-letra"
 import { FondoDecorado } from "@/components/fondo-decorado"
@@ -20,12 +20,19 @@ import { RESORTE } from "@/components/motion/transiciones"
 import { Personaje } from "@/components/personajes/personaje"
 import { TestBandaNino } from "@/components/test-banda-nino"
 import { createClient } from "@/lib/supabase/client"
-import { elegirPartida, itemsDe, type ItemBanco } from "@/lib/entrenamiento/bancos"
-import { JUEGOS, type CodigoJuego, type Grado, type Nivel, type Origen } from "@/lib/entrenamiento/juegos"
+import { JUEGOS, consignaDe, type CodigoJuego, type Grado, type Nivel, type Origen } from "@/lib/entrenamiento/juegos"
+import { armarPartida, type ItemPartida } from "@/lib/entrenamiento/partida"
 import { guardarPartida, type LetraEntrenamiento, type PartidaGuardada } from "@/lib/entrenamiento/partidas"
-import { ORIGEN_LABEL, fraseDe, textoProgreso, type Momento } from "@/lib/entrenamiento/presentacion"
-import type { ResultadoRondas } from "@/lib/entrenamiento/rondas"
+import {
+  ORIGEN_LABEL,
+  fraseDe,
+  juegoConPersonaje,
+  partidaConReintento,
+  textoProgreso,
+  type Momento,
+} from "@/lib/entrenamiento/presentacion"
 import { estiloNivel } from "@/lib/niveles"
+import { formatearTiempo } from "@/lib/test/denominacion"
 import { useSalidaDelTest, type TextosSalida } from "@/lib/test/use-salida-test"
 import { BLOQUE_NOMBRES } from "@/lib/test/bloques"
 import { cn } from "@/lib/utils"
@@ -88,11 +95,11 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
   const { letra } = useLetra()
 
   const [fase, setFase] = useState<Fase>("consigna")
-  const [partida, setPartida] = useState<{ n: number; items: ItemBanco[] }>({ n: 0, items: [] })
+  const [partida, setPartida] = useState<{ n: number; items: ItemPartida[] }>({ n: 0, items: [] })
   const [ronda, setRonda] = useState(0)
   const [momento, setMomento] = useState<Momento>("consigna")
   const [variacion, setVariacion] = useState(0)
-  const [resultado, setResultado] = useState<ResultadoRondas | null>(null)
+  const [resultado, setResultado] = useState<ResultadoJuego | null>(null)
   const [guardada, setGuardada] = useState<PartidaGuardada | null>(null)
   const [habilitado, setHabilitado] = useState<Grado>(habilitadoInicial)
   const [desbloqueado, setDesbloqueado] = useState<Grado | null>(null)
@@ -101,8 +108,11 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
   const enCurso = fase === "jugando" || fase === "guardando" || fase === "error"
   const { salir, dialogo } = useSalidaDelTest(enCurso, TEXTOS_SALIDA)
 
+  // Sin contenido (banco vacío o generador que no pudo armar la partida) no se puede comenzar.
+  const sinContenido = useMemo(() => !Juego || armarPartida(juego, nivel, grado).length === 0, [Juego, juego, nivel, grado])
+
   const empezar = useCallback(() => {
-    const items = elegirPartida(itemsDe(juego, nivel, grado), nivelFicha.partida[grado])
+    const items = armarPartida(juego, nivel, grado)
     setPartida((p) => ({ n: p.n + 1, items }))
     setRonda(0)
     setMomento("pensando")
@@ -112,12 +122,14 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
     setDesbloqueado(null)
     setError(null)
     setFase("jugando")
-  }, [juego, nivel, grado, nivelFicha])
+  }, [juego, nivel, grado])
 
   const guardar = useCallback(
-    async (res: ResultadoRondas) => {
+    async (res: ResultadoJuego) => {
       setFase("guardando")
       setError(null)
+      // La 0008 exige el tiempo y los errores juntos, o ninguno.
+      const conTiempo = res.tiempoMs != null && res.errores != null
       try {
         const g = await guardarPartida(createClient(), {
           ninoId: nino.id,
@@ -128,6 +140,8 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
           total: res.total,
           detalle: res.detalle,
           tareaId,
+          tiempoMs: conTiempo ? res.tiempoMs : null,
+          errores: conTiempo ? res.errores : null,
         })
         setGuardada(g)
         setDesbloqueado(g.gradoHabilitado > habilitado ? g.gradoHabilitado : null)
@@ -151,7 +165,6 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
         setRonda(e.ronda)
         setMomento("pensando")
       } else {
-        setRonda(e.resultado.total - 1)
         setResultado(e.resultado)
         void guardar(e.resultado)
       }
@@ -199,7 +212,7 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
       <AreaLetra as="main" className="container mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pb-12 pt-4 sm:pt-6">
         {/* El lector de pantalla escucha las frases del personaje (las imágenes son decorativas). */}
         <p className="sr-only" aria-live="polite">
-          {fase === "jugando" || fase === "final" ? frase : ""}
+          {(fase === "jugando" && juegoConPersonaje(juego)) || fase === "final" ? frase : ""}
         </p>
 
         {fase === "consigna" && (
@@ -207,9 +220,10 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
             juego={juego}
             nivel={nivel}
             grado={grado}
+            origen={origen}
             modo={modo}
             frase={frase}
-            sinItems={itemsDe(juego, nivel, grado).length === 0 || !Juego}
+            sinItems={sinContenido}
             onComenzar={empezar}
           />
         )}
@@ -222,13 +236,28 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
               unidad={nivelFicha.unidad}
               claseColor={color.zona}
             />
-            <div className="mx-auto grid w-full max-w-5xl gap-4 lg:grid-cols-[15rem_1fr] lg:items-start lg:gap-8">
-              <PersonajeJuego personaje={ficha.personaje} momento={momento} frase={frase} />
+            <div
+              className={cn(
+                "mx-auto grid w-full max-w-5xl gap-4",
+                juegoConPersonaje(juego) && "lg:grid-cols-[15rem_1fr] lg:items-start lg:gap-8",
+              )}
+            >
+              {/* Nombrá rápido va sin personaje: la cuadrícula no debe tener distracciones. */}
+              {juegoConPersonaje(juego) && <PersonajeJuego personaje={ficha.personaje} momento={momento} frase={frase} />}
               <section
                 aria-label={ficha.nombre}
-                className="relative rounded-[2rem] border-2 border-white bg-card/90 p-4 shadow-media sm:p-8"
+                className="relative min-w-0 rounded-[2rem] border-2 border-white bg-card/90 p-4 shadow-media sm:p-8"
               >
-                <Juego key={partida.n} nivel={nivel} grado={grado} items={partida.items} onRonda={alEvento} letra={letra} />
+                <Juego
+                  key={partida.n}
+                  nivel={nivel}
+                  grado={grado}
+                  items={partida.items}
+                  onRonda={alEvento}
+                  letra={letra}
+                  origen={origen}
+                  modo={modo}
+                />
               </section>
             </div>
           </>
@@ -267,6 +296,8 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
             />
           ) : (
             <FinalProfesional
+              juego={juego}
+              conReintento={partidaConReintento(juego, origen)}
               resultado={resultado}
               habilitado={habilitado}
               desbloqueado={desbloqueado}
@@ -379,6 +410,7 @@ function Consigna({
   juego,
   nivel,
   grado,
+  origen,
   modo,
   frase,
   sinItems,
@@ -387,6 +419,7 @@ function Consigna({
   juego: CodigoJuego
   nivel: Nivel
   grado: Grado
+  origen: Origen
   modo: "nino" | "profesional"
   frase: string
   sinItems: boolean
@@ -395,6 +428,7 @@ function Consigna({
   const ficha = JUEGOS[juego]
   const nivelFicha = ficha.niveles[nivel]!
   const color = COLOR_BLOQUE[nivelFicha.bloque]
+  const consigna = consignaDe(nivelFicha, origen)
 
   return (
     // m-auto en el main (flex en columna): personaje y tarjeta juntos y centrados en los dos ejes.
@@ -430,8 +464,8 @@ function Consigna({
           </h2>
         </div>
         <div className="space-y-6 px-6 py-6 sm:px-8 sm:py-8">
-          <p className="text-xl font-medium leading-relaxed text-foreground sm:text-2xl">{nivelFicha.consigna}</p>
-          <BotonEscuchar texto={nivelFicha.consigna} etiqueta="Escuchar la consigna" tamano="chico" velocidad={0.9} />
+          <p className="text-xl font-medium leading-relaxed text-foreground sm:text-2xl">{consigna}</p>
+          <BotonEscuchar texto={consigna} etiqueta="Escuchar la consigna" tamano="chico" velocidad={0.9} />
           {modo === "profesional" && (
             <p className="rounded-2xl border border-border/80 bg-muted/60 px-4 py-3 text-base normal-case">
               <span className="font-bold">En el grado {grado}: </span>
@@ -553,6 +587,8 @@ function Premio({ grado }: { grado: Grado }) {
 }
 
 function FinalProfesional({
+  juego,
+  conReintento,
   resultado,
   habilitado,
   desbloqueado,
@@ -560,7 +596,9 @@ function FinalProfesional({
   onOtraVez,
   volverA,
 }: {
-  resultado: ResultadoRondas
+  juego: CodigoJuego
+  conReintento: boolean
+  resultado: ResultadoJuego
   habilitado: Grado
   desbloqueado: Grado | null
   soloConsulta: boolean
@@ -592,8 +630,19 @@ function FinalProfesional({
             </dd>
           </div>
         </dl>
+        {resultado.tiempoMs != null && resultado.errores != null && (
+          <TiempoYErrores juego={juego} tiempoMs={resultado.tiempoMs} errores={resultado.errores} />
+        )}
         <BarraPorcentaje valor={pct} className="mt-4 h-3" />
-        <p className="mt-3 text-sm text-muted-foreground">Un reintento acertado cuenta como error.</p>
+        {conReintento && <p className="mt-3 text-sm text-muted-foreground">Un reintento acertado cuenta como error.</p>}
+        {juego === "tocalo" && (
+          <p className="mt-3 text-sm text-muted-foreground">
+            El tiempo es el promedio de los toques correctos, desde que Lumo terminó de nombrar el estímulo.
+          </p>
+        )}
+        {juego === "nombra" && (
+          <p className="mt-3 text-sm text-muted-foreground">El tiempo no cuenta para desbloquear grados.</p>
+        )}
         {!soloConsulta && (
           <p className="mt-4 flex items-start gap-2 rounded-2xl border border-border/80 bg-muted/50 px-4 py-3 text-base">
             <Home className="mt-0.5 size-5 shrink-0 text-lavanda-fuerte" aria-hidden="true" />
@@ -614,5 +663,29 @@ function FinalProfesional({
         </Button>
       </div>
     </section>
+  )
+}
+
+/**
+ * Tiempo y errores de los juegos que los miden. En Nombrá rápido, el tiempo
+ * total de las dos cuadrículas (m:ss); en ¡Rápido, tocalo!, el promedio por
+ * toque correcto, en segundos con un decimal (en m:ss saldría siempre 0:01 o 0:02).
+ */
+function TiempoYErrores({ juego, tiempoMs, errores }: { juego: CodigoJuego; tiempoMs: number; errores: number }) {
+  const promedio = juego === "tocalo"
+  const tiempo = promedio
+    ? `${(tiempoMs / 1000).toLocaleString("es-AR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} s`
+    : formatearTiempo(tiempoMs)
+  return (
+    <dl className="mt-3 grid grid-cols-2 gap-3">
+      <div className="rounded-2xl bg-sol-suave px-4 py-3 text-sol-fuerte">
+        <dt className="text-sm font-semibold">{promedio ? "Tiempo promedio" : "Tiempo"}</dt>
+        <dd className="text-3xl font-bold tabular-nums">{tiempo}</dd>
+      </div>
+      <div className="rounded-2xl bg-muted px-4 py-3 text-foreground">
+        <dt className="text-sm font-semibold">Errores</dt>
+        <dd className="text-3xl font-bold tabular-nums">{errores}</dd>
+      </div>
+    </dl>
   )
 }

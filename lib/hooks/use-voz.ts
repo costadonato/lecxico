@@ -6,7 +6,9 @@ import { useAudio } from "@/lib/entrenamiento/use-audio"
 /**
  * Lectura en voz alta del globo de los personajes. Desde S13a usa el
  * reproductor único de la app (lib/entrenamiento/audio.ts): un audio a la
- * vez, con un segundo de silencio antes y la voz en español preferida.
+ * vez, sin espera (arranca apenas se toca el botón; el segundo de silencio
+ * se sacó el 20/11) y con la voz en español preferida. Esto también vale
+ * para el globo durante la evaluación.
  * `disponible` es false en el servidor y en navegadores sin audio.
  */
 export function useVoz({ tono = 1.2, velocidad = 0.9 }: { tono?: number; velocidad?: number } = {}) {

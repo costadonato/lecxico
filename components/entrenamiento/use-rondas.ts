@@ -32,7 +32,7 @@ export function useRondas<I extends { id: string }>(items: I[], onRonda: (e: Eve
     actual.current = despues
     setEstado(despues)
 
-    if (accion.tipo === "responder") {
+    if (accion.tipo === "responder" || accion.tipo === "resolver") {
       avisar.current({
         tipo: "respuesta",
         fase: despues.fase as "acierto" | "reintento" | "respuesta",
@@ -57,8 +57,10 @@ export function useRondas<I extends { id: string }>(items: I[], onRonda: (e: Eve
   return {
     estado,
     item: items[estado.actual] as I | undefined,
-    /** El niño respondió (bien o mal). */
+    /** El niño respondió (bien o mal), con el reintento de rondas.ts. */
     responder: (correcta: boolean) => aplicar({ tipo: "responder", correcta }),
+    /** Resuelve la ronda en un solo intento, sin reintento (acierto o respuesta). */
+    resolver: (correcta: boolean) => aplicar({ tipo: "resolver", correcta }),
     /** Pasa a la ronda siguiente (después de un acierto o de mostrar la respuesta). */
     siguiente: () => aplicar({ tipo: "siguiente" }),
     /** true mientras el niño puede responder. */

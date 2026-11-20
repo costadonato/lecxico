@@ -15,6 +15,11 @@
  *   respuesta  → falló los dos intentos: se muestra la respuesta correcta.
  *   terminada  → no quedan rondas.
  * Desde "acierto" y "respuesta", la acción "siguiente" pasa de ronda.
+ *
+ * Sin reintento (acción "resolver"): la ronda se resuelve en un solo
+ * intento, con intentos: 1. Acierto → "acierto"; error → "respuesta". La
+ * usan Palabras de otro planeta en consulta (el profesional marca Bien o
+ * Mal) y ¡Rápido, tocalo! (el primer toque decide).
  */
 
 export type FaseRonda = "esperando" | "reintento" | "acierto" | "respuesta" | "terminada"
@@ -37,12 +42,19 @@ export interface EstadoRondas {
   detalle: DetalleRonda[]
 }
 
-export type AccionRonda = { tipo: "responder"; correcta: boolean } | { tipo: "siguiente" }
+export type AccionRonda =
+  | { tipo: "responder"; correcta: boolean }
+  | { tipo: "resolver"; correcta: boolean }
+  | { tipo: "siguiente" }
 
-export interface ResultadoRondas {
+export interface ResultadoRondas<D = DetalleRonda> {
   correctas: number
   total: number
-  detalle: DetalleRonda[]
+  /** Una entrada por ronda (o, en Nombrá rápido, por cuadrícula). */
+  detalle: D[]
+  /** Solo los juegos que miden tiempo (Nombrá rápido, ¡Rápido, tocalo!); va junto con errores. */
+  tiempoMs?: number | null
+  errores?: number | null
 }
 
 export function iniciarRondas(items: readonly string[]): EstadoRondas {
@@ -51,6 +63,15 @@ export function iniciarRondas(items: readonly string[]): EstadoRondas {
 
 export function reducirRondas(estado: EstadoRondas, accion: AccionRonda): EstadoRondas {
   const item = estado.items[estado.actual]
+
+  if (accion.tipo === "resolver") {
+    if (estado.fase !== "esperando" && estado.fase !== "reintento") return estado
+    return {
+      ...estado,
+      fase: accion.correcta ? "acierto" : "respuesta",
+      detalle: [...estado.detalle, { item, correcta: accion.correcta, intentos: 1 }],
+    }
+  }
 
   if (accion.tipo === "responder") {
     if (estado.fase === "esperando") {

@@ -106,15 +106,45 @@ export function esCodigoJuego(valor: string): valor is CodigoJuego {
 }
 
 /**
- * Juegos que ya se pueden jugar. Los demás se ven como "Próximamente"
- * (S13b: Memotono, Rompe y une, Palabras de otro planeta, Nombrá rápido y
- * ¡Rápido, tocalo!; S14: el resto). El componente de cada uno está en
+ * Juegos que ya se pueden jugar: los tres de S13a (Detective de sonidos,
+ * Rima y Palmas) y los cinco de S13b (Memotono, Rompe y une, Palabras de
+ * otro planeta, Nombrá rápido y ¡Rápido, tocalo!). Los demás se ven como
+ * "Próximamente" hasta S14. El componente de cada uno está en
  * components/entrenamiento/juegos/.
  */
-export const JUEGOS_DISPONIBLES: readonly CodigoJuego[] = ["detective", "rima", "palmas"]
+export const JUEGOS_DISPONIBLES: readonly CodigoJuego[] = [
+  "detective",
+  "rima",
+  "palmas",
+  "memotono",
+  "rompe",
+  "planeta",
+  "nombra",
+  "tocalo",
+]
 
 export function juegoDisponible(codigo: CodigoJuego): boolean {
   return JUEGOS_DISPONIBLES.includes(codigo)
+}
+
+/**
+ * Juegos que se juegan sin la columna del personaje, a todo el ancho:
+ * Nombrá rápido (la cuadrícula no debe tener distracciones).
+ */
+export const JUEGOS_SIN_PERSONAJE: readonly CodigoJuego[] = ["nombra"]
+
+export function juegoConPersonaje(codigo: CodigoJuego): boolean {
+  return !JUEGOS_SIN_PERSONAJE.includes(codigo)
+}
+
+/**
+ * true si en la partida un error tiene reintento (rondas.ts). No lo tienen
+ * Nombrá rápido, ¡Rápido, tocalo! ni Palabras de otro planeta en consulta
+ * (el profesional marca Bien o Mal).
+ */
+export function partidaConReintento(codigo: CodigoJuego, origen: Origen): boolean {
+  if (codigo === "nombra" || codigo === "tocalo") return false
+  return !(codigo === "planeta" && origen === "consulta")
 }
 
 /**
