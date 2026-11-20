@@ -131,6 +131,16 @@ export const PERSONAJES = {
 export type NombrePersonaje = keyof typeof PERSONAJES
 export type PoseDe<P extends NombrePersonaje> = Extract<keyof (typeof PERSONAJES)[P]["poses"], string>
 
+/**
+ * Cuántas caras entran en el ancho de la imagen (recortada por su encuadre).
+ * Con el ancho = diámetro de cara × esto, todas las poses quedan a la misma
+ * escala. Null si la pose no tiene `cara`.
+ */
+export function anchoPorCara(pose: Pose): number | null {
+  if (!pose.cara) return null
+  return (pose.encuadre?.ancho ?? pose.ancho) / pose.cara.diametro
+}
+
 export function obtenerPose<P extends NombrePersonaje>(personaje: P, pose?: PoseDe<P>): Pose {
   const datos = PERSONAJES[personaje]
   const poses = datos.poses as Record<string, Pose>

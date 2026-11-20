@@ -26,6 +26,13 @@ const TARJETAS = {
     tono: "sol",
     href: "/entrenamiento",
   },
+  entrenar: {
+    title: "Entrenamiento",
+    description: "Jugá con un niño en la consulta",
+    icono: Gamepad2,
+    tono: "sol",
+    href: "/entrenar",
+  },
   perfil: {
     title: "Mi Perfil",
     description: "Tus datos y tu cuenta",
@@ -50,7 +57,7 @@ const TARJETAS = {
 } satisfies Record<string, TarjetaInicio>
 
 const TARJETAS_POR_ROL: Record<Rol, TarjetaInicio[]> = {
-  profesional: [TARJETAS.test, TARJETAS.ninos],
+  profesional: [TARJETAS.test, TARJETAS.entrenar, TARJETAS.ninos],
   nino: [TARJETAS.entrenamiento, TARJETAS.profesionales, TARJETAS.perfil],
 }
 

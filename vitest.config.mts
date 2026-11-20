@@ -27,6 +27,12 @@ export default defineConfig({
         "lib/tutor/errores.ts",
         "lib/tutor/etapa.ts",
         "lib/tutor/validaciones.ts",
+        "lib/entrenamiento/juegos.ts",
+        "lib/entrenamiento/bancos.ts",
+        "lib/entrenamiento/rondas.ts",
+        "lib/entrenamiento/presentacion.ts",
+        "lib/entrenamiento/partidas.ts",
+        "lib/personajes.ts",
       ],
       thresholds: {
         lines: 80,

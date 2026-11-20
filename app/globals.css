@@ -384,6 +384,23 @@
 }
 
 /* ==================================================================
+   LETRA DEL ENTRENAMIENTO (switch "A a")
+   Todo el texto del área de juego en MAYÚSCULA o en minúscula, también el
+   de los botones (el preflight les pone text-transform: none). En la capa
+   base, así lo que lleva normal-case (el propio switch) no cambia.
+   ================================================================== */
+@layer base {
+  [data-letra="mayuscula"],
+  [data-letra="mayuscula"] :where(button, a) {
+    text-transform: uppercase;
+  }
+  [data-letra="minuscula"],
+  [data-letra="minuscula"] :where(button, a) {
+    text-transform: lowercase;
+  }
+}
+
+/* ==================================================================
    ANIMACIONES CSS (las usan los juegos; se conservan)
    ================================================================== */
 @layer utilities {

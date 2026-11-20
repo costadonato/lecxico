@@ -453,15 +453,16 @@ insert into public.test (id, nino_id, profesional_id, nivel, puntaje_total, porc
 values (pruebas.id('tN3'), pruebas.id('N3'), pruebas.id('A'), 'primario', 5, 50);
 insert into public.test_bloque_resultado (test_id, bloque_codigo, orden, correctas, total)
 values (pruebas.id('tN3'), 'discriminacion_auditiva', 1, 3, 5);
-insert into public.entrenamientos (user_id, juego, puntaje)
-values (pruebas.id('N3'), 'rima', 10);
+-- Desde la 0008 la tabla entrenamientos se reemplazó por entrenamiento_partida.
+insert into public.entrenamiento_partida (nino_id, juego, nivel, grado, origen, correctas, total)
+values (pruebas.id('N3'), 'rima', 'primario', 1, 'practica', 5, 8);
 
 select pruebas.ok('8.0 antes de borrar, N3 tiene datos en todas las tablas',
   exists (select 1 from public.profiles where id = pruebas.id('N3'))
   and exists (select 1 from public.ninos where profile_id = pruebas.id('N3'))
   and (select count(*) from public.profesional_nino where nino_id = pruebas.id('N3')) = 2
   and exists (select 1 from public.test_bloque_resultado where test_id = pruebas.id('tN3'))
-  and exists (select 1 from public.entrenamientos where user_id = pruebas.id('N3')));
+  and exists (select 1 from public.entrenamiento_partida where nino_id = pruebas.id('N3')));
 
 -- Lo mismo que hace auth.admin.deleteUser.
 delete from auth.users where id = pruebas.id('N3');
@@ -476,8 +477,8 @@ select pruebas.ok('8.4 no quedan filas en test',
   not exists (select 1 from public.test where nino_id = pruebas.id('N3')));
 select pruebas.ok('8.5 no quedan filas en test_bloque_resultado',
   not exists (select 1 from public.test_bloque_resultado where test_id = pruebas.id('tN3')));
-select pruebas.ok('8.6 no quedan filas en entrenamientos',
-  not exists (select 1 from public.entrenamientos where user_id = pruebas.id('N3')));
+select pruebas.ok('8.6 no quedan partidas del entrenamiento',
+  not exists (select 1 from public.entrenamiento_partida where nino_id = pruebas.id('N3')));
 select pruebas.ok('8.7 los profesionales y los demás niños siguen intactos',
   (select count(*) from public.profiles where id in (pruebas.id('A'), pruebas.id('C'), pruebas.id('N1'))) = 3);
 
