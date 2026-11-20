@@ -15,6 +15,8 @@ import {
   rutasDeImagenes,
   tieneDibujo,
   usaDibujos,
+  type ItemPlaneta,
+  type ItemRompe,
 } from "@/lib/entrenamiento/bancos"
 import { JUEGOS, type Grado, type Nivel } from "@/lib/entrenamiento/juegos"
 
@@ -183,5 +185,55 @@ describe("elegirPartida", () => {
 
   it("funciona con el azar por defecto", () => {
     expect(elegirPartida(items, 3)).toHaveLength(3)
+  })
+})
+
+describe("banco de Rompe y une", () => {
+  /** Sin tildes ni diéresis y en minúscula (la ñ se compara igual de los dos lados). */
+  const plano = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
+
+  for (const g of GRADOS) {
+    it(`grado ${g}: las sílabas forman la palabra y el relleno tiene ${g} sílaba(s) que no están entre las correctas`, () => {
+      const items = itemsCrudos("rompe", "primario", g) as unknown as ItemRompe[]
+      expect(items.length).toBeGreaterThanOrEqual(JUEGOS.rompe.niveles.primario!.partida[g])
+      for (const i of items) {
+        expect(plano(i.silabas.join("")), i.id).toBe(plano(i.palabra))
+        for (const s of [...i.silabas, ...i.relleno]) expect(s, i.id).toBe(s.toUpperCase())
+        expect(i.relleno, i.id).toHaveLength(g)
+        for (const r of i.relleno) expect(i.silabas, `${i.id}: ${r}`).not.toContain(r)
+      }
+    })
+  }
+
+  it("el grado 3 tiene hasta 5 casilleros y 8 fichas", () => {
+    const items = itemsCrudos("rompe", "primario", 3) as unknown as ItemRompe[]
+    expect(Math.max(...items.map((i) => i.silabas.length))).toBeLessThanOrEqual(5)
+    expect(Math.max(...items.map((i) => i.silabas.length + i.relleno.length))).toBeLessThanOrEqual(8)
+  })
+
+  it("usa dibujos y los ids no se repiten", () => {
+    expect(usaDibujos("rompe", "primario")).toBe(true)
+    const ids = GRADOS.flatMap((g) => itemsCrudos("rompe", "primario", g).map((i) => i.id))
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+})
+
+describe("banco de Palabras de otro planeta", () => {
+  it("2 distractores por ítem, distintos de la palabra y entre sí", () => {
+    for (const g of GRADOS) {
+      const items = itemsCrudos("planeta", "primario", g) as unknown as ItemPlaneta[]
+      expect(items.length).toBeGreaterThanOrEqual(JUEGOS.planeta.niveles.primario!.partida[g])
+      for (const i of items) {
+        expect(i.distractores, i.id).toHaveLength(2)
+        expect(i.distractores, i.id).not.toContain(i.palabra)
+        expect(i.distractores[0], i.id).not.toBe(i.distractores[1])
+      }
+    }
+  })
+
+  it("no usa dibujos y los ids no se repiten", () => {
+    expect(usaDibujos("planeta", "primario")).toBe(false)
+    const ids = GRADOS.flatMap((g) => itemsCrudos("planeta", "primario", g).map((i) => i.id))
+    expect(new Set(ids).size).toBe(ids.length)
   })
 })

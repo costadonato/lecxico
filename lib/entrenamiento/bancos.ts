@@ -36,11 +36,28 @@ export interface ItemPalmas {
   silabas: number
 }
 
-/** Tipo de los ítems de cada juego que ya está construido. */
+/** Rompe y une: la palabra, sus sílabas en orden (en mayúscula) y las sílabas de relleno. */
+export interface ItemRompe {
+  id: string
+  palabra: string
+  silabas: string[]
+  relleno: string[]
+}
+
+/** Palabras de otro planeta: la pseudopalabra y dos distractores. */
+export interface ItemPlaneta {
+  id: string
+  palabra: string
+  distractores: string[]
+}
+
+/** Tipo de los ítems de cada juego construido que tiene banco por grado. */
 export interface ItemsPorJuego {
   detective: ItemDetective
   rima: ItemRima
   palmas: ItemPalmas
+  rompe: ItemRompe
+  planeta: ItemPlaneta
 }
 
 export type JuegoConBanco = keyof ItemsPorJuego
@@ -101,6 +118,9 @@ const PALABRAS_CON_DIBUJO: Partial<Record<CodigoJuego, Partial<Record<Nivel, (it
   },
   palmas: {
     inicial: (i) => [i.palabra as string],
+  },
+  rompe: {
+    primario: (i) => [i.palabra as string],
   },
 }
 

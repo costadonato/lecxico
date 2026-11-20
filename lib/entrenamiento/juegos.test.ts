@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import { describe, expect, it } from "vitest"
 
-import { JUEGOS, gradoTrasPartida, juegosDelNivel, porcentaje, type Grado } from "@/lib/entrenamiento/juegos"
+import { JUEGOS, consignaDe, gradoTrasPartida, juegosDelNivel, porcentaje, type Grado } from "@/lib/entrenamiento/juegos"
 import { BLOQUES_POR_NIVEL, type Nivel } from "@/lib/test/bloques"
 
 /** Filas del insert de entrenamiento_juego en la 0008: código, niveles y solo_consulta. */
@@ -124,5 +124,19 @@ describe("gradoTrasPartida", () => {
 
   it("las partidas de una misión no desbloquean", () => {
     expect(gradoTrasPartida(1, 1, 100, true)).toBe(1)
+  })
+})
+
+describe("consignaDe", () => {
+  it("Palabras de otro planeta tiene su consigna para la consulta", () => {
+    const ficha = JUEGOS.planeta.niveles.primario!
+    expect(consignaDe(ficha, "consulta")).toMatch(/en voz alta/)
+    expect(consignaDe(ficha, "practica")).toBe(ficha.consigna)
+    expect(consignaDe(ficha, "tarea")).toBe(ficha.consigna)
+  })
+
+  it("los demás juegos usan la misma consigna en todos los orígenes", () => {
+    const ficha = JUEGOS.detective.niveles.inicial!
+    expect(consignaDe(ficha, "consulta")).toBe(ficha.consigna)
   })
 })

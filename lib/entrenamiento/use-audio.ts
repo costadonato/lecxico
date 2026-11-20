@@ -6,6 +6,7 @@ import {
   audioDisponible,
   cargarManifiesto,
   decir as decirAudio,
+  decirSecuencia as decirSecuenciaAudio,
   detener as detenerAudio,
   obtenerEstado,
   obtenerEstadoServidor,
@@ -15,12 +16,16 @@ import {
 /**
  * Acceso de un componente al reproductor único (lib/entrenamiento/audio.ts).
  *
- *   const { decir, detener, hablando } = useAudio()
+ *   const { decir, decirSecuencia, detener, hablando } = useAudio()
  *   <button onClick={() => decir("vaca")}>Escuchar</button>
+ *   <button onClick={() => decirSecuencia(["bota", "mono"], { pausaMs: 700, alTerminar })}>…</button>
  *
- * `hablando` es true solo mientras suena (o espera su segundo de silencio)
- * un audio que pidió ESTE componente; `sonando`, si suena cualquiera. Al
- * desmontarse, corta su propio audio.
+ * El audio arranca enseguida, sin espera. `alTerminar` se llama solo si el
+ * audio (o la secuencia entera) termina solo, no si se corta.
+ *
+ * `hablando` es true solo mientras suena un audio (o una secuencia, de
+ * principio a fin) que pidió ESTE componente; `sonando`, si suena
+ * cualquiera. Al desmontarse, corta su propio audio.
  */
 export function useAudio({ tono }: { tono?: number } = {}) {
   const dueno = useId()
@@ -36,12 +41,20 @@ export function useAudio({ tono }: { tono?: number } = {}) {
   }, [dueno])
 
   const decir = useCallback(
-    (texto: string, opciones: { velocidad?: number } = {}) => decirAudio(texto, { ...opciones, tono, dueno }),
+    (texto: string, opciones: { velocidad?: number; alTerminar?: () => void } = {}) =>
+      decirAudio(texto, { ...opciones, tono, dueno }),
+    [dueno, tono],
+  )
+
+  const decirSecuencia = useCallback(
+    (textos: readonly string[], opciones: { velocidad?: number; pausaMs?: number; alTerminar?: () => void } = {}) =>
+      decirSecuenciaAudio(textos, { ...opciones, tono, dueno }),
     [dueno, tono],
   )
 
   return {
     decir,
+    decirSecuencia,
     detener: detenerAudio,
     hablando: estado.dueno === dueno,
     sonando: estado.dueno !== null,

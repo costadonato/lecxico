@@ -8,8 +8,8 @@
  * además el detalle de cada uno (tiempo y errores por separado).
  */
 import {
-  CICLO_CATEGORIAS,
   buscarEstimulo,
+  cicloDe,
   type ConfigDenominacion,
   type EjercicioDenominacion,
 } from "@/lib/test/denominacion-config"
@@ -88,7 +88,8 @@ export function formatearTiempo(ms: number): string {
  * (lista vacía = válida):
  * - largo = filas × columnas;
  * - solo estímulos del nivel;
- * - ciclo de categorías letra → número → color, de corrido;
+ * - ciclo de categorías de corrido (en la evaluación, letra → número →
+ *   color; si la configuración trae su propio `ciclo`, ese);
  * - cada estímulo de una categoría aparece una cantidad pareja de veces
  *   (diferencia máxima de 1 entre el más y el menos usado);
  * - un estímulo no se repite en dos apariciones seguidas de su categoría.
@@ -101,6 +102,7 @@ export function validarSecuencia(config: ConfigDenominacion, ejercicio: Ejercici
     problemas.push(`Tiene ${secuencia.length} estímulos y debería tener ${filas * columnas}.`)
   }
 
+  const ciclo = cicloDe(config)
   const usos = new Map<string, number>()
   const anterior = new Map<string, string>()
 
@@ -110,7 +112,7 @@ export function validarSecuencia(config: ConfigDenominacion, ejercicio: Ejercici
       problemas.push(`Posición ${i + 1}: "${valor}" no es un estímulo del nivel.`)
       return
     }
-    const esperada = CICLO_CATEGORIAS[i % CICLO_CATEGORIAS.length]
+    const esperada = ciclo[i % ciclo.length]
     if (estimulo.categoria !== esperada) {
       problemas.push(`Posición ${i + 1}: se esperaba ${esperada} y hay ${estimulo.categoria}.`)
     }
@@ -121,8 +123,8 @@ export function validarSecuencia(config: ConfigDenominacion, ejercicio: Ejercici
     usos.set(valor, (usos.get(valor) ?? 0) + 1)
   })
 
-  for (const categoria of CICLO_CATEGORIAS) {
-    const conteos = config.estimulos[categoria].map((e) => usos.get(e.valor) ?? 0)
+  for (const categoria of ciclo) {
+    const conteos = (config.estimulos[categoria] ?? []).map((e) => usos.get(e.valor) ?? 0)
     if (Math.max(...conteos) - Math.min(...conteos) > 1) {
       problemas.push(`Los estímulos de ${categoria} no aparecen una cantidad pareja de veces (${conteos.join(", ")}).`)
     }

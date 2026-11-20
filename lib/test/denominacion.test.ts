@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest"
 
 import type { Nivel } from "@/lib/test/bloques"
 import {
+  CICLO_CATEGORIAS,
   DENOMINACION_POR_NIVEL,
   buscarEstimulo,
+  cicloDe,
   type ConfigDenominacion,
   type EjercicioDenominacion,
 } from "@/lib/test/denominacion-config"
@@ -200,5 +202,48 @@ describe("validarSecuencia: cada regla", () => {
     )
     expect(problemas).toContain("Los estímulos de color no aparecen una cantidad pareja de veces (3, 0).")
     expect(problemas.some((p) => p.includes("letra no aparecen"))).toBe(false)
+  })
+})
+
+describe("configuraciones con su propio ciclo (entrenamiento, S13b)", () => {
+  const CON_DIBUJOS: ConfigDenominacion = {
+    ...CONFIG,
+    ciclo: ["color", "dibujo"],
+    estimulos: {
+      color: [
+        { categoria: "color", valor: "rojo", nombre: "rojo" },
+        { categoria: "color", valor: "azul", nombre: "azul" },
+      ],
+      dibujo: [
+        { categoria: "dibujo", valor: "flor", nombre: "flor" },
+        { categoria: "dibujo", valor: "tren", nombre: "tren" },
+      ],
+    },
+  }
+
+  it("cicloDe usa el ciclo propio o, sin él, el de la evaluación", () => {
+    expect(cicloDe(CON_DIBUJOS)).toEqual(["color", "dibujo"])
+    expect(cicloDe(CONFIG)).toEqual(CICLO_CATEGORIAS)
+  })
+
+  it("buscarEstimulo encuentra los dibujos y no las categorías que la configuración no tiene", () => {
+    expect(buscarEstimulo(CON_DIBUJOS, "flor")?.categoria).toBe("dibujo")
+    expect(buscarEstimulo(CON_DIBUJOS, "A")).toBeUndefined()
+  })
+
+  it("validarSecuencia sigue el ciclo propio", () => {
+    expect(validarSecuencia(CON_DIBUJOS, ejercicio(["rojo", "flor", "azul", "tren"], 2, 2))).toEqual([])
+    expect(validarSecuencia(CON_DIBUJOS, ejercicio(["flor", "rojo", "tren", "azul"], 2, 2))).toContain(
+      "Posición 1: se esperaba color y hay dibujo.",
+    )
+  })
+
+  it("una categoría del ciclo sin estímulos solo marca las posiciones", () => {
+    const sinDibujos: ConfigDenominacion = { ...CON_DIBUJOS, estimulos: { color: CON_DIBUJOS.estimulos.color } }
+    const problemas = validarSecuencia(sinDibujos, ejercicio(["rojo", "flor", "azul", "tren"], 2, 2))
+    expect(problemas).toEqual([
+      'Posición 2: "flor" no es un estímulo del nivel.',
+      'Posición 4: "tren" no es un estímulo del nivel.',
+    ])
   })
 })

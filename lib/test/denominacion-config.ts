@@ -30,9 +30,13 @@
  */
 import type { Nivel } from "@/lib/test/bloques"
 
-export type CategoriaEstimulo = "letra" | "numero" | "color"
+/**
+ * "dibujo" la usa solo el entrenamiento (Nombrá rápido y ¡Rápido, tocalo!,
+ * S13b): se dibuja con <Dibujo>. La evaluación no tiene dibujos.
+ */
+export type CategoriaEstimulo = "letra" | "numero" | "color" | "dibujo"
 
-/** Orden fijo en que se alternan las categorías en la cuadrícula. */
+/** Orden fijo en que se alternan las categorías en la cuadrícula de la evaluación. */
 export const CICLO_CATEGORIAS: readonly CategoriaEstimulo[] = ["letra", "numero", "color"]
 
 export interface Estimulo {
@@ -66,8 +70,13 @@ export interface TextosDenominacion {
 }
 
 export interface ConfigDenominacion {
-  /** Estímulos del nivel, por categoría. */
-  estimulos: Record<CategoriaEstimulo, readonly Estimulo[]>
+  /** Estímulos del nivel, por categoría (solo las que usa la configuración). */
+  estimulos: Partial<Record<CategoriaEstimulo, readonly Estimulo[]>>
+  /**
+   * Orden en que se alternan las categorías. Por defecto, CICLO_CATEGORIAS
+   * (la evaluación). El entrenamiento usa otros (por ejemplo, color → letra).
+   */
+  ciclo?: readonly CategoriaEstimulo[]
   /** Los ejercicios del bloque, en el orden en que se toman. */
   ejercicios: readonly EjercicioDenominacion[]
   /** Fila de práctica: un estímulo de cada categoría. */
@@ -110,7 +119,12 @@ const NUMEROS: readonly Estimulo[] = [
 
 const COLORES: readonly Estimulo[] = [color("rojo"), color("azul"), color("verde"), color("amarillo"), color("negro")]
 
-export const DENOMINACION_POR_NIVEL: Record<Nivel, ConfigDenominacion> = {
+/** Configuración de la evaluación: siempre con letras, números y colores. */
+export type ConfigDenominacionEvaluacion = ConfigDenominacion & {
+  estimulos: Record<"letra" | "numero" | "color", readonly Estimulo[]>
+}
+
+export const DENOMINACION_POR_NIVEL: Record<Nivel, ConfigDenominacionEvaluacion> = {
   primario: {
     estimulos: {
       letra: [letra("A", "a"), letra("E", "e"), letra("S", "ese"), letra("D", "de"), letra("P", "pe")],
@@ -190,7 +204,14 @@ export const DENOMINACION_POR_NIVEL: Record<Nivel, ConfigDenominacion> = {
   },
 }
 
+/** Categorías de la configuración, en el orden en que se alternan. */
+export function cicloDe(config: ConfigDenominacion): readonly CategoriaEstimulo[] {
+  return config.ciclo ?? CICLO_CATEGORIAS
+}
+
 /** Estímulo de `valor` en el nivel de `config` (undefined si no es del nivel). */
 export function buscarEstimulo(config: ConfigDenominacion, valor: string): Estimulo | undefined {
-  return CICLO_CATEGORIAS.flatMap((c) => config.estimulos[c]).find((e) => e.valor === valor)
+  return cicloDe(config)
+    .flatMap((c) => config.estimulos[c] ?? [])
+    .find((e) => e.valor === valor)
 }
