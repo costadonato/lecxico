@@ -71,6 +71,7 @@ const NINO: Nino = {
   etapa_escolar: "sala_5",
   tutor_email: "tutor@prueba.test",
   tutor_telefono: null,
+  letra_entrenamiento: "mayuscula",
   ultima_conexion: null,
   ultimo_entrenamiento: null,
   ultima_prueba: null,

@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next"
 import { Lexend } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
+import { DetenerAudioAlNavegar } from "@/components/detener-audio-al-navegar"
 import { ProveedorMovimiento } from "@/components/motion/proveedor-movimiento"
 import { SITIO_URL } from "@/lib/sitio"
 import "./globals.css"
@@ -76,6 +77,7 @@ export default function RootLayout({
         <ProveedorMovimiento>
           <Suspense fallback={null}>{children}</Suspense>
         </ProveedorMovimiento>
+        <DetenerAudioAlNavegar />
         <Analytics />
       </body>
     </html>

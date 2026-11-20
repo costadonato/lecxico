@@ -1,14 +1,14 @@
 /**
  * Datos del detalle de un niño y de sus evaluaciones, para el profesional.
  * Son consultas directas con la RLS: el profesional solo lee perfil, ninos,
- * evaluaciones, bloques y entrenamientos de un niño con vínculo ACTIVO. El
+ * evaluaciones, bloques y partidas del entrenamiento de un niño con vínculo ACTIVO. El
  * niño no lee ninguna evaluación, ni las suyas (0007, S10).
  * Si algo no se puede leer se devuelve "sin-acceso", sin distinguir entre
  * "no existe" y "no se tiene acceso".
  */
 import type { SupabaseClient } from "@supabase/supabase-js"
 import { createClient } from "@/lib/supabase/client"
-import type { Entrenamiento, Nino, Profile, Test, TestBloqueResultado } from "@/lib/types/database"
+import type { EntrenamientoPartida, Nino, Profile, Test, TestBloqueResultado } from "@/lib/types/database"
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -27,9 +27,24 @@ export interface DetalleNino {
    * las de todos si el tutor compartió el historial.
    */
   tests: TestConBloques[]
-  /** Del más reciente al más viejo. */
-  entrenamientos: Entrenamiento[]
+  /**
+   * Las últimas partidas del entrenamiento que el profesional puede ver
+   * (0008: la práctica, siempre; consulta y tareas, según el historial
+   * compartido), de la más reciente a la más vieja.
+   */
+  partidas: PartidaHistorial[]
+  /** Cantidad total de partidas visibles (no solo las de `partidas`). */
+  totalPartidas: number
 }
+
+/** Columnas de una partida que muestra el historial. */
+export type PartidaHistorial = Pick<
+  EntrenamientoPartida,
+  "id" | "juego" | "grado" | "origen" | "correctas" | "total" | "porcentaje" | "created_at"
+>
+
+/** Cuántas partidas muestra el historial de /ninos/[id]. */
+export const PARTIDAS_EN_HISTORIAL = 20
 
 function lanzar(error: { message: string } | null) {
   if (error) throw new Error(error.message || "No se pudo cargar la información.")
@@ -92,7 +107,7 @@ export async function cargarDetalleNino(ninoId: string): Promise<ResultadoCarga<
   const perfil = await perfilVisible(ninoId)
   if (!perfil) return { estado: "sin-acceso" }
 
-  const [ninoRes, vinculoRes, tests, entrenamientosRes] = await Promise.all([
+  const [ninoRes, vinculoRes, tests, partidasRes] = await Promise.all([
     supabase.from("ninos").select("*").eq("profile_id", ninoId).maybeSingle<Nino>(),
     supabase
       .from("profesional_nino")
@@ -102,11 +117,16 @@ export async function cargarDetalleNino(ninoId: string): Promise<ResultadoCarga<
       .eq("estado", "activa")
       .maybeSingle<{ id: string; fecha_afiliacion: string | null; comparte_historial: boolean }>(),
     cargarTestsConBloques(supabase, ninoId),
-    supabase.from("entrenamientos").select("*").eq("user_id", ninoId).order("created_at", { ascending: false }),
+    supabase
+      .from("entrenamiento_partida")
+      .select("id, juego, grado, origen, correctas, total, porcentaje, created_at", { count: "exact" })
+      .eq("nino_id", ninoId)
+      .order("created_at", { ascending: false })
+      .limit(PARTIDAS_EN_HISTORIAL),
   ])
   lanzar(ninoRes.error)
   lanzar(vinculoRes.error)
-  lanzar(entrenamientosRes.error)
+  lanzar(partidasRes.error)
   if (!ninoRes.data || !vinculoRes.data) return { estado: "sin-acceso" }
 
   return {
@@ -116,8 +136,46 @@ export async function cargarDetalleNino(ninoId: string): Promise<ResultadoCarga<
       nino: ninoRes.data,
       vinculo: vinculoRes.data,
       tests,
-      entrenamientos: (entrenamientosRes.data ?? []) as Entrenamiento[],
+      partidas: (partidasRes.data ?? []) as PartidaHistorial[],
+      totalPartidas: partidasRes.count ?? (partidasRes.data ?? []).length,
     },
+  }
+}
+
+export interface NinoParaEntrenar {
+  perfil: Pick<Profile, "id" | "nombre" | "apellido">
+  nino: Nino
+}
+
+/**
+ * El niño para el modo en consulta: solo si el profesional actual tiene un
+ * vínculo ACTIVO con él. Si no, "sin-acceso" (sin decir si existe).
+ */
+export async function cargarNinoParaEntrenar(ninoId: string): Promise<ResultadoCarga<NinoParaEntrenar>> {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { estado: "sin-acceso" }
+
+  const perfil = await perfilVisible(ninoId)
+  if (!perfil) return { estado: "sin-acceso" }
+
+  const [ninoRes, vinculoRes] = await Promise.all([
+    supabase.from("ninos").select("*").eq("profile_id", ninoId).maybeSingle<Nino>(),
+    supabase
+      .from("profesional_nino")
+      .select("id")
+      .eq("profesional_id", user.id)
+      .eq("nino_id", ninoId)
+      .eq("estado", "activa")
+      .maybeSingle<{ id: string }>(),
+  ])
+  lanzar(ninoRes.error)
+  lanzar(vinculoRes.error)
+  if (!ninoRes.data || !vinculoRes.data) return { estado: "sin-acceso" }
+
+  return {
+    estado: "listo",
+    datos: { perfil: { id: perfil.id, nombre: perfil.nombre, apellido: perfil.apellido }, nino: ninoRes.data },
   }
 }
 

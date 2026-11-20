@@ -1,0 +1,7582 @@
+{
+ "version": "borrador-2026-11-19",
+ "bancos": {
+  "detective": {
+   "inicial": {
+    "1": [
+     {
+      "id": "DET-I1-01",
+      "palabra": "vaca",
+      "distractores": [
+       "tren",
+       "escoba"
+      ]
+     },
+     {
+      "id": "DET-I1-02",
+      "palabra": "oso",
+      "distractores": [
+       "campana",
+       "zapatilla"
+      ]
+     },
+     {
+      "id": "DET-I1-03",
+      "palabra": "mono",
+      "distractores": [
+       "estrella",
+       "cuchara"
+      ]
+     },
+     {
+      "id": "DET-I1-04",
+      "palabra": "pingüino",
+      "distractores": [
+       "torta",
+       "llave"
+      ]
+     },
+     {
+      "id": "DET-I1-05",
+      "palabra": "ballena",
+      "distractores": [
+       "lupa",
+       "reloj"
+      ]
+     },
+     {
+      "id": "DET-I1-06",
+      "palabra": "tortuga",
+      "distractores": [
+       "globo",
+       "piano"
+      ]
+     },
+     {
+      "id": "DET-I1-07",
+      "palabra": "pulpo",
+      "distractores": [
+       "vela",
+       "anteojos"
+      ]
+     },
+     {
+      "id": "DET-I1-08",
+      "palabra": "banana",
+      "distractores": [
+       "robot",
+       "oreja"
+      ]
+     },
+     {
+      "id": "DET-I1-09",
+      "palabra": "uva",
+      "distractores": [
+       "camión",
+       "sombrero"
+      ]
+     },
+     {
+      "id": "DET-I1-10",
+      "palabra": "frutilla",
+      "distractores": [
+       "avión",
+       "dinosaurio"
+      ]
+     },
+     {
+      "id": "DET-I1-11",
+      "palabra": "helado",
+      "distractores": [
+       "tambor",
+       "piano"
+      ]
+     },
+     {
+      "id": "DET-I1-12",
+      "palabra": "torta",
+      "distractores": [
+       "mochila",
+       "león"
+      ]
+     },
+     {
+      "id": "DET-I1-13",
+      "palabra": "globo",
+      "distractores": [
+       "araña",
+       "zanahoria"
+      ]
+     },
+     {
+      "id": "DET-I1-14",
+      "palabra": "regalo",
+      "distractores": [
+       "moto",
+       "queso"
+      ]
+     },
+     {
+      "id": "DET-I1-15",
+      "palabra": "llave",
+      "distractores": [
+       "hongo",
+       "payaso"
+      ]
+     },
+     {
+      "id": "DET-I1-16",
+      "palabra": "reloj",
+      "distractores": [
+       "cactus",
+       "bebé"
+      ]
+     },
+     {
+      "id": "DET-I1-17",
+      "palabra": "corona",
+      "distractores": [
+       "jabón",
+       "tiburón"
+      ]
+     },
+     {
+      "id": "DET-I1-18",
+      "palabra": "bota",
+      "distractores": [
+       "caracol",
+       "medialuna"
+      ]
+     },
+     {
+      "id": "DET-I1-19",
+      "palabra": "paraguas",
+      "distractores": [
+       "huevo",
+       "tigre"
+      ]
+     },
+     {
+      "id": "DET-I1-20",
+      "palabra": "tijera",
+      "distractores": [
+       "moño",
+       "choclo"
+      ]
+     },
+     {
+      "id": "DET-I1-21",
+      "palabra": "campana",
+      "distractores": [
+       "oso",
+       "fuego"
+      ]
+     },
+     {
+      "id": "DET-I1-22",
+      "palabra": "guitarra",
+      "distractores": [
+       "abuela",
+       "lupa"
+      ]
+     },
+     {
+      "id": "DET-I1-23",
+      "palabra": "cohete",
+      "distractores": [
+       "uva",
+       "martillo"
+      ]
+     },
+     {
+      "id": "DET-I1-24",
+      "palabra": "escoba",
+      "distractores": [
+       "delfín",
+       "nariz"
+      ]
+     }
+    ],
+    "2": [
+     {
+      "id": "DET-I2-01",
+      "palabra": "caja",
+      "distractores": [
+       "caracol",
+       "camión"
+      ]
+     },
+     {
+      "id": "DET-I2-02",
+      "palabra": "caramelo",
+      "distractores": [
+       "camello",
+       "caja"
+      ]
+     },
+     {
+      "id": "DET-I2-03",
+      "palabra": "payaso",
+      "distractores": [
+       "paraguas",
+       "paloma"
+      ]
+     },
+     {
+      "id": "DET-I2-04",
+      "palabra": "pájaro",
+      "distractores": [
+       "papa",
+       "pavo"
+      ]
+     },
+     {
+      "id": "DET-I2-05",
+      "palabra": "mago",
+      "distractores": [
+       "mapa",
+       "maní"
+      ]
+     },
+     {
+      "id": "DET-I2-06",
+      "palabra": "coco",
+      "distractores": [
+       "corona",
+       "cohete"
+      ]
+     },
+     {
+      "id": "DET-I2-07",
+      "palabra": "medalla",
+      "distractores": [
+       "melón",
+       "medialuna"
+      ]
+     },
+     {
+      "id": "DET-I2-08",
+      "palabra": "mono",
+      "distractores": [
+       "moto",
+       "mochila"
+      ]
+     },
+     {
+      "id": "DET-I2-09",
+      "palabra": "ballena",
+      "distractores": [
+       "banana",
+       "bañadera"
+      ]
+     },
+     {
+      "id": "DET-I2-10",
+      "palabra": "vela",
+      "distractores": [
+       "velero",
+       "ventana"
+      ]
+     },
+     {
+      "id": "DET-I2-11",
+      "palabra": "león",
+      "distractores": [
+       "lechuga",
+       "leche"
+      ]
+     },
+     {
+      "id": "DET-I2-12",
+      "palabra": "tiburón",
+      "distractores": [
+       "tijera",
+       "tigre"
+      ]
+     },
+     {
+      "id": "DET-I2-13",
+      "palabra": "zapatilla",
+      "distractores": [
+       "zanahoria",
+       "zorro"
+      ]
+     },
+     {
+      "id": "DET-I2-14",
+      "palabra": "regalo",
+      "distractores": [
+       "reloj",
+       "remera"
+      ]
+     },
+     {
+      "id": "DET-I2-15",
+      "palabra": "escoba",
+      "distractores": [
+       "estrella",
+       "escalera"
+      ]
+     },
+     {
+      "id": "DET-I2-16",
+      "palabra": "cereza",
+      "distractores": [
+       "cepillo",
+       "cebolla"
+      ]
+     },
+     {
+      "id": "DET-I2-17",
+      "palabra": "chocolate",
+      "distractores": [
+       "choclo",
+       "chupetín"
+      ]
+     },
+     {
+      "id": "DET-I2-18",
+      "palabra": "pingüino",
+      "distractores": [
+       "piano",
+       "pizza"
+      ]
+     },
+     {
+      "id": "DET-I2-19",
+      "palabra": "tortuga",
+      "distractores": [
+       "torta",
+       "tobogán"
+      ]
+     },
+     {
+      "id": "DET-I2-20",
+      "palabra": "guitarra",
+      "distractores": [
+       "guantes",
+       "gorra"
+      ]
+     },
+     {
+      "id": "DET-I2-21",
+      "palabra": "fantasma",
+      "distractores": [
+       "fuego",
+       "foca"
+      ]
+     },
+     {
+      "id": "DET-I2-22",
+      "palabra": "sirena",
+      "distractores": [
+       "sillón",
+       "cisne"
+      ]
+     },
+     {
+      "id": "DET-I2-23",
+      "palabra": "patín",
+      "distractores": [
+       "patrullero",
+       "palmera"
+      ]
+     },
+     {
+      "id": "DET-I2-24",
+      "palabra": "dragón",
+      "distractores": [
+       "dinosaurio",
+       "diente"
+      ]
+     }
+    ],
+    "3": [
+     {
+      "id": "DET-I3-01",
+      "palabra": "bota",
+      "distractores": [
+       "gota",
+       "boca"
+      ]
+     },
+     {
+      "id": "DET-I3-02",
+      "palabra": "gota",
+      "distractores": [
+       "bota",
+       "gorra"
+      ]
+     },
+     {
+      "id": "DET-I3-03",
+      "palabra": "boca",
+      "distractores": [
+       "foca",
+       "bota"
+      ]
+     },
+     {
+      "id": "DET-I3-04",
+      "palabra": "foca",
+      "distractores": [
+       "boca",
+       "coco"
+      ]
+     },
+     {
+      "id": "DET-I3-05",
+      "palabra": "queso",
+      "distractores": [
+       "hueso",
+       "huevo"
+      ]
+     },
+     {
+      "id": "DET-I3-06",
+      "palabra": "hueso",
+      "distractores": [
+       "queso",
+       "huevo"
+      ]
+     },
+     {
+      "id": "DET-I3-07",
+      "palabra": "huevo",
+      "distractores": [
+       "hueso",
+       "queso"
+      ]
+     },
+     {
+      "id": "DET-I3-08",
+      "palabra": "mapa",
+      "distractores": [
+       "papa",
+       "mago"
+      ]
+     },
+     {
+      "id": "DET-I3-09",
+      "palabra": "papa",
+      "distractores": [
+       "mapa",
+       "capa"
+      ]
+     },
+     {
+      "id": "DET-I3-10",
+      "palabra": "capa",
+      "distractores": [
+       "mapa",
+       "tapa"
+      ]
+     },
+     {
+      "id": "DET-I3-11",
+      "palabra": "tapa",
+      "distractores": [
+       "capa",
+       "papa"
+      ]
+     },
+     {
+      "id": "DET-I3-12",
+      "palabra": "gallo",
+      "distractores": [
+       "rayo",
+       "galletita"
+      ]
+     },
+     {
+      "id": "DET-I3-13",
+      "palabra": "rayo",
+      "distractores": [
+       "gallo",
+       "radio"
+      ]
+     },
+     {
+      "id": "DET-I3-14",
+      "palabra": "mono",
+      "distractores": [
+       "moño",
+       "moto"
+      ]
+     },
+     {
+      "id": "DET-I3-15",
+      "palabra": "moto",
+      "distractores": [
+       "mono",
+       "moño"
+      ]
+     },
+     {
+      "id": "DET-I3-16",
+      "palabra": "moño",
+      "distractores": [
+       "mono",
+       "moto"
+      ]
+     },
+     {
+      "id": "DET-I3-17",
+      "palabra": "ojo",
+      "distractores": [
+       "oso",
+       "hoja"
+      ]
+     },
+     {
+      "id": "DET-I3-18",
+      "palabra": "oso",
+      "distractores": [
+       "ojo",
+       "hoja"
+      ]
+     },
+     {
+      "id": "DET-I3-19",
+      "palabra": "hoja",
+      "distractores": [
+       "ojo",
+       "ola"
+      ]
+     },
+     {
+      "id": "DET-I3-20",
+      "palabra": "ola",
+      "distractores": [
+       "hoja",
+       "oso"
+      ]
+     },
+     {
+      "id": "DET-I3-21",
+      "palabra": "vela",
+      "distractores": [
+       "tela",
+       "velero"
+      ]
+     },
+     {
+      "id": "DET-I3-22",
+      "palabra": "tela",
+      "distractores": [
+       "vela",
+       "lana"
+      ]
+     },
+     {
+      "id": "DET-I3-23",
+      "palabra": "lana",
+      "distractores": [
+       "lata",
+       "llama"
+      ]
+     },
+     {
+      "id": "DET-I3-24",
+      "palabra": "lata",
+      "distractores": [
+       "lana",
+       "papa"
+      ]
+     }
+    ]
+   },
+   "primario": {
+    "1": [
+     {
+      "id": "DET-P1-01",
+      "palabra": "paloma",
+      "distractores": [
+       "paraguas",
+       "payaso"
+      ]
+     },
+     {
+      "id": "DET-P1-02",
+      "palabra": "caracol",
+      "distractores": [
+       "caramelo",
+       "camello"
+      ]
+     },
+     {
+      "id": "DET-P1-03",
+      "palabra": "medialuna",
+      "distractores": [
+       "medalla",
+       "melón"
+      ]
+     },
+     {
+      "id": "DET-P1-04",
+      "palabra": "mochila",
+      "distractores": [
+       "monopatín",
+       "moño"
+      ]
+     },
+     {
+      "id": "DET-P1-05",
+      "palabra": "corona",
+      "distractores": [
+       "cocinero",
+       "colectivo"
+      ]
+     },
+     {
+      "id": "DET-P1-06",
+      "palabra": "ballena",
+      "distractores": [
+       "banana",
+       "bañadera"
+      ]
+     },
+     {
+      "id": "DET-P1-07",
+      "palabra": "tiburón",
+      "distractores": [
+       "tijera",
+       "tigre"
+      ]
+     },
+     {
+      "id": "DET-P1-08",
+      "palabra": "regalo",
+      "distractores": [
+       "remera",
+       "regla"
+      ]
+     },
+     {
+      "id": "DET-P1-09",
+      "palabra": "escalera",
+      "distractores": [
+       "escoba",
+       "esponja"
+      ]
+     },
+     {
+      "id": "DET-P1-10",
+      "palabra": "zanahoria",
+      "distractores": [
+       "zapatilla",
+       "zorro"
+      ]
+     },
+     {
+      "id": "DET-P1-11",
+      "palabra": "cebolla",
+      "distractores": [
+       "cereza",
+       "cepillo"
+      ]
+     },
+     {
+      "id": "DET-P1-12",
+      "palabra": "chocolate",
+      "distractores": [
+       "choclo",
+       "chupetín"
+      ]
+     },
+     {
+      "id": "DET-P1-13",
+      "palabra": "pingüino",
+      "distractores": [
+       "piano",
+       "pizza"
+      ]
+     },
+     {
+      "id": "DET-P1-14",
+      "palabra": "guitarra",
+      "distractores": [
+       "gorila",
+       "guantes"
+      ]
+     },
+     {
+      "id": "DET-P1-15",
+      "palabra": "dinosaurio",
+      "distractores": [
+       "diente",
+       "dragón"
+      ]
+     },
+     {
+      "id": "DET-P1-16",
+      "palabra": "fantasma",
+      "distractores": [
+       "flamenco",
+       "foca"
+      ]
+     },
+     {
+      "id": "DET-P1-17",
+      "palabra": "canguro",
+      "distractores": [
+       "candado",
+       "cangrejo"
+      ]
+     },
+     {
+      "id": "DET-P1-18",
+      "palabra": "camello",
+      "distractores": [
+       "camión",
+       "caja"
+      ]
+     },
+     {
+      "id": "DET-P1-19",
+      "palabra": "tortuga",
+      "distractores": [
+       "torta",
+       "tobogán"
+      ]
+     },
+     {
+      "id": "DET-P1-20",
+      "palabra": "patrullero",
+      "distractores": [
+       "patín",
+       "pavo"
+      ]
+     },
+     {
+      "id": "DET-P1-21",
+      "palabra": "bombero",
+      "distractores": [
+       "bota",
+       "boca"
+      ]
+     },
+     {
+      "id": "DET-P1-22",
+      "palabra": "semáforo",
+      "distractores": [
+       "serrucho",
+       "sirena"
+      ]
+     },
+     {
+      "id": "DET-P1-23",
+      "palabra": "hamburguesa",
+      "distractores": [
+       "hada",
+       "ambulancia"
+      ]
+     },
+     {
+      "id": "DET-P1-24",
+      "palabra": "murciélago",
+      "distractores": [
+       "mosca",
+       "mago"
+      ]
+     }
+    ],
+    "2": [
+     {
+      "id": "DET-P2-01",
+      "palabra": "boca",
+      "distractores": [
+       "foca",
+       "bota"
+      ]
+     },
+     {
+      "id": "DET-P2-02",
+      "palabra": "foca",
+      "distractores": [
+       "boca",
+       "coco"
+      ]
+     },
+     {
+      "id": "DET-P2-03",
+      "palabra": "bota",
+      "distractores": [
+       "gota",
+       "nota"
+      ]
+     },
+     {
+      "id": "DET-P2-04",
+      "palabra": "gota",
+      "distractores": [
+       "bota",
+       "nota"
+      ]
+     },
+     {
+      "id": "DET-P2-05",
+      "palabra": "nota",
+      "distractores": [
+       "bota",
+       "gota"
+      ]
+     },
+     {
+      "id": "DET-P2-06",
+      "palabra": "queso",
+      "distractores": [
+       "hueso",
+       "huevo"
+      ]
+     },
+     {
+      "id": "DET-P2-07",
+      "palabra": "hueso",
+      "distractores": [
+       "queso",
+       "huevo"
+      ]
+     },
+     {
+      "id": "DET-P2-08",
+      "palabra": "mapa",
+      "distractores": [
+       "papa",
+       "capa"
+      ]
+     },
+     {
+      "id": "DET-P2-09",
+      "palabra": "papa",
+      "distractores": [
+       "tapa",
+       "mapa"
+      ]
+     },
+     {
+      "id": "DET-P2-10",
+      "palabra": "capa",
+      "distractores": [
+       "tapa",
+       "papa"
+      ]
+     },
+     {
+      "id": "DET-P2-11",
+      "palabra": "tapa",
+      "distractores": [
+       "capa",
+       "mapa"
+      ]
+     },
+     {
+      "id": "DET-P2-12",
+      "palabra": "gallo",
+      "distractores": [
+       "rayo",
+       "galletita"
+      ]
+     },
+     {
+      "id": "DET-P2-13",
+      "palabra": "rayo",
+      "distractores": [
+       "gallo",
+       "radio"
+      ]
+     },
+     {
+      "id": "DET-P2-14",
+      "palabra": "tela",
+      "distractores": [
+       "vela",
+       "tapa"
+      ]
+     },
+     {
+      "id": "DET-P2-15",
+      "palabra": "vela",
+      "distractores": [
+       "tela",
+       "velero"
+      ]
+     },
+     {
+      "id": "DET-P2-16",
+      "palabra": "mono",
+      "distractores": [
+       "cono",
+       "moño"
+      ]
+     },
+     {
+      "id": "DET-P2-17",
+      "palabra": "cono",
+      "distractores": [
+       "mono",
+       "coco"
+      ]
+     }
+    ],
+    "3": [
+     {
+      "id": "DET-P3-01",
+      "palabra": "mono",
+      "distractores": [
+       "moño",
+       "moto"
+      ]
+     },
+     {
+      "id": "DET-P3-02",
+      "palabra": "moño",
+      "distractores": [
+       "mono",
+       "moto"
+      ]
+     },
+     {
+      "id": "DET-P3-03",
+      "palabra": "moto",
+      "distractores": [
+       "mono",
+       "moño"
+      ]
+     },
+     {
+      "id": "DET-P3-04",
+      "palabra": "ojo",
+      "distractores": [
+       "oso",
+       "hoja"
+      ]
+     },
+     {
+      "id": "DET-P3-05",
+      "palabra": "oso",
+      "distractores": [
+       "ojo",
+       "ola"
+      ]
+     },
+     {
+      "id": "DET-P3-06",
+      "palabra": "hueso",
+      "distractores": [
+       "huevo",
+       "queso"
+      ]
+     },
+     {
+      "id": "DET-P3-07",
+      "palabra": "huevo",
+      "distractores": [
+       "hueso",
+       "queso"
+      ]
+     },
+     {
+      "id": "DET-P3-08",
+      "palabra": "bota",
+      "distractores": [
+       "boca",
+       "gota"
+      ]
+     },
+     {
+      "id": "DET-P3-09",
+      "palabra": "boca",
+      "distractores": [
+       "bota",
+       "foca"
+      ]
+     },
+     {
+      "id": "DET-P3-10",
+      "palabra": "gota",
+      "distractores": [
+       "gorra",
+       "goma"
+      ]
+     },
+     {
+      "id": "DET-P3-11",
+      "palabra": "gorra",
+      "distractores": [
+       "goma",
+       "gota"
+      ]
+     },
+     {
+      "id": "DET-P3-12",
+      "palabra": "goma",
+      "distractores": [
+       "gorra",
+       "gota"
+      ]
+     },
+     {
+      "id": "DET-P3-13",
+      "palabra": "lata",
+      "distractores": [
+       "lana",
+       "lupa"
+      ]
+     },
+     {
+      "id": "DET-P3-14",
+      "palabra": "lana",
+      "distractores": [
+       "lata",
+       "llama"
+      ]
+     }
+    ]
+   }
+  },
+  "rima": {
+   "inicial": {
+    "1": [
+     {
+      "id": "RIM-I1-01",
+      "estimulo": "martillo",
+      "correcta": "cuchillo",
+      "distractores": [
+       "balde",
+       "jugo"
+      ]
+     },
+     {
+      "id": "RIM-I1-02",
+      "estimulo": "grillo",
+      "correcta": "cepillo",
+      "distractores": [
+       "unicornio",
+       "ventana"
+      ]
+     },
+     {
+      "id": "RIM-I1-03",
+      "estimulo": "corazón",
+      "correcta": "camión",
+      "distractores": [
+       "galletita",
+       "llama"
+      ]
+     },
+     {
+      "id": "RIM-I1-04",
+      "estimulo": "chupetín",
+      "correcta": "delfín",
+      "distractores": [
+       "tortuga",
+       "bandera"
+      ]
+     },
+     {
+      "id": "RIM-I1-05",
+      "estimulo": "cangrejo",
+      "correcta": "espejo",
+      "distractores": [
+       "banana",
+       "tiburón"
+      ]
+     },
+     {
+      "id": "RIM-I1-06",
+      "estimulo": "tijera",
+      "correcta": "escalera",
+      "distractores": [
+       "cebolla",
+       "candado"
+      ]
+     },
+     {
+      "id": "RIM-I1-07",
+      "estimulo": "panda",
+      "correcta": "bufanda",
+      "distractores": [
+       "ardilla",
+       "flor"
+      ]
+     },
+     {
+      "id": "RIM-I1-08",
+      "estimulo": "bandera",
+      "correcta": "remera",
+      "distractores": [
+       "papa",
+       "escoba"
+      ]
+     },
+     {
+      "id": "RIM-I1-09",
+      "estimulo": "ventana",
+      "correcta": "banana",
+      "distractores": [
+       "pulpo",
+       "isla"
+      ]
+     },
+     {
+      "id": "RIM-I1-10",
+      "estimulo": "avión",
+      "correcta": "tiburón",
+      "distractores": [
+       "cereza",
+       "grillo"
+      ]
+     },
+     {
+      "id": "RIM-I1-11",
+      "estimulo": "bota",
+      "correcta": "gota",
+      "distractores": [
+       "frutilla",
+       "lupa"
+      ]
+     },
+     {
+      "id": "RIM-I1-12",
+      "estimulo": "girasol",
+      "correcta": "caracol",
+      "distractores": [
+       "pavo",
+       "violín"
+      ]
+     },
+     {
+      "id": "RIM-I1-13",
+      "estimulo": "globo",
+      "correcta": "lobo",
+      "distractores": [
+       "lluvia",
+       "chocolate"
+      ]
+     },
+     {
+      "id": "RIM-I1-14",
+      "estimulo": "ardilla",
+      "correcta": "zapatilla",
+      "distractores": [
+       "robot",
+       "cuchara"
+      ]
+     },
+     {
+      "id": "RIM-I1-15",
+      "estimulo": "patín",
+      "correcta": "violín",
+      "distractores": [
+       "cactus",
+       "sillón"
+      ]
+     },
+     {
+      "id": "RIM-I1-16",
+      "estimulo": "sombrero",
+      "correcta": "bombero",
+      "distractores": [
+       "avión",
+       "pepino"
+      ]
+     },
+     {
+      "id": "RIM-I1-17",
+      "estimulo": "oveja",
+      "correcta": "oreja",
+      "distractores": [
+       "nariz",
+       "mago"
+      ]
+     },
+     {
+      "id": "RIM-I1-18",
+      "estimulo": "pingüino",
+      "correcta": "pepino",
+      "distractores": [
+       "jabón",
+       "lata"
+      ]
+     },
+     {
+      "id": "RIM-I1-19",
+      "estimulo": "lechuga",
+      "correcta": "tortuga",
+      "distractores": [
+       "gota",
+       "payaso"
+      ]
+     },
+     {
+      "id": "RIM-I1-20",
+      "estimulo": "princesa",
+      "correcta": "cereza",
+      "distractores": [
+       "montaña",
+       "castillo"
+      ]
+     },
+     {
+      "id": "RIM-I1-21",
+      "estimulo": "foca",
+      "correcta": "boca",
+      "distractores": [
+       "huevo",
+       "lechuga"
+      ]
+     },
+     {
+      "id": "RIM-I1-22",
+      "estimulo": "hueso",
+      "correcta": "queso",
+      "distractores": [
+       "hoja",
+       "vaca"
+      ]
+     },
+     {
+      "id": "RIM-I1-23",
+      "estimulo": "hada",
+      "correcta": "empanada",
+      "distractores": [
+       "puerta",
+       "chupetín"
+      ]
+     },
+     {
+      "id": "RIM-I1-24",
+      "estimulo": "gorila",
+      "correcta": "mochila",
+      "distractores": [
+       "bombero",
+       "paloma"
+      ]
+     }
+    ],
+    "2": [
+     {
+      "id": "RIM-I2-01",
+      "estimulo": "camión",
+      "correcta": "sillón",
+      "distractores": [
+       "campana",
+       "vela"
+      ]
+     },
+     {
+      "id": "RIM-I2-02",
+      "estimulo": "cepillo",
+      "correcta": "martillo",
+      "distractores": [
+       "cebolla",
+       "unicornio"
+      ]
+     },
+     {
+      "id": "RIM-I2-03",
+      "estimulo": "cuchillo",
+      "correcta": "grillo",
+      "distractores": [
+       "cuchara",
+       "girasol"
+      ]
+     },
+     {
+      "id": "RIM-I2-04",
+      "estimulo": "león",
+      "correcta": "jabón",
+      "distractores": [
+       "lengua",
+       "oreja"
+      ]
+     },
+     {
+      "id": "RIM-I2-05",
+      "estimulo": "tambor",
+      "correcta": "flor",
+      "distractores": [
+       "taxi",
+       "patín"
+      ]
+     },
+     {
+      "id": "RIM-I2-06",
+      "estimulo": "gota",
+      "correcta": "bota",
+      "distractores": [
+       "gorila",
+       "celular"
+      ]
+     },
+     {
+      "id": "RIM-I2-07",
+      "estimulo": "mochila",
+      "correcta": "gorila",
+      "distractores": [
+       "mosca",
+       "cereza"
+      ]
+     },
+     {
+      "id": "RIM-I2-08",
+      "estimulo": "palmera",
+      "correcta": "tijera",
+      "distractores": [
+       "paraguas",
+       "torta"
+      ]
+     },
+     {
+      "id": "RIM-I2-09",
+      "estimulo": "zapatilla",
+      "correcta": "ardilla",
+      "distractores": [
+       "zanahoria",
+       "caramelo"
+      ]
+     },
+     {
+      "id": "RIM-I2-10",
+      "estimulo": "montaña",
+      "correcta": "araña",
+      "distractores": [
+       "moño",
+       "león"
+      ]
+     },
+     {
+      "id": "RIM-I2-11",
+      "estimulo": "remera",
+      "correcta": "bandera",
+      "distractores": [
+       "reloj",
+       "gallo"
+      ]
+     },
+     {
+      "id": "RIM-I2-12",
+      "estimulo": "cereza",
+      "correcta": "princesa",
+      "distractores": [
+       "cepillo",
+       "tiburón"
+      ]
+     },
+     {
+      "id": "RIM-I2-13",
+      "estimulo": "campana",
+      "correcta": "banana",
+      "distractores": [
+       "castillo",
+       "bandera"
+      ]
+     },
+     {
+      "id": "RIM-I2-14",
+      "estimulo": "patín",
+      "correcta": "delfín",
+      "distractores": [
+       "pájaro",
+       "hongo"
+      ]
+     },
+     {
+      "id": "RIM-I2-15",
+      "estimulo": "tortuga",
+      "correcta": "lechuga",
+      "distractores": [
+       "torta",
+       "boca"
+      ]
+     },
+     {
+      "id": "RIM-I2-16",
+      "estimulo": "abuelo",
+      "correcta": "caramelo",
+      "distractores": [
+       "hada",
+       "hoja"
+      ]
+     },
+     {
+      "id": "RIM-I2-17",
+      "estimulo": "bombero",
+      "correcta": "sombrero",
+      "distractores": [
+       "bota",
+       "avión"
+      ]
+     },
+     {
+      "id": "RIM-I2-18",
+      "estimulo": "vela",
+      "correcta": "abuela",
+      "distractores": [
+       "ventana",
+       "regalo"
+      ]
+     },
+     {
+      "id": "RIM-I2-19",
+      "estimulo": "gallo",
+      "correcta": "rayo",
+      "distractores": [
+       "galletita",
+       "bombero"
+      ]
+     },
+     {
+      "id": "RIM-I2-20",
+      "estimulo": "ballena",
+      "correcta": "sirena",
+      "distractores": [
+       "vaca",
+       "cuchillo"
+      ]
+     },
+     {
+      "id": "RIM-I2-21",
+      "estimulo": "candado",
+      "correcta": "helado",
+      "distractores": [
+       "caracol",
+       "ardilla"
+      ]
+     },
+     {
+      "id": "RIM-I2-22",
+      "estimulo": "espejo",
+      "correcta": "cangrejo",
+      "distractores": [
+       "escalera",
+       "coco"
+      ]
+     },
+     {
+      "id": "RIM-I2-23",
+      "estimulo": "caracol",
+      "correcta": "girasol",
+      "distractores": [
+       "candado",
+       "pulpo"
+      ]
+     },
+     {
+      "id": "RIM-I2-24",
+      "estimulo": "boca",
+      "correcta": "foca",
+      "distractores": [
+       "bombero",
+       "delfín"
+      ]
+     }
+    ],
+    "3": [
+     {
+      "id": "RIM-I3-01",
+      "estimulo": "sillón",
+      "correcta": "corazón",
+      "distractores": [
+       "delfín",
+       "tren"
+      ]
+     },
+     {
+      "id": "RIM-I3-02",
+      "estimulo": "cepillo",
+      "correcta": "castillo",
+      "distractores": [
+       "camello",
+       "rayo"
+      ]
+     },
+     {
+      "id": "RIM-I3-03",
+      "estimulo": "escalera",
+      "correcta": "tijera",
+      "distractores": [
+       "cuchara",
+       "gorra"
+      ]
+     },
+     {
+      "id": "RIM-I3-04",
+      "estimulo": "avión",
+      "correcta": "camión",
+      "distractores": [
+       "patín",
+       "tren"
+      ]
+     },
+     {
+      "id": "RIM-I3-05",
+      "estimulo": "león",
+      "correcta": "tiburón",
+      "distractores": [
+       "violín",
+       "tren"
+      ]
+     },
+     {
+      "id": "RIM-I3-06",
+      "estimulo": "chupetín",
+      "correcta": "violín",
+      "distractores": [
+       "limón",
+       "tren"
+      ]
+     },
+     {
+      "id": "RIM-I3-07",
+      "estimulo": "grillo",
+      "correcta": "anillo",
+      "distractores": [
+       "gallo",
+       "camello"
+      ]
+     },
+     {
+      "id": "RIM-I3-08",
+      "estimulo": "cuchillo",
+      "correcta": "martillo",
+      "distractores": [
+       "gallo",
+       "camello"
+      ]
+     },
+     {
+      "id": "RIM-I3-09",
+      "estimulo": "bandera",
+      "correcta": "palmera",
+      "distractores": [
+       "guitarra",
+       "gorra"
+      ]
+     },
+     {
+      "id": "RIM-I3-10",
+      "estimulo": "campana",
+      "correcta": "ventana",
+      "distractores": [
+       "pierna",
+       "gallina"
+      ]
+     },
+     {
+      "id": "RIM-I3-11",
+      "estimulo": "queso",
+      "correcta": "hueso",
+      "distractores": [
+       "oso",
+       "payaso"
+      ]
+     },
+     {
+      "id": "RIM-I3-12",
+      "estimulo": "rayo",
+      "correcta": "gallo",
+      "distractores": [
+       "martillo",
+       "camello"
+      ]
+     },
+     {
+      "id": "RIM-I3-13",
+      "estimulo": "frutilla",
+      "correcta": "ardilla",
+      "distractores": [
+       "estrella",
+       "cebolla"
+      ]
+     },
+     {
+      "id": "RIM-I3-14",
+      "estimulo": "lobo",
+      "correcta": "globo",
+      "distractores": [
+       "huevo",
+       "pavo"
+      ]
+     },
+     {
+      "id": "RIM-I3-15",
+      "estimulo": "oreja",
+      "correcta": "oveja",
+      "distractores": [
+       "hoja",
+       "caja"
+      ]
+     },
+     {
+      "id": "RIM-I3-16",
+      "estimulo": "sirena",
+      "correcta": "ballena",
+      "distractores": [
+       "banana",
+       "corona"
+      ]
+     },
+     {
+      "id": "RIM-I3-17",
+      "estimulo": "pepino",
+      "correcta": "pingüino",
+      "distractores": [
+       "piano",
+       "mono"
+      ]
+     },
+     {
+      "id": "RIM-I3-18",
+      "estimulo": "delfín",
+      "correcta": "patín",
+      "distractores": [
+       "melón",
+       "tren"
+      ]
+     },
+     {
+      "id": "RIM-I3-19",
+      "estimulo": "princesa",
+      "correcta": "cereza",
+      "distractores": [
+       "rosa",
+       "pizza"
+      ]
+     },
+     {
+      "id": "RIM-I3-20",
+      "estimulo": "bota",
+      "correcta": "gota",
+      "distractores": [
+       "planta",
+       "puerta"
+      ]
+     },
+     {
+      "id": "RIM-I3-21",
+      "estimulo": "sombrero",
+      "correcta": "bombero",
+      "distractores": [
+       "vampiro",
+       "zorro"
+      ]
+     },
+     {
+      "id": "RIM-I3-22",
+      "estimulo": "espejo",
+      "correcta": "cangrejo",
+      "distractores": [
+       "ajo",
+       "ojo"
+      ]
+     }
+    ]
+   },
+   "primario": {
+    "1": [
+     {
+      "id": "RIM-P1-01",
+      "estimulo": "calor",
+      "correcta": "motor",
+      "distractores": [
+       "grillo",
+       "leche"
+      ]
+     },
+     {
+      "id": "RIM-P1-02",
+      "estimulo": "patín",
+      "correcta": "cojín",
+      "distractores": [
+       "gallo",
+       "colchón"
+      ]
+     },
+     {
+      "id": "RIM-P1-03",
+      "estimulo": "colchón",
+      "correcta": "bastón",
+      "distractores": [
+       "amarillo",
+       "balde"
+      ]
+     },
+     {
+      "id": "RIM-P1-04",
+      "estimulo": "soldado",
+      "correcta": "candado",
+      "distractores": [
+       "granero",
+       "yoyó"
+      ]
+     },
+     {
+      "id": "RIM-P1-05",
+      "estimulo": "cajón",
+      "correcta": "dragón",
+      "distractores": [
+       "ladrillo",
+       "yeso"
+      ]
+     },
+     {
+      "id": "RIM-P1-06",
+      "estimulo": "enero",
+      "correcta": "plomero",
+      "distractores": [
+       "león",
+       "sobrino"
+      ]
+     },
+     {
+      "id": "RIM-P1-07",
+      "estimulo": "ensayo",
+      "correcta": "papagayo",
+      "distractores": [
+       "colectivo",
+       "ceja"
+      ]
+     },
+     {
+      "id": "RIM-P1-08",
+      "estimulo": "ventana",
+      "correcta": "campana",
+      "distractores": [
+       "jardín",
+       "roca"
+      ]
+     },
+     {
+      "id": "RIM-P1-09",
+      "estimulo": "canela",
+      "correcta": "vela",
+      "distractores": [
+       "señor",
+       "arruga"
+      ]
+     },
+     {
+      "id": "RIM-P1-10",
+      "estimulo": "paja",
+      "correcta": "ventaja",
+      "distractores": [
+       "miedo",
+       "sonrisa"
+      ]
+     },
+     {
+      "id": "RIM-P1-11",
+      "estimulo": "ceja",
+      "correcta": "oveja",
+      "distractores": [
+       "cajón",
+       "molino"
+      ]
+     },
+     {
+      "id": "RIM-P1-12",
+      "estimulo": "mañana",
+      "correcta": "hermana",
+      "distractores": [
+       "sonido",
+       "doctor"
+      ]
+     },
+     {
+      "id": "RIM-P1-13",
+      "estimulo": "vecino",
+      "correcta": "padrino",
+      "distractores": [
+       "llama",
+       "hamburguesa"
+      ]
+     },
+     {
+      "id": "RIM-P1-14",
+      "estimulo": "baldosa",
+      "correcta": "osa",
+      "distractores": [
+       "golosina",
+       "queso"
+      ]
+     },
+     {
+      "id": "RIM-P1-15",
+      "estimulo": "baranda",
+      "correcta": "bufanda",
+      "distractores": [
+       "altura",
+       "chupetín"
+      ]
+     },
+     {
+      "id": "RIM-P1-16",
+      "estimulo": "foca",
+      "correcta": "roca",
+      "distractores": [
+       "esquina",
+       "travieso"
+      ]
+     },
+     {
+      "id": "RIM-P1-17",
+      "estimulo": "tijera",
+      "correcta": "primavera",
+      "distractores": [
+       "ojotas",
+       "serrucho"
+      ]
+     },
+     {
+      "id": "RIM-P1-18",
+      "estimulo": "ladrillo",
+      "correcta": "pasillo",
+      "distractores": [
+       "corona",
+       "gusano"
+      ]
+     },
+     {
+      "id": "RIM-P1-19",
+      "estimulo": "patrullero",
+      "correcta": "febrero",
+      "distractores": [
+       "tractor",
+       "fogata"
+      ]
+     },
+     {
+      "id": "RIM-P1-20",
+      "estimulo": "tobogán",
+      "correcta": "volcán",
+      "distractores": [
+       "osa",
+       "carreta"
+      ]
+     },
+     {
+      "id": "RIM-P1-21",
+      "estimulo": "borrador",
+      "correcta": "nadador",
+      "distractores": [
+       "medialuna",
+       "planta"
+      ]
+     },
+     {
+      "id": "RIM-P1-22",
+      "estimulo": "pareja",
+      "correcta": "teja",
+      "distractores": [
+       "alpargata",
+       "montón"
+      ]
+     },
+     {
+      "id": "RIM-P1-23",
+      "estimulo": "esquina",
+      "correcta": "sobrina",
+      "distractores": [
+       "borrador",
+       "pata"
+      ]
+     },
+     {
+      "id": "RIM-P1-24",
+      "estimulo": "hamburguesa",
+      "correcta": "cereza",
+      "distractores": [
+       "flor",
+       "navaja"
+      ]
+     }
+    ],
+    "2": [
+     {
+      "id": "RIM-P2-01",
+      "estimulo": "tenedor",
+      "correcta": "pintor",
+      "distractores": [
+       "tela",
+       "lechuga"
+      ]
+     },
+     {
+      "id": "RIM-P2-02",
+      "estimulo": "sillón",
+      "correcta": "gorrión",
+      "distractores": [
+       "sirena",
+       "plomero"
+      ]
+     },
+     {
+      "id": "RIM-P2-03",
+      "estimulo": "tractor",
+      "correcta": "ventilador",
+      "distractores": [
+       "tren",
+       "cangrejo"
+      ]
+     },
+     {
+      "id": "RIM-P2-04",
+      "estimulo": "vela",
+      "correcta": "cazuela",
+      "distractores": [
+       "vestido",
+       "computadora"
+      ]
+     },
+     {
+      "id": "RIM-P2-05",
+      "estimulo": "mañana",
+      "correcta": "banana",
+      "distractores": [
+       "martillo",
+       "foca"
+      ]
+     },
+     {
+      "id": "RIM-P2-06",
+      "estimulo": "esquina",
+      "correcta": "cocina",
+      "distractores": [
+       "esponja",
+       "oso"
+      ]
+     },
+     {
+      "id": "RIM-P2-07",
+      "estimulo": "sobrina",
+      "correcta": "bailarina",
+      "distractores": [
+       "sonido",
+       "ventilador"
+      ]
+     },
+     {
+      "id": "RIM-P2-08",
+      "estimulo": "sirena",
+      "correcta": "ballena",
+      "distractores": [
+       "cisne",
+       "nido"
+      ]
+     },
+     {
+      "id": "RIM-P2-09",
+      "estimulo": "tijera",
+      "correcta": "bandera",
+      "distractores": [
+       "tigre",
+       "ojotas"
+      ]
+     },
+     {
+      "id": "RIM-P2-10",
+      "estimulo": "bastón",
+      "correcta": "colchón",
+      "distractores": [
+       "barrilete",
+       "flamenco"
+      ]
+     },
+     {
+      "id": "RIM-P2-11",
+      "estimulo": "maletín",
+      "correcta": "cojín",
+      "distractores": [
+       "maceta",
+       "verdura"
+      ]
+     },
+     {
+      "id": "RIM-P2-12",
+      "estimulo": "jardinero",
+      "correcta": "cartero",
+      "distractores": [
+       "jamón",
+       "navaja"
+      ]
+     },
+     {
+      "id": "RIM-P2-13",
+      "estimulo": "mamadera",
+      "correcta": "escalera",
+      "distractores": [
+       "mandarina",
+       "vecina"
+      ]
+     },
+     {
+      "id": "RIM-P2-14",
+      "estimulo": "castillo",
+      "correcta": "ladrillo",
+      "distractores": [
+       "canguro",
+       "remera"
+      ]
+     },
+     {
+      "id": "RIM-P2-15",
+      "estimulo": "enano",
+      "correcta": "piano",
+      "distractores": [
+       "enero",
+       "balcón"
+      ]
+     },
+     {
+      "id": "RIM-P2-16",
+      "estimulo": "vecino",
+      "correcta": "destino",
+      "distractores": [
+       "verano",
+       "muela"
+      ]
+     },
+     {
+      "id": "RIM-P2-17",
+      "estimulo": "ventaja",
+      "correcta": "caja",
+      "distractores": [
+       "vecino",
+       "pecera"
+      ]
+     },
+     {
+      "id": "RIM-P2-18",
+      "estimulo": "palillo",
+      "correcta": "tornillo",
+      "distractores": [
+       "pájaro",
+       "lata"
+      ]
+     },
+     {
+      "id": "RIM-P2-19",
+      "estimulo": "aventura",
+      "correcta": "altura",
+      "distractores": [
+       "anillo",
+       "montón"
+      ]
+     },
+     {
+      "id": "RIM-P2-20",
+      "estimulo": "patín",
+      "correcta": "violín",
+      "distractores": [
+       "pasillo",
+       "granero"
+      ]
+     },
+     {
+      "id": "RIM-P2-21",
+      "estimulo": "almeja",
+      "correcta": "pareja",
+      "distractores": [
+       "alpargata",
+       "maní"
+      ]
+     },
+     {
+      "id": "RIM-P2-22",
+      "estimulo": "panadero",
+      "correcta": "enero",
+      "distractores": [
+       "paleta",
+       "mosca"
+      ]
+     },
+     {
+      "id": "RIM-P2-23",
+      "estimulo": "paquete",
+      "correcta": "sorbete",
+      "distractores": [
+       "pantalón",
+       "aventura"
+      ]
+     },
+     {
+      "id": "RIM-P2-24",
+      "estimulo": "hada",
+      "correcta": "empanada",
+      "distractores": [
+       "avión",
+       "motor"
+      ]
+     }
+    ],
+    "3": [
+     {
+      "id": "RIM-P3-01",
+      "estimulo": "futuro",
+      "correcta": "canguro",
+      "distractores": [
+       "plomero",
+       "pájaro"
+      ]
+     },
+     {
+      "id": "RIM-P3-02",
+      "estimulo": "limón",
+      "correcta": "millón",
+      "distractores": [
+       "tobogán",
+       "violín"
+      ]
+     },
+     {
+      "id": "RIM-P3-03",
+      "estimulo": "salado",
+      "correcta": "helado",
+      "distractores": [
+       "vestido",
+       "dedo"
+      ]
+     },
+     {
+      "id": "RIM-P3-04",
+      "estimulo": "chupetín",
+      "correcta": "cojín",
+      "distractores": [
+       "gorrión",
+       "volcán"
+      ]
+     },
+     {
+      "id": "RIM-P3-05",
+      "estimulo": "tetera",
+      "correcta": "regadera",
+      "distractores": [
+       "gorra",
+       "guitarra"
+      ]
+     },
+     {
+      "id": "RIM-P3-06",
+      "estimulo": "piñata",
+      "correcta": "gata",
+      "distractores": [
+       "gota",
+       "carreta"
+      ]
+     },
+     {
+      "id": "RIM-P3-07",
+      "estimulo": "heladera",
+      "correcta": "primavera",
+      "distractores": [
+       "basura",
+       "computadora"
+      ]
+     },
+     {
+      "id": "RIM-P3-08",
+      "estimulo": "jamón",
+      "correcta": "jabón",
+      "distractores": [
+       "patín",
+       "imán"
+      ]
+     },
+     {
+      "id": "RIM-P3-09",
+      "estimulo": "queso",
+      "correcta": "yeso",
+      "distractores": [
+       "oso",
+       "payaso"
+      ]
+     },
+     {
+      "id": "RIM-P3-10",
+      "estimulo": "dedo",
+      "correcta": "miedo",
+      "distractores": [
+       "helado",
+       "nido"
+      ]
+     },
+     {
+      "id": "RIM-P3-11",
+      "estimulo": "mandarina",
+      "correcta": "golosina",
+      "distractores": [
+       "corona",
+       "campana"
+      ]
+     },
+     {
+      "id": "RIM-P3-12",
+      "estimulo": "piojo",
+      "correcta": "antojo",
+      "distractores": [
+       "cangrejo",
+       "ajo"
+      ]
+     },
+     {
+      "id": "RIM-P3-13",
+      "estimulo": "oveja",
+      "correcta": "ceja",
+      "distractores": [
+       "hoja",
+       "caja"
+      ]
+     },
+     {
+      "id": "RIM-P3-14",
+      "estimulo": "mañana",
+      "correcta": "ventana",
+      "distractores": [
+       "fortuna",
+       "colina"
+      ]
+     },
+     {
+      "id": "RIM-P3-15",
+      "estimulo": "dinero",
+      "correcta": "patrullero",
+      "distractores": [
+       "canguro",
+       "semáforo"
+      ]
+     },
+     {
+      "id": "RIM-P3-16",
+      "estimulo": "banana",
+      "correcta": "semana",
+      "distractores": [
+       "laguna",
+       "gallina"
+      ]
+     },
+     {
+      "id": "RIM-P3-17",
+      "estimulo": "ciruela",
+      "correcta": "muela",
+      "distractores": [
+       "koala",
+       "gorila"
+      ]
+     },
+     {
+      "id": "RIM-P3-18",
+      "estimulo": "castillo",
+      "correcta": "cepillo",
+      "distractores": [
+       "papagayo",
+       "camello"
+      ]
+     },
+     {
+      "id": "RIM-P3-19",
+      "estimulo": "roja",
+      "correcta": "hoja",
+      "distractores": [
+       "oreja",
+       "navaja"
+      ]
+     },
+     {
+      "id": "RIM-P3-20",
+      "estimulo": "martillo",
+      "correcta": "anillo",
+      "distractores": [
+       "repollo",
+       "rayo"
+      ]
+     },
+     {
+      "id": "RIM-P3-21",
+      "estimulo": "enero",
+      "correcta": "agujero",
+      "distractores": [
+       "muro",
+       "vampiro"
+      ]
+     },
+     {
+      "id": "RIM-P3-22",
+      "estimulo": "mercado",
+      "correcta": "pescado",
+      "distractores": [
+       "ruido",
+       "miedo"
+      ]
+     },
+     {
+      "id": "RIM-P3-23",
+      "estimulo": "vecina",
+      "correcta": "harina",
+      "distractores": [
+       "mañana",
+       "pierna"
+      ]
+     },
+     {
+      "id": "RIM-P3-24",
+      "estimulo": "ardilla",
+      "correcta": "zapatilla",
+      "distractores": [
+       "cebolla",
+       "medalla"
+      ]
+     }
+    ]
+   }
+  },
+  "palmas": {
+   "inicial": {
+    "1": [
+     {
+      "id": "PAL-1-01",
+      "palabra": "flor",
+      "silabas": 1
+     },
+     {
+      "id": "PAL-1-02",
+      "palabra": "tren",
+      "silabas": 1
+     },
+     {
+      "id": "PAL-1-03",
+      "palabra": "globo",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-04",
+      "palabra": "rayo",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-05",
+      "palabra": "moño",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-06",
+      "palabra": "hongo",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-07",
+      "palabra": "moto",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-08",
+      "palabra": "robot",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-09",
+      "palabra": "papa",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-10",
+      "palabra": "jabón",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-11",
+      "palabra": "gota",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-12",
+      "palabra": "zorro",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-13",
+      "palabra": "uva",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-14",
+      "palabra": "taxi",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-15",
+      "palabra": "gorra",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-16",
+      "palabra": "jugo",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-17",
+      "palabra": "lobo",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-18",
+      "palabra": "hada",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-19",
+      "palabra": "dragón",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-20",
+      "palabra": "mago",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-21",
+      "palabra": "pavo",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-22",
+      "palabra": "ajo",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-23",
+      "palabra": "gallo",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-1-24",
+      "palabra": "cactus",
+      "silabas": 2
+     }
+    ],
+    "2": [
+     {
+      "id": "PAL-2-01",
+      "palabra": "leche",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-2-02",
+      "palabra": "torta",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-2-03",
+      "palabra": "foca",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-2-04",
+      "palabra": "llama",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-2-05",
+      "palabra": "pulpo",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-2-06",
+      "palabra": "ojo",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-2-07",
+      "palabra": "mosca",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-2-08",
+      "palabra": "rosa",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-2-09",
+      "palabra": "vela",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-2-10",
+      "palabra": "mono",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-2-11",
+      "palabra": "tambor",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-2-12",
+      "palabra": "pizza",
+      "silabas": 2
+     },
+     {
+      "id": "PAL-2-13",
+      "palabra": "vestido",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-2-14",
+      "palabra": "cohete",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-2-15",
+      "palabra": "ventana",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-2-16",
+      "palabra": "frutilla",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-2-17",
+      "palabra": "fantasma",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-2-18",
+      "palabra": "anillo",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-2-19",
+      "palabra": "ballena",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-2-20",
+      "palabra": "paloma",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-2-21",
+      "palabra": "bandera",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-2-22",
+      "palabra": "caracol",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-2-23",
+      "palabra": "corazón",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-2-24",
+      "palabra": "celular",
+      "silabas": 3
+     }
+    ],
+    "3": [
+     {
+      "id": "PAL-3-01",
+      "palabra": "corona",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-3-02",
+      "palabra": "tortuga",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-3-03",
+      "palabra": "sombrero",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-3-04",
+      "palabra": "bombero",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-3-05",
+      "palabra": "hormiga",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-3-06",
+      "palabra": "cebolla",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-3-07",
+      "palabra": "sirena",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-3-08",
+      "palabra": "helado",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-3-09",
+      "palabra": "girasol",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-3-10",
+      "palabra": "cuchillo",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-3-11",
+      "palabra": "espejo",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-3-12",
+      "palabra": "montaña",
+      "silabas": 3
+     },
+     {
+      "id": "PAL-3-13",
+      "palabra": "cucaracha",
+      "silabas": 4
+     },
+     {
+      "id": "PAL-3-14",
+      "palabra": "calabaza",
+      "silabas": 4
+     },
+     {
+      "id": "PAL-3-15",
+      "palabra": "zapatilla",
+      "silabas": 4
+     },
+     {
+      "id": "PAL-3-16",
+      "palabra": "arcoíris",
+      "silabas": 4
+     },
+     {
+      "id": "PAL-3-17",
+      "palabra": "mamadera",
+      "silabas": 4
+     },
+     {
+      "id": "PAL-3-18",
+      "palabra": "empanada",
+      "silabas": 4
+     },
+     {
+      "id": "PAL-3-19",
+      "palabra": "monopatín",
+      "silabas": 4
+     },
+     {
+      "id": "PAL-3-20",
+      "palabra": "escalera",
+      "silabas": 4
+     },
+     {
+      "id": "PAL-3-21",
+      "palabra": "chocolate",
+      "silabas": 4
+     },
+     {
+      "id": "PAL-3-22",
+      "palabra": "teléfono",
+      "silabas": 4
+     },
+     {
+      "id": "PAL-3-23",
+      "palabra": "galletita",
+      "silabas": 4
+     },
+     {
+      "id": "PAL-3-24",
+      "palabra": "caramelo",
+      "silabas": 4
+     }
+    ]
+   }
+  },
+  "rompe": {
+   "primario": {
+    "1": [
+     {
+      "id": "ROM-1-01",
+      "palabra": "medalla",
+      "silabas": [
+       "ME",
+       "DA",
+       "LLA"
+      ],
+      "relleno": [
+       "TA"
+      ]
+     },
+     {
+      "id": "ROM-1-02",
+      "palabra": "guitarra",
+      "silabas": [
+       "GUI",
+       "TA",
+       "RRA"
+      ],
+      "relleno": [
+       "NE"
+      ]
+     },
+     {
+      "id": "ROM-1-03",
+      "palabra": "boca",
+      "silabas": [
+       "BO",
+       "CA"
+      ],
+      "relleno": [
+       "GA"
+      ]
+     },
+     {
+      "id": "ROM-1-04",
+      "palabra": "cuchillo",
+      "silabas": [
+       "CU",
+       "CHI",
+       "LLO"
+      ],
+      "relleno": [
+       "SA"
+      ]
+     },
+     {
+      "id": "ROM-1-05",
+      "palabra": "gota",
+      "silabas": [
+       "GO",
+       "TA"
+      ],
+      "relleno": [
+       "TO"
+      ]
+     },
+     {
+      "id": "ROM-1-06",
+      "palabra": "llama",
+      "silabas": [
+       "LLA",
+       "MA"
+      ],
+      "relleno": [
+       "SA"
+      ]
+     },
+     {
+      "id": "ROM-1-07",
+      "palabra": "zorro",
+      "silabas": [
+       "ZO",
+       "RRO"
+      ],
+      "relleno": [
+       "RI"
+      ]
+     },
+     {
+      "id": "ROM-1-08",
+      "palabra": "bebé",
+      "silabas": [
+       "BE",
+       "BE"
+      ],
+      "relleno": [
+       "PU"
+      ]
+     },
+     {
+      "id": "ROM-1-09",
+      "palabra": "maní",
+      "silabas": [
+       "MA",
+       "NI"
+      ],
+      "relleno": [
+       "LA"
+      ]
+     },
+     {
+      "id": "ROM-1-10",
+      "palabra": "bota",
+      "silabas": [
+       "BO",
+       "TA"
+      ],
+      "relleno": [
+       "NE"
+      ]
+     },
+     {
+      "id": "ROM-1-11",
+      "palabra": "pájaro",
+      "silabas": [
+       "PA",
+       "JA",
+       "RO"
+      ],
+      "relleno": [
+       "SI"
+      ]
+     },
+     {
+      "id": "ROM-1-12",
+      "palabra": "yoyó",
+      "silabas": [
+       "YO",
+       "YO"
+      ],
+      "relleno": [
+       "BE"
+      ]
+     },
+     {
+      "id": "ROM-1-13",
+      "palabra": "pepino",
+      "silabas": [
+       "PE",
+       "PI",
+       "NO"
+      ],
+      "relleno": [
+       "RU"
+      ]
+     },
+     {
+      "id": "ROM-1-14",
+      "palabra": "mochila",
+      "silabas": [
+       "MO",
+       "CHI",
+       "LA"
+      ],
+      "relleno": [
+       "FE"
+      ]
+     },
+     {
+      "id": "ROM-1-15",
+      "palabra": "lata",
+      "silabas": [
+       "LA",
+       "TA"
+      ],
+      "relleno": [
+       "SA"
+      ]
+     },
+     {
+      "id": "ROM-1-16",
+      "palabra": "mago",
+      "silabas": [
+       "MA",
+       "GO"
+      ],
+      "relleno": [
+       "FI"
+      ]
+     },
+     {
+      "id": "ROM-1-17",
+      "palabra": "cuchara",
+      "silabas": [
+       "CU",
+       "CHA",
+       "RA"
+      ],
+      "relleno": [
+       "CO"
+      ]
+     },
+     {
+      "id": "ROM-1-18",
+      "palabra": "coco",
+      "silabas": [
+       "CO",
+       "CO"
+      ],
+      "relleno": [
+       "NO"
+      ]
+     },
+     {
+      "id": "ROM-1-19",
+      "palabra": "payaso",
+      "silabas": [
+       "PA",
+       "YA",
+       "SO"
+      ],
+      "relleno": [
+       "SI"
+      ]
+     },
+     {
+      "id": "ROM-1-20",
+      "palabra": "pavo",
+      "silabas": [
+       "PA",
+       "VO"
+      ],
+      "relleno": [
+       "MO"
+      ]
+     },
+     {
+      "id": "ROM-1-21",
+      "palabra": "lechuga",
+      "silabas": [
+       "LE",
+       "CHU",
+       "GA"
+      ],
+      "relleno": [
+       "PI"
+      ]
+     },
+     {
+      "id": "ROM-1-22",
+      "palabra": "papa",
+      "silabas": [
+       "PA",
+       "PA"
+      ],
+      "relleno": [
+       "PU"
+      ]
+     },
+     {
+      "id": "ROM-1-23",
+      "palabra": "pollito",
+      "silabas": [
+       "PO",
+       "LLI",
+       "TO"
+      ],
+      "relleno": [
+       "LA"
+      ]
+     },
+     {
+      "id": "ROM-1-24",
+      "palabra": "gallo",
+      "silabas": [
+       "GA",
+       "LLO"
+      ],
+      "relleno": [
+       "DE"
+      ]
+     }
+    ],
+    "2": [
+     {
+      "id": "ROM-2-01",
+      "palabra": "sombrero",
+      "silabas": [
+       "SOM",
+       "BRE",
+       "RO"
+      ],
+      "relleno": [
+       "SI",
+       "TO"
+      ]
+     },
+     {
+      "id": "ROM-2-02",
+      "palabra": "fantasma",
+      "silabas": [
+       "FAN",
+       "TAS",
+       "MA"
+      ],
+      "relleno": [
+       "ME",
+       "MO"
+      ]
+     },
+     {
+      "id": "ROM-2-03",
+      "palabra": "bufanda",
+      "silabas": [
+       "BU",
+       "FAN",
+       "DA"
+      ],
+      "relleno": [
+       "GA",
+       "NO"
+      ]
+     },
+     {
+      "id": "ROM-2-04",
+      "palabra": "tobogán",
+      "silabas": [
+       "TO",
+       "BO",
+       "GAN"
+      ],
+      "relleno": [
+       "NE",
+       "FE"
+      ]
+     },
+     {
+      "id": "ROM-2-05",
+      "palabra": "candado",
+      "silabas": [
+       "CAN",
+       "DA",
+       "DO"
+      ],
+      "relleno": [
+       "CO",
+       "PU"
+      ]
+     },
+     {
+      "id": "ROM-2-06",
+      "palabra": "caracol",
+      "silabas": [
+       "CA",
+       "RA",
+       "COL"
+      ],
+      "relleno": [
+       "RI",
+       "SI"
+      ]
+     },
+     {
+      "id": "ROM-2-07",
+      "palabra": "cangrejo",
+      "silabas": [
+       "CAN",
+       "GRE",
+       "JO"
+      ],
+      "relleno": [
+       "DE",
+       "RU"
+      ]
+     },
+     {
+      "id": "ROM-2-08",
+      "palabra": "montaña",
+      "silabas": [
+       "MON",
+       "TA",
+       "ÑA"
+      ],
+      "relleno": [
+       "BE",
+       "TO"
+      ]
+     },
+     {
+      "id": "ROM-2-09",
+      "palabra": "flamenco",
+      "silabas": [
+       "FLA",
+       "MEN",
+       "CO"
+      ],
+      "relleno": [
+       "PI",
+       "RU"
+      ]
+     },
+     {
+      "id": "ROM-2-10",
+      "palabra": "trompeta",
+      "silabas": [
+       "TROM",
+       "PE",
+       "TA"
+      ],
+      "relleno": [
+       "CO",
+       "RI"
+      ]
+     },
+     {
+      "id": "ROM-2-11",
+      "palabra": "vampiro",
+      "silabas": [
+       "VAM",
+       "PI",
+       "RO"
+      ],
+      "relleno": [
+       "TA",
+       "SI"
+      ]
+     },
+     {
+      "id": "ROM-2-12",
+      "palabra": "celular",
+      "silabas": [
+       "CE",
+       "LU",
+       "LAR"
+      ],
+      "relleno": [
+       "DE",
+       "GA"
+      ]
+     },
+     {
+      "id": "ROM-2-13",
+      "palabra": "pochoclo",
+      "silabas": [
+       "PO",
+       "CHO",
+       "CLO"
+      ],
+      "relleno": [
+       "BE",
+       "NE"
+      ]
+     },
+     {
+      "id": "ROM-2-14",
+      "palabra": "campana",
+      "silabas": [
+       "CAM",
+       "PA",
+       "NA"
+      ],
+      "relleno": [
+       "NE",
+       "RU"
+      ]
+     },
+     {
+      "id": "ROM-2-15",
+      "palabra": "chupetín",
+      "silabas": [
+       "CHU",
+       "PE",
+       "TIN"
+      ],
+      "relleno": [
+       "SA",
+       "PU"
+      ]
+     },
+     {
+      "id": "ROM-2-16",
+      "palabra": "corazón",
+      "silabas": [
+       "CO",
+       "RA",
+       "ZON"
+      ],
+      "relleno": [
+       "SI",
+       "LU"
+      ]
+     },
+     {
+      "id": "ROM-2-17",
+      "palabra": "unicornio",
+      "silabas": [
+       "U",
+       "NI",
+       "COR",
+       "NIO"
+      ],
+      "relleno": [
+       "GA",
+       "NE"
+      ]
+     },
+     {
+      "id": "ROM-2-18",
+      "palabra": "cartera",
+      "silabas": [
+       "CAR",
+       "TE",
+       "RA"
+      ],
+      "relleno": [
+       "FE",
+       "TA"
+      ]
+     },
+     {
+      "id": "ROM-2-19",
+      "palabra": "ojotas",
+      "silabas": [
+       "O",
+       "JO",
+       "TAS"
+      ],
+      "relleno": [
+       "LU",
+       "SI"
+      ]
+     },
+     {
+      "id": "ROM-2-20",
+      "palabra": "anteojos",
+      "silabas": [
+       "AN",
+       "TE",
+       "O",
+       "JOS"
+      ],
+      "relleno": [
+       "NE",
+       "PU"
+      ]
+     },
+     {
+      "id": "ROM-2-21",
+      "palabra": "canguro",
+      "silabas": [
+       "CAN",
+       "GU",
+       "RO"
+      ],
+      "relleno": [
+       "LU",
+       "ME"
+      ]
+     },
+     {
+      "id": "ROM-2-22",
+      "palabra": "castillo",
+      "silabas": [
+       "CAS",
+       "TI",
+       "LLO"
+      ],
+      "relleno": [
+       "SI",
+       "SA"
+      ]
+     },
+     {
+      "id": "ROM-2-23",
+      "palabra": "girasol",
+      "silabas": [
+       "GI",
+       "RA",
+       "SOL"
+      ],
+      "relleno": [
+       "RI",
+       "MO"
+      ]
+     },
+     {
+      "id": "ROM-2-24",
+      "palabra": "estrella",
+      "silabas": [
+       "ES",
+       "TRE",
+       "LLA"
+      ],
+      "relleno": [
+       "NO",
+       "RI"
+      ]
+     }
+    ],
+    "3": [
+     {
+      "id": "ROM-3-01",
+      "palabra": "teléfono",
+      "silabas": [
+       "TE",
+       "LE",
+       "FO",
+       "NO"
+      ],
+      "relleno": [
+       "LA",
+       "FA",
+       "TA"
+      ]
+     },
+     {
+      "id": "ROM-3-02",
+      "palabra": "ambulancia",
+      "silabas": [
+       "AM",
+       "BU",
+       "LAN",
+       "CIA"
+      ],
+      "relleno": [
+       "DU",
+       "EM",
+       "LEN"
+      ]
+     },
+     {
+      "id": "ROM-3-03",
+      "palabra": "calabaza",
+      "silabas": [
+       "CA",
+       "LA",
+       "BA",
+       "ZA"
+      ],
+      "relleno": [
+       "CE",
+       "DA",
+       "LE"
+      ]
+     },
+     {
+      "id": "ROM-3-04",
+      "palabra": "hipopótamo",
+      "silabas": [
+       "HI",
+       "PO",
+       "PO",
+       "TA",
+       "MO"
+      ],
+      "relleno": [
+       "MA",
+       "PA",
+       "TE"
+      ]
+     },
+     {
+      "id": "ROM-3-05",
+      "palabra": "escalera",
+      "silabas": [
+       "ES",
+       "CA",
+       "LE",
+       "RA"
+      ],
+      "relleno": [
+       "LA",
+       "CE",
+       "RE"
+      ]
+     },
+     {
+      "id": "ROM-3-06",
+      "palabra": "computadora",
+      "silabas": [
+       "COM",
+       "PU",
+       "TA",
+       "DO",
+       "RA"
+      ],
+      "relleno": [
+       "CAM",
+       "RE",
+       "BO"
+      ]
+     },
+     {
+      "id": "ROM-3-07",
+      "palabra": "cocinero",
+      "silabas": [
+       "CO",
+       "CI",
+       "NE",
+       "RO"
+      ],
+      "relleno": [
+       "CA",
+       "NA",
+       "RA"
+      ]
+     },
+     {
+      "id": "ROM-3-08",
+      "palabra": "dinosaurio",
+      "silabas": [
+       "DI",
+       "NO",
+       "SAU",
+       "RIO"
+      ],
+      "relleno": [
+       "NA",
+       "BI",
+       "NE"
+      ]
+     },
+     {
+      "id": "ROM-3-09",
+      "palabra": "semáforo",
+      "silabas": [
+       "SE",
+       "MA",
+       "FO",
+       "RO"
+      ],
+      "relleno": [
+       "SA",
+       "RA",
+       "ME"
+      ]
+     },
+     {
+      "id": "ROM-3-10",
+      "palabra": "caramelo",
+      "silabas": [
+       "CA",
+       "RA",
+       "ME",
+       "LO"
+      ],
+      "relleno": [
+       "LA",
+       "RE",
+       "MA"
+      ]
+     },
+     {
+      "id": "ROM-3-11",
+      "palabra": "telescopio",
+      "silabas": [
+       "TE",
+       "LES",
+       "CO",
+       "PIO"
+      ],
+      "relleno": [
+       "CA",
+       "LAS",
+       "TA"
+      ]
+     },
+     {
+      "id": "ROM-3-12",
+      "palabra": "policía",
+      "silabas": [
+       "PO",
+       "LI",
+       "CI",
+       "A"
+      ],
+      "relleno": [
+       "CA",
+       "PA",
+       "E"
+      ]
+     },
+     {
+      "id": "ROM-3-13",
+      "palabra": "colectivo",
+      "silabas": [
+       "CO",
+       "LEC",
+       "TI",
+       "VO"
+      ],
+      "relleno": [
+       "TA",
+       "CA",
+       "VA"
+      ]
+     },
+     {
+      "id": "ROM-3-14",
+      "palabra": "murciélago",
+      "silabas": [
+       "MUR",
+       "CIE",
+       "LA",
+       "GO"
+      ],
+      "relleno": [
+       "LE",
+       "MAR",
+       "GA"
+      ]
+     },
+     {
+      "id": "ROM-3-15",
+      "palabra": "zapatilla",
+      "silabas": [
+       "ZA",
+       "PA",
+       "TI",
+       "LLA"
+      ],
+      "relleno": [
+       "PE",
+       "TA",
+       "ZE"
+      ]
+     },
+     {
+      "id": "ROM-3-16",
+      "palabra": "zanahoria",
+      "silabas": [
+       "ZA",
+       "NA",
+       "HO",
+       "RIA"
+      ],
+      "relleno": [
+       "HA",
+       "ZE",
+       "NE"
+      ]
+     },
+     {
+      "id": "ROM-3-17",
+      "palabra": "berenjena",
+      "silabas": [
+       "BE",
+       "REN",
+       "JE",
+       "NA"
+      ],
+      "relleno": [
+       "RAN",
+       "JA",
+       "NE"
+      ]
+     },
+     {
+      "id": "ROM-3-18",
+      "palabra": "patrullero",
+      "silabas": [
+       "PA",
+       "TRU",
+       "LLE",
+       "RO"
+      ],
+      "relleno": [
+       "TUR",
+       "RA",
+       "PE"
+      ]
+     },
+     {
+      "id": "ROM-3-19",
+      "palabra": "hamburguesa",
+      "silabas": [
+       "HAM",
+       "BUR",
+       "GUE",
+       "SA"
+      ],
+      "relleno": [
+       "HEM",
+       "DUR",
+       "SE"
+      ]
+     },
+     {
+      "id": "ROM-3-20",
+      "palabra": "termómetro",
+      "silabas": [
+       "TER",
+       "MO",
+       "ME",
+       "TRO"
+      ],
+      "relleno": [
+       "MA",
+       "TAR",
+       "TOR"
+      ]
+     },
+     {
+      "id": "ROM-3-21",
+      "palabra": "barrilete",
+      "silabas": [
+       "BA",
+       "RRI",
+       "LE",
+       "TE"
+      ],
+      "relleno": [
+       "RRA",
+       "LA",
+       "TA"
+      ]
+     },
+     {
+      "id": "ROM-3-22",
+      "palabra": "chocolate",
+      "silabas": [
+       "CHO",
+       "CO",
+       "LA",
+       "TE"
+      ],
+      "relleno": [
+       "LE",
+       "CA",
+       "CHA"
+      ]
+     },
+     {
+      "id": "ROM-3-23",
+      "palabra": "astronauta",
+      "silabas": [
+       "AS",
+       "TRO",
+       "NAU",
+       "TA"
+      ],
+      "relleno": [
+       "TE",
+       "TOR",
+       "ES"
+      ]
+     },
+     {
+      "id": "ROM-3-24",
+      "palabra": "rinoceronte",
+      "silabas": [
+       "RI",
+       "NO",
+       "CE",
+       "RON",
+       "TE"
+      ],
+      "relleno": [
+       "NA",
+       "CA",
+       "RAN"
+      ]
+     },
+     {
+      "id": "ROM-3-25",
+      "palabra": "medialuna",
+      "silabas": [
+       "ME",
+       "DIA",
+       "LU",
+       "NA"
+      ],
+      "relleno": [
+       "MA",
+       "LA",
+       "NE"
+      ]
+     },
+     {
+      "id": "ROM-3-26",
+      "palabra": "arcoíris",
+      "silabas": [
+       "AR",
+       "CO",
+       "I",
+       "RIS"
+      ],
+      "relleno": [
+       "CA",
+       "A",
+       "RAS"
+      ]
+     },
+     {
+      "id": "ROM-3-27",
+      "palabra": "microscopio",
+      "silabas": [
+       "MI",
+       "CROS",
+       "CO",
+       "PIO"
+      ],
+      "relleno": [
+       "MA",
+       "CRAS",
+       "CA"
+      ]
+     },
+     {
+      "id": "ROM-3-28",
+      "palabra": "empanada",
+      "silabas": [
+       "EM",
+       "PA",
+       "NA",
+       "DA"
+      ],
+      "relleno": [
+       "NE",
+       "AM",
+       "PE"
+      ]
+     },
+     {
+      "id": "ROM-3-29",
+      "palabra": "paracaídas",
+      "silabas": [
+       "PA",
+       "RA",
+       "CA",
+       "I",
+       "DAS"
+      ],
+      "relleno": [
+       "A",
+       "BAS",
+       "PE"
+      ]
+     },
+     {
+      "id": "ROM-3-30",
+      "palabra": "cucaracha",
+      "silabas": [
+       "CU",
+       "CA",
+       "RA",
+       "CHA"
+      ],
+      "relleno": [
+       "RE",
+       "CE",
+       "CHE"
+      ]
+     }
+    ]
+   }
+  },
+  "planeta": {
+   "primario": {
+    "1": [
+     {
+      "id": "PLA-1-01",
+      "palabra": "dufo",
+      "distractores": [
+       "nifo",
+       "dusu"
+      ]
+     },
+     {
+      "id": "PLA-1-02",
+      "palabra": "nefe",
+      "distractores": [
+       "sife",
+       "netu"
+      ]
+     },
+     {
+      "id": "PLA-1-03",
+      "palabra": "nufu",
+      "distractores": [
+       "bofu",
+       "nupo"
+      ]
+     },
+     {
+      "id": "PLA-1-04",
+      "palabra": "bamu",
+      "distractores": [
+       "dumu",
+       "bafa"
+      ]
+     },
+     {
+      "id": "PLA-1-05",
+      "palabra": "pifu",
+      "distractores": [
+       "befu",
+       "pimo"
+      ]
+     },
+     {
+      "id": "PLA-1-06",
+      "palabra": "fenu",
+      "distractores": [
+       "ninu",
+       "femo"
+      ]
+     },
+     {
+      "id": "PLA-1-07",
+      "palabra": "pife",
+      "distractores": [
+       "fofe",
+       "pimu"
+      ]
+     },
+     {
+      "id": "PLA-1-08",
+      "palabra": "bosu",
+      "distractores": [
+       "nesu",
+       "bome"
+      ]
+     },
+     {
+      "id": "PLA-1-09",
+      "palabra": "dufe",
+      "distractores": [
+       "mife",
+       "duso"
+      ]
+     },
+     {
+      "id": "PLA-1-10",
+      "palabra": "pusu",
+      "distractores": [
+       "disu",
+       "pube"
+      ]
+     },
+     {
+      "id": "PLA-1-11",
+      "palabra": "mepi",
+      "distractores": [
+       "fupi",
+       "mefu"
+      ]
+     },
+     {
+      "id": "PLA-1-12",
+      "palabra": "nusi",
+      "distractores": [
+       "fesi",
+       "nubo"
+      ]
+     },
+     {
+      "id": "PLA-1-13",
+      "palabra": "tafo",
+      "distractores": [
+       "difo",
+       "tadu"
+      ]
+     },
+     {
+      "id": "PLA-1-14",
+      "palabra": "fosu",
+      "distractores": [
+       "mesu",
+       "fobe"
+      ]
+     },
+     {
+      "id": "PLA-1-15",
+      "palabra": "dofe",
+      "distractores": [
+       "pefe",
+       "dobu"
+      ]
+     },
+     {
+      "id": "PLA-1-16",
+      "palabra": "fufe",
+      "distractores": [
+       "sife",
+       "fuda"
+      ]
+     },
+     {
+      "id": "PLA-1-17",
+      "palabra": "nipu",
+      "distractores": [
+       "bepu",
+       "nibe"
+      ]
+     },
+     {
+      "id": "PLA-1-18",
+      "palabra": "tifi",
+      "distractores": [
+       "fafi",
+       "tibe"
+      ]
+     },
+     {
+      "id": "PLA-1-19",
+      "palabra": "nufi",
+      "distractores": [
+       "pefi",
+       "nusu"
+      ]
+     },
+     {
+      "id": "PLA-1-20",
+      "palabra": "nupu",
+      "distractores": [
+       "bipu",
+       "nuti"
+      ]
+     },
+     {
+      "id": "PLA-1-21",
+      "palabra": "pufu",
+      "distractores": [
+       "nifu",
+       "pumi"
+      ]
+     },
+     {
+      "id": "PLA-1-22",
+      "palabra": "memu",
+      "distractores": [
+       "tumu",
+       "mepo"
+      ]
+     },
+     {
+      "id": "PLA-1-23",
+      "palabra": "mifa",
+      "distractores": [
+       "pufa",
+       "midu"
+      ]
+     },
+     {
+      "id": "PLA-1-24",
+      "palabra": "dotu",
+      "distractores": [
+       "netu",
+       "dofe"
+      ]
+     }
+    ],
+    "2": [
+     {
+      "id": "PLA-2-01",
+      "palabra": "crofepu",
+      "distractores": [
+       "crofipu",
+       "grofepu"
+      ]
+     },
+     {
+      "id": "PLA-2-02",
+      "palabra": "plibeti",
+      "distractores": [
+       "plibati",
+       "blibeti"
+      ]
+     },
+     {
+      "id": "PLA-2-03",
+      "palabra": "pulepro",
+      "distractores": [
+       "pilepro",
+       "pulebro"
+      ]
+     },
+     {
+      "id": "PLA-2-04",
+      "palabra": "grobise",
+      "distractores": [
+       "grobuse",
+       "crobise"
+      ]
+     },
+     {
+      "id": "PLA-2-05",
+      "palabra": "sudufla",
+      "distractores": [
+       "sudefla",
+       "sudupla"
+      ]
+     },
+     {
+      "id": "PLA-2-06",
+      "palabra": "duclamu",
+      "distractores": [
+       "duclame",
+       "duglamu"
+      ]
+     },
+     {
+      "id": "PLA-2-07",
+      "palabra": "grenalo",
+      "distractores": [
+       "grenale",
+       "crenalo"
+      ]
+     },
+     {
+      "id": "PLA-2-08",
+      "palabra": "deglesi",
+      "distractores": [
+       "degleso",
+       "declesi"
+      ]
+     },
+     {
+      "id": "PLA-2-09",
+      "palabra": "decrafe",
+      "distractores": [
+       "docrafe",
+       "degrafe"
+      ]
+     },
+     {
+      "id": "PLA-2-10",
+      "palabra": "famobra",
+      "distractores": [
+       "famubra",
+       "famopra"
+      ]
+     },
+     {
+      "id": "PLA-2-11",
+      "palabra": "gretome",
+      "distractores": [
+       "gretume",
+       "cretome"
+      ]
+     },
+     {
+      "id": "PLA-2-12",
+      "palabra": "mublode",
+      "distractores": [
+       "moblode",
+       "muplode"
+      ]
+     },
+     {
+      "id": "PLA-2-13",
+      "palabra": "cludumo",
+      "distractores": [
+       "cludomo",
+       "gludumo"
+      ]
+     },
+     {
+      "id": "PLA-2-14",
+      "palabra": "plebuto",
+      "distractores": [
+       "plebuta",
+       "blebuto"
+      ]
+     },
+     {
+      "id": "PLA-2-15",
+      "palabra": "topatra",
+      "distractores": [
+       "tepatra",
+       "topadra"
+      ]
+     },
+     {
+      "id": "PLA-2-16",
+      "palabra": "blosefi",
+      "distractores": [
+       "blosefu",
+       "plosefi"
+      ]
+     },
+     {
+      "id": "PLA-2-17",
+      "palabra": "mitrune",
+      "distractores": [
+       "mitruni",
+       "midrune"
+      ]
+     },
+     {
+      "id": "PLA-2-18",
+      "palabra": "pipreso",
+      "distractores": [
+       "pupreso",
+       "pibreso"
+      ]
+     },
+     {
+      "id": "PLA-2-19",
+      "palabra": "drebapo",
+      "distractores": [
+       "drebepo",
+       "trebapo"
+      ]
+     },
+     {
+      "id": "PLA-2-20",
+      "palabra": "premebo",
+      "distractores": [
+       "premebu",
+       "bremebo"
+      ]
+     },
+     {
+      "id": "PLA-2-21",
+      "palabra": "nadeplo",
+      "distractores": [
+       "nedeplo",
+       "nadeblo"
+      ]
+     },
+     {
+      "id": "PLA-2-22",
+      "palabra": "tasotra",
+      "distractores": [
+       "tesotra",
+       "tasodra"
+      ]
+     },
+     {
+      "id": "PLA-2-23",
+      "palabra": "glosapi",
+      "distractores": [
+       "glosapa",
+       "closapi"
+      ]
+     },
+     {
+      "id": "PLA-2-24",
+      "palabra": "blaleli",
+      "distractores": [
+       "blaloli",
+       "plaleli"
+      ]
+     }
+    ],
+    "3": [
+     {
+      "id": "PLA-3-01",
+      "palabra": "profudi",
+      "distractores": [
+       "porfudi",
+       "profubi"
+      ]
+     },
+     {
+      "id": "PLA-3-02",
+      "palabra": "tribubone",
+      "distractores": [
+       "tirbubone",
+       "tridubone"
+      ]
+     },
+     {
+      "id": "PLA-3-03",
+      "palabra": "sedebli",
+      "distractores": [
+       "sedebil",
+       "sebebli"
+      ]
+     },
+     {
+      "id": "PLA-3-04",
+      "palabra": "fepradi",
+      "distractores": [
+       "fepardi",
+       "feprabi"
+      ]
+     },
+     {
+      "id": "PLA-3-05",
+      "palabra": "dobedre",
+      "distractores": [
+       "dobeder",
+       "dodedre"
+      ]
+     },
+     {
+      "id": "PLA-3-06",
+      "palabra": "mucrumoba",
+      "distractores": [
+       "mucurmoba",
+       "mucrumoda"
+      ]
+     },
+     {
+      "id": "PLA-3-07",
+      "palabra": "bedotigru",
+      "distractores": [
+       "bedotigur",
+       "bebotigru"
+      ]
+     },
+     {
+      "id": "PLA-3-08",
+      "palabra": "dabiprobe",
+      "distractores": [
+       "dabiporbe",
+       "dadiprobe"
+      ]
+     },
+     {
+      "id": "PLA-3-09",
+      "palabra": "prupubu",
+      "distractores": [
+       "purpubu",
+       "prupudu"
+      ]
+     },
+     {
+      "id": "PLA-3-10",
+      "palabra": "glodimini",
+      "distractores": [
+       "goldimini",
+       "globimini"
+      ]
+     },
+     {
+      "id": "PLA-3-11",
+      "palabra": "nubrabo",
+      "distractores": [
+       "nubarbo",
+       "nubrado"
+      ]
+     },
+     {
+      "id": "PLA-3-12",
+      "palabra": "breleba",
+      "distractores": [
+       "berleba",
+       "breleda"
+      ]
+     },
+     {
+      "id": "PLA-3-13",
+      "palabra": "doplobi",
+      "distractores": [
+       "dopolbi",
+       "boplobi"
+      ]
+     },
+     {
+      "id": "PLA-3-14",
+      "palabra": "bocripe",
+      "distractores": [
+       "bocirpe",
+       "docripe"
+      ]
+     },
+     {
+      "id": "PLA-3-15",
+      "palabra": "betrupa",
+      "distractores": [
+       "beturpa",
+       "detrupa"
+      ]
+     },
+     {
+      "id": "PLA-3-16",
+      "palabra": "gritubo",
+      "distractores": [
+       "girtubo",
+       "gritudo"
+      ]
+     },
+     {
+      "id": "PLA-3-17",
+      "palabra": "grabisi",
+      "distractores": [
+       "garbisi",
+       "gradisi"
+      ]
+     },
+     {
+      "id": "PLA-3-18",
+      "palabra": "bigrene",
+      "distractores": [
+       "bigerne",
+       "digrene"
+      ]
+     },
+     {
+      "id": "PLA-3-19",
+      "palabra": "plinodo",
+      "distractores": [
+       "pilnodo",
+       "plinobo"
+      ]
+     },
+     {
+      "id": "PLA-3-20",
+      "palabra": "blebatu",
+      "distractores": [
+       "belbatu",
+       "bledatu"
+      ]
+     },
+     {
+      "id": "PLA-3-21",
+      "palabra": "mudobobru",
+      "distractores": [
+       "mudobobur",
+       "mubobobru"
+      ]
+     },
+     {
+      "id": "PLA-3-22",
+      "palabra": "globitani",
+      "distractores": [
+       "golbitani",
+       "gloditani"
+      ]
+     },
+     {
+      "id": "PLA-3-23",
+      "palabra": "blasoda",
+      "distractores": [
+       "balsoda",
+       "blasoba"
+      ]
+     },
+     {
+      "id": "PLA-3-24",
+      "palabra": "bibutrono",
+      "distractores": [
+       "bibutorno",
+       "dibutrono"
+      ]
+     }
+    ]
+   }
+  },
+  "caza": {
+   "primario": {
+    "1": [
+     {
+      "id": "CAZ-1-01",
+      "oracion": "La vaaca da leche.",
+      "errores": {
+       "vaaca": "vaca"
+      }
+     },
+     {
+      "id": "CAZ-1-02",
+      "oracion": "El tre llega tarde.",
+      "errores": {
+       "tre": "tren"
+      }
+     },
+     {
+      "id": "CAZ-1-03",
+      "oracion": "Mi abuela hace toortas.",
+      "errores": {
+       "toortas": "tortas"
+      }
+     },
+     {
+      "id": "CAZ-1-04",
+      "oracion": "Lucía tiene una flo roja.",
+      "errores": {
+       "flo": "flor"
+      }
+     },
+     {
+      "id": "CAZ-1-05",
+      "oracion": "El mono come banaana.",
+      "errores": {
+       "banaana": "banana"
+      }
+     },
+     {
+      "id": "CAZ-1-06",
+      "oracion": "Tomi anda en monopatí.",
+      "errores": {
+       "monopatí": "monopatín"
+      }
+     },
+     {
+      "id": "CAZ-1-07",
+      "oracion": "La estrela brilla de noche.",
+      "errores": {
+       "estrela": "estrella"
+      }
+     },
+     {
+      "id": "CAZ-1-08",
+      "oracion": "Papá lava la tazza.",
+      "errores": {
+       "tazza": "taza"
+      }
+     },
+     {
+      "id": "CAZ-1-09",
+      "oracion": "Los patos nadann en el lago.",
+      "errores": {
+       "nadann": "nadan"
+      }
+     },
+     {
+      "id": "CAZ-1-10",
+      "oracion": "Hoy hace mucho fío.",
+      "errores": {
+       "fío": "frío"
+      }
+     },
+     {
+      "id": "CAZ-1-11",
+      "oracion": "El gallo canta tempano.",
+      "errores": {
+       "tempano": "temprano"
+      }
+     },
+     {
+      "id": "CAZ-1-12",
+      "oracion": "Me gusta el helaado.",
+      "errores": {
+       "helaado": "helado"
+      }
+     },
+     {
+      "id": "CAZ-1-13",
+      "oracion": "La ardilla come nuces.",
+      "errores": {
+       "nuces": "nueces"
+      }
+     },
+     {
+      "id": "CAZ-1-14",
+      "oracion": "Mi hermana canta muy bieen.",
+      "errores": {
+       "bieen": "bien"
+      }
+     },
+     {
+      "id": "CAZ-1-15",
+      "oracion": "El pececito nada en la peceraa.",
+      "errores": {
+       "peceraa": "pecera"
+      }
+     },
+     {
+      "id": "CAZ-1-16",
+      "oracion": "Ana pinta un dibuo.",
+      "errores": {
+       "dibuo": "dibujo"
+      }
+     },
+     {
+      "id": "CAZ-1-17",
+      "oracion": "Los chicos juegan en la plaa.",
+      "errores": {
+       "plaa": "plaza"
+      }
+     },
+     {
+      "id": "CAZ-1-18",
+      "oracion": "La oveja tiene laana.",
+      "errores": {
+       "laana": "lana"
+      }
+     },
+     {
+      "id": "CAZ-1-19",
+      "oracion": "El bebé duerme muchoo.",
+      "errores": {
+       "muchoo": "mucho"
+      }
+     },
+     {
+      "id": "CAZ-1-20",
+      "oracion": "Comemos fideos con quso.",
+      "errores": {
+       "quso": "queso"
+      }
+     }
+    ],
+    "2": [
+     {
+      "id": "CAZ-2-01",
+      "oracion": "Sofi sirve la sopa en un palto hondo.",
+      "errores": {
+       "palto": "plato"
+      }
+     },
+     {
+      "id": "CAZ-2-02",
+      "oracion": "Los chicos juegan con una dola de nieve.",
+      "errores": {
+       "dola": "bola"
+      }
+     },
+     {
+      "id": "CAZ-2-03",
+      "oracion": "Mi tío tiene ters gallinas en el campo.",
+      "errores": {
+       "ters": "tres"
+      }
+     },
+     {
+      "id": "CAZ-2-04",
+      "oracion": "El golbo rojo subió muy alto al cielo.",
+      "errores": {
+       "golbo": "globo"
+      }
+     },
+     {
+      "id": "CAZ-2-05",
+      "oracion": "La maestra nos leyó un lirbo de piratas.",
+      "errores": {
+       "lirbo": "libro"
+      }
+     },
+     {
+      "id": "CAZ-2-06",
+      "oracion": "Juan se puso las dotas para salir.",
+      "errores": {
+       "dotas": "botas"
+      }
+     },
+     {
+      "id": "CAZ-2-07",
+      "oracion": "Mamá compró pan y queso en el mercabo.",
+      "errores": {
+       "mercabo": "mercado"
+      }
+     },
+     {
+      "id": "CAZ-2-08",
+      "oracion": "La duena noticia llegó por la mañana.",
+      "errores": {
+       "duena": "buena"
+      }
+     },
+     {
+      "id": "CAZ-2-09",
+      "oracion": "Pebro y Lucas arman una casita de mabera.",
+      "errores": {
+       "Pebro": "Pedro",
+       "mabera": "madera"
+      }
+     },
+     {
+      "id": "CAZ-2-10",
+      "oracion": "El dargón vuela sodre el castillo.",
+      "errores": {
+       "dargón": "dragón",
+       "sodre": "sobre"
+      }
+     },
+     {
+      "id": "CAZ-2-11",
+      "oracion": "Mi hermano jeuga al fútbol con sus amigos.",
+      "errores": {
+       "jeuga": "juega"
+      }
+     },
+     {
+      "id": "CAZ-2-12",
+      "oracion": "La burja vuela en su escoda mágica.",
+      "errores": {
+       "burja": "bruja",
+       "escoda": "escoba"
+      }
+     },
+     {
+      "id": "CAZ-2-13",
+      "oracion": "Comimos una torta de furtillas en el cumpleaños.",
+      "errores": {
+       "furtillas": "frutillas"
+      }
+     },
+     {
+      "id": "CAZ-2-14",
+      "oracion": "La rana salta del agua a la piebra.",
+      "errores": {
+       "piebra": "piedra"
+      }
+     },
+     {
+      "id": "CAZ-2-15",
+      "oracion": "Adrimos la puerta para que entre la luz.",
+      "errores": {
+       "Adrimos": "Abrimos"
+      }
+     },
+     {
+      "id": "CAZ-2-16",
+      "oracion": "Mi qapá maneja un camión garnde y azul.",
+      "errores": {
+       "qapá": "papá",
+       "garnde": "grande"
+      }
+     },
+     {
+      "id": "CAZ-2-17",
+      "oracion": "Los pájaros cantan en la rama del qatio.",
+      "errores": {
+       "qatio": "patio"
+      }
+     },
+     {
+      "id": "CAZ-2-18",
+      "oracion": "Hoy vamos a didujar un tern muy largo.",
+      "errores": {
+       "didujar": "dibujar",
+       "tern": "tren"
+      }
+     },
+     {
+      "id": "CAZ-2-19",
+      "oracion": "El aduelo toma té en la cocina.",
+      "errores": {
+       "aduelo": "abuelo"
+      }
+     },
+     {
+      "id": "CAZ-2-20",
+      "oracion": "La porfesora escribe en el pizarrón con tiza.",
+      "errores": {
+       "porfesora": "profesora"
+      }
+     }
+    ],
+    "3": [
+     {
+      "id": "CAZ-3-01",
+      "oracion": "El ternero blanco corre por el pardo verde tobas las mañanas.",
+      "errores": {
+       "pardo": "prado",
+       "tobas": "todas"
+      }
+     },
+     {
+      "id": "CAZ-3-02",
+      "oracion": "Mi hermana mayor guarda sus libros en una cara de mabera.",
+      "errores": {
+       "cara": "caja",
+       "mabera": "madera"
+      }
+     },
+     {
+      "id": "CAZ-3-03",
+      "oracion": "Los bomberos llegaron rápibo y apagaron el juego de la casa.",
+      "errores": {
+       "rápibo": "rápido",
+       "juego": "fuego"
+      }
+     },
+     {
+      "id": "CAZ-3-04",
+      "oracion": "En verano vamos a la playa y armamos castilos de avena.",
+      "errores": {
+       "castilos": "castillos",
+       "avena": "arena"
+      }
+     },
+     {
+      "id": "CAZ-3-05",
+      "oracion": "Mi abuelo me enseñó a pecsar en el tío de su pueblo.",
+      "errores": {
+       "pecsar": "pescar",
+       "tío": "río"
+      }
+     },
+     {
+      "id": "CAZ-3-06",
+      "oracion": "La gata de mi vecina tuvo cutaro patitos negros y blancos.",
+      "errores": {
+       "cutaro": "cuatro",
+       "patitos": "gatitos"
+      }
+     },
+     {
+      "id": "CAZ-3-07",
+      "oracion": "Antes de dormir, mi mamá me lee un cuanto de dargones.",
+      "errores": {
+       "cuanto": "cuento",
+       "dargones": "dragones"
+      }
+     },
+     {
+      "id": "CAZ-3-08",
+      "oracion": "El sábado fuimos al zoológico y vimos un oso pelar enrome.",
+      "errores": {
+       "pelar": "polar",
+       "enrome": "enorme"
+      }
+     },
+     {
+      "id": "CAZ-3-09",
+      "oracion": "Para la merienda comimos pan con dulce de lecho y furtas.",
+      "errores": {
+       "lecho": "leche",
+       "furtas": "frutas"
+      }
+     },
+     {
+      "id": "CAZ-3-10",
+      "oracion": "Los chicos del grado pantaron una semilla en el pato.",
+      "errores": {
+       "pantaron": "plantaron",
+       "pato": "patio"
+      }
+     },
+     {
+      "id": "CAZ-3-11",
+      "oracion": "Cuando llueve mucho, el agua froma barcos en la vereda.",
+      "errores": {
+       "froma": "forma",
+       "barcos": "charcos"
+      }
+     },
+     {
+      "id": "CAZ-3-12",
+      "oracion": "Mi hermano perdió un diente y lo paso bajo la almohaba.",
+      "errores": {
+       "paso": "puso",
+       "almohaba": "almohada"
+      }
+     },
+     {
+      "id": "CAZ-3-13",
+      "oracion": "El pirata buscada un teroso escondido en una isla lejana.",
+      "errores": {
+       "buscada": "buscaba",
+       "teroso": "tesoro"
+      }
+     },
+     {
+      "id": "CAZ-3-14",
+      "oracion": "Mi papá arregló la bicicleta que tenía una rueba pinchaba.",
+      "errores": {
+       "rueba": "rueda",
+       "pinchaba": "pinchada"
+      }
+     },
+     {
+      "id": "CAZ-3-15",
+      "oracion": "La señor del almacén nos regaló camarelos de frutilla.",
+      "errores": {
+       "señor": "señora",
+       "camarelos": "caramelos"
+      }
+     },
+     {
+      "id": "CAZ-3-16",
+      "oracion": "Mi perro mueve la bola cuando llego de la esceula.",
+      "errores": {
+       "bola": "cola",
+       "esceula": "escuela"
+      }
+     },
+     {
+      "id": "CAZ-3-17",
+      "oracion": "En invierno usamos dufanda, guantes y un gorro de lata.",
+      "errores": {
+       "dufanda": "bufanda",
+       "lata": "lana"
+      }
+     },
+     {
+      "id": "CAZ-3-18",
+      "oracion": "El cartero dejó una cara con un sello de colroes.",
+      "errores": {
+       "cara": "carta",
+       "colroes": "colores"
+      }
+     },
+     {
+      "id": "CAZ-3-19",
+      "oracion": "Los belfines saltan alto cuando ven a los nidos.",
+      "errores": {
+       "belfines": "delfines",
+       "nidos": "niños"
+      }
+     },
+     {
+      "id": "CAZ-3-20",
+      "oracion": "Ayer dibujamos un mapa del barro con calles y palzas.",
+      "errores": {
+       "barro": "barrio",
+       "palzas": "plazas"
+      }
+     },
+     {
+      "id": "CAZ-3-21",
+      "oracion": "La trotuga camina despacio pero siempre llega a la mesa.",
+      "errores": {
+       "trotuga": "tortuga",
+       "mesa": "meta"
+      }
+     }
+    ]
+   }
+  },
+  "eco": {
+   "primario": {
+    "1": [
+     {
+      "id": "ECO-1-01",
+      "palabra": "chancho"
+     },
+     {
+      "id": "ECO-1-02",
+      "palabra": "salto"
+     },
+     {
+      "id": "ECO-1-03",
+      "palabra": "carta"
+     },
+     {
+      "id": "ECO-1-04",
+      "palabra": "campo"
+     },
+     {
+      "id": "ECO-1-05",
+      "palabra": "verde"
+     },
+     {
+      "id": "ECO-1-06",
+      "palabra": "perla"
+     },
+     {
+      "id": "ECO-1-07",
+      "palabra": "bolsa"
+     },
+     {
+      "id": "ECO-1-08",
+      "palabra": "circo"
+     },
+     {
+      "id": "ECO-1-09",
+      "palabra": "bosque"
+     },
+     {
+      "id": "ECO-1-10",
+      "palabra": "tarde"
+     },
+     {
+      "id": "ECO-1-11",
+      "palabra": "pepino"
+     },
+     {
+      "id": "ECO-1-12",
+      "palabra": "paloma"
+     },
+     {
+      "id": "ECO-1-13",
+      "palabra": "cometa"
+     },
+     {
+      "id": "ECO-1-14",
+      "palabra": "pijama"
+     },
+     {
+      "id": "ECO-1-15",
+      "palabra": "sábado"
+     }
+    ],
+    "2": [
+     {
+      "id": "ECO-2-01",
+      "palabra": "ventana"
+     },
+     {
+      "id": "ECO-2-02",
+      "palabra": "martillo"
+     },
+     {
+      "id": "ECO-2-03",
+      "palabra": "cartera"
+     },
+     {
+      "id": "ECO-2-04",
+      "palabra": "bandera"
+     },
+     {
+      "id": "ECO-2-05",
+      "palabra": "campana"
+     },
+     {
+      "id": "ECO-2-06",
+      "palabra": "tortuga"
+     },
+     {
+      "id": "ECO-2-07",
+      "palabra": "lámpara"
+     },
+     {
+      "id": "ECO-2-08",
+      "palabra": "mosquito"
+     },
+     {
+      "id": "ECO-2-09",
+      "palabra": "escoba"
+     },
+     {
+      "id": "ECO-2-10",
+      "palabra": "caramelo"
+     },
+     {
+      "id": "ECO-2-11",
+      "palabra": "chocolate"
+     },
+     {
+      "id": "ECO-2-12",
+      "palabra": "gelatina"
+     },
+     {
+      "id": "ECO-2-13",
+      "palabra": "teléfono"
+     },
+     {
+      "id": "ECO-2-14",
+      "palabra": "abanico"
+     },
+     {
+      "id": "ECO-2-15",
+      "palabra": "pirámide"
+     }
+    ],
+    "3": [
+     {
+      "id": "ECO-3-01",
+      "palabra": "mandarina"
+     },
+     {
+      "id": "ECO-3-02",
+      "palabra": "termómetro"
+     },
+     {
+      "id": "ECO-3-03",
+      "palabra": "astronauta"
+     },
+     {
+      "id": "ECO-3-04",
+      "palabra": "hamburguesa"
+     },
+     {
+      "id": "ECO-3-05",
+      "palabra": "mantequilla"
+     },
+     {
+      "id": "ECO-3-06",
+      "palabra": "golondrina"
+     },
+     {
+      "id": "ECO-3-07",
+      "palabra": "escalera"
+     },
+     {
+      "id": "ECO-3-08",
+      "palabra": "calendario"
+     },
+     {
+      "id": "ECO-3-09",
+      "palabra": "mermelada"
+     },
+     {
+      "id": "ECO-3-10",
+      "palabra": "servilleta"
+     },
+     {
+      "id": "ECO-3-11",
+      "palabra": "sacapuntas"
+     },
+     {
+      "id": "ECO-3-12",
+      "palabra": "monopatín"
+     },
+     {
+      "id": "ECO-3-13",
+      "palabra": "computadora"
+     },
+     {
+      "id": "ECO-3-14",
+      "palabra": "hipopótamo"
+     },
+     {
+      "id": "ECO-3-15",
+      "palabra": "panadería"
+     }
+    ]
+   }
+  },
+  "lee": {
+   "primario": {
+    "1": [
+     {
+      "id": "LEE-1-01",
+      "titulo": "El barrilete de Lola",
+      "parrafos": [
+       "Lola armó un barrilete con papel azul. El domingo fue al parque con su papá. El viento sopló fuerte y el barrilete subió muy alto. Lola se rió mucho."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿De qué color era el barrilete?",
+        "correcta": "Azul",
+        "otras": [
+         "Rojo",
+         "Verde"
+        ]
+       },
+       {
+        "pregunta": "¿Con quién fue Lola al parque?",
+        "correcta": "Con su papá",
+        "otras": [
+         "Con su abuela",
+         "Con su hermano"
+        ]
+       },
+       {
+        "pregunta": "¿Qué día fueron al parque?",
+        "correcta": "El domingo",
+        "otras": [
+         "El lunes",
+         "El sábado"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-1-02",
+      "titulo": "La perrita Mora",
+      "parrafos": [
+       "Mora es una perrita blanca con una mancha negra en la oreja. Todas las mañanas espera a Nico en la puerta. Cuando Nico vuelve de la escuela, Mora mueve la cola."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿De qué color es Mora?",
+        "correcta": "Blanca",
+        "otras": [
+         "Marrón",
+         "Gris"
+        ]
+       },
+       {
+        "pregunta": "¿Dónde tiene la mancha negra?",
+        "correcta": "En la oreja",
+        "otras": [
+         "En la cola",
+         "En la pata"
+        ]
+       },
+       {
+        "pregunta": "¿Qué hace Mora cuando Nico vuelve?",
+        "correcta": "Mueve la cola",
+        "otras": [
+         "Se esconde",
+         "Se duerme"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-1-03",
+      "titulo": "Las medialunas de la abuela",
+      "parrafos": [
+       "La abuela Rosa hizo medialunas para la merienda. Puso doce en una bandeja grande. Juli y Fede comieron dos cada uno con leche chocolatada."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿Quién hizo las medialunas?",
+        "correcta": "La abuela Rosa",
+        "otras": [
+         "La mamá",
+         "El panadero"
+        ]
+       },
+       {
+        "pregunta": "¿Cuántas medialunas puso en la bandeja?",
+        "correcta": "Doce",
+        "otras": [
+         "Seis",
+         "Diez"
+        ]
+       },
+       {
+        "pregunta": "¿Qué tomaron con las medialunas?",
+        "correcta": "Leche chocolatada",
+        "otras": [
+         "Jugo de naranja",
+         "Té"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-1-04",
+      "titulo": "Burbuja",
+      "parrafos": [
+       "En el aula de primer grado hay una pecera. Adentro vive un pez anaranjado que se llama Burbuja. Los viernes, la seño deja que un chico le dé de comer."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿Dónde está la pecera?",
+        "correcta": "En el aula",
+        "otras": [
+         "En la cocina",
+         "En el patio"
+        ]
+       },
+       {
+        "pregunta": "¿Cómo se llama el pez?",
+        "correcta": "Burbuja",
+        "otras": [
+         "Nemo",
+         "Chispa"
+        ]
+       },
+       {
+        "pregunta": "¿Qué día le dan de comer los chicos?",
+        "correcta": "Los viernes",
+        "otras": [
+         "Los lunes",
+         "Todos los días"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-1-05",
+      "titulo": "Los charcos",
+      "parrafos": [
+       "Esta mañana llovió mucho en el barrio. Ema se puso las botas amarillas y salió a saltar en los charcos. Su hermano Leo la miraba desde la ventana."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿Qué se puso Ema?",
+        "correcta": "Botas amarillas",
+        "otras": [
+         "Un gorro rojo",
+         "Zapatillas"
+        ]
+       },
+       {
+        "pregunta": "¿Qué hizo Ema afuera?",
+        "correcta": "Saltó en los charcos",
+        "otras": [
+         "Juntó hojas",
+         "Jugó a la pelota"
+        ]
+       },
+       {
+        "pregunta": "¿Desde dónde miraba Leo?",
+        "correcta": "Desde la ventana",
+        "otras": [
+         "Desde la puerta",
+         "Desde el techo"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-1-06",
+      "titulo": "El tren de Santi",
+      "parrafos": [
+       "Para su cumpleaños, Santi recibió un tren de juguete. El tren tiene tres vagones rojos y una locomotora verde. Santi armó las vías en el living."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿Qué recibió Santi?",
+        "correcta": "Un tren de juguete",
+        "otras": [
+         "Una pelota",
+         "Un libro"
+        ]
+       },
+       {
+        "pregunta": "¿Cuántos vagones tiene el tren?",
+        "correcta": "Tres",
+        "otras": [
+         "Dos",
+         "Cinco"
+        ]
+       },
+       {
+        "pregunta": "¿Dónde armó las vías?",
+        "correcta": "En el living",
+        "otras": [
+         "En su cuarto",
+         "En el patio"
+        ]
+       }
+      ]
+     }
+    ],
+    "2": [
+     {
+      "id": "LEE-2-01",
+      "titulo": "La huerta de la escuela",
+      "parrafos": [
+       "Los chicos de segundo grado hicieron una huerta en el patio de la escuela. Primero sacaron las piedras y aflojaron la tierra con palas chiquitas.",
+       "Después plantaron semillas de zanahoria y de lechuga. Cada mañana, un grupo distinto riega la huerta con una regadera verde."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿Dónde hicieron la huerta?",
+        "correcta": "En el patio de la escuela",
+        "otras": [
+         "En una plaza",
+         "En la casa de la seño"
+        ]
+       },
+       {
+        "pregunta": "¿Qué hicieron primero?",
+        "correcta": "Sacaron las piedras",
+        "otras": [
+         "Plantaron semillas",
+         "Regaron la huerta"
+        ]
+       },
+       {
+        "pregunta": "¿Qué plantaron?",
+        "correcta": "Zanahoria y lechuga",
+        "otras": [
+         "Tomate y papa",
+         "Flores"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-2-02",
+      "titulo": "El gato de doña Elsa",
+      "parrafos": [
+       "Ayer, el gato de doña Elsa se subió al árbol más alto de la cuadra. Maullaba y maullaba, pero no se animaba a bajar.",
+       "Los vecinos llamaron a los bomberos. Un bombero subió por una escalera larga y bajó al gato en brazos. Doña Elsa le dio las gracias con una torta."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿Dónde se subió el gato?",
+        "correcta": "A un árbol",
+        "otras": [
+         "Al techo",
+         "A un poste"
+        ]
+       },
+       {
+        "pregunta": "¿Qué pasó después de que llamaron a los bomberos?",
+        "correcta": "Un bombero subió por una escalera",
+        "otras": [
+         "El gato bajó solo",
+         "Doña Elsa se subió al árbol"
+        ]
+       },
+       {
+        "pregunta": "¿Cómo agradeció doña Elsa?",
+        "correcta": "Con una torta",
+        "otras": [
+         "Con una carta",
+         "Con flores"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-2-03",
+      "titulo": "La carrera de embolsados",
+      "parrafos": [
+       "En el acto del Día del Niño hubo una carrera de embolsados. Cada chico se metió en una bolsa y tenía que llegar saltando hasta la bandera.",
+       "Lucía se cayó dos veces, pero se levantó y siguió. Llegó tercera y ganó una medalla de chocolate."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿En qué acto fue la carrera?",
+        "correcta": "El Día del Niño",
+        "otras": [
+         "El Día de la Bandera",
+         "El acto de fin de año"
+        ]
+       },
+       {
+        "pregunta": "¿Qué le pasó a Lucía antes de llegar?",
+        "correcta": "Se cayó dos veces",
+        "otras": [
+         "Ganó la medalla",
+         "Se fue a su casa"
+        ]
+       },
+       {
+        "pregunta": "¿Qué ganó Lucía?",
+        "correcta": "Una medalla de chocolate",
+        "otras": [
+         "Una copa",
+         "Un libro"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-2-04",
+      "titulo": "El viaje en colectivo",
+      "parrafos": [
+       "El sábado, Valen y su abuelo tomaron el colectivo para ir al centro. Valen pagó con la tarjeta y se sentó del lado de la ventanilla.",
+       "En el camino vieron una plaza con palomas y un vendedor de pochoclos. Cuando bajaron, fueron al cine a ver una película de dinosaurios."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿Con quién viajó Valen?",
+        "correcta": "Con su abuelo",
+        "otras": [
+         "Con su mamá",
+         "Solo"
+        ]
+       },
+       {
+        "pregunta": "¿Qué hicieron cuando bajaron del colectivo?",
+        "correcta": "Fueron al cine",
+        "otras": [
+         "Fueron a la plaza",
+         "Volvieron a casa"
+        ]
+       },
+       {
+        "pregunta": "¿Qué vieron en el camino?",
+        "correcta": "Una plaza con palomas",
+        "otras": [
+         "Un río",
+         "Un zoológico"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-2-05",
+      "titulo": "La torta para papá",
+      "parrafos": [
+       "Mañana es el cumpleaños de papá. Mica y su mamá decidieron hacerle una torta de chocolate. Primero batieron los huevos con el azúcar.",
+       "Después agregaron la harina y el cacao. Mientras la torta se cocinaba en el horno, Mica dibujó una tarjeta con globos."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿Para quién era la torta?",
+        "correcta": "Para papá",
+        "otras": [
+         "Para Mica",
+         "Para la abuela"
+        ]
+       },
+       {
+        "pregunta": "¿Qué hicieron primero?",
+        "correcta": "Batieron los huevos con el azúcar",
+        "otras": [
+         "Agregaron la harina",
+         "Prendieron el horno"
+        ]
+       },
+       {
+        "pregunta": "¿Qué hizo Mica mientras la torta se cocinaba?",
+        "correcta": "Dibujó una tarjeta",
+        "otras": [
+         "Lavó los platos",
+         "Salió a jugar"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-2-06",
+      "titulo": "El caracol Ramón",
+      "parrafos": [
+       "En el jardín de la abuela vivía un caracol llamado Ramón. Le gustaba pasear por las hojas mojadas después de la lluvia.",
+       "Un día, Ramón encontró una frutilla roja. Primero la olió, después le dio un mordisco chiquito y al final se quedó dormido a su lado."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿Dónde vivía Ramón?",
+        "correcta": "En el jardín de la abuela",
+        "otras": [
+         "En una plaza",
+         "En el bosque"
+        ]
+       },
+       {
+        "pregunta": "¿Qué hizo Ramón después de oler la frutilla?",
+        "correcta": "Le dio un mordisco",
+        "otras": [
+         "Se fue",
+         "La escondió"
+        ]
+       },
+       {
+        "pregunta": "¿Cuándo le gustaba pasear?",
+        "correcta": "Después de la lluvia",
+        "otras": [
+         "De noche",
+         "Cuando hacía calor"
+        ]
+       }
+      ]
+     }
+    ],
+    "3": [
+     {
+      "id": "LEE-3-01",
+      "titulo": "El castillo de arena",
+      "parrafos": [
+       "En enero, la familia de Joaquín viajó a la costa. El primer día armaron una carpa naranja cerca del mar y Joaquín construyó un castillo de arena con cuatro torres.",
+       "A la tarde, una ola grande llegó hasta la carpa y se llevó el castillo. Joaquín se puso a llorar porque había trabajado mucho.",
+       "Su hermana Paula le propuso hacer otro más lejos del agua. Juntos hicieron uno todavía más grande, con un foso alrededor. Al final, los dos se sacaron una foto con el castillo."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿En qué mes viajaron?",
+        "correcta": "En enero",
+        "otras": [
+         "En julio",
+         "En marzo"
+        ]
+       },
+       {
+        "pregunta": "¿Cuántas torres tenía el primer castillo?",
+        "correcta": "Cuatro",
+        "otras": [
+         "Dos",
+         "Seis"
+        ]
+       },
+       {
+        "pregunta": "¿Qué se llevó la ola?",
+        "correcta": "El castillo",
+        "otras": [
+         "La carpa",
+         "La pelota"
+        ]
+       },
+       {
+        "pregunta": "¿Cómo se sintió Joaquín al final?",
+        "correcta": "Contento",
+        "otras": [
+         "Enojado",
+         "Aburrido"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-3-02",
+      "titulo": "Pancho",
+      "parrafos": [
+       "Un martes, Agus encontró un perro marrón en la esquina de su casa. Tenía un collar rojo, pero no tenía chapita con nombre.",
+       "Agus y su mamá le dieron agua y pegaron carteles en el barrio con una foto del perro. Esa noche el perro durmió en una caja con una manta.",
+       "Al día siguiente sonó el teléfono. Era una señora que buscaba a su perro Pancho. Cuando llegó, Pancho saltó y le lamió la cara."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿De qué color era el collar?",
+        "correcta": "Rojo",
+        "otras": [
+         "Azul",
+         "Verde"
+        ]
+       },
+       {
+        "pregunta": "¿Dónde durmió el perro?",
+        "correcta": "En una caja con una manta",
+        "otras": [
+         "En el sillón",
+         "En el patio"
+        ]
+       },
+       {
+        "pregunta": "¿Quién llamó por teléfono?",
+        "correcta": "Una señora que buscaba a su perro",
+        "otras": [
+         "El veterinario",
+         "La abuela de Agus"
+        ]
+       },
+       {
+        "pregunta": "¿Por qué Pancho saltó cuando llegó la señora?",
+        "correcta": "Porque era su dueña y la extrañaba",
+        "otras": [
+         "Porque tenía hambre",
+         "Porque estaba asustado"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-3-03",
+      "titulo": "El dragón que tenía miedo",
+      "parrafos": [
+       "Los chicos de tercer grado prepararon una obra de teatro sobre un dragón que tenía miedo de la oscuridad. Ian era el dragón y Luz era la luna que lo acompañaba.",
+       "Durante dos semanas ensayaron en el salón de actos. Ian se olvidaba siempre la parte en la que el dragón cantaba, así que la practicó en su casa todas las noches.",
+       "El día de la función, el salón estaba lleno de familias. Ian cantó sin equivocarse y todos aplaudieron de pie."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿De qué tenía miedo el dragón?",
+        "correcta": "De la oscuridad",
+        "otras": [
+         "De los perros",
+         "Del agua"
+        ]
+       },
+       {
+        "pregunta": "¿Qué personaje era Luz?",
+        "correcta": "La luna",
+        "otras": [
+         "El dragón",
+         "Una estrella"
+        ]
+       },
+       {
+        "pregunta": "¿Dónde ensayaron?",
+        "correcta": "En el salón de actos",
+        "otras": [
+         "En el patio",
+         "En la casa de Ian"
+        ]
+       },
+       {
+        "pregunta": "¿Por qué Ian pudo cantar sin equivocarse?",
+        "correcta": "Porque practicó todas las noches",
+        "otras": [
+         "Porque leyó la letra",
+         "Porque Luz cantó por él"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-3-04",
+      "titulo": "La bicicleta de Clara",
+      "parrafos": [
+       "Para Navidad, Clara recibió una bicicleta violeta con canasto. Todavía no sabía andar sin rueditas.",
+       "Su tío Pablo le sacó las rueditas y la sostuvo del asiento mientras ella pedaleaba en la vereda. Clara se cayó tres veces y se raspó una rodilla.",
+       "El domingo volvió a intentar. Esta vez el tío la soltó sin avisarle y Clara anduvo sola hasta la esquina. Cuando se dio vuelta y vio al tío lejos, gritó de alegría."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿De qué color era la bicicleta?",
+        "correcta": "Violeta",
+        "otras": [
+         "Roja",
+         "Celeste"
+        ]
+       },
+       {
+        "pregunta": "¿Quién la ayudó a aprender?",
+        "correcta": "Su tío Pablo",
+        "otras": [
+         "Su mamá",
+         "Su maestra"
+        ]
+       },
+       {
+        "pregunta": "¿Cuántas veces se cayó?",
+        "correcta": "Tres",
+        "otras": [
+         "Una",
+         "Cinco"
+        ]
+       },
+       {
+        "pregunta": "¿Por qué Clara gritó de alegría?",
+        "correcta": "Porque se dio cuenta de que andaba sola",
+        "otras": [
+         "Porque se cayó",
+         "Porque llegó su mamá"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-3-05",
+      "titulo": "El nido de los horneros",
+      "parrafos": [
+       "En primavera, una pareja de horneros empezó a construir un nido de barro en la ventana de la cocina de Mateo.",
+       "Durante varios días, los pájaros iban y venían con barro en el pico. Mateo los miraba en silencio para no asustarlos y anotaba en una libreta lo que veía.",
+       "Un mes después escuchó unos piditos finitos. ¡Habían nacido tres pichones! Mateo le contó a toda la clase y la seño le pidió que trajera sus dibujos."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿Qué pájaros hicieron el nido?",
+        "correcta": "Horneros",
+        "otras": [
+         "Palomas",
+         "Gorriones"
+        ]
+       },
+       {
+        "pregunta": "¿Con qué hicieron el nido?",
+        "correcta": "Con barro",
+        "otras": [
+         "Con ramitas",
+         "Con hojas"
+        ]
+       },
+       {
+        "pregunta": "¿Cuántos pichones nacieron?",
+        "correcta": "Tres",
+        "otras": [
+         "Dos",
+         "Cinco"
+        ]
+       },
+       {
+        "pregunta": "¿Por qué Mateo miraba en silencio?",
+        "correcta": "Para no asustar a los pájaros",
+        "otras": [
+         "Porque estaba enojado",
+         "Porque tenía sueño"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "LEE-3-06",
+      "titulo": "El picnic de Brenda",
+      "parrafos": [
+       "El sábado amaneció soleado y la familia de Brenda decidió hacer un picnic en el parque. Llevaron sánguches de jamón y queso, jugo y una manta a cuadros.",
+       "Mientras comían, unas hormigas empezaron a subir por la manta. Brenda las siguió con la mirada y descubrió que iban hacia un hormiguero debajo de un árbol.",
+       "Su papá le explicó que las hormigas juntan comida para guardar en el invierno. Antes de irse, Brenda dejó una miguita de pan cerca del hormiguero."
+      ],
+      "preguntas": [
+       {
+        "pregunta": "¿Cómo estaba el día?",
+        "correcta": "Soleado",
+        "otras": [
+         "Lluvioso",
+         "Nublado"
+        ]
+       },
+       {
+        "pregunta": "¿Qué llevaron para comer?",
+        "correcta": "Sánguches de jamón y queso",
+        "otras": [
+         "Empanadas",
+         "Pizza"
+        ]
+       },
+       {
+        "pregunta": "¿Hacia dónde iban las hormigas?",
+        "correcta": "Hacia un hormiguero",
+        "otras": [
+         "Hacia la canasta",
+         "Hacia el auto"
+        ]
+       },
+       {
+        "pregunta": "¿Por qué Brenda dejó una miguita de pan?",
+        "correcta": "Para ayudar a las hormigas a juntar comida",
+        "otras": [
+         "Porque no le gustaba el pan",
+         "Porque se le cayó sin querer"
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "memopalabras": {
+   "primario": {
+    "1": [
+     {
+      "id": "MPA-1-01",
+      "palabra": "lobo",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-02",
+      "palabra": "nido",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-03",
+      "palabra": "rosa",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-04",
+      "palabra": "foca",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-05",
+      "palabra": "tela",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-06",
+      "palabra": "vaca",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-07",
+      "palabra": "dedo",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-08",
+      "palabra": "sopa",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-09",
+      "palabra": "pino",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-10",
+      "palabra": "cuna",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-11",
+      "palabra": "ropa",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-12",
+      "palabra": "gota",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-13",
+      "palabra": "taza",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-14",
+      "palabra": "mono",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-15",
+      "palabra": "palo",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-16",
+      "palabra": "jugo",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-17",
+      "palabra": "lata",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-18",
+      "palabra": "cielo",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-19",
+      "palabra": "hoja",
+      "parecida": null
+     },
+     {
+      "id": "MPA-1-20",
+      "palabra": "boca",
+      "parecida": null
+     }
+    ],
+    "2": [
+     {
+      "id": "MPA-2-01",
+      "palabra": "paloma",
+      "parecida": "palito"
+     },
+     {
+      "id": "MPA-2-02",
+      "palabra": "ventana",
+      "parecida": "ventaja"
+     },
+     {
+      "id": "MPA-2-03",
+      "palabra": "cometa",
+      "parecida": "comida"
+     },
+     {
+      "id": "MPA-2-04",
+      "palabra": "sirena",
+      "parecida": "silencio"
+     },
+     {
+      "id": "MPA-2-05",
+      "palabra": "galleta",
+      "parecida": "gallina"
+     },
+     {
+      "id": "MPA-2-06",
+      "palabra": "camello",
+      "parecida": "camarón"
+     },
+     {
+      "id": "MPA-2-07",
+      "palabra": "tortuga",
+      "parecida": "tortilla"
+     },
+     {
+      "id": "MPA-2-08",
+      "palabra": "madera",
+      "parecida": "maleza"
+     },
+     {
+      "id": "MPA-2-09",
+      "palabra": "pirata",
+      "parecida": "piloto"
+     },
+     {
+      "id": "MPA-2-10",
+      "palabra": "semilla",
+      "parecida": "señora"
+     },
+     {
+      "id": "MPA-2-11",
+      "palabra": "corona",
+      "parecida": "cocina"
+     },
+     {
+      "id": "MPA-2-12",
+      "palabra": "helado",
+      "parecida": "herida"
+     },
+     {
+      "id": "MPA-2-13",
+      "palabra": "lechuga",
+      "parecida": "lechera"
+     },
+     {
+      "id": "MPA-2-14",
+      "palabra": "mochila",
+      "parecida": "molino"
+     },
+     {
+      "id": "MPA-2-15",
+      "palabra": "banana",
+      "parecida": "bañera"
+     },
+     {
+      "id": "MPA-2-16",
+      "palabra": "regalo",
+      "parecida": "remera"
+     },
+     {
+      "id": "MPA-2-17",
+      "palabra": "tijera",
+      "parecida": "tiburón"
+     },
+     {
+      "id": "MPA-2-18",
+      "palabra": "vecino",
+      "parecida": "verano"
+     },
+     {
+      "id": "MPA-2-19",
+      "palabra": "pájaro",
+      "parecida": "pañuelo"
+     },
+     {
+      "id": "MPA-2-20",
+      "palabra": "montaña",
+      "parecida": "montura"
+     }
+    ],
+    "3": [
+     {
+      "id": "MPA-3-01",
+      "palabra": "caramelo",
+      "parecida": "camarelo"
+     },
+     {
+      "id": "MPA-3-02",
+      "palabra": "chocolate",
+      "parecida": "chocolote"
+     },
+     {
+      "id": "MPA-3-03",
+      "palabra": "escalera",
+      "parecida": "escarela"
+     },
+     {
+      "id": "MPA-3-04",
+      "palabra": "zapatilla",
+      "parecida": "zapatila"
+     },
+     {
+      "id": "MPA-3-05",
+      "palabra": "mermelada",
+      "parecida": "mermeleda"
+     },
+     {
+      "id": "MPA-3-06",
+      "palabra": "cucaracha",
+      "parecida": "cucarocha"
+     },
+     {
+      "id": "MPA-3-07",
+      "palabra": "golondrina",
+      "parecida": "golondirna"
+     },
+     {
+      "id": "MPA-3-08",
+      "palabra": "teléfono",
+      "parecida": "telefomo"
+     },
+     {
+      "id": "MPA-3-09",
+      "palabra": "abanico",
+      "parecida": "adanico"
+     },
+     {
+      "id": "MPA-3-10",
+      "palabra": "mandarina",
+      "parecida": "mandarima"
+     },
+     {
+      "id": "MPA-3-11",
+      "palabra": "calabaza",
+      "parecida": "caladaza"
+     },
+     {
+      "id": "MPA-3-12",
+      "palabra": "gelatina",
+      "parecida": "gelatima"
+     },
+     {
+      "id": "MPA-3-13",
+      "palabra": "pirámide",
+      "parecida": "piránide"
+     },
+     {
+      "id": "MPA-3-14",
+      "palabra": "cocinero",
+      "parecida": "cocimero"
+     },
+     {
+      "id": "MPA-3-15",
+      "palabra": "margarita",
+      "parecida": "magrarita"
+     },
+     {
+      "id": "MPA-3-16",
+      "palabra": "dinosaurio",
+      "parecida": "dinosuario"
+     },
+     {
+      "id": "MPA-3-17",
+      "palabra": "estrellita",
+      "parecida": "estrallita"
+     },
+     {
+      "id": "MPA-3-18",
+      "palabra": "empanada",
+      "parecida": "empamada"
+     },
+     {
+      "id": "MPA-3-19",
+      "palabra": "medialuna",
+      "parecida": "medialuma"
+     },
+     {
+      "id": "MPA-3-20",
+      "palabra": "hamburguesa",
+      "parecida": "hambruguesa"
+     }
+    ]
+   }
+  },
+  "lluvia": {
+   "inicial": {
+    "1": [
+     {
+      "id": "LLU-I1-01",
+      "categoria": "colores",
+      "objetivo": "rojo",
+      "distractores": [
+       "azul",
+       "verde"
+      ]
+     },
+     {
+      "id": "LLU-I1-02",
+      "categoria": "colores",
+      "objetivo": "amarillo",
+      "distractores": [
+       "azul",
+       "negro"
+      ]
+     },
+     {
+      "id": "LLU-I1-03",
+      "categoria": "colores",
+      "objetivo": "verde",
+      "distractores": [
+       "rojo",
+       "amarillo"
+      ]
+     },
+     {
+      "id": "LLU-I1-04",
+      "categoria": "objetos",
+      "objetivo": "🍌",
+      "distractores": [
+       "🚆",
+       "🐙"
+      ]
+     },
+     {
+      "id": "LLU-I1-05",
+      "categoria": "objetos",
+      "objetivo": "⭐",
+      "distractores": [
+       "🧀",
+       "🦁"
+      ]
+     },
+     {
+      "id": "LLU-I1-06",
+      "categoria": "objetos",
+      "objetivo": "🎈",
+      "distractores": [
+       "🔑",
+       "🐢"
+      ]
+     },
+     {
+      "id": "LLU-I1-07",
+      "categoria": "vocales",
+      "objetivo": "A",
+      "distractores": [
+       "I",
+       "U"
+      ]
+     },
+     {
+      "id": "LLU-I1-08",
+      "categoria": "vocales",
+      "objetivo": "O",
+      "distractores": [
+       "I",
+       "E"
+      ]
+     },
+     {
+      "id": "LLU-I1-09",
+      "categoria": "vocales",
+      "objetivo": "E",
+      "distractores": [
+       "O",
+       "U"
+      ]
+     }
+    ],
+    "2": [
+     {
+      "id": "LLU-I2-01",
+      "categoria": "colores",
+      "objetivo": "rojo",
+      "distractores": [
+       "azul",
+       "verde",
+       "amarillo",
+       "negro"
+      ]
+     },
+     {
+      "id": "LLU-I2-02",
+      "categoria": "colores",
+      "objetivo": "azul",
+      "distractores": [
+       "rojo",
+       "verde",
+       "amarillo",
+       "negro"
+      ]
+     },
+     {
+      "id": "LLU-I2-03",
+      "categoria": "colores",
+      "objetivo": "amarillo",
+      "distractores": [
+       "rojo",
+       "azul",
+       "verde",
+       "negro"
+      ]
+     },
+     {
+      "id": "LLU-I2-04",
+      "categoria": "objetos",
+      "objetivo": "🍌",
+      "distractores": [
+       "🍇",
+       "🍓",
+       "🍋",
+       "🥝"
+      ]
+     },
+     {
+      "id": "LLU-I2-05",
+      "categoria": "objetos",
+      "objetivo": "🐒",
+      "distractores": [
+       "🐻",
+       "🦁",
+       "🐼",
+       "🐯"
+      ]
+     },
+     {
+      "id": "LLU-I2-06",
+      "categoria": "objetos",
+      "objetivo": "🚌",
+      "distractores": [
+       "🚆",
+       "🚚",
+       "🚕",
+       "🏍️"
+      ]
+     },
+     {
+      "id": "LLU-I2-07",
+      "categoria": "vocales",
+      "objetivo": "A",
+      "distractores": [
+       "E",
+       "I",
+       "O",
+       "U"
+      ]
+     },
+     {
+      "id": "LLU-I2-08",
+      "categoria": "vocales",
+      "objetivo": "E",
+      "distractores": [
+       "A",
+       "I",
+       "O",
+       "U"
+      ]
+     },
+     {
+      "id": "LLU-I2-09",
+      "categoria": "vocales",
+      "objetivo": "I",
+      "distractores": [
+       "A",
+       "E",
+       "O",
+       "U"
+      ]
+     }
+    ],
+    "3": [
+     {
+      "id": "LLU-I3-01",
+      "categoria": "colores",
+      "objetivo": "rojo",
+      "distractores": [
+       "naranja",
+       "rosa"
+      ]
+     },
+     {
+      "id": "LLU-I3-02",
+      "categoria": "colores",
+      "objetivo": "azul",
+      "distractores": [
+       "celeste",
+       "violeta"
+      ]
+     },
+     {
+      "id": "LLU-I3-03",
+      "categoria": "colores",
+      "objetivo": "amarillo",
+      "distractores": [
+       "naranja",
+       "dorado"
+      ]
+     },
+     {
+      "id": "LLU-I3-04",
+      "categoria": "objetos",
+      "objetivo": "🍋",
+      "distractores": [
+       "🥚",
+       "🍊",
+       "🥔"
+      ]
+     },
+     {
+      "id": "LLU-I3-05",
+      "categoria": "objetos",
+      "objetivo": "🌸",
+      "distractores": [
+       "🌺",
+       "🌼",
+       "🌷"
+      ]
+     },
+     {
+      "id": "LLU-I3-06",
+      "categoria": "objetos",
+      "objetivo": "⭐",
+      "distractores": [
+       "🌟",
+       "✨",
+       "❄️"
+      ]
+     },
+     {
+      "id": "LLU-I3-07",
+      "categoria": "vocales",
+      "objetivo": "O",
+      "distractores": [
+       "C",
+       "U",
+       "Q"
+      ]
+     },
+     {
+      "id": "LLU-I3-08",
+      "categoria": "vocales",
+      "objetivo": "E",
+      "distractores": [
+       "F",
+       "B",
+       "P"
+      ]
+     },
+     {
+      "id": "LLU-I3-09",
+      "categoria": "vocales",
+      "objetivo": "U",
+      "distractores": [
+       "V",
+       "O",
+       "J"
+      ]
+     }
+    ]
+   },
+   "primario": {
+    "1": [
+     {
+      "id": "LLU-P1-01",
+      "categoria": "palabras",
+      "objetivo": [
+       "nido"
+      ],
+      "distractores": [
+       "flor",
+       "tren",
+       "vaca",
+       "lupa"
+      ]
+     },
+     {
+      "id": "LLU-P1-02",
+      "categoria": "palabras",
+      "objetivo": [
+       "taza"
+      ],
+      "distractores": [
+       "lobo",
+       "miel",
+       "pino",
+       "dedo"
+      ]
+     },
+     {
+      "id": "LLU-P1-03",
+      "categoria": "palabras",
+      "objetivo": [
+       "rosa"
+      ],
+      "distractores": [
+       "tren",
+       "lupa",
+       "mono",
+       "jugo"
+      ]
+     },
+     {
+      "id": "LLU-P1-04",
+      "categoria": "palabras",
+      "objetivo": [
+       "lata"
+      ],
+      "distractores": [
+       "oso",
+       "flor",
+       "dedo",
+       "cuna"
+      ]
+     },
+     {
+      "id": "LLU-P1-05",
+      "categoria": "palabras",
+      "objetivo": [
+       "tela"
+      ],
+      "distractores": [
+       "coco",
+       "uva",
+       "mono",
+       "jugo"
+      ]
+     },
+     {
+      "id": "LLU-P1-06",
+      "categoria": "palabras",
+      "objetivo": [
+       "foca"
+      ],
+      "distractores": [
+       "miel",
+       "nido",
+       "taza",
+       "uva"
+      ]
+     },
+     {
+      "id": "LLU-P1-07",
+      "categoria": "palabras",
+      "objetivo": [
+       "cuna"
+      ],
+      "distractores": [
+       "flor",
+       "taza",
+       "lobo",
+       "vela"
+      ]
+     },
+     {
+      "id": "LLU-P1-08",
+      "categoria": "palabras",
+      "objetivo": [
+       "gota"
+      ],
+      "distractores": [
+       "miel",
+       "uva",
+       "nido",
+       "lupa"
+      ]
+     },
+     {
+      "id": "LLU-P1-09",
+      "categoria": "palabras",
+      "objetivo": [
+       "hoja"
+      ],
+      "distractores": [
+       "tren",
+       "cuna",
+       "mono",
+       "vela"
+      ]
+     }
+    ],
+    "2": [
+     {
+      "id": "LLU-P2-01",
+      "categoria": "palabras",
+      "objetivo": [
+       "paloma"
+      ],
+      "distractores": [
+       "palito",
+       "pañuelo",
+       "payaso",
+       "palmera"
+      ]
+     },
+     {
+      "id": "LLU-P2-02",
+      "categoria": "palabras",
+      "objetivo": [
+       "cometa"
+      ],
+      "distractores": [
+       "comida",
+       "corona",
+       "cocina",
+       "collar"
+      ]
+     },
+     {
+      "id": "LLU-P2-03",
+      "categoria": "palabras",
+      "objetivo": [
+       "tortuga"
+      ],
+      "distractores": [
+       "tortilla",
+       "tormenta",
+       "tornillo",
+       "torero"
+      ]
+     },
+     {
+      "id": "LLU-P2-04",
+      "categoria": "palabras",
+      "objetivo": [
+       "ventana"
+      ],
+      "distractores": [
+       "ventaja",
+       "ventilador",
+       "verano",
+       "vecino"
+      ]
+     },
+     {
+      "id": "LLU-P2-05",
+      "categoria": "palabras",
+      "objetivo": [
+       "galleta"
+      ],
+      "distractores": [
+       "gallina",
+       "galera",
+       "galope",
+       "gallito"
+      ]
+     },
+     {
+      "id": "LLU-P2-06",
+      "categoria": "palabras",
+      "objetivo": [
+       "mochila"
+      ],
+      "distractores": [
+       "molino",
+       "moneda",
+       "mosquito",
+       "montaña"
+      ]
+     },
+     {
+      "id": "LLU-P2-07",
+      "categoria": "palabras",
+      "objetivo": [
+       "sirena"
+      ],
+      "distractores": [
+       "silencio",
+       "silbato",
+       "sillón",
+       "sigilo"
+      ]
+     },
+     {
+      "id": "LLU-P2-08",
+      "categoria": "palabras",
+      "objetivo": [
+       "helado"
+      ],
+      "distractores": [
+       "herida",
+       "herrero",
+       "hermano",
+       "helecho"
+      ]
+     },
+     {
+      "id": "LLU-P2-09",
+      "categoria": "palabras",
+      "objetivo": [
+       "pirata"
+      ],
+      "distractores": [
+       "piloto",
+       "pileta",
+       "pimienta",
+       "piraña"
+      ]
+     }
+    ],
+    "3": [
+     {
+      "id": "LLU-P3-01",
+      "categoria": "palabras",
+      "objetivo": [
+       "bola",
+       "dedo"
+      ],
+      "distractores": [
+       "dola",
+       "bolo",
+       "boal",
+       "bedo",
+       "deod"
+      ]
+     },
+     {
+      "id": "LLU-P3-02",
+      "categoria": "palabras",
+      "objetivo": [
+       "pino",
+       "tren"
+      ],
+      "distractores": [
+       "qino",
+       "pion",
+       "tern",
+       "trem",
+       "pina"
+      ]
+     },
+     {
+      "id": "LLU-P3-03",
+      "categoria": "palabras",
+      "objetivo": [
+       "dama",
+       "puma"
+      ],
+      "distractores": [
+       "bama",
+       "dana",
+       "quma",
+       "pmua",
+       "puna"
+      ]
+     },
+     {
+      "id": "LLU-P3-04",
+      "categoria": "palabras",
+      "objetivo": [
+       "lobo",
+       "rosa"
+      ],
+      "distractores": [
+       "lodo",
+       "lboo",
+       "rusa",
+       "orsa",
+       "lobe"
+      ]
+     },
+     {
+      "id": "LLU-P3-05",
+      "categoria": "palabras",
+      "objetivo": [
+       "cubo",
+       "faro"
+      ],
+      "distractores": [
+       "cudo",
+       "ucbo",
+       "fora",
+       "fraro",
+       "faso"
+      ]
+     },
+     {
+      "id": "LLU-P3-06",
+      "categoria": "palabras",
+      "objetivo": [
+       "bote",
+       "nido"
+      ],
+      "distractores": [
+       "dote",
+       "boet",
+       "nibo",
+       "indo",
+       "pote"
+      ]
+     },
+     {
+      "id": "LLU-P3-07",
+      "categoria": "palabras",
+      "objetivo": [
+       "mapa",
+       "tiza"
+      ],
+      "distractores": [
+       "maqa",
+       "mpaa",
+       "tiba",
+       "itza",
+       "pama"
+      ]
+     },
+     {
+      "id": "LLU-P3-08",
+      "categoria": "palabras",
+      "objetivo": [
+       "ropa",
+       "lima"
+      ],
+      "distractores": [
+       "roqa",
+       "opra",
+       "lina",
+       "mila",
+       "rapo"
+      ]
+     },
+     {
+      "id": "LLU-P3-09",
+      "categoria": "palabras",
+      "objetivo": [
+       "sopa",
+       "dedal"
+      ],
+      "distractores": [
+       "soqa",
+       "spoa",
+       "bedal",
+       "dadel",
+       "deda"
+      ]
+     }
+    ]
+   }
+  },
+  "memotono": {
+   "inicial": [
+    {
+     "palabra": "bota",
+     "silabas": 2,
+     "parecidas": [
+      "gota",
+      "boca"
+     ]
+    },
+    {
+     "palabra": "gota",
+     "silabas": 2,
+     "parecidas": [
+      "bota"
+     ]
+    },
+    {
+     "palabra": "boca",
+     "silabas": 2,
+     "parecidas": [
+      "bota",
+      "foca",
+      "vaca"
+     ]
+    },
+    {
+     "palabra": "foca",
+     "silabas": 2,
+     "parecidas": [
+      "boca"
+     ]
+    },
+    {
+     "palabra": "mono",
+     "silabas": 2,
+     "parecidas": [
+      "moño",
+      "moto"
+     ]
+    },
+    {
+     "palabra": "moño",
+     "silabas": 2,
+     "parecidas": [
+      "mono",
+      "moto"
+     ]
+    },
+    {
+     "palabra": "moto",
+     "silabas": 2,
+     "parecidas": [
+      "mono",
+      "moño"
+     ]
+    },
+    {
+     "palabra": "ojo",
+     "silabas": 2,
+     "parecidas": [
+      "oso"
+     ]
+    },
+    {
+     "palabra": "oso",
+     "silabas": 2,
+     "parecidas": [
+      "ojo"
+     ]
+    },
+    {
+     "palabra": "queso",
+     "silabas": 2,
+     "parecidas": [
+      "hueso"
+     ]
+    },
+    {
+     "palabra": "hueso",
+     "silabas": 2,
+     "parecidas": [
+      "queso"
+     ]
+    },
+    {
+     "palabra": "mapa",
+     "silabas": 2,
+     "parecidas": [
+      "papa"
+     ]
+    },
+    {
+     "palabra": "papa",
+     "silabas": 2,
+     "parecidas": [
+      "mapa"
+     ]
+    },
+    {
+     "palabra": "llave",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "llama",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "vela",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "estrella",
+     "silabas": 3,
+     "parecidas": []
+    },
+    {
+     "palabra": "globo",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "torta",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "uva",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "banana",
+     "silabas": 3,
+     "parecidas": []
+    },
+    {
+     "palabra": "flor",
+     "silabas": 1,
+     "parecidas": []
+    },
+    {
+     "palabra": "tren",
+     "silabas": 1,
+     "parecidas": []
+    },
+    {
+     "palabra": "pulpo",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "vaca",
+     "silabas": 2,
+     "parecidas": [
+      "boca"
+     ]
+    },
+    {
+     "palabra": "oveja",
+     "silabas": 3,
+     "parecidas": []
+    },
+    {
+     "palabra": "corona",
+     "silabas": 3,
+     "parecidas": []
+    },
+    {
+     "palabra": "regalo",
+     "silabas": 3,
+     "parecidas": []
+    },
+    {
+     "palabra": "helado",
+     "silabas": 3,
+     "parecidas": []
+    },
+    {
+     "palabra": "reloj",
+     "silabas": 2,
+     "parecidas": []
+    }
+   ],
+   "primario": [
+    {
+     "palabra": "bota",
+     "silabas": 2,
+     "parecidas": [
+      "gota",
+      "boca"
+     ]
+    },
+    {
+     "palabra": "gota",
+     "silabas": 2,
+     "parecidas": [
+      "bota"
+     ]
+    },
+    {
+     "palabra": "boca",
+     "silabas": 2,
+     "parecidas": [
+      "bota",
+      "foca"
+     ]
+    },
+    {
+     "palabra": "foca",
+     "silabas": 2,
+     "parecidas": [
+      "boca"
+     ]
+    },
+    {
+     "palabra": "mono",
+     "silabas": 2,
+     "parecidas": [
+      "moño",
+      "moto"
+     ]
+    },
+    {
+     "palabra": "moño",
+     "silabas": 2,
+     "parecidas": [
+      "mono",
+      "moto"
+     ]
+    },
+    {
+     "palabra": "moto",
+     "silabas": 2,
+     "parecidas": [
+      "mono",
+      "moño"
+     ]
+    },
+    {
+     "palabra": "ojo",
+     "silabas": 2,
+     "parecidas": [
+      "oso",
+      "hoja"
+     ]
+    },
+    {
+     "palabra": "oso",
+     "silabas": 2,
+     "parecidas": [
+      "ojo"
+     ]
+    },
+    {
+     "palabra": "hoja",
+     "silabas": 2,
+     "parecidas": [
+      "ojo"
+     ]
+    },
+    {
+     "palabra": "queso",
+     "silabas": 2,
+     "parecidas": [
+      "hueso"
+     ]
+    },
+    {
+     "palabra": "hueso",
+     "silabas": 2,
+     "parecidas": [
+      "queso",
+      "huevo"
+     ]
+    },
+    {
+     "palabra": "huevo",
+     "silabas": 2,
+     "parecidas": [
+      "hueso"
+     ]
+    },
+    {
+     "palabra": "mapa",
+     "silabas": 2,
+     "parecidas": [
+      "papa"
+     ]
+    },
+    {
+     "palabra": "papa",
+     "silabas": 2,
+     "parecidas": [
+      "mapa"
+     ]
+    },
+    {
+     "palabra": "gallo",
+     "silabas": 2,
+     "parecidas": [
+      "rayo"
+     ]
+    },
+    {
+     "palabra": "rayo",
+     "silabas": 2,
+     "parecidas": [
+      "gallo"
+     ]
+    },
+    {
+     "palabra": "lata",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "llave",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "llama",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "camión",
+     "silabas": 2,
+     "parecidas": [
+      "limón",
+      "jabón",
+      "león"
+     ]
+    },
+    {
+     "palabra": "limón",
+     "silabas": 2,
+     "parecidas": [
+      "camión",
+      "jabón",
+      "león"
+     ]
+    },
+    {
+     "palabra": "jabón",
+     "silabas": 2,
+     "parecidas": [
+      "camión",
+      "limón",
+      "león"
+     ]
+    },
+    {
+     "palabra": "león",
+     "silabas": 2,
+     "parecidas": [
+      "camión",
+      "limón",
+      "jabón"
+     ]
+    },
+    {
+     "palabra": "vela",
+     "silabas": 2,
+     "parecidas": [
+      "abuela"
+     ]
+    },
+    {
+     "palabra": "abuela",
+     "silabas": 3,
+     "parecidas": [
+      "vela"
+     ]
+    },
+    {
+     "palabra": "tren",
+     "silabas": 1,
+     "parecidas": []
+    },
+    {
+     "palabra": "flor",
+     "silabas": 1,
+     "parecidas": []
+    },
+    {
+     "palabra": "miel",
+     "silabas": 1,
+     "parecidas": []
+    },
+    {
+     "palabra": "taxi",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "kiwi",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "coco",
+     "silabas": 2,
+     "parecidas": []
+    },
+    {
+     "palabra": "ballena",
+     "silabas": 3,
+     "parecidas": [
+      "sirena"
+     ]
+    },
+    {
+     "palabra": "sirena",
+     "silabas": 3,
+     "parecidas": [
+      "ballena"
+     ]
+    },
+    {
+     "palabra": "helado",
+     "silabas": 3,
+     "parecidas": [
+      "candado"
+     ]
+    },
+    {
+     "palabra": "candado",
+     "silabas": 3,
+     "parecidas": [
+      "helado"
+     ]
+    },
+    {
+     "palabra": "tortuga",
+     "silabas": 3,
+     "parecidas": [
+      "lechuga"
+     ]
+    },
+    {
+     "palabra": "lechuga",
+     "silabas": 3,
+     "parecidas": [
+      "tortuga"
+     ]
+    },
+    {
+     "palabra": "anillo",
+     "silabas": 3,
+     "parecidas": [
+      "martillo"
+     ]
+    },
+    {
+     "palabra": "martillo",
+     "silabas": 3,
+     "parecidas": [
+      "anillo"
+     ]
+    },
+    {
+     "palabra": "banana",
+     "silabas": 3,
+     "parecidas": [
+      "campana"
+     ]
+    },
+    {
+     "palabra": "campana",
+     "silabas": 3,
+     "parecidas": [
+      "banana"
+     ]
+    },
+    {
+     "palabra": "pepino",
+     "silabas": 3,
+     "parecidas": [
+      "pingüino"
+     ]
+    },
+    {
+     "palabra": "pingüino",
+     "silabas": 3,
+     "parecidas": [
+      "pepino"
+     ]
+    }
+   ],
+   "colores": [
+    "rojo",
+    "azul",
+    "verde",
+    "amarillo",
+    "negro"
+   ]
+  }
+ },
+ "dibujos": {
+  "vaca": "/emoji/1f404.webp",
+  "oveja": "/emoji/1f411.webp",
+  "mono": "/emoji/1f412.webp",
+  "oso": "/emoji/1f43b.webp",
+  "león": "/emoji/1f981.webp",
+  "tigre": "/emoji/1f405.webp",
+  "gallo": "/emoji/1f413.webp",
+  "gallina": "/emoji/1f414.webp",
+  "pollito": "/emoji/1f425.webp",
+  "pingüino": "/emoji/1f427.webp",
+  "ballena": "/emoji/1f40b.webp",
+  "delfín": "/emoji/1f42c.webp",
+  "tiburón": "/emoji/1f988.webp",
+  "pulpo": "/emoji/1f419.webp",
+  "cangrejo": "/emoji/1f980.webp",
+  "caracol": "/emoji/1f40c.webp",
+  "tortuga": "/emoji/1f422.webp",
+  "dinosaurio": "/emoji/1f995.webp",
+  "dragón": "/emoji/1f409.webp",
+  "hormiga": "/emoji/1f41c.webp",
+  "araña": "/emoji/1f577.webp",
+  "foca": "/emoji/1f9ad.webp",
+  "camello": "/emoji/1f42b.webp",
+  "llama": "/emoji/1f999.webp",
+  "zorro": "/emoji/1f98a.webp",
+  "lobo": "/emoji/1f43a.webp",
+  "ardilla": "/emoji/1f43f.webp",
+  "grillo": "/emoji/1f997.webp",
+  "mosca": "/emoji/1fab0.webp",
+  "pájaro": "/emoji/1f426.webp",
+  "paloma": "/emoji/1f54a.webp",
+  "koala": "/emoji/1f428.webp",
+  "panda": "/emoji/1f43c.webp",
+  "canguro": "/emoji/1f998.webp",
+  "gorila": "/emoji/1f98d.webp",
+  "murciélago": "/emoji/1f987.webp",
+  "pavo": "/emoji/1f983.webp",
+  "cisne": "/emoji/1f9a2.webp",
+  "flamenco": "/emoji/1f9a9.webp",
+  "erizo": "/emoji/1f994.webp",
+  "unicornio": "/emoji/1f984.webp",
+  "hipopótamo": "/emoji/1f99b.webp",
+  "rinoceronte": "/emoji/1f98f.webp",
+  "banana": "/emoji/1f34c.webp",
+  "uva": "/emoji/1f347.webp",
+  "frutilla": "/emoji/1f353.webp",
+  "limón": "/emoji/1f34b.webp",
+  "melón": "/emoji/1f348.webp",
+  "cereza": "/emoji/1f352.webp",
+  "durazno": "/emoji/1f351.webp",
+  "kiwi": "/emoji/1f95d.webp",
+  "coco": "/emoji/1f965.webp",
+  "palta": "/emoji/1f951.webp",
+  "zanahoria": "/emoji/1f955.webp",
+  "papa": "/emoji/1f954.webp",
+  "choclo": "/emoji/1f33d.webp",
+  "pepino": "/emoji/1f952.webp",
+  "lechuga": "/emoji/1f96c.webp",
+  "ajo": "/emoji/1f9c4.webp",
+  "cebolla": "/emoji/1f9c5.webp",
+  "hongo": "/emoji/1f344.webp",
+  "queso": "/emoji/1f9c0.webp",
+  "huevo": "/emoji/1f95a.webp",
+  "helado": "/emoji/1f366.webp",
+  "torta": "/emoji/1f382.webp",
+  "galletita": "/emoji/1f36a.webp",
+  "caramelo": "/emoji/1f36c.webp",
+  "chupetín": "/emoji/1f36d.webp",
+  "chocolate": "/emoji/1f36b.webp",
+  "pizza": "/emoji/1f355.webp",
+  "hamburguesa": "/emoji/1f354.webp",
+  "pochoclo": "/emoji/1f37f.webp",
+  "empanada": "/emoji/1f95f.webp",
+  "medialuna": "/emoji/1f950.webp",
+  "jugo": "/emoji/1f9c3.webp",
+  "hielo": "/emoji/1f9ca.webp",
+  "maní": "/emoji/1f95c.webp",
+  "miel": "/emoji/1f36f.webp",
+  "leche": "/emoji/1f95b.webp",
+  "globo": "/emoji/1f388.webp",
+  "regalo": "/emoji/1f381.webp",
+  "llave": "/emoji/1f511.webp",
+  "candado": "/emoji/1f512.webp",
+  "reloj": "/emoji/231a.webp",
+  "anillo": "/emoji/1f48d.webp",
+  "corona": "/emoji/1f451.webp",
+  "gorra": "/emoji/1f9e2.webp",
+  "bota": "/emoji/1f462.webp",
+  "zapatilla": "/emoji/1f45f.webp",
+  "anteojos": "/emoji/1f453.webp",
+  "paraguas": "/emoji/2602.webp",
+  "mochila": "/emoji/1f392.webp",
+  "tijera": "/emoji/2702.webp",
+  "regla": "/emoji/1f4cf.webp",
+  "escoba": "/emoji/1f9f9.webp",
+  "balde": "/emoji/1faa3.webp",
+  "vela": "/emoji/1f56f.webp",
+  "campana": "/emoji/1f514.webp",
+  "tambor": "/emoji/1f941.webp",
+  "guitarra": "/emoji/1f3b8.webp",
+  "trompeta": "/emoji/1f3ba.webp",
+  "piano": "/emoji/1f3b9.webp",
+  "violín": "/emoji/1f3bb.webp",
+  "martillo": "/emoji/1f528.webp",
+  "serrucho": "/emoji/1fa9a.webp",
+  "cuchillo": "/emoji/1f52a.webp",
+  "cuchara": "/emoji/1f944.webp",
+  "caja": "/emoji/1f4e6.webp",
+  "celular": "/emoji/1f4f1.webp",
+  "computadora": "/emoji/1f4bb.webp",
+  "radio": "/emoji/1f4fb.webp",
+  "lupa": "/emoji/1f50d.webp",
+  "imán": "/emoji/1f9f2.webp",
+  "escalera": "/emoji/1fa9c.webp",
+  "puerta": "/emoji/1f6aa.webp",
+  "ventana": "/emoji/1fa9f.webp",
+  "sillón": "/emoji/1f6cb.webp",
+  "bañadera": "/emoji/1f6c1.webp",
+  "jabón": "/emoji/1f9fc.webp",
+  "esponja": "/emoji/1f9fd.webp",
+  "cepillo": "/emoji/1faa5.webp",
+  "espejo": "/emoji/1fa9e.webp",
+  "barrilete": "/emoji/1fa81.webp",
+  "yoyó": "/emoji/1fa80.webp",
+  "rompecabezas": "/emoji/1f9e9.webp",
+  "medalla": "/emoji/1f3c5.webp",
+  "bandera": "/emoji/1f6a9.webp",
+  "mapa": "/emoji/1f5fa.webp",
+  "ancla": "/emoji/2693.webp",
+  "rueda": "/emoji/1f6de.webp",
+  "carpa": "/emoji/26fa.webp",
+  "lata": "/emoji/1f96b.webp",
+  "moño": "/emoji/1f380.webp",
+  "remera": "/emoji/1f455.webp",
+  "vestido": "/emoji/1f457.webp",
+  "bufanda": "/emoji/1f9e3.webp",
+  "guantes": "/emoji/1f9e4.webp",
+  "corbata": "/emoji/1f454.webp",
+  "ojotas": "/emoji/1fa74.webp",
+  "cartera": "/emoji/1f45c.webp",
+  "sombrero": "/emoji/1f452.webp",
+  "fuego": "/emoji/1f525.webp",
+  "estrella": "/emoji/2b50.webp",
+  "arcoíris": "/emoji/1f308.webp",
+  "rayo": "/emoji/26a1.webp",
+  "gota": "/emoji/1f4a7.webp",
+  "volcán": "/emoji/1f30b.webp",
+  "montaña": "/emoji/26f0.webp",
+  "isla": "/emoji/1f3dd.webp",
+  "flor": "/emoji/1f338.webp",
+  "rosa": "/emoji/1f339.webp",
+  "girasol": "/emoji/1f33b.webp",
+  "hoja": "/emoji/1f341.webp",
+  "cactus": "/emoji/1f335.webp",
+  "planta": "/emoji/1fab4.webp",
+  "palmera": "/emoji/1f334.webp",
+  "lluvia": "/emoji/1f327.webp",
+  "colectivo": "/emoji/1f68c.webp",
+  "tren": "/emoji/1f686.webp",
+  "avión": "/emoji/2708.webp",
+  "velero": "/emoji/26f5.webp",
+  "moto": "/emoji/1f3cd.webp",
+  "camión": "/emoji/1f69a.webp",
+  "tractor": "/emoji/1f69c.webp",
+  "cohete": "/emoji/1f680.webp",
+  "ambulancia": "/emoji/1f691.webp",
+  "patrullero": "/emoji/1f693.webp",
+  "taxi": "/emoji/1f695.webp",
+  "monopatín": "/emoji/1f6f4.webp",
+  "patín": "/emoji/1f6fc.webp",
+  "semáforo": "/emoji/1f6a6.webp",
+  "ojo": "/emoji/1f441.webp",
+  "oreja": "/emoji/1f442.webp",
+  "nariz": "/emoji/1f443.webp",
+  "boca": "/emoji/1f444.webp",
+  "diente": "/emoji/1f9b7.webp",
+  "pierna": "/emoji/1f9b5.webp",
+  "lengua": "/emoji/1f445.webp",
+  "hueso": "/emoji/1f9b4.webp",
+  "corazón": "/emoji/2764.webp",
+  "bebé": "/emoji/1f476.webp",
+  "abuela": "/emoji/1f475.webp",
+  "abuelo": "/emoji/1f474.webp",
+  "bombero": "/emoji/1f9d1-200d-1f692.webp",
+  "policía": "/emoji/1f46e.webp",
+  "cocinero": "/emoji/1f9d1-200d-1f373.webp",
+  "astronauta": "/emoji/1f9d1-200d-1f680.webp",
+  "payaso": "/emoji/1f921.webp",
+  "princesa": "/emoji/1f478.webp",
+  "sirena": "/emoji/1f9dc-200d-2640.webp",
+  "hada": "/emoji/1f9da.webp",
+  "mago": "/emoji/1f9d9.webp",
+  "fantasma": "/emoji/1f47b.webp",
+  "robot": "/emoji/1f916.webp",
+  "vampiro": "/emoji/1f9db.webp",
+  "castillo": "/emoji/1f3f0.webp",
+  "escuela": "/emoji/1f3eb.webp",
+  "tobogán": "/emoji/1f6dd.webp",
+  "calabaza": "/emoji/1f383.webp",
+  "mamadera": "/emoji/1f37c.webp",
+  "teléfono": "/emoji/260e.webp",
+  "cucaracha": "/emoji/1fab3.webp",
+  "berenjena": "/emoji/1f346.webp",
+  "aceituna": "/emoji/1fad2.webp",
+  "paracaídas": "/emoji/1fa82.webp",
+  "termómetro": "/emoji/1f321.webp",
+  "microscopio": "/emoji/1f52c.webp",
+  "telescopio": "/emoji/1f52d.webp",
+  "moneda": "/emoji/1fa99.webp"
+ },
+ "emojis": {
+  "🕵️": "/emoji/1f575.webp",
+  "🎶": "/emoji/1f3b6.webp",
+  "🎧": "/emoji/1f3a7.webp",
+  "🪐": "/emoji/1fa90.webp",
+  "⏱️": "/emoji/23f1.webp",
+  "📖": "/emoji/1f4d6.webp",
+  "✍️": "/emoji/270d.webp",
+  "🔎": "/emoji/1f50e.webp",
+  "👀": "/emoji/1f440.webp",
+  "🎒": "/emoji/1f392.webp",
+  "🏫": "/emoji/1f3eb.webp",
+  "🔑": "/emoji/1f511.webp",
+  "🦔": "/emoji/1f994.webp",
+  "💻": "/emoji/1f4bb.webp",
+  "🐫": "/emoji/1f42b.webp",
+  "🏅": "/emoji/1f3c5.webp",
+  "🤡": "/emoji/1f921.webp",
+  "👃": "/emoji/1f443.webp",
+  "🧑‍🚒": "/emoji/1f9d1-200d-1f692.webp",
+  "🐜": "/emoji/1f41c.webp",
+  "🚜": "/emoji/1f69c.webp",
+  "🎀": "/emoji/1f380.webp",
+  "🧼": "/emoji/1f9fc.webp",
+  "🎺": "/emoji/1f3ba.webp",
+  "🏰": "/emoji/1f3f0.webp",
+  "🍄": "/emoji/1f344.webp",
+  "🐧": "/emoji/1f427.webp",
+  "👑": "/emoji/1f451.webp",
+  "📏": "/emoji/1f4cf.webp",
+  "👸": "/emoji/1f478.webp",
+  "🪀": "/emoji/1fa80.webp",
+  "🐿️": "/emoji/1f43f.webp",
+  "🌷": "/emoji/1f337.webp",
+  "🩴": "/emoji/1fa74.webp",
+  "🐉": "/emoji/1f409.webp",
+  "🛝": "/emoji/1f6dd.webp",
+  "🧊": "/emoji/1f9ca.webp",
+  "🌧️": "/emoji/1f327.webp",
+  "👅": "/emoji/1f445.webp",
+  "🐺": "/emoji/1f43a.webp",
+  "🦷": "/emoji/1f9b7.webp",
+  "🤖": "/emoji/1f916.webp",
+  "👕": "/emoji/1f455.webp",
+  "❄️": "/emoji/2744.webp",
+  "⭐": "/emoji/2b50.webp",
+  "🐑": "/emoji/1f411.webp",
+  "🥜": "/emoji/1f95c.webp",
+  "🌼": "/emoji/1f33c.webp",
+  "🪚": "/emoji/1fa9a.webp",
+  "🪙": "/emoji/1fa99.webp",
+  "🐄": "/emoji/1f404.webp",
+  "🧀": "/emoji/1f9c0.webp",
+  "🥟": "/emoji/1f95f.webp",
+  "🫒": "/emoji/1fad2.webp",
+  "🧚": "/emoji/1f9da.webp",
+  "💍": "/emoji/1f48d.webp",
+  "🪜": "/emoji/1fa9c.webp",
+  "🦃": "/emoji/1f983.webp",
+  "🚩": "/emoji/1f6a9.webp",
+  "🧣": "/emoji/1f9e3.webp",
+  "👵": "/emoji/1f475.webp",
+  "🏝️": "/emoji/1f3dd.webp",
+  "🦭": "/emoji/1f9ad.webp",
+  "🦀": "/emoji/1f980.webp",
+  "⛺": "/emoji/26fa.webp",
+  "☂️": "/emoji/2602.webp",
+  "🍌": "/emoji/1f34c.webp",
+  "🪟": "/emoji/1fa9f.webp",
+  "🌺": "/emoji/1f33a.webp",
+  "🥫": "/emoji/1f96b.webp",
+  "🍒": "/emoji/1f352.webp",
+  "👮": "/emoji/1f46e.webp",
+  "🕷️": "/emoji/1f577.webp",
+  "🍆": "/emoji/1f346.webp",
+  "⌚": "/emoji/231a.webp",
+  "🔨": "/emoji/1f528.webp",
+  "🍈": "/emoji/1f348.webp",
+  "🦇": "/emoji/1f987.webp",
+  "🐢": "/emoji/1f422.webp",
+  "🍭": "/emoji/1f36d.webp",
+  "🌡️": "/emoji/1f321.webp",
+  "🦙": "/emoji/1f999.webp",
+  "✂️": "/emoji/2702.webp",
+  "🎹": "/emoji/1f3b9.webp",
+  "🐒": "/emoji/1f412.webp",
+  "🔬": "/emoji/1f52c.webp",
+  "🎁": "/emoji/1f381.webp",
+  "🧜‍♀️": "/emoji/1f9dc-200d-2640.webp",
+  "🛼": "/emoji/1f6fc.webp",
+  "🚕": "/emoji/1f695.webp",
+  "🍊": "/emoji/1f34a.webp",
+  "🔥": "/emoji/1f525.webp",
+  "🥬": "/emoji/1f96c.webp",
+  "🧲": "/emoji/1f9f2.webp",
+  "🐅": "/emoji/1f405.webp",
+  "🚓": "/emoji/1f693.webp",
+  "📦": "/emoji/1f4e6.webp",
+  "🌵": "/emoji/1f335.webp",
+  "🏍️": "/emoji/1f3cd.webp",
+  "🔪": "/emoji/1f52a.webp",
+  "🐋": "/emoji/1f40b.webp",
+  "⚡": "/emoji/26a1.webp",
+  "👶": "/emoji/1f476.webp",
+  "🛋️": "/emoji/1f6cb.webp",
+  "🐓": "/emoji/1f413.webp",
+  "🚀": "/emoji/1f680.webp",
+  "🦴": "/emoji/1f9b4.webp",
+  "🪁": "/emoji/1fa81.webp",
+  "👢": "/emoji/1f462.webp",
+  "🧹": "/emoji/1f9f9.webp",
+  "🛴": "/emoji/1f6f4.webp",
+  "🦊": "/emoji/1f98a.webp",
+  "🥚": "/emoji/1f95a.webp",
+  "🧄": "/emoji/1f9c4.webp",
+  "🍿": "/emoji/1f37f.webp",
+  "🐥": "/emoji/1f425.webp",
+  "🪞": "/emoji/1fa9e.webp",
+  "🦛": "/emoji/1f99b.webp",
+  "🍋": "/emoji/1f34b.webp",
+  "👜": "/emoji/1f45c.webp",
+  "🚆": "/emoji/1f686.webp",
+  "🪰": "/emoji/1fab0.webp",
+  "🦁": "/emoji/1f981.webp",
+  "👓": "/emoji/1f453.webp",
+  "📻": "/emoji/1f4fb.webp",
+  "🪣": "/emoji/1faa3.webp",
+  "🛞": "/emoji/1f6de.webp",
+  "👄": "/emoji/1f444.webp",
+  "🍯": "/emoji/1f36f.webp",
+  "🧢": "/emoji/1f9e2.webp",
+  "👗": "/emoji/1f457.webp",
+  "🦘": "/emoji/1f998.webp",
+  "🧃": "/emoji/1f9c3.webp",
+  "🥕": "/emoji/1f955.webp",
+  "🌴": "/emoji/1f334.webp",
+  "🧤": "/emoji/1f9e4.webp",
+  "🦵": "/emoji/1f9b5.webp",
+  "👁️": "/emoji/1f441.webp",
+  "🔍": "/emoji/1f50d.webp",
+  "🥁": "/emoji/1f941.webp",
+  "🦏": "/emoji/1f98f.webp",
+  "⛵": "/emoji/26f5.webp",
+  "🌹": "/emoji/1f339.webp",
+  "🧙": "/emoji/1f9d9.webp",
+  "🧽": "/emoji/1f9fd.webp",
+  "👴": "/emoji/1f474.webp",
+  "🪂": "/emoji/1fa82.webp",
+  "🎸": "/emoji/1f3b8.webp",
+  "🎃": "/emoji/1f383.webp",
+  "🔒": "/emoji/1f512.webp",
+  "🐬": "/emoji/1f42c.webp",
+  "🛁": "/emoji/1f6c1.webp",
+  "🥝": "/emoji/1f95d.webp",
+  "👒": "/emoji/1f452.webp",
+  "❤️": "/emoji/2764.webp",
+  "🐼": "/emoji/1f43c.webp",
+  "🦢": "/emoji/1f9a2.webp",
+  "🦍": "/emoji/1f98d.webp",
+  "👻": "/emoji/1f47b.webp",
+  "🔔": "/emoji/1f514.webp",
+  "🍓": "/emoji/1f353.webp",
+  "🍬": "/emoji/1f36c.webp",
+  "🍕": "/emoji/1f355.webp",
+  "🐻": "/emoji/1f43b.webp",
+  "🌻": "/emoji/1f33b.webp",
+  "🪴": "/emoji/1fab4.webp",
+  "🍫": "/emoji/1f36b.webp",
+  "🚑": "/emoji/1f691.webp",
+  "🚌": "/emoji/1f68c.webp",
+  "🧑‍🚀": "/emoji/1f9d1-200d-1f680.webp",
+  "🧑‍🍳": "/emoji/1f9d1-200d-1f373.webp",
+  "📱": "/emoji/1f4f1.webp",
+  "🍼": "/emoji/1f37c.webp",
+  "🐦": "/emoji/1f426.webp",
+  "🐔": "/emoji/1f414.webp",
+  "🍪": "/emoji/1f36a.webp",
+  "🧩": "/emoji/1f9e9.webp",
+  "🥔": "/emoji/1f954.webp",
+  "🥛": "/emoji/1f95b.webp",
+  "🪥": "/emoji/1faa5.webp",
+  "🌋": "/emoji/1f30b.webp",
+  "🔭": "/emoji/1f52d.webp",
+  "🥒": "/emoji/1f952.webp",
+  "👟": "/emoji/1f45f.webp",
+  "⚓": "/emoji/2693.webp",
+  "🍁": "/emoji/1f341.webp",
+  "🎻": "/emoji/1f3bb.webp",
+  "🥑": "/emoji/1f951.webp",
+  "🌽": "/emoji/1f33d.webp",
+  "🎂": "/emoji/1f382.webp",
+  "🍇": "/emoji/1f347.webp",
+  "✈️": "/emoji/2708.webp",
+  "🎈": "/emoji/1f388.webp",
+  "⛰️": "/emoji/26f0.webp",
+  "🍔": "/emoji/1f354.webp",
+  "🚚": "/emoji/1f69a.webp",
+  "🦩": "/emoji/1f9a9.webp",
+  "🕯️": "/emoji/1f56f.webp",
+  "🧅": "/emoji/1f9c5.webp",
+  "🦄": "/emoji/1f984.webp",
+  "🦕": "/emoji/1f995.webp",
+  "🐙": "/emoji/1f419.webp",
+  "✨": "/emoji/2728.webp",
+  "🕊️": "/emoji/1f54a.webp",
+  "🌈": "/emoji/1f308.webp",
+  "🌸": "/emoji/1f338.webp",
+  "🚦": "/emoji/1f6a6.webp",
+  "🐌": "/emoji/1f40c.webp",
+  "🦗": "/emoji/1f997.webp",
+  "💧": "/emoji/1f4a7.webp",
+  "🐯": "/emoji/1f42f.webp",
+  "🥄": "/emoji/1f944.webp",
+  "☎️": "/emoji/260e.webp",
+  "🥐": "/emoji/1f950.webp",
+  "🥥": "/emoji/1f965.webp",
+  "🗺️": "/emoji/1f5fa.webp",
+  "🧛": "/emoji/1f9db.webp",
+  "🍦": "/emoji/1f366.webp",
+  "🪳": "/emoji/1fab3.webp",
+  "🐨": "/emoji/1f428.webp",
+  "🚪": "/emoji/1f6aa.webp",
+  "👂": "/emoji/1f442.webp",
+  "🌟": "/emoji/1f31f.webp",
+  "👔": "/emoji/1f454.webp",
+  "🍑": "/emoji/1f351.webp",
+  "🦈": "/emoji/1f988.webp"
+ },
+ "a_generar": {
+  "capa": "capa roja de superhéroe, sola, sin personaje",
+  "tapa": "tapa redonda de una olla, con manija",
+  "cuna": "cuna de bebé de madera",
+  "ola": "una ola de mar azul con espuma",
+  "lana": "ovillo de lana con una aguja de tejer",
+  "nota": "nota musical negra, grande",
+  "tela": "rollo de tela de colores",
+  "cono": "cono naranja de tránsito con franjas blancas",
+  "goma": "goma de borrar rosa y celeste"
+ }
+}

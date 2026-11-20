@@ -4,7 +4,7 @@
  */
 
 /** Requieren sesión. La restricción por rol (p. ej. /ninos solo profesionales) la hace cada página. */
-export const RUTAS_PROTEGIDAS = ["/dashboard", "/test", "/perfil", "/completar-perfil", "/ninos", "/mis-profesionales"]
+export const RUTAS_PROTEGIDAS = ["/dashboard", "/test", "/perfil", "/completar-perfil", "/ninos", "/mis-profesionales", "/entrenamiento", "/entrenar"]
 
 /** Con sesión no tienen sentido: se redirige a /dashboard. */
 export const RUTAS_SOLO_INVITADOS = ["/login", "/register"]

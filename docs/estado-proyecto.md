@@ -1,6 +1,6 @@
 # Lecxico — Estado del proyecto
 
-Última actualización: 16/11/2026 (S8, S9 y S10). Reemplaza al documento "Estado del proyecto tras la etapa de gestión de usuarios (slices 1 a 5)" del 9/10/2026.
+Última actualización: 20/11/2026 (migración 0008 de S12 y S13a). Reemplaza al documento "Estado del proyecto tras la etapa de gestión de usuarios (slices 1 a 5)" del 9/10/2026.
 
 **Cómo se usa:** es la fuente de contexto para cualquier chat o Claude Code que trabaje en el repo. Cada PR actualiza las secciones que toca (estado de slices, modelo de datos, decisiones, pendientes). Si este documento y el código no coinciden, manda el código; las migraciones de `supabase/migrations/` describen la base exactamente.
 
@@ -8,7 +8,7 @@ Documentos relacionados: `CLAUDE.md` (reglas para Claude Code), `docs/revisiones
 
 ## Resumen
 
-La gestión de usuarios está implementada y probada de punta a punta: registro por rol, autenticación, vinculación profesional–niño por invitación, evaluación tomada por el profesional al niño, historial y recomendación. La evaluación tiene los estilos del resto de la app. S8 suma la contraseña del tutor verificada en el servidor, el historial compartido, la eliminación de la cuenta del niño y el compromiso del profesional (migración 0005). Denominación rápida ya tiene el formato nuevo en los dos niveles (S9, migración 0006). El perfil del niño ya no muestra evaluaciones ni entrenamientos, y el niño no puede leer sus evaluaciones en la base (S10, migración 0007, en revisión). Falta adaptar el resto a la definición vigente de la propuesta V8 (franjas) y construir el entrenamiento, las tareas y el seguimiento.
+La gestión de usuarios está implementada y probada de punta a punta: registro por rol, autenticación, vinculación profesional–niño por invitación, evaluación tomada por el profesional al niño, historial y recomendación. La evaluación tiene los estilos del resto de la app. S8 suma la contraseña del tutor verificada en el servidor, el historial compartido, la eliminación de la cuenta del niño y el compromiso del profesional (migración 0005). Denominación rápida ya tiene el formato nuevo en los dos niveles (S9, migración 0006). El perfil del niño ya no muestra evaluaciones ni entrenamientos, y el niño no puede leer sus evaluaciones en la base (S10, migración 0007, en revisión). El entrenamiento tiene su modelo de datos (0008, escrita y probada, pendiente de aplicar) y su marco común: el área del niño (práctica y tareas), el modo en consulta del profesional y los tres primeros juegos (S13a, en revisión). Faltan las franjas, el resto de los juegos, armar tareas y el seguimiento.
 
 ## Plan de slices
 
@@ -24,8 +24,9 @@ Meta: desarrollo cerrado el viernes 4/12/2026; verificación y documentación de
 | S9 Denominación rápida | Cuadrícula de letras, números y colores; cronómetro y carga de errores; se suma a primeros lectores (9 bloques); guarda tiempo, errores y detalle por ejercicio | Donato | 16–22/11 | 0006 | Hecho |
 | S10 Perfil del niño sin resultados | El perfil deja de mostrar evaluaciones y entrenamientos; el niño pierde acceso a sus evaluaciones en la base; se borran `/perfil/evaluaciones/[testId]` y `/progress` | Donato | 16–22/11 | 0007 | En revisión |
 | S11 Franjas y recomendación | Cortes en el código, franjas con pruebas, recomendación por franja | Camila | 23–26/11 | — | Pendiente |
-| S12 Datos del entrenamiento | Juegos, partidas y tareas; desbloqueo del 80 % en el servidor | Camila | 23–29/11 | 0008 | Pendiente |
-| S13 Área de entrenamiento | Marco de juego, pantalla del niño, primeros juegos | Donato | 23–29/11 | — | Pendiente |
+| S12 Datos del entrenamiento | Juegos, partidas y tareas; desbloqueo del 80 % en el servidor | Camila | 23–29/11 | 0008 | Migración escrita y probada (0008) |
+| S13a Marco del entrenamiento | Marco de juego, área del niño (práctica y tareas), modo en consulta, reproductor de audio único, switch "A a"; Detective de sonidos, Rima y Palmas; historial de partidas en `/ninos/[id]`; `/entrenar` y su tarjeta en el inicio del profesional; se retiran los juegos y archivos heredados | Donato | 20–25/11 | usa 0008 | En revisión |
+| S13b Juegos (segunda tanda) | Memotono, Rompe y une, Palabras de otro planeta, Nombrá rápido y ¡Rápido, tocalo! | Donato | 26–29/11 | usa 0008 | Pendiente |
 | S14 Juegos restantes | 14 combinaciones bloque-nivel | Donato | 26/11–4/12 | — | Pendiente |
 | S15 Tareas del profesional | Armar y asignar tareas; la recomendación enlaza a juegos | Camila | 30/11–2/12 | usa 0008 | Pendiente |
 | S16 Gráficos de seguimiento | Evolución por bloque y progreso del entrenamiento | Donato | 30/11–4/12 | — | Pendiente |
@@ -40,13 +41,14 @@ Meta: desarrollo cerrado el viernes 4/12/2026; verificación y documentación de
 
 **Stack:** Next.js 15 (App Router) + React 19 + TypeScript + Tailwind 4 + shadcn/ui + Motion + Supabase (Postgres + Auth) con `@supabase/ssr`. Vitest para pruebas. Despliegue de prueba en Vercel desde `main`: https://lecxico-three.vercel.app. Repositorio: https://github.com/costadonato/lecxico.
 
-**Pruebas:** `npm test` corre las pruebas de Vitest (`lib/**/*.test.ts`) y `npm run coverage` suma la cobertura V8 de los módulos de lógica listados en `vitest.config.mts` (hoy `lib/test/analisis.ts`, `bloques.ts`, `denominacion.ts` y `denominacion-config.ts`, `lib/auth/perfil.ts` y `lib/tutor/errores.ts`, `etapa.ts` y `validaciones.ts`), con umbrales de 80 % de líneas y 90 % de ramas (reporte HTML en `coverage/`).
+**Pruebas:** `npm test` corre las pruebas de Vitest (`lib/**/*.test.ts`) y `npm run coverage` suma la cobertura V8 de los módulos de lógica listados en `vitest.config.mts` (hoy `lib/test/analisis.ts`, `bloques.ts`, `denominacion.ts` y `denominacion-config.ts`, `lib/auth/perfil.ts`, `lib/tutor/errores.ts`, `etapa.ts` y `validaciones.ts`, y `lib/entrenamiento/juegos.ts`, `bancos.ts`, `rondas.ts`, `presentacion.ts` y `partidas.ts`), con umbrales de 80 % de líneas y 90 % de ramas (reporte HTML en `coverage/`).
 
 **Pruebas de migraciones:** `supabase/tests/00_simular_supabase.sql` arma en un Postgres local lo que las migraciones esperan de Supabase (`auth.users`, `auth.uid()`, `auth.jwt()`, `auth.role()`, roles `anon`, `authenticated` y `service_role`, la tabla previa `entrenamientos` y la collation `und-x-icu` si falta). Orden: ese archivo → migraciones → `supabase/tests/NNNN_*.sql` (ver `supabase/tests/README.md`). Cada archivo de pruebas corre en una transacción con `rollback` y corta con "FALLARON …" si algún escenario no dio lo esperado. Sin Postgres instalado se puede usar PGlite (`@electric-sql/pglite`, Postgres en WASM) desde Node, fuera del repo.
 
 **Cuidados conocidos:**
 
-- `next.config.mjs` tiene `ignoreBuildErrors: true`: hay que correr `npx tsc --noEmit`. Quedan 4 errores previos en archivos de ejercicios (`exercise/[id]`, `daily-challenge-card`, `game-generators`).
+- Desde S13a, `npx tsc --noEmit` da 0 errores (los 4 previos estaban en los ejercicios heredados que se borraron) y `next.config.mjs` tiene `ignoreBuildErrors: false`: un error de tipos frena el build.
+- Si `tsc` se queja de `.next/types/validator.ts` por rutas que ya no existen, son tipos viejos: borrar `.next` y volver a correr.
 - No trabajar con el repo dentro de OneDrive: bloquea `.next` (errores tipo `EINVAL: readlink`). Clonar en una carpeta local.
 - `.env.local` no está en git. Cada uno tiene el suyo con `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` y, desde S8, `SUPABASE_SERVICE_ROLE_KEY`.
 - `SUPABASE_SERVICE_ROLE_KEY` (Supabase → Project Settings → API → clave `service_role`) saltea la RLS. Solo la usa el servidor de Next.js, por `lib/supabase/admin.ts` (con `server-only`): nunca con prefijo `NEXT_PUBLIC_` ni en un archivo con `"use client"`. Tiene que estar en `.env.local` y en Vercel (Settings → Environment Variables). Si falta, las acciones del tutor responden "No se pudo completar la acción" y el servidor loguea "Falta configurar SUPABASE_SERVICE_ROLE_KEY".
@@ -125,17 +127,23 @@ La definición funcional es la de la propuesta V8 (reuniones del 14/10 y 28/10/2
 
 - El perfil del niño (`/perfil`, que comparten niño y tutor) no muestra resultados de evaluaciones ni el progreso del entrenamiento (S10). Muestra los datos personales con el nombre de usuario, un aviso ("Los resultados de las evaluaciones los ve el profesional que acompaña al niño.") y "Acciones del tutor". En la base, el niño no lee `test` ni `test_bloque_resultado`, ni las suyas (0007).
 - Solo el profesional con vínculo activo ve las evaluaciones, su desglose, las franjas y la recomendación.
-- **(V8)** El niño va a ver las actividades y el grado alcanzado en cada juego dentro del área de entrenamiento (S13). El tutor accede a los resultados con un informe a pedido que recibe por correo como enlace con acceso autenticado, que vence a los 7 días (S17).
+- En `/entrenamiento` el niño ve sus tareas y el grado alcanzado en cada juego, con estrellas y nunca con porcentajes; al terminar una partida no ve aciertos (S13a). **(V8)** El tutor accede a los resultados con un informe a pedido que recibe por correo como enlace con acceso autenticado, que vence a los 7 días (S17).
 
-**Entrenamiento (V8, a diseñar con las especialistas hasta el 20/11)**
+**Entrenamiento (validado con las especialistas el 19/11; S12 y S13a)**
 
-- Al menos un juego por bloque y nivel (14 combinaciones), con 3 grados; el siguiente grado se desbloquea con una partida de al menos 80 % de aciertos en el anterior.
-- El niño juega siempre acompañado: práctica en casa con el tutor, y tareas que asigna el profesional (cualquier juego y grado). Las partidas de práctica y de tareas se registran igual y se distinguen en el seguimiento.
-- Lex y Lumo responden a cada intento dentro del juego.
+- 14 juegos (catálogo en `lib/entrenamiento/juegos.ts`, espejo de `entrenamiento_juego`), al menos uno por bloque y nivel, con 3 grados. El contenido está en `lib/entrenamiento/bancos.json` (borrador del 19/11, en revisión por las especialistas) con los dibujos de Fluent Emoji 3D (Microsoft, licencia MIT) en `public/emoji/`.
+- **Desbloqueo (0008, en el servidor):** una partida con al menos 80 % en el grado g habilita en casa hasta g + 1. Cuentan las de consulta, tarea y práctica del nivel actual; las de una misión no. El grado 1 está siempre habilitado.
+- **Orígenes:** práctica en casa (el niño con el tutor, solo grados habilitados y nunca juegos de solo consulta), tarea (el grado lo fija el profesional; se marca hecha cuando todos sus juegos tienen partida) y consulta (el profesional, desde su cuenta, cualquier grado y juego, incluido Nombrá rápido).
+- **Rondas** (`lib/entrenamiento/rondas.ts`): primer intento correcto = correcta; si falla, se avisa sin mostrar la respuesta y hay **un** reintento, que cuenta como error aunque acierte; si vuelve a fallar se muestra la respuesta. `detalle` guarda `{ item, correcta, intentos }` por ronda.
+- **Audio** (`lib/entrenamiento/audio.ts`, reproductor único de la app): suena solo al tocar un botón, con 1 s de silencio antes, uno a la vez; se corta al desmontar y al cambiar de ruta. Por ahora voz del navegador (es-AR, es-US, es-419, es-MX, cualquier es); si `public/audio/manifest.json` (hoy vacío) tiene un archivo para el texto, usa el archivo. El globo de Lex y Lumo usa el mismo reproductor. La evaluación sigue con su propia síntesis de voz.
+- **Switch "A a":** MAYÚSCULA o minúscula para todo el texto del área de juego (`data-letra`), guardado por niño en `ninos.letra_entrenamiento`. No afecta a la evaluación.
+- **Qué ve cada uno:** el niño, sus tareas, los juegos (sin nombres de bloque, ni en las tarjetas ni en el encabezado del juego) con candados y estrellas, y al final de la partida un cierre festivo (con "¡Desbloqueaste el grado N!" si corresponde), sin aciertos. El profesional ve correctas / total y porcentaje al terminar, el grado habilitado en casa y el historial de partidas en `/ninos/[id]`.
+- Lex y Lumo responden a cada intento (poses explicando, pensando, festejando y alentando).
+- Hoy se pueden jugar Detective de sonidos, Rima y Palmas; el resto se ve como "Próximamente" (S13b y S14). Armar y asignar tareas es S15.
 
 ## Modelo de datos actual
 
-Seis tablas, todas con RLS. Usuarios sin sesión (anon) no acceden a ninguna.
+Nueve tablas, todas con RLS. Usuarios sin sesión (anon) no acceden a ninguna. Las cuatro del entrenamiento son de la 0008 (pendiente de aplicar), que también borra la tabla heredada `entrenamientos`.
 
 ```
 profiles ( id uuid PK = auth.users.id, rol ('profesional'|'nino'), nombre, apellido,
@@ -143,7 +151,8 @@ profiles ( id uuid PK = auth.users.id, rol ('profesional'|'nino'), nombre, apell
   acepta_compromiso (solo profesionales, 0005), fecha_aceptacion_compromiso, created_at )
 
 ninos ( profile_id PK, fecha_nacimiento, etapa_escolar ('sala_4'|'sala_5'|'primero'|'segundo'|'tercero'),
-  tutor_email (sincronizado por trigger), tutor_telefono, ultima_conexion, ultimo_entrenamiento, ultima_prueba )
+  tutor_email (sincronizado por trigger), tutor_telefono, ultima_conexion, ultimo_entrenamiento, ultima_prueba,
+  letra_entrenamiento ('mayuscula'|'minuscula', default 'mayuscula', 0008) )
 
 profesional_nino ( id PK, profesional_id, nino_id, estado ('pendiente'|'activa'|'inactiva'),
   fecha_invitacion, fecha_afiliacion (= fecha de vinculación), fecha_baja,
@@ -159,8 +168,18 @@ test_bloque_resultado ( id PK, test_id, bloque_codigo, orden, correctas, total >
   -- null en los demás bloques y en las evaluaciones anteriores a S9.
   -- detalle = [{ejercicio, tiempo_ms, errores, correctas, total}, ...] (un elemento por cuadrícula)
 
-entrenamientos ( id PK, user_id = niño (borrado en cascada), juego, puntaje, created_at )
-  -- existe con RLS pero ningún juego escribe; S12 la reemplaza
+entrenamiento_juego ( codigo PK, niveles text[] ('inicial'|'primario'), solo_consulta )   -- 0008: los 14 juegos
+
+entrenamiento_tarea ( id PK, nino_id (cascada), profesional_id (null si borró su cuenta), nombre, es_mision,
+  estado ('pendiente'|'hecha'), created_at, completada_at (con 'hecha') )
+
+entrenamiento_tarea_item ( tarea_id (cascada), orden 1..10, juego, grado 1..3, PK (tarea_id, orden), UNIQUE (tarea_id, juego, grado) )
+
+entrenamiento_partida ( id PK, nino_id (cascada), profesional_id (autor: quien jugó en consulta o asignó la tarea;
+  null en la práctica), juego, nivel, grado 1..3, origen ('consulta'|'tarea'|'practica'), tarea_id (solo 'tarea'),
+  mision (agrupa los 3 desafíos de una misión; no desbloquea), correctas, total 1..200,
+  porcentaje (generada: round(100 * correctas / total)), tiempo_ms y errores (juntos; solo Nombrá rápido),
+  detalle jsonb [{item, correcta, intentos}], created_at )
 ```
 
 **Bloques de la evaluación** (`lib/test/bloques.ts`, en orden):
@@ -180,9 +199,13 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 | ninos | El propio niño; un profesional con vínculo activo | El propio niño, solo fecha_nacimiento, tutor_telefono y ultima_conexion. La etapa escolar, solo con `tutor_cambiar_etapa` (0005) |
 | profesional_nino | Las dos partes | Solo mediante funciones; las del tutor, solo `service_role` |
 | test, test_bloque_resultado | Solo el profesional con vínculo activo: las suyas, o todas si el tutor compartió el historial (`profesional_puede_ver_registro`, 0005). El niño no lee ninguna, ni las suyas (0007) | Solo `guardar_test` |
-| entrenamientos | El niño (hasta S12); profesionales con vínculo activo | El propio niño (insert) |
+| entrenamiento_juego | Todos los usuarios con sesión | Nadie (lo carga la 0008) |
+| entrenamiento_tarea, entrenamiento_tarea_item | El propio niño; el profesional con vínculo activo, las suyas o todas si el tutor compartió (`profesional_puede_ver_registro`) | Solo `crear_tarea` y `cancelar_tarea`; la marca `guardar_partida` |
+| entrenamiento_partida | Profesionales con vínculo activo: la práctica, todos; consulta y tareas, según `profesional_puede_ver_registro`. El niño no lee partidas (ve el grado habilitado con `grados_habilitados`) | Solo `guardar_partida` |
 
 **Funciones:** `nivel_para_etapa`, `es_profesional_vinculado`, `es_profesional_del_nino_actual`, `profesional_puede_ver_registro`, `guardar_test`, `nombre_usuario_disponible`, `invitar_nino`, `cancelar_invitacion`, `desvincular` (solo el profesional), `vinculos_del_profesional`, `ninos_para_test`, `formatear_nombre`.
+
+**Funciones del entrenamiento (0008, `authenticated`):** `grados_habilitados(nino)` (el niño para sí o un profesional con vínculo activo), `guardar_partida` (devuelve id, porcentaje y grado habilitado; valida origen, grado y tarea), `crear_tarea`, `cancelar_tarea` y `cambiar_letra_entrenamiento`. Las envuelve `lib/entrenamiento/partidas.ts`.
 
 **Funciones del tutor (0005, solo `service_role`):** `tutor_responder_invitacion`, `tutor_desvincular`, `tutor_cambiar_etapa`. Las llama `lib/tutor/acciones.ts` después de verificar la contraseña. `responder_invitacion` se eliminó en la 0005.
 
@@ -199,11 +222,13 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 | 0005_s8_contrasena_tutor.sql | Funciones del tutor solo para `service_role`, historial compartido, compromiso del profesional, etapa escolar fuera del alcance del niño | Aplicada |
 | 0006_s9_denominacion_rapida.sql | `test_bloque_resultado`: tiempo_ms, errores y detalle con sus constraints; `guardar_test` los exige en denominación rápida y los rechaza en los demás bloques (misma firma; mensajes sin "test"). Pruebas en `supabase/tests/0006_denominacion_rapida.sql` | Aplicada |
 | 0007_s10_perfil_sin_resultados.sql | `test_select` y `test_bloque_resultado_select` sin la cláusula `nino_id = auth.uid()`: solo `profesional_puede_ver_registro`. Pruebas en `supabase/tests/0007_perfil_sin_resultados.sql` | Pendiente de aplicar |
-| 0008 (S12) · 0009 (S17) | Reservadas | — |
+| 0008_s12_entrenamiento.sql | Tablas `entrenamiento_juego`, `entrenamiento_tarea`, `entrenamiento_tarea_item` y `entrenamiento_partida`; `ninos.letra_entrenamiento`; funciones `grados_habilitados`, `guardar_partida`, `crear_tarea`, `cancelar_tarea` y `cambiar_letra_entrenamiento`; borra `entrenamientos`. Pruebas en `supabase/tests/0008_entrenamiento.sql` (55 escenarios). Se aplica el mismo día del merge de S13a, que deja de leer `entrenamientos` | Pendiente de aplicar |
+| 0009 (S17) | Reservada | — |
 
 ### Coordinación entre slices (desde S8)
 
-- La 0005 se aplica antes que la 0006, y la 0006 antes que la 0007.
+- La 0005 se aplica antes que la 0006, la 0006 antes que la 0007 y la 0007 antes que la 0008.
+- La 0008 borra `entrenamientos`: aplicarla el mismo día del merge de S13a (`lib/ninos/detalle.ts` ya lee `entrenamiento_partida`). Hasta que se aplique, en el despliegue de prueba fallan el área de entrenamiento y el detalle del niño. `supabase/tests/0005_s8_contrasena_tutor.sql` cambió en el escenario 8 (ahora borra en cascada una partida en lugar de una fila de `entrenamientos`).
 - La 0007 (S10) recrea `test_select` y `test_bloque_resultado_select` a partir de la versión de la 0005: sacó solo la cláusula `nino_id = auth.uid()` y conserva `profesional_puede_ver_registro(nino_id, profesional_id)`. Quien vuelva a tocar esas políticas parte de la 0007.
 - En `/perfil`, S8 sumó `AccionesTutor` y el nombre de usuario en Datos personales; S10 los conserva.
 - Los archivos de `supabase/tests/` corren después de todas las migraciones: cuando una migración cambia una regla, se ajustan los escenarios anteriores que la probaban (S10 cambió el 4.6 de la 0005).
@@ -219,18 +244,24 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 | `/recuperar`, `/restablecer`, `/auth/callback` | Público | Recuperación de contraseña y confirmación de mail |
 | `/terminos`, `/privacidad` | Público | "Contenido en preparación" |
 | `/completar-perfil` | Con sesión | Profesional que entró con Google sin nombre de usuario, o al que le falta aceptar el compromiso de uso responsable |
-| `/dashboard` | Los dos | Profesional: Evaluación, Mis niños. Niño: Entrenamiento, Mis profesionales, Mi perfil |
+| `/dashboard` | Los dos | Profesional: Evaluación, Entrenamiento, Mis niños (la gestión de tareas suma su propia tarjeta en S15). Niño: Entrenamiento, Mis profesionales, Mi perfil |
 | `/test` | Profesional | Tabla para elegir el niño a evaluar |
+| `/entrenar` | Profesional | Acceso directo al modo en consulta, con la estructura de `/test`: los niños con vínculo activo (nombre, nivel y último entrenamiento: fecha, juego y grado de la partida más reciente que el profesional puede ver, o "Todavía no entrenó") y "Entrenar en consulta". En celular, tarjetas |
 | `/test/inicial?nino=<id>`, `/test/primaria?nino=<id>` | Profesional | La evaluación de cada nivel |
-| `/ninos`, `/ninos/[id]`, `/ninos/[id]/tests/[testId]` | Profesional | Gestión de niños, detalle con recomendación e historiales, desglose |
+| `/ninos`, `/ninos/[id]`, `/ninos/[id]/tests/[testId]` | Profesional | Gestión de niños, detalle con recomendación e historiales, desglose. El historial de entrenamientos muestra las últimas 20 partidas (fecha, juego, grado, origen y correctas / total con porcentaje); el contador de la tarjeta, el total. "Entrenar en consulta" junto a "Tomar evaluación" |
+| `/ninos/[id]/entrenamiento` | Profesional | Modo en consulta: banda "Entrenamiento de Nombre Apellido", switch "A a" y todos los juegos del nivel del niño (incluido Nombrá rápido) con el grado libre y el grado habilitado en casa. Sin vínculo activo vuelve a `/ninos` |
+| `/ninos/[id]/entrenamiento/[juego]?grado=N` | Profesional | Una partida en consulta (marco de juego con origen consulta) |
 | `/mis-profesionales` | Niño | Profesionales vinculados, con lo que eligió el tutor sobre el historial; desvincular pide la contraseña |
 | `/perfil` | Los dos | Datos personales con el nombre de usuario (copiable). Niño: aviso de que los resultados los ve el profesional y "Acciones del tutor" (cambiar la etapa escolar, eliminar la cuenta). Sin evaluaciones ni entrenamientos (S10) |
-| `/entrenamiento`, `/games/...`, `/exercise/[id]` | Niño | Juegos heredados del prototipo, sin conectar al modelo (se rehacen en S13) |
+| `/entrenamiento` | Niño | Bienvenida con Lex y el switch "A a", "Tareas de tu profesional" (si hay pendientes) y los juegos del nivel en una sola cuadrícula, sin nombres de bloque (en el orden de la evaluación, el principal de cada bloque primero), con candados y estrellas. Un grado bloqueado explica con un cartelito cómo desbloquearlo ("¡Jugá bien el grado 1 para desbloquear este!"), sin mencionar porcentajes. Sin los de solo consulta. Un profesional va a `/dashboard` |
+| `/entrenamiento/jugar/[juego]?grado=N&tarea=<id>` | Niño | Una partida. Sin `tarea` es práctica (un grado no habilitado vuelve a `/entrenamiento`); con `tarea`, el grado lo fija el profesional |
 
 ## Interfaz
 
 - Componentes de la evaluación en `components/test/`: `marco-evaluacion`, `barra-progreso-evaluacion`, `tarjeta-pregunta`, `boton-opcion`, `boton-audio`, `ejercicio-denominacion` (una cuadrícula de denominación rápida, de la práctica a la carga de errores), `final-evaluacion`, `resultados-evaluacion` (resultados reutilizables, tema oscuro y claro) e `historial-evaluaciones`.
 - Durante la evaluación: fondo liso (`fondo-nino`) sin formas flotantes; encabezado tipo píldora como `AppHeader`.
+- Componentes del entrenamiento en `components/entrenamiento/`: `marco-juego` (consigna → jugando → final, guardado con "Reintentar", salida con confirmación), `juegos/` (Detective, Rima y Palmas, más `tipos.ts` y el registro `index.ts`), `use-rondas`, `boton-escuchar`, `boton-seguir`, `opcion-dibujo`, `dibujo` (`Dibujo` y `Emoji`), `proveedor-letra` y `switch-letra` (siempre muestra "A a", con `normal-case`), `tarjeta-juego` (sin chip de bloque), `bloqueado` (cartelito con Popover: cursor, foco del teclado o toque; Escape lo cierra), `catalogo-juegos` (cuadrícula única para el niño, por bloque para el profesional), `tabla-ninos-entrenar` (tabla de `/entrenar`) y `colores-bloque` (un color fijo por bloque: celeste, lavanda, mandarina, menta, sol, rojo, y celeste, lavanda y sol fuertes). `TestBandaNino` acepta `prefijo` y `ChipEnDesarrollo`, `texto` ("Próximamente").
+- `useSalidaDelTest` acepta los textos del diálogo; el entrenamiento lo usa con "La partida se descarta y no queda registrada".
 - Pendiente para más adelante: darle más color a la interfaz (hoy predomina el crema).
 
 ## Pendientes chicos
@@ -241,7 +272,6 @@ Las evaluaciones primarias guardadas antes de S9 tienen los 8 primeros, en el mi
 - [ ] Algunos mensajes de error de las funciones SQL todavía dicen "test" (la interfaz bloquea esos casos antes). `guardar_test` ya no (0006).
 - [ ] Las evaluaciones guardadas antes de S9 tienen un `porcentaje_total` que incluye la denominación rápida vieja (10 ítems en inicial). El anillo de resultados y el historial muestran ese valor guardado, mientras que "X de Y respuestas correctas" ya la excluye; en esas evaluaciones de inicial los dos números pueden no coincidir.
 - [ ] Confirmar con las especialistas los números y el tamaño de la cuadrícula de denominación rápida en inicial (provisorios).
-- [ ] Los 4 errores de TypeScript y, después, desactivar `ignoreBuildErrors`.
 - [ ] Mail de aviso de invitación al tutor (TODO en `invitar_nino`).
-- [ ] Hasta S12, el niño todavía puede leer `entrenamientos` en la base (la interfaz ya no la muestra desde S10). S12 reemplaza la tabla y aplica la misma regla que `test`.
-- [ ] Páginas heredadas de juegos (se rehacen en S13): `/games/child` y `/games/teen` enlazan a `/dashboard/child`, `/dashboard/teen` y `/support`, que no existen; `components/teen-start-card.tsx` y `child-tutorial-modal.tsx` hablan de "progreso", XP y estadísticas; `/exercise/[id]` muestra "Ver Resultados" y un puntaje al final del ejercicio.
+- [ ] Dibujos que faltan: las palabras de `a_generar` en `bancos.json` (capa, tapa, cuna, ola, lana, nota, tela, cono, goma). Los iconos de los 14 juegos ya tienen su dibujo de Fluent (lo controla `bancos.test.ts`). Detective de primario, grado 2, tiene 6 ítems jugables de 8: la partida se juega con 6 hasta que lleguen los dibujos (lo marca `lib/entrenamiento/bancos.test.ts`).
+- [ ] El niño no lee partidas, así que en una tarea con varios juegos no ve cuáles ya jugó; la tarea desaparece cuando se completa entera. Si hace falta, S15 puede sumar una función que lo devuelva.

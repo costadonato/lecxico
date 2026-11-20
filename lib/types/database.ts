@@ -38,6 +38,8 @@ export interface Nino {
   ultima_conexion: string | null
   ultimo_entrenamiento: string | null
   ultima_prueba: string | null
+  /** Switch "A a" del entrenamiento (0008). */
+  letra_entrenamiento: "mayuscula" | "minuscula"
 }
 
 export interface ProfesionalNino {
@@ -92,12 +94,29 @@ export interface TestBloqueResultado {
   detalle: DetalleEjercicioDenominacion[] | null
 }
 
-export interface Entrenamiento {
+/**
+ * Una partida del entrenamiento (entrenamiento_partida, 0008). La escribe
+ * solo guardar_partida; la leen los profesionales con vínculo activo (la
+ * práctica, todos; consulta y tareas, según el historial compartido).
+ */
+export interface EntrenamientoPartida {
   id: string
-  /** Id del niño. */
-  user_id: string
+  nino_id: string
+  /** Autor: quien jugó en consulta o quien asignó la tarea; null en la práctica. */
+  profesional_id: string | null
   juego: string
-  puntaje: number
+  nivel: Nivel
+  grado: 1 | 2 | 3
+  origen: "consulta" | "tarea" | "practica"
+  tarea_id: string | null
+  mision: string | null
+  correctas: number
+  total: number
+  /** Columna generada: round(100 * correctas / total). */
+  porcentaje: number
+  tiempo_ms: number | null
+  errores: number | null
+  detalle: { item: string; correcta: boolean; intentos: number }[] | null
   created_at: string
 }
 

@@ -1,200 +1,155 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { ClipboardList, Play } from "lucide-react"
+import { CatalogoJuegos } from "@/components/entrenamiento/catalogo-juegos"
+import { Emoji } from "@/components/entrenamiento/dibujo"
+import { AreaLetra, ProveedorLetra } from "@/components/entrenamiento/proveedor-letra"
+import { SwitchLetra } from "@/components/entrenamiento/switch-letra"
+import { ChipEnDesarrollo } from "@/components/chip-en-desarrollo"
+import { Cargando } from "@/components/estados"
+import { MensajeAlerta } from "@/components/mensaje-alerta"
+import { ItemCascada, ListaCascada } from "@/components/motion/lista-cascada"
+import { PaginaApp } from "@/components/pagina-app"
+import { Personaje } from "@/components/personajes/personaje"
 import { createClient } from "@/lib/supabase/client"
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import {
-  ArrowLeft,
-  BookOpen,
-  Calculator,
-  Globe,
-  Search,
-  Target,
-  Volume2,
-  Music,
-  Sparkles,
-  Scissors,
-  CloudRain,
-  Crosshair,
-  Hash,
-  ChevronsUp,
-  Zap,
-  Mic,
-  ImageIcon,
-  Music2,
-  Eye,
-  Loader2,
-  LogOut,
-} from "lucide-react"
+import { usePerfilPagina } from "@/lib/auth/use-perfil-pagina"
+import { JUEGOS } from "@/lib/entrenamiento/juegos"
+import { gradosHabilitados, tareasPendientes, type GradosHabilitados, type TareaPendiente } from "@/lib/entrenamiento/partidas"
+import { juegoDisponible, rutaJugar } from "@/lib/entrenamiento/presentacion"
+import { nivelParaEtapa } from "@/lib/test/bloques"
+import type { Nino } from "@/lib/types/database"
 
-type Category = "lectura" | "matematicas" | "ingles"
+type Carga =
+  | { estado: "cargando" }
+  | { estado: "error"; mensaje: string }
+  | { estado: "listo"; grados: GradosHabilitados; tareas: TareaPendiente[] }
 
-interface Game {
-  id: string
-  name: string
-  icon: React.ElementType
-  category: Category
-}
-
-const GAMES: Game[] = [
-  // Lectura y Dislexia
-  { id: "busca-letra", name: "Busca la Letra", icon: Search, category: "lectura" },
-  { id: "caza-errores", name: "Caza Errores", icon: Target, category: "lectura" },
-  { id: "eco-palabras", name: "Eco Palabras", icon: Volume2, category: "lectura" },
-  { id: "historias-huecos", name: "Historias con Huecos", icon: BookOpen, category: "lectura" },
-  { id: "lluvia-palabras", name: "Lluvia de Palabras", icon: CloudRain, category: "lectura" },
-  { id: "memotono", name: "Memotono", icon: Music, category: "lectura" },
-  { id: "mision-lex-lumo", name: "Misión Lex y Lumo", icon: Sparkles, category: "lectura" },
-  { id: "rompe-y-une", name: "Rompe y Une", icon: Scissors, category: "lectura" },
-  // Matemáticas
-  { id: "cazador-numeros", name: "Cazador de Números", icon: Crosshair, category: "matematicas" },
-  { id: "cuenta-conmigo", name: "Cuenta Conmigo", icon: Hash, category: "matematicas" },
-  { id: "cual-es-mayor", name: "¿Cuál es Mayor?", icon: ChevronsUp, category: "matematicas" },
-  { id: "super-sumador", name: "Super Sumador", icon: Zap, category: "matematicas" },
-  // Inglés
-  { id: "phonics-match", name: "Phonics Match", icon: Mic, category: "ingles" },
-  { id: "picture-words", name: "Picture Words", icon: ImageIcon, category: "ingles" },
-  { id: "rhyme-time", name: "Rhyme Time", icon: Music2, category: "ingles" },
-  { id: "sight-words", name: "Sight Words", icon: Eye, category: "ingles" },
-]
-
-const CATEGORIES: { id: Category; label: string; icon: React.ElementType; color: string; bg: string }[] = [
-  { id: "lectura", label: "Lectura y Dislexia", icon: BookOpen, color: "text-primary", bg: "bg-primary/10" },
-  { id: "matematicas", label: "Matemáticas", icon: Calculator, color: "text-blue-600", bg: "bg-blue-100" },
-  { id: "ingles", label: "Inglés", icon: Globe, color: "text-purple-600", bg: "bg-purple-100" },
-]
-
-const CATEGORY_ICON_COLOR: Record<Category, string> = {
-  lectura: "bg-primary text-white",
-  matematicas: "bg-blue-600 text-white",
-  ingles: "bg-purple-600 text-white",
-}
-
+/**
+ * Área de entrenamiento del niño (con el tutor): bienvenida con Lex, las
+ * tareas que le dejó su profesional y los juegos de su nivel por bloque.
+ * Solo para el rol niño; un profesional va a /dashboard.
+ */
 export default function EntrenamientoPage() {
-  const router = useRouter()
-  const supabase = createClient()
-  const [isLoading, setIsLoading] = useState(true)
-  const [activeCategory, setActiveCategory] = useState<Category>("lectura")
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        router.push("/login")
-        return
-      }
-      setIsLoading(false)
-    }
-    checkAuth()
-  }, [router, supabase])
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push("/login")
-    router.refresh()
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    )
-  }
-
-  const filteredGames = GAMES.filter((g) => g.category === activeCategory)
-  const activeInfo = CATEGORIES.find((c) => c.id === activeCategory)!
+  const pagina = usePerfilPagina("nino")
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
-      <header className="bg-white border-b shadow-sm sticky top-0 z-10 px-4 py-4">
-        <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard")} className="p-2">
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-            <h1 className="text-xl font-bold text-primary">Entrenamiento</h1>
+    <PaginaApp pagina={pagina} titulo="Entrenamiento" ancho="max-w-6xl">
+      {({ profile, nino }) =>
+        nino ? (
+          <AreaNino ninoId={profile.id} nombre={profile.nombre} nino={nino} />
+        ) : (
+          <MensajeAlerta tipo="error" texto="No se encontraron los datos del niño. Recargá la página." />
+        )
+      }
+    </PaginaApp>
+  )
+}
+
+function AreaNino({ ninoId, nombre, nino }: { ninoId: string; nombre: string; nino: Nino }) {
+  const nivel = nivelParaEtapa(nino.etapa_escolar)
+  const [carga, setCarga] = useState<Carga>({ estado: "cargando" })
+
+  useEffect(() => {
+    let cancelado = false
+    const supabase = createClient()
+    Promise.all([gradosHabilitados(supabase, ninoId), tareasPendientes(supabase, ninoId)])
+      .then(([grados, tareas]) => !cancelado && setCarga({ estado: "listo", grados, tareas }))
+      .catch((e: Error) => !cancelado && setCarga({ estado: "error", mensaje: e.message }))
+    return () => {
+      cancelado = true
+    }
+  }, [ninoId])
+
+  return (
+    <ProveedorLetra ninoId={ninoId} inicial={nino.letra_entrenamiento ?? "mayuscula"}>
+      <AreaLetra className="space-y-10">
+        {/* Bienvenida */}
+        <section className="flex flex-col items-center justify-between gap-6 rounded-[2rem] border-2 border-white bg-card/80 px-5 py-6 shadow-media backdrop-blur-sm sm:flex-row sm:px-8">
+          <Personaje
+            personaje="lex"
+            pose="volando"
+            animacion="flotar"
+            mensaje={`¡Hola, ${nombre}! Elegí un juego y jugamos.`}
+            ladoGlobo="derecha"
+            prioridad
+            decorativo
+            claseImagen="w-24 sm:w-32"
+            claseGlobo="text-lg sm:text-xl max-w-[13rem] sm:max-w-sm"
+          />
+          <div className="flex items-center gap-3 rounded-full bg-lavanda-suave py-1.5 pl-4 pr-1.5">
+            <span className="text-sm font-semibold normal-case text-lavanda-fuerte">Tipo de letra</span>
+            <SwitchLetra />
           </div>
-          <Button variant="outline" size="sm" onClick={handleLogout} className="flex items-center gap-2">
-            <LogOut className="w-4 h-4" />
-            Cerrar Sesión
-          </Button>
-        </div>
-      </header>
+        </section>
 
-      <main className="container mx-auto px-4 mt-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Catálogo de Juegos</h2>
-          <p className="text-gray-500 mt-2">Elegí una categoría y comenzá a practicar</p>
-        </div>
+        {carga.estado === "cargando" && <Cargando texto="Preparando los juegos…" />}
+        {carga.estado === "error" && <MensajeAlerta tipo="error" texto={carga.mensaje} />}
+        {carga.estado === "listo" && (
+          <>
+            {carga.tareas.length > 0 && <Tareas tareas={carga.tareas} />}
+            <CatalogoJuegos
+              nivel={nivel}
+              modo="nino"
+              grados={carga.grados}
+              hrefGrado={(juego, grado) => rutaJugar(juego, grado)}
+            />
+          </>
+        )}
+      </AreaLetra>
+    </ProveedorLetra>
+  )
+}
 
-        {/* Category tabs */}
-        <div className="flex flex-wrap gap-3 mb-8">
-          {CATEGORIES.map((cat) => {
-            const Icon = cat.icon
-            const isActive = activeCategory === cat.id
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 font-medium transition-all text-sm ${
-                  isActive
-                    ? "border-primary bg-primary text-white shadow-sm"
-                    : "border-gray-200 bg-white text-gray-600 hover:border-primary/50"
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {cat.label}
-                <Badge
-                  variant={isActive ? "secondary" : "outline"}
-                  className={`ml-1 text-xs ${isActive ? "bg-white/20 text-white border-0" : ""}`}
-                >
-                  {GAMES.filter((g) => g.category === cat.id).length}
-                </Badge>
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Section header */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${activeInfo.bg}`}>
-            <activeInfo.icon className={`w-5 h-5 ${activeInfo.color}`} />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-gray-900">{activeInfo.label}</h3>
-            <p className="text-sm text-gray-500">{filteredGames.length} juegos disponibles</p>
-          </div>
-        </div>
-
-        {/* Games grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredGames.map((game) => {
-            const Icon = game.icon
-            return (
-              <Link key={game.id} href={`/games/${game.id}`}>
-                <Card className="hover:border-primary hover:shadow-md transition-all cursor-pointer border-2 shadow-sm h-full group">
-                  <CardHeader className="text-center p-6 space-y-4">
-                    <div
-                      className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform ${CATEGORY_ICON_COLOR[game.category]}`}
-                    >
-                      <Icon className="w-8 h-8" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-base leading-tight">{game.name}</CardTitle>
-                      <CardDescription className="mt-1 text-xs">{activeInfo.label}</CardDescription>
-                    </div>
-                  </CardHeader>
-                </Card>
-              </Link>
-            )
-          })}
-        </div>
-      </main>
-    </div>
+/** "Tareas de tu profesional": cada tarea pendiente con sus juegos y un botón para jugar. */
+function Tareas({ tareas }: { tareas: TareaPendiente[] }) {
+  return (
+    <section aria-labelledby="titulo-tareas" className="space-y-4">
+      <h2 id="titulo-tareas" className="flex items-center gap-3 text-xl font-bold text-foreground sm:text-2xl">
+        <span className="grid size-11 place-items-center rounded-2xl bg-rojo-suave text-rojo-fuerte">
+          <ClipboardList className="size-5" aria-hidden="true" />
+        </span>
+        Tareas de tu profesional
+      </h2>
+      <ListaCascada as="ul" className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {tareas.map((t) => (
+          <ItemCascada as="li" key={t.id} className="rounded-[2rem] border-2 border-white bg-card p-5 shadow-media">
+            <p className="mb-3 text-lg font-bold text-foreground">
+              {t.nombre ?? (t.esMision ? "Misión" : "Tarea")}
+            </p>
+            <ul className="space-y-2">
+              {t.items.map((i) => {
+                const juego = JUEGOS[i.juego]
+                const disponible = juegoDisponible(i.juego)
+                return (
+                  <li key={i.orden} className="flex items-center gap-3 rounded-2xl bg-muted/60 p-2 pr-2.5">
+                    <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-white shadow-suave">
+                      <Emoji char={juego.icono} className="size-9" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-bold leading-tight">{juego.nombre}</span>
+                      <span className="text-sm text-muted-foreground">Grado {i.grado}</span>
+                    </span>
+                    {disponible ? (
+                      <Link
+                        href={rutaJugar(i.juego, i.grado, t.id)}
+                        aria-label={`Jugar ${juego.nombre}, grado ${i.grado}`}
+                        className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-primary px-4 text-base font-bold text-primary-foreground shadow-boton outline-none focus-visible:ring-4 focus-visible:ring-ring/50"
+                      >
+                        <Play className="size-4 fill-current" aria-hidden="true" />
+                        Jugar
+                      </Link>
+                    ) : (
+                      <ChipEnDesarrollo texto="Próximamente" />
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          </ItemCascada>
+        ))}
+      </ListaCascada>
+    </section>
   )
 }

@@ -69,7 +69,11 @@ export function InicioProfesional({
         <ListaCascada
           retraso={0.3}
           paso={0.1}
-          className={cn("mt-8 grid grid-cols-1 gap-5", tarjetas.length > 1 && "md:grid-cols-2")}
+          // Dos columnas; con una cantidad impar, la última ocupa el ancho completo.
+          className={cn(
+            "mt-8 grid grid-cols-1 gap-5",
+            tarjetas.length > 1 && "md:grid-cols-2 md:[&>*:last-child:nth-child(odd)]:col-span-2",
+          )}
         >
           {tarjetas.map((t) => {
             const estilo = ESTILO_PRO[t.tono]

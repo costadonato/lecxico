@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import { Dumbbell, History, Lightbulb, User } from "lucide-react"
+import { Dumbbell, Gamepad2, History, Lightbulb, User } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -21,9 +21,9 @@ import { Seccion } from "@/components/seccion"
 import { HistorialEvaluaciones } from "@/components/test/historial-evaluaciones"
 import { usePerfilPagina } from "@/lib/auth/use-perfil-pagina"
 import { calcularEdad, formatearFecha, textoEdad } from "@/lib/fechas"
-import { getGameById } from "@/lib/games-catalog"
+import { ORIGEN_CORTO, nombreJuego } from "@/lib/entrenamiento/presentacion"
 import { estiloNivel } from "@/lib/niveles"
-import { cargarDetalleNino, type DetalleNino, type TestConBloques } from "@/lib/ninos/detalle"
+import { cargarDetalleNino, type DetalleNino, type PartidaHistorial, type TestConBloques } from "@/lib/ninos/detalle"
 import { bloquesMasDebiles, ordenRecomendacion, porcentajeBloque } from "@/lib/test/analisis"
 import { BLOQUE_NOMBRES, ETAPAS_ESCOLARES, NIVEL_LABEL, nivelParaEtapa, rutaDelTest } from "@/lib/test/bloques"
 import { desvincular } from "@/lib/vinculos"
@@ -107,6 +107,12 @@ function AccionesEncabezado({ datos }: { datos: DetalleNino }) {
       <Button asChild>
         <Link href={rutaDelTest(nivelParaEtapa(datos.nino.etapa_escolar), datos.perfil.id)}>Tomar evaluación</Link>
       </Button>
+      <Button asChild variant="secondary">
+        <Link href={`/ninos/${datos.perfil.id}/entrenamiento`}>
+          <Gamepad2 className="mr-2 size-4" aria-hidden="true" />
+          Entrenar en consulta
+        </Link>
+      </Button>
       <Button variant="outline" onClick={pedirBaja}>
         Dar de baja
       </Button>
@@ -150,7 +156,7 @@ function InformacionGeneral({ datos }: { datos: DetalleNino }) {
       sufijo: "%",
       clase: ultimo ? cn(estiloNivel(ultimo.porcentaje_total).suave, estiloNivel(ultimo.porcentaje_total).texto) : "bg-muted text-muted-foreground",
     },
-    { etiqueta: "Entrenamientos", valor: datos.entrenamientos.length, clase: "bg-menta-suave text-menta-fuerte" },
+    { etiqueta: "Partidas del entrenamiento", valor: datos.totalPartidas, clase: "bg-menta-suave text-menta-fuerte" },
   ]
 
   return (
@@ -279,33 +285,67 @@ function ListaRecomendacion({ test }: { test: TestConBloques }) {
 /* ------------------------------------------------------------------ */
 /*  Historial de entrenamientos                                         */
 /* ------------------------------------------------------------------ */
+const TONO_ORIGEN: Record<PartidaHistorial["origen"], "celeste" | "lavanda" | "menta"> = {
+  consulta: "celeste",
+  tarea: "lavanda",
+  practica: "menta",
+}
+
 function HistorialEntrenamientos({ datos }: { datos: DetalleNino }) {
+  const { partidas, totalPartidas } = datos
   return (
-    <Seccion icono={<Dumbbell />} tono="menta" titulo="Historial de entrenamientos">
-      {datos.entrenamientos.length === 0 ? (
-        <EstadoVacio compacto descripcion="Todavía no hay entrenamientos registrados." />
+    <Seccion
+      icono={<Dumbbell />}
+      tono="menta"
+      titulo="Historial de entrenamientos"
+      acciones={
+        <Button asChild variant="outline" size="sm">
+          <Link href={`/ninos/${datos.perfil.id}/entrenamiento`}>Entrenar en consulta</Link>
+        </Button>
+      }
+    >
+      {partidas.length === 0 ? (
+        <EstadoVacio compacto descripcion="Todavía no hay partidas del entrenamiento registradas." />
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-border/80 max-md:rounded-none max-md:border-0">
-          <Table tarjetasEnCelular>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Fecha</TableHead>
-                <TableHead>Juego</TableHead>
-                <TableHead className="text-right">Puntaje</TableHead>
-              </TableRow>
-            </TableHeader>
-            <CuerpoTablaAnimado>
-              {datos.entrenamientos.map((e) => (
-                <FilaTablaAnimada key={e.id}>
-                  <TableCell data-label="Fecha" className="tabular-nums">{formatearFecha(e.created_at)}</TableCell>
-                  <TableCell data-label="Juego" className="whitespace-normal font-medium">
-                    {getGameById(e.juego)?.title ?? e.juego}
-                  </TableCell>
-                  <TableCell data-label="Puntaje" className="text-right font-bold tabular-nums">{e.puntaje}</TableCell>
-                </FilaTablaAnimada>
-              ))}
-            </CuerpoTablaAnimado>
-          </Table>
+        <div className="space-y-3">
+          {totalPartidas > partidas.length && (
+            <p className="text-sm text-muted-foreground">
+              Se muestran las últimas {partidas.length} de {totalPartidas} partidas.
+            </p>
+          )}
+          <div className="overflow-hidden rounded-2xl border border-border/80 max-md:rounded-none max-md:border-0">
+            <Table tarjetasEnCelular>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Fecha</TableHead>
+                  <TableHead>Juego</TableHead>
+                  <TableHead>Grado</TableHead>
+                  <TableHead>Origen</TableHead>
+                  <TableHead className="text-right">Resultado</TableHead>
+                </TableRow>
+              </TableHeader>
+              <CuerpoTablaAnimado>
+                {partidas.map((p) => (
+                  <FilaTablaAnimada key={p.id}>
+                    <TableCell data-label="Fecha" className="tabular-nums">{formatearFecha(p.created_at)}</TableCell>
+                    <TableCell data-label="Juego" className="whitespace-normal font-medium">
+                      {nombreJuego(p.juego)}
+                    </TableCell>
+                    <TableCell data-label="Grado" className="tabular-nums">{p.grado}</TableCell>
+                    <TableCell data-label="Origen">
+                      <Badge variant={TONO_ORIGEN[p.origen]}>{ORIGEN_CORTO[p.origen]}</Badge>
+                    </TableCell>
+                    <TableCell data-label="Resultado" className="text-right tabular-nums">
+                      <span className="font-semibold">
+                        {p.correctas} / {p.total}
+                      </span>{" "}
+                      <span className={cn("font-bold", estiloNivel(p.porcentaje).texto)}>({p.porcentaje} %)</span>
+                    </TableCell>
+                  </FilaTablaAnimada>
+                ))}
+              </CuerpoTablaAnimado>
+            </Table>
+          </div>
         </div>
       )}
     </Seccion>

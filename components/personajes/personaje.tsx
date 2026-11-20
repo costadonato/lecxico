@@ -7,7 +7,7 @@ import { Square, Volume2 } from "lucide-react"
 import { ANIMACIONES, type NombreAnimacion } from "@/components/personajes/animaciones"
 import { RESORTE } from "@/components/motion/transiciones"
 import { useVoz } from "@/lib/hooks/use-voz"
-import { obtenerPose, PERSONAJES, type NombrePersonaje, type Pose, type PoseDe } from "@/lib/personajes"
+import { anchoPorCara, obtenerPose, PERSONAJES, type NombrePersonaje, type Pose, type PoseDe } from "@/lib/personajes"
 import { cn } from "@/lib/utils"
 
 type LadoGlobo = "derecha" | "izquierda" | "arriba" | "abajo"
@@ -30,6 +30,12 @@ const QUIETO = { y: 0, rotate: 0, scale: 1, scaleY: 1 }
  *
  * El ancho de la imagen se controla con `claseImagen`; el alto sale de la pose.
  * Con reduced-motion no flota y el texto aparece completo de una vez.
+ *
+ * Si el personaje cambia de pose en el mismo lugar (el del juego), conviene
+ * `tamanoCara`: cada pose se escala para que la cara mida siempre lo mismo,
+ * así el personaje no cambia de tamaño (las imágenes tienen proporciones muy
+ * distintas: Lumo pensando es mucho más angosto que festejando). Entonces
+ * `claseImagen` es la caja donde se apoya, con los pies abajo y centrado.
  */
 export function Personaje<P extends NombrePersonaje>({
   personaje,
@@ -45,6 +51,7 @@ export function Personaje<P extends NombrePersonaje>({
   decorativo = false,
   sombra = true,
   retraso = 0,
+  tamanoCara,
 }: {
   personaje: P
   pose?: PoseDe<P>
@@ -66,22 +73,32 @@ export function Personaje<P extends NombrePersonaje>({
   sombra?: boolean
   /** Segundos antes de aparecer. */
   retraso?: number
+  /**
+   * Diámetro de la cara, como largo de CSS ("4.5rem" o "var(--cara)"). Si se
+   * pasa, el ancho de la imagen sale de la cara y no de `claseImagen`.
+   */
+  tamanoCara?: string
 }) {
   const reducir = useReducedMotion()
   const datosPose = obtenerPose(personaje, pose)
   const bucle = animacion !== "ninguna" && !reducir ? ANIMACIONES[animacion] : null
   const flota = animacion === "flotar" || animacion === "flotarSuave"
+  const proporcion = tamanoCara ? anchoPorCara(datosPose) : null
 
   return (
     <div className={cn("flex items-center gap-3 sm:gap-4", DIRECCION[ladoGlobo], className)}>
       <motion.div
-        className={cn("relative shrink-0", claseImagen)}
+        className={cn("relative shrink-0", claseImagen, proporcion && "flex items-end justify-center")}
         initial={{ opacity: 0, scale: 0.85, y: 14 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ ...RESORTE, delay: retraso }}
       >
         <motion.div
-          style={{ transformOrigin: "50% 100%" }}
+          className={proporcion ? "shrink-0" : undefined}
+          style={{
+            transformOrigin: "50% 100%",
+            ...(proporcion ? { width: `calc(${tamanoCara} * ${proporcion.toFixed(4)})` } : {}),
+          }}
           initial={QUIETO}
           animate={bucle ? bucle.animate : QUIETO}
           transition={bucle?.transition}

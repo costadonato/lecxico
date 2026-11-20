@@ -6,6 +6,21 @@ import { ConfirmarDialog, type Confirmacion } from "@/components/confirmar-dialo
 
 export const MENSAJE_SALIDA_TEST = "Si salís ahora, se pierde el progreso de la evaluación."
 
+/** Textos del diálogo de salida. Por defecto, los de la evaluación. */
+export interface TextosSalida {
+  titulo: string
+  descripcion: string
+  confirmar: string
+  cancelar: string
+}
+
+const TEXTOS_EVALUACION: TextosSalida = {
+  titulo: "¿Salir de la evaluación?",
+  descripcion: MENSAJE_SALIDA_TEST,
+  confirmar: "Salir de la evaluación",
+  cancelar: "Seguir con la evaluación",
+}
+
 /** Marca de la entrada "trampa" del historial (ver más abajo). */
 const GUARDA = "lecxicoTestEnCurso"
 
@@ -17,8 +32,9 @@ const GUARDA = "lecxicoTestEnCurso"
  *   propio texto, no se puede personalizar);
  * - el botón Atrás del navegador.
  * Devuelve también el diálogo, que la página tiene que renderizar.
+ * `textos` cambia el diálogo (el entrenamiento lo usa para sus partidas).
  */
-export function useSalidaDelTest(enCurso: boolean) {
+export function useSalidaDelTest(enCurso: boolean, textos: TextosSalida = TEXTOS_EVALUACION) {
   const router = useRouter()
   const [confirmacion, setConfirmacion] = useState<Confirmacion | null>(null)
   const enCursoRef = useRef(enCurso)
@@ -26,12 +42,16 @@ export function useSalidaDelTest(enCurso: boolean) {
   /** true una vez confirmada la salida: deja de interceptar. */
   const saliendo = useRef(false)
 
+  const textosRef = useRef(textos)
+  textosRef.current = textos
+
   const pedirConfirmacion = useCallback((irse: () => void) => {
+    const t = textosRef.current
     setConfirmacion({
-      titulo: "¿Salir de la evaluación?",
-      descripcion: MENSAJE_SALIDA_TEST,
-      textoConfirmar: "Salir de la evaluación",
-      textoCancelar: "Seguir con la evaluación",
+      titulo: t.titulo,
+      descripcion: t.descripcion,
+      textoConfirmar: t.confirmar,
+      textoCancelar: t.cancelar,
       accion: async () => {
         saliendo.current = true
         irse()

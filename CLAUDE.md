@@ -24,12 +24,12 @@ Antes de cualquier tarea, leé `docs/estado-proyecto.md`: tiene el estado actual
 npm install --legacy-peer-deps   # siempre con este flag (conflicto de peers de React 19)
 npm run dev
 npm run build
-npx tsc --noEmit                 # el build ignora errores de tipos: correr siempre
+npx tsc --noEmit                 # correr siempre (más rápido que el build)
 npm test                         # Vitest
 npm run coverage                 # Vitest con cobertura V8
 ```
 
-`next.config.mjs` tiene `ignoreBuildErrors: true`: que el build pase no garantiza tipos correctos. Hoy `tsc` muestra **4 errores previos** en archivos de ejercicios heredados (`app/exercise/[id]`, `daily-challenge-card`, `game-generators`). No sumes errores nuevos.
+Desde S13a, `tsc` da **0 errores** y `next.config.mjs` tiene `ignoreBuildErrors: false`: un error de tipos frena el build. Si `tsc` se queja de `.next/types` por rutas que ya no existen, borrá `.next`.
 
 Si el servidor local sirve páginas sin estilos después de un build: frenarlo, borrar `.next` y volver a correr `npm run dev`.
 
@@ -38,8 +38,8 @@ Si el servidor local sirve páginas sin estilos después de un build: frenarlo, 
 | Carpeta | Qué tiene |
 | --- | --- |
 | `app/` | Rutas. Internamente la evaluación se llama `test` (`/test`, `/test/inicial`, `/test/primaria`) |
-| `components/` | Componentes compartidos. `components/ui` = shadcn; `components/test` = evaluación; `components/auth`, `components/ninos`, `components/personajes` (Lex y Lumo), `components/motion` |
-| `lib/` | Lógica: `lib/test` (bloques, análisis, guardado), `lib/auth`, `lib/ninos`, `lib/vinculos.ts`, `lib/fechas.ts`, `lib/types/database.ts` |
+| `components/` | Componentes compartidos. `components/ui` = shadcn; `components/test` = evaluación; `components/entrenamiento` = marco de juego y juegos; `components/auth`, `components/ninos`, `components/personajes` (Lex y Lumo), `components/motion` |
+| `lib/` | Lógica: `lib/test` (bloques, análisis, guardado), `lib/entrenamiento` (catálogo, bancos, rondas, partidas, audio), `lib/auth`, `lib/ninos`, `lib/vinculos.ts`, `lib/fechas.ts`, `lib/types/database.ts` |
 | `supabase/migrations/` | Migraciones numeradas `NNNN_sN_nombre.sql` |
 | `supabase/tests/` | Pruebas SQL de acceso indebido (métrica PA) |
 | `docs/` | Estado del proyecto, prompts de cada slice y registro de revisiones con las especialistas |
@@ -73,7 +73,7 @@ Antes de crear algo nuevo, buscá si ya existe y reutilizalo: `pagina-app.tsx` (
 
 ## Un slice está hecho cuando
 
-- `npm run build` pasa y `npx tsc --noEmit` no suma errores a los 4 previos.
+- `npm run build` pasa y `npx tsc --noEmit` da 0 errores.
 - Las pruebas de Vitest pasan.
 - La migración, si hay, se probó en Postgres local con sus escenarios de acceso.
 - Se puede probar en la app con un profesional y un niño de prueba.
