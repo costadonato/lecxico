@@ -10,11 +10,13 @@ Especialistas asesoras: Lic. Mónica Chávez y Lic. Melisa Julieta Spillmann (ps
 
 | Fecha | Asistentes | Qué se revisó | Resultado y correcciones pedidas | Slice o PR |
 | --- | --- | --- | --- | --- |
-| 04/09/2026 | Equipo, Lic. Chávez | Definición del proyecto | El profesional pasa a ser el usuario principal y toma la evaluación | — |
-| _Completar_ | | Validación de la evaluación (etapa 3, cuatro semanas): bloques de ambos niveles | | Etapa 3 |
-| 14/10/2026 | Equipo, Lic. Chávez | Definición del proyecto | El niño entrena siempre acompañado; denominación rápida se suma a primeros lectores; el perfil del niño no muestra resultados | S9, S10 |
+| 14/08/2026 | Equipo, especialistas | Evaluación de ambos niveles, revisión general | Algunos cambios pedidos se revirtieron después | Etapa 1 |
+| 27/08/2026 | Equipo, Lic. Chávez | Evaluación bloque por bloque | Conteo de sílabas: palabras de 2 sílabas en vez de 1. Evitar pares con la misma sílaba inicial (sol/sopa). Recordar el orden: máximo 2 reproducciones y secuencias de largo progresivo. "Memoria fonológica" pasa a "Memoria auditiva". Construir la palabra: una de 2 y una de 3 sílabas. Pseudopalabras más cortas y de sílabas simples. Audio en el texto de comprensión lectora. Palabras más cortas en reconocimiento visual | PR #3 |
+| 04/09/2026 | Equipo, Lic. Chávez | Definición del proyecto | El profesional pasa a ser el usuario principal y toma la evaluación | PR #4, PR #5 |
+| 14/10/2026 | Equipo, Lic. Chávez, Lic. Spillmann | Evaluación completa (la revisión más profunda) y definición del proyecto | Muchas correcciones a denominación rápida. El niño entrena siempre acompañado; denominación rápida se suma a primeros lectores; el perfil del niño no muestra resultados. Se planteó que el tutor no viera nada desde la cuenta del niño | S9, S10 |
+| 23/10/2026 | Equipo, director | Cambios de requerimientos | Se congelan los requerimientos en la definición vigente; los cambios posteriores pasan a trabajo futuro | Propuesta |
 | 28/10/2026 | Equipo, director | Definición del proyecto | El tutor accede por un informe a pedido por correo; los cortes de las franjas se fijan por revisión bibliográfica, provisorios | S11, S17 |
-| 19/11/2026 | _Completar_ | Validación del mockup de entrenamientos: mapa de juegos y diseño de cada juego | Se aprobó el mapa de juegos. Observaciones generales y cambios por juego en "Reunión del 19/11/2026" | S12, S13a, S13b, S14 |
+| 19/11/2026 | Equipo, Lic. Chávez | Validación del mockup de entrenamientos: mapa de juegos y diseño de cada juego | Se aprobó el mapa de juegos. Observaciones generales y cambios por juego en "Reunión del 19/11/2026". La especialista se lleva el mockup para revisarlo y envía correcciones específicas hasta el 25 o 26/11. | S12, S13a, S13b, S14 |
 | 26/11/2026 | | Juegos del entrenamiento | | S13, S14 |
 | 03/12/2026 | | Juegos del entrenamiento | | S14 |
 

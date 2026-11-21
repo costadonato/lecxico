@@ -12,6 +12,8 @@ La gestión de usuarios está implementada y probada de punta a punta: registro 
 
 ## Plan de slices
 
+Calendario de sprints y artefactos Scrum: documento "Lecxico — Artefactos Scrum del trabajo final". Sprints de duración variable hasta el 14/10/2026 y semanales desde el 12/11/2026.
+
 Meta: desarrollo cerrado el viernes 4/12/2026; verificación y documentación del 7 al 11/12; defensa la semana del 14/12.
 
 | Slice | Qué entrega | Dueño | Fechas | Migración | Estado |

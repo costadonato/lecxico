@@ -10,6 +10,7 @@ Antes de cualquier tarea, leé `docs/estado-proyecto.md`: tiene el estado actual
 - **No hagas commits, no cambies de rama, no hagas push ni merge.** Git lo maneja el desarrollador a mano.
 - **No ejecutes migraciones contra Supabase.** Escribilas y probalas en un Postgres local; el desarrollador las aplica en el SQL Editor.
 - Un slice por rama (`sN-nombre`). Si el pedido se sale del slice, avisá en el resumen en vez de hacerlo.
+- Cada slice corresponde a un ítem del Product Backlog (PB-xx) y a un sprint (Sprint N). El nombre del slice (S8, S9…) no es el número de sprint.
 
 ## Stack
 
@@ -85,3 +86,4 @@ Antes de crear algo nuevo, buscá si ya existe y reutilizalo: `pagina-app.tsx` (
 2. Decisiones que tomaste y que no estaban en el pedido.
 3. Pasos para aplicar la migración (si hay) y para probar el slice a mano.
 4. Resultado de build, `tsc` y tests.
+5. Ítem PB-xx y Sprint N, y qué casillas de la Definición de Hecho quedaron sin cumplir.
