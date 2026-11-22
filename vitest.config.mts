@@ -41,6 +41,9 @@ export default defineConfig({
         "lib/entrenamiento/lee.ts",
         "lib/entrenamiento/eco.ts",
         "lib/entrenamiento/caza.ts",
+        "lib/entrenamiento/memopalabras.ts",
+        "lib/entrenamiento/ojo-lince.ts",
+        "lib/entrenamiento/lluvia.ts",
         "lib/personajes.ts",
       ],
       thresholds: {

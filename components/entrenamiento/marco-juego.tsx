@@ -473,6 +473,7 @@ function Consigna({
             <p className="rounded-2xl border border-border/80 bg-muted/60 px-4 py-3 text-base normal-case">
               <span className="font-bold">En el grado {grado}: </span>
               {nivelFicha.grados[grado]}.
+              {nivelFicha.notaProfesional && <span className="mt-1 block text-sm text-muted-foreground">{nivelFicha.notaProfesional}</span>}
             </p>
           )}
           {sinItems ? (

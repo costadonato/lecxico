@@ -24,7 +24,10 @@ describe("armarPartida", () => {
   })
 
   it("Memotono, Nombrá rápido y ¡Rápido, tocalo! generan su contenido", () => {
-    expect(JUEGOS_GENERADOS).toEqual(["memotono", "nombra", "tocalo"])
+    expect(JUEGOS_GENERADOS).toEqual(["memotono", "nombra", "tocalo", "memopalabras", "ojo_lince", "lluvia"])
+    expect(armarPartida("memopalabras", "primario", 2, semilla(3))).toHaveLength(6)
+    expect(armarPartida("ojo_lince", "inicial", 1, semilla(3))[0].id).toMatch(/^OJO-1-/)
+    expect(armarPartida("lluvia", "primario", 3, semilla(3))).toHaveLength(3)
     expect(armarPartida("memotono", "inicial", 1, semilla(2))[0].id).toMatch(/^MEM-/)
     expect(armarPartida("nombra", "primario", 2, semilla(2)).map((i) => i.id)).toEqual([
       "NOM-primario-2-1",

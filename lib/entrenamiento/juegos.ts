@@ -52,6 +52,8 @@ export interface FichaNivel {
   consigna: string
   /** Consigna en consulta, si la mecánica cambia (Palabras de otro planeta: se lee en voz alta). */
   consignaConsulta?: string
+  /** Nota chica para el profesional en la consigna (no la ve el niño). */
+  notaProfesional?: string
 }
 
 export interface FichaJuego {
@@ -391,6 +393,7 @@ export const JUEGOS: Record<CodigoJuego, FichaJuego> = {
         partida: g(3, 3, 3),
         unidad: "cuadrículas",
         consigna: "Tocá todas las letras que dice Lumo. Después tocá «Finalizar».",
+        notaProfesional: "En este juego las letras van siempre en minúscula.",
         grados: {
           1: "5 × 5; la letra se ve y se escucha; distractores de forma distinta",
           2: "6 × 6; solo se escucha; distractores de forma parecida",

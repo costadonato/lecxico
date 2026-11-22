@@ -5866,6 +5866,36 @@
       "id": "MPA-2-20",
       "palabra": "montaña",
       "parecida": "montura"
+     },
+     {
+      "id": "MPA-2-21",
+      "palabra": "pescado",
+      "parecida": "pestaña"
+     },
+     {
+      "id": "MPA-2-22",
+      "palabra": "botella",
+      "parecida": "botines"
+     },
+     {
+      "id": "MPA-2-23",
+      "palabra": "cuchara",
+      "parecida": "cuchillo"
+     },
+     {
+      "id": "MPA-2-24",
+      "palabra": "tobogán",
+      "parecida": "tobillo"
+     },
+     {
+      "id": "MPA-2-25",
+      "palabra": "ladrillo",
+      "parecida": "ladrido"
+     },
+     {
+      "id": "MPA-2-26",
+      "palabra": "pantalón",
+      "parecida": "pantufla"
      }
     ],
     "3": [
