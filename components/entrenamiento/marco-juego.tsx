@@ -48,6 +48,7 @@ const TEXTOS_SALIDA: TextosSalida = {
 
 const POSE: Record<Momento, "explicando" | "pensando" | "festejando" | "alentando"> = {
   consigna: "explicando",
+  lectura: "pensando",
   pensando: "pensando",
   acierto: "festejando",
   reintento: "alentando",
@@ -164,6 +165,8 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
       } else if (e.tipo === "siguiente") {
         setRonda(e.ronda)
         setMomento("pensando")
+      } else if (e.tipo === "momento") {
+        setMomento(e.momento)
       } else {
         setResultado(e.resultado)
         void guardar(e.resultado)
@@ -233,7 +236,7 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
             <BarraProgresoJuego
               actual={ronda}
               total={partida.items.length}
-              unidad={nivelFicha.unidad}
+              unidad={nivelFicha.unidadProgreso ?? nivelFicha.unidad}
               claseColor={color.zona}
             />
             <div

@@ -13,6 +13,7 @@
 
 import datos from "@/lib/entrenamiento/bancos.json"
 import type { CodigoJuego, Grado, Nivel } from "@/lib/entrenamiento/juegos"
+import type { HistoriaLee } from "@/lib/entrenamiento/lee"
 
 /** Detective de sonidos: la palabra que suena y dos distractores. */
 export interface ItemDetective {
@@ -51,6 +52,19 @@ export interface ItemPlaneta {
   distractores: string[]
 }
 
+/** Eco de palabras: la palabra que se escucha y se escribe. */
+export interface ItemEco {
+  id: string
+  palabra: string
+}
+
+/** Caza errores: la oración y sus errores ({ mal escrita: correcta }). */
+export interface ItemCaza {
+  id: string
+  oracion: string
+  errores: Record<string, string>
+}
+
 /** Tipo de los ítems de cada juego construido que tiene banco por grado. */
 export interface ItemsPorJuego {
   detective: ItemDetective
@@ -58,6 +72,9 @@ export interface ItemsPorJuego {
   palmas: ItemPalmas
   rompe: ItemRompe
   planeta: ItemPlaneta
+  lee: HistoriaLee
+  eco: ItemEco
+  caza: ItemCaza
 }
 
 export type JuegoConBanco = keyof ItemsPorJuego

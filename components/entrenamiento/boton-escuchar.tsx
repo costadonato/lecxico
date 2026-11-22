@@ -27,6 +27,7 @@ export function BotonEscuchar({
   velocidad = 0.85,
   tamano = "grande",
   deshabilitado = false,
+  onReproducir,
   className,
 }: {
   /** Lo que se dice (o la clave del manifiesto de audios). */
@@ -40,6 +41,8 @@ export function BotonEscuchar({
   /** "grande": píldora con rótulo; "chico": píldora compacta; "icono": solo el parlante. */
   tamano?: "grande" | "chico" | "icono"
   deshabilitado?: boolean
+  /** Avisa cada reproducción (Eco de palabras cuenta las que quedan para el reintento). */
+  onReproducir?: () => void
   className?: string
 }) {
   const { decir, hablando } = useAudio()
@@ -54,6 +57,7 @@ export function BotonEscuchar({
     // Mientras suena su propio audio, otro toque no lo repite ni gasta una reproducción.
     if (inactivo || hablando) return
     setUsadas((u) => u + 1)
+    onReproducir?.()
     decir(texto, { velocidad })
   }
 

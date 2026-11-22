@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { EventoRonda } from "@/components/entrenamiento/juegos/tipos"
+import type { EventoRonda, ResultadoJuego } from "@/components/entrenamiento/juegos/tipos"
 import {
   aciertoEnReintento,
   iniciarRondas,
@@ -9,6 +9,7 @@ import {
   resultadoRondas,
   type AccionRonda,
   type EstadoRondas,
+  type ResultadoRondas,
 } from "@/lib/entrenamiento/rondas"
 
 /**
@@ -16,12 +17,23 @@ import {
  * guarda el estado, avisa cada cambio al marco con `onRonda` y, al pasar
  * de ronda, lleva el foco al contenedor de la ronda nueva (`refRonda`),
  * así el teclado y el lector de pantalla siguen el juego.
+ *
+ * `completar` (opcional) arma el resultado propio del juego a partir del
+ * de las rondas: Caza errores suma los puntajes de selección; Leé y
+ * descubrí y Eco de palabras agregan datos al detalle. Sin `completar`, el
+ * evento `fin` lleva el resultado de las rondas, como en S13.
  */
-export function useRondas<I extends { id: string }>(items: I[], onRonda: (e: EventoRonda) => void) {
+export function useRondas<I extends { id: string }>(
+  items: I[],
+  onRonda: (e: EventoRonda) => void,
+  { completar }: { completar?: (resultado: ResultadoRondas) => ResultadoJuego } = {},
+) {
   const [estado, setEstado] = useState<EstadoRondas>(() => iniciarRondas(items.map((i) => i.id)))
   const actual = useRef(estado)
   const avisar = useRef(onRonda)
   avisar.current = onRonda
+  const completarRef = useRef(completar)
+  completarRef.current = completar
   const refRonda = useRef<HTMLDivElement>(null)
   const primera = useRef(true)
 
@@ -40,7 +52,8 @@ export function useRondas<I extends { id: string }>(items: I[], onRonda: (e: Eve
         ronda: despues.actual,
       })
     } else if (despues.fase === "terminada") {
-      avisar.current({ tipo: "fin", resultado: resultadoRondas(despues) })
+      const base = resultadoRondas(despues)
+      avisar.current({ tipo: "fin", resultado: completarRef.current ? completarRef.current(base) : base })
     } else {
       avisar.current({ tipo: "siguiente", ronda: despues.actual })
     }

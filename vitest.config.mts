@@ -37,6 +37,10 @@ export default defineConfig({
         "lib/entrenamiento/denominacion-entrenamiento.ts",
         "lib/entrenamiento/tocalo.ts",
         "lib/entrenamiento/audio.ts",
+        "lib/entrenamiento/seleccion.ts",
+        "lib/entrenamiento/lee.ts",
+        "lib/entrenamiento/eco.ts",
+        "lib/entrenamiento/caza.ts",
         "lib/personajes.ts",
       ],
       thresholds: {

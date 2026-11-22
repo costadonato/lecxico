@@ -99,7 +99,8 @@ describe("textos y validaciones", () => {
     for (const j of ["detective", "rima", "palmas", "memotono", "rompe", "planeta", "nombra", "tocalo"] as const) {
       expect(juegoDisponible(j), j).toBe(true)
     }
-    expect(juegoDisponible("lee")).toBe(false) // S14
+    for (const j of ["lee", "eco", "caza"] as const) expect(juegoDisponible(j), j).toBe(true) // S14a
+    expect(juegoDisponible("memopalabras")).toBe(false) // S14b
   })
 
   it("solo Nombrá rápido se juega sin personaje", () => {
@@ -113,6 +114,8 @@ describe("textos y validaciones", () => {
     expect(partidaConReintento("tocalo", "practica")).toBe(false)
     expect(partidaConReintento("planeta", "consulta")).toBe(false)
     expect(partidaConReintento("planeta", "tarea")).toBe(true)
+    expect(partidaConReintento("caza", "practica")).toBe(false)
+    expect(partidaConReintento("eco", "practica")).toBe(true)
   })
 
   it("jugadaValida: catálogo, disponibilidad, nivel y grado", () => {
@@ -120,7 +123,8 @@ describe("textos y validaciones", () => {
     expect(jugadaValida({ ...base, juego: "detective" })).toBe(true)
     expect(jugadaValida({ ...base, juego: "noexiste" })).toBe(false)
     expect(jugadaValida({ ...base, juego: "memotono" })).toBe(true)
-    expect(jugadaValida({ ...base, juego: "eco", nivel: "primario" })).toBe(false) // todavía no construido (S14)
+    expect(jugadaValida({ ...base, juego: "eco", nivel: "primario" })).toBe(true)
+    expect(jugadaValida({ ...base, juego: "lluvia", nivel: "primario" })).toBe(false) // todavía no construido (S14b)
     expect(jugadaValida({ ...base, juego: "detective", grado: null })).toBe(false)
     expect(jugadaValida({ ...base, nivel: "primario", juego: "palmas" })).toBe(false) // palmas es solo de inicial
   })
@@ -168,5 +172,17 @@ describe("textos y validaciones", () => {
     expect(esCodigoJuego("toString")).toBe(false)
     expect(nombreJuego("rima")).toBe("Rima")
     expect(nombreJuego("viejo")).toBe("viejo")
+  })
+})
+
+describe("S14a: progreso y frases de lectura", () => {
+  it("la barra de Leé y descubrí cuenta preguntas", () => {
+    expect(JUEGOS.lee.niveles.primario!.unidadProgreso).toBe("preguntas")
+    expect(textoProgreso("preguntas", 2, 6)).toBe("Pregunta 3 de 6")
+  })
+
+  it("hay frases para la lectura", () => {
+    expect(FRASES.lectura.length).toBeGreaterThan(0)
+    expect(fraseDe("lectura", 0)).toBe("Leé con calma.")
   })
 })

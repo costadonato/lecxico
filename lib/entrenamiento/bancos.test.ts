@@ -15,6 +15,7 @@ import {
   rutasDeImagenes,
   tieneDibujo,
   usaDibujos,
+  type ItemCaza,
   type ItemPlaneta,
   type ItemRompe,
 } from "@/lib/entrenamiento/bancos"
@@ -235,5 +236,55 @@ describe("banco de Palabras de otro planeta", () => {
     expect(usaDibujos("planeta", "primario")).toBe(false)
     const ids = GRADOS.flatMap((g) => itemsCrudos("planeta", "primario", g).map((i) => i.id))
     expect(new Set(ids).size).toBe(ids.length)
+  })
+})
+
+describe("banco de Leé y descubrí", () => {
+  it("6 historias por grado; 3 preguntas en los grados 1 y 2 y 4 en el 3; 2 otras distintas de la correcta", () => {
+    for (const g of GRADOS) {
+      const historias = itemsDe("lee", "primario", g)
+      expect(historias, `grado ${g}`).toHaveLength(6)
+      for (const h of historias) {
+        expect(h.titulo.length, h.id).toBeGreaterThan(0)
+        expect(h.parrafos.length, h.id).toBeGreaterThan(0)
+        expect(h.preguntas, h.id).toHaveLength(g === 3 ? 4 : 3)
+        for (const p of h.preguntas) {
+          expect(p.otras, `${h.id}: ${p.pregunta}`).toHaveLength(2)
+          expect(p.otras, `${h.id}: ${p.pregunta}`).not.toContain(p.correcta)
+          expect(p.otras[0]).not.toBe(p.otras[1])
+        }
+      }
+    }
+  })
+})
+
+describe("banco de Eco de palabras", () => {
+  it("15 palabras por grado, en minúscula y solo con letras", () => {
+    for (const g of GRADOS) {
+      const items = itemsDe("eco", "primario", g)
+      expect(items).toHaveLength(15)
+      for (const i of items) expect(i.palabra, i.id).toMatch(/^[a-záéíóúüñ]+$/)
+    }
+  })
+})
+
+describe("banco de Caza errores", () => {
+  it("cada error es una palabra de la oración (una sola vez), con su corrección distinta", async () => {
+    const { partirOracion, objetivosCaza } = await import("@/lib/entrenamiento/caza")
+    for (const g of GRADOS) {
+      const items = itemsCrudos("caza", "primario", g) as unknown as ItemCaza[]
+      expect(items.length).toBeGreaterThanOrEqual(JUEGOS.caza.niveles.primario!.partida[g])
+      for (const i of items) {
+        const palabras = partirOracion(i.oracion).map((p) => p.palabra)
+        for (const [mal, bien] of Object.entries(i.errores)) {
+          expect(palabras.filter((p) => p === mal), `${i.id}: ${mal}`).toHaveLength(1)
+          expect(bien, i.id).not.toBe(mal)
+        }
+        expect(objetivosCaza(partirOracion(i.oracion), i.errores)).toHaveLength(Object.keys(i.errores).length)
+        const n = Object.keys(i.errores).length
+        const permitidos = g === 1 ? [1] : g === 2 ? [1, 2] : [2]
+        expect(permitidos, i.id).toContain(n)
+      }
+    }
   })
 })
