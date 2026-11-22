@@ -21,6 +21,11 @@ export type EventoRonda =
   | { tipo: "respuesta"; fase: "acierto" | "reintento" | "respuesta"; enReintento: boolean; ronda: number }
   /** Empezó la ronda `ronda` (desde 0). */
   | { tipo: "siguiente"; ronda: number }
+  /**
+   * El juego cambia de momento sin responder: Leé y descubrí avisa
+   * "lectura" al mostrar una historia y "pensando" al tocar "Ya la leí".
+   */
+  | { tipo: "momento"; momento: "lectura" | "pensando" }
   /** Terminó la última ronda. */
   | { tipo: "fin"; resultado: ResultadoJuego }
 

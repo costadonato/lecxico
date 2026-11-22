@@ -40,6 +40,7 @@ const SINGULAR: Record<string, string> = {
   cuadrículas: "Cuadrícula",
   estímulos: "Estímulo",
   historias: "Historia",
+  preguntas: "Pregunta",
   oraciones: "Oración",
   conjuntos: "Conjunto",
 }
@@ -57,10 +58,11 @@ export function textoProgreso(unidad: string, actual: number, total: number): st
 }
 
 /** Momento del juego que define la pose y la frase del personaje. */
-export type Momento = "consigna" | "pensando" | "acierto" | "reintento" | "respuesta" | "final"
+export type Momento = "consigna" | "lectura" | "pensando" | "acierto" | "reintento" | "respuesta" | "final"
 
 export const FRASES: Record<Momento, readonly string[]> = {
   consigna: ["¡Hola! Te explico cómo se juega.", "¡Vamos a jugar juntos!", "Escuchá bien y tocá «Comenzar»."],
+  lectura: ["Leé con calma.", "Tomate tu tiempo.", "Leé despacito. Después te pregunto.", "Sin apuro: leé hasta el final."],
   pensando: ["Tomate tu tiempo.", "¿Cuál será?", "Pensalo con calma.", "Escuchá con atención."],
   acierto: ["¡Muy bien!", "¡Eso es!", "¡Genial!", "¡Bien hecho!", "¡Excelente!"],
   reintento: ["Casi. Probá otra vez.", "¡Uy! Probá de nuevo.", "Mmm, casi. ¡Otra vez!"],
@@ -107,10 +109,12 @@ export function esCodigoJuego(valor: string): valor is CodigoJuego {
 
 /**
  * Juegos que ya se pueden jugar: los tres de S13a (Detective de sonidos,
- * Rima y Palmas) y los cinco de S13b (Memotono, Rompe y une, Palabras de
- * otro planeta, Nombrá rápido y ¡Rápido, tocalo!). Los demás se ven como
- * "Próximamente" hasta S14. El componente de cada uno está en
- * components/entrenamiento/juegos/.
+ * Rima y Palmas), los cinco de S13b (Memotono, Rompe y une, Palabras de
+ * otro planeta, Nombrá rápido y ¡Rápido, tocalo!) y los tres principales
+ * de S14a (Leé y descubrí, Eco de palabras y Caza errores): con ellos están
+ * las 14 combinaciones bloque-nivel. Los complementarios (Memopalabras, Ojo
+ * de lince y Lluvia) se ven como "Próximamente" hasta S14b. El componente
+ * de cada uno está en components/entrenamiento/juegos/.
  */
 export const JUEGOS_DISPONIBLES: readonly CodigoJuego[] = [
   "detective",
@@ -121,6 +125,9 @@ export const JUEGOS_DISPONIBLES: readonly CodigoJuego[] = [
   "planeta",
   "nombra",
   "tocalo",
+  "lee",
+  "eco",
+  "caza",
 ]
 
 export function juegoDisponible(codigo: CodigoJuego): boolean {
@@ -139,11 +146,12 @@ export function juegoConPersonaje(codigo: CodigoJuego): boolean {
 
 /**
  * true si en la partida un error tiene reintento (rondas.ts). No lo tienen
- * Nombrá rápido, ¡Rápido, tocalo! ni Palabras de otro planeta en consulta
+ * Nombrá rápido, ¡Rápido, tocalo!, Caza errores (se corrige al tocar
+ * "Listo", como las cuadrículas) ni Palabras de otro planeta en consulta
  * (el profesional marca Bien o Mal).
  */
 export function partidaConReintento(codigo: CodigoJuego, origen: Origen): boolean {
-  if (codigo === "nombra" || codigo === "tocalo") return false
+  if (codigo === "nombra" || codigo === "tocalo" || codigo === "caza") return false
   return !(codigo === "planeta" && origen === "consulta")
 }
 

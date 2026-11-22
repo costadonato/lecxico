@@ -1,5 +1,8 @@
 import type { ComponentType } from "react"
+import { Caza } from "@/components/entrenamiento/juegos/caza"
 import { Detective } from "@/components/entrenamiento/juegos/detective"
+import { Eco } from "@/components/entrenamiento/juegos/eco"
+import { Lee } from "@/components/entrenamiento/juegos/lee"
 import { Memotono } from "@/components/entrenamiento/juegos/memotono"
 import { Nombra } from "@/components/entrenamiento/juegos/nombra"
 import { Palmas } from "@/components/entrenamiento/juegos/palmas"
@@ -24,4 +27,7 @@ export const COMPONENTES_JUEGO: Partial<Record<CodigoJuego, ComponentType<PropsJ
   planeta: Planeta,
   nombra: Nombra,
   tocalo: Tocalo,
+  lee: Lee,
+  eco: Eco,
+  caza: Caza,
 }

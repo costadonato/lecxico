@@ -42,6 +42,11 @@ export interface FichaNivel {
   partida: Record<Grado, number>
   /** Qué es una ronda, en plural ("palabras", "secuencias"). */
   unidad: string
+  /**
+   * Qué cuenta la barra de progreso, si no es la unidad de la partida.
+   * Leé y descubrí: la partida es de 2 historias, pero la ronda es la pregunta.
+   */
+  unidadProgreso?: string
   /** Qué cambia en cada grado, para el profesional. */
   grados: Record<Grado, string>
   consigna: string
@@ -292,6 +297,7 @@ export const JUEGOS: Record<CodigoJuego, FichaJuego> = {
         rol: "principal",
         partida: g(2, 2, 2),
         unidad: "historias",
+        unidadProgreso: "preguntas",
         consigna: "Leé la historia con calma. Cuando termines, tocá «Ya la leí» y respondé las preguntas.",
         grados: {
           1: "Un párrafo, 3 preguntas",

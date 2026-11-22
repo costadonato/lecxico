@@ -7,6 +7,8 @@
  *     partida (elegirPartida).
  *   - Memotono, Nombrá rápido y ¡Rápido, tocalo! no tienen banco por
  *     grado: generan su contenido.
+ *   - Leé y descubrí toma 2 historias del banco y las aplana en preguntas:
+ *     la ronda es la pregunta (lib/entrenamiento/lee.ts).
  * Una lista vacía significa "Este grado todavía no tiene contenido". Cada
  * ítem lleva un id estable y legible, que va al detalle de la partida.
  */
@@ -14,6 +16,7 @@
 import { elegirPartida, itemsDe } from "@/lib/entrenamiento/bancos"
 import { generarNombra } from "@/lib/entrenamiento/denominacion-entrenamiento"
 import { JUEGOS, type CodigoJuego, type Grado, type Nivel } from "@/lib/entrenamiento/juegos"
+import { aplanarLee } from "@/lib/entrenamiento/lee"
 import { generarMemotono } from "@/lib/entrenamiento/memotono"
 import { generarTocalo } from "@/lib/entrenamiento/tocalo"
 
@@ -30,5 +33,6 @@ export function armarPartida(juego: CodigoJuego, nivel: Nivel, grado: Grado, aza
   if (juego === "memotono") return generarMemotono(nivel, grado, azar)
   if (juego === "nombra") return generarNombra(nivel, grado, azar)
   if (juego === "tocalo") return generarTocalo(nivel, grado, azar)
+  if (juego === "lee") return aplanarLee(elegirPartida(itemsDe("lee", nivel, grado), ficha.partida[grado], azar))
   return elegirPartida(itemsDe(juego, nivel, grado), ficha.partida[grado], azar)
 }
