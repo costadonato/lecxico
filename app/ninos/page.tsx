@@ -115,7 +115,7 @@ function TablaNinos() {
           }
         />
       ) : (
-        <Card className="overflow-hidden py-0 max-md:border-0 max-md:bg-transparent max-md:shadow-none">
+        <Card className="overflow-hidden py-0 max-md:border-0 max-md:bg-transparent max-md:shadow-none max-md:[--filtro-tarjeta:none]">
           <Table tarjetasEnCelular>
             <TableHeader>
               <TableRow>

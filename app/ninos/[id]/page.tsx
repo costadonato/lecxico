@@ -179,7 +179,7 @@ function InformacionGeneral({ datos }: { datos: DetalleNino }) {
         <ListaCascada as="dl" className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {cifras.map((c) => (
             <ItemCascada key={c.etiqueta} className={cn("rounded-2xl px-4 py-3", c.clase)}>
-              <dt className="text-sm font-semibold opacity-90">{c.etiqueta}</dt>
+              <dt className="text-sm font-semibold">{c.etiqueta}</dt>
               <dd className="text-3xl font-bold">
                 {c.valor === null ? "—" : <NumeroAnimado valor={c.valor} sufijo={c.sufijo} />}
               </dd>
