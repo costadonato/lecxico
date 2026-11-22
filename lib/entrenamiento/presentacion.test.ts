@@ -100,11 +100,14 @@ describe("textos y validaciones", () => {
       expect(juegoDisponible(j), j).toBe(true)
     }
     for (const j of ["lee", "eco", "caza"] as const) expect(juegoDisponible(j), j).toBe(true) // S14a
-    expect(juegoDisponible("memopalabras")).toBe(false) // S14b
+    for (const j of ["memopalabras", "ojo_lince", "lluvia"] as const) expect(juegoDisponible(j), j).toBe(true) // S14b
+    // Están los 14: ya no queda ninguno en "Próximamente".
+    expect(Object.values(JUEGOS).every((j) => juegoDisponible(j.codigo))).toBe(true)
   })
 
-  it("solo Nombrá rápido se juega sin personaje", () => {
+  it("Nombrá rápido y Lluvia se juegan sin personaje", () => {
     expect(juegoConPersonaje("nombra")).toBe(false)
+    expect(juegoConPersonaje("lluvia")).toBe(false)
     expect(juegoConPersonaje("tocalo")).toBe(true)
   })
 
@@ -115,6 +118,7 @@ describe("textos y validaciones", () => {
     expect(partidaConReintento("planeta", "consulta")).toBe(false)
     expect(partidaConReintento("planeta", "tarea")).toBe(true)
     expect(partidaConReintento("caza", "practica")).toBe(false)
+    for (const j of ["memopalabras", "ojo_lince", "lluvia"] as const) expect(partidaConReintento(j, "practica"), j).toBe(false)
     expect(partidaConReintento("eco", "practica")).toBe(true)
   })
 
@@ -124,7 +128,8 @@ describe("textos y validaciones", () => {
     expect(jugadaValida({ ...base, juego: "noexiste" })).toBe(false)
     expect(jugadaValida({ ...base, juego: "memotono" })).toBe(true)
     expect(jugadaValida({ ...base, juego: "eco", nivel: "primario" })).toBe(true)
-    expect(jugadaValida({ ...base, juego: "lluvia", nivel: "primario" })).toBe(false) // todavía no construido (S14b)
+    expect(jugadaValida({ ...base, juego: "lluvia", nivel: "primario" })).toBe(true)
+    expect(jugadaValida({ ...base, juego: "memopalabras" })).toBe(false) // Memopalabras es solo de primario
     expect(jugadaValida({ ...base, juego: "detective", grado: null })).toBe(false)
     expect(jugadaValida({ ...base, nivel: "primario", juego: "palmas" })).toBe(false) // palmas es solo de inicial
   })

@@ -111,10 +111,13 @@ export function esCodigoJuego(valor: string): valor is CodigoJuego {
  * Juegos que ya se pueden jugar: los tres de S13a (Detective de sonidos,
  * Rima y Palmas), los cinco de S13b (Memotono, Rompe y une, Palabras de
  * otro planeta, Nombrá rápido y ¡Rápido, tocalo!) y los tres principales
- * de S14a (Leé y descubrí, Eco de palabras y Caza errores): con ellos están
- * las 14 combinaciones bloque-nivel. Los complementarios (Memopalabras, Ojo
- * de lince y Lluvia) se ven como "Próximamente" hasta S14b. El componente
- * de cada uno está en components/entrenamiento/juegos/.
+ * de S14a (Leé y descubrí, Eco de palabras y Caza errores), que cubren las
+ * 14 combinaciones bloque-nivel, y los complementarios de S14b
+ * (Memopalabras, Ojo de lince y Lluvia). Con S14b están los 14 juegos: ya
+ * no queda ninguno en "Próximamente". La lista y juegoDisponible se
+ * conservan por si se suma un juego nuevo al catálogo antes que su
+ * componente. El componente de cada uno está en
+ * components/entrenamiento/juegos/.
  */
 export const JUEGOS_DISPONIBLES: readonly CodigoJuego[] = [
   "detective",
@@ -128,6 +131,9 @@ export const JUEGOS_DISPONIBLES: readonly CodigoJuego[] = [
   "lee",
   "eco",
   "caza",
+  "memopalabras",
+  "ojo_lince",
+  "lluvia",
 ]
 
 export function juegoDisponible(codigo: CodigoJuego): boolean {
@@ -136,9 +142,11 @@ export function juegoDisponible(codigo: CodigoJuego): boolean {
 
 /**
  * Juegos que se juegan sin la columna del personaje, a todo el ancho:
- * Nombrá rápido (la cuadrícula no debe tener distracciones).
+ * Nombrá rápido (la cuadrícula no debe tener distracciones) y Lluvia (todo
+ * el ancho para la zona de juego; Lumo aparece en la tarjeta de antes de
+ * cada lluvia).
  */
-export const JUEGOS_SIN_PERSONAJE: readonly CodigoJuego[] = ["nombra"]
+export const JUEGOS_SIN_PERSONAJE: readonly CodigoJuego[] = ["nombra", "lluvia"]
 
 export function juegoConPersonaje(codigo: CodigoJuego): boolean {
   return !JUEGOS_SIN_PERSONAJE.includes(codigo)
@@ -150,8 +158,15 @@ export function juegoConPersonaje(codigo: CodigoJuego): boolean {
  * "Listo", como las cuadrículas) ni Palabras de otro planeta en consulta
  * (el profesional marca Bien o Mal).
  */
+/**
+ * Juegos sin reintento: Nombrá rápido, ¡Rápido, tocalo! y los de selección,
+ * que se corrigen al tocar "Listo" o "Finalizar" (Caza errores,
+ * Memopalabras, Ojo de lince y Lluvia).
+ */
+export const JUEGOS_SIN_REINTENTO: readonly CodigoJuego[] = ["nombra", "tocalo", "caza", "memopalabras", "ojo_lince", "lluvia"]
+
 export function partidaConReintento(codigo: CodigoJuego, origen: Origen): boolean {
-  if (codigo === "nombra" || codigo === "tocalo" || codigo === "caza") return false
+  if (JUEGOS_SIN_REINTENTO.includes(codigo)) return false
   return !(codigo === "planeta" && origen === "consulta")
 }
 

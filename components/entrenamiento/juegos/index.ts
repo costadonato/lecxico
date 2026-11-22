@@ -3,8 +3,11 @@ import { Caza } from "@/components/entrenamiento/juegos/caza"
 import { Detective } from "@/components/entrenamiento/juegos/detective"
 import { Eco } from "@/components/entrenamiento/juegos/eco"
 import { Lee } from "@/components/entrenamiento/juegos/lee"
+import { Lluvia } from "@/components/entrenamiento/juegos/lluvia"
+import { Memopalabras } from "@/components/entrenamiento/juegos/memopalabras"
 import { Memotono } from "@/components/entrenamiento/juegos/memotono"
 import { Nombra } from "@/components/entrenamiento/juegos/nombra"
+import { OjoLince } from "@/components/entrenamiento/juegos/ojo-lince"
 import { Palmas } from "@/components/entrenamiento/juegos/palmas"
 import { Planeta } from "@/components/entrenamiento/juegos/planeta"
 import { Rima } from "@/components/entrenamiento/juegos/rima"
@@ -30,4 +33,7 @@ export const COMPONENTES_JUEGO: Partial<Record<CodigoJuego, ComponentType<PropsJ
   lee: Lee,
   eco: Eco,
   caza: Caza,
+  memopalabras: Memopalabras,
+  ojo_lince: OjoLince,
+  lluvia: Lluvia,
 }

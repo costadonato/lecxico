@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react"
 import { motion } from "motion/react"
 import { Check, Search, X } from "lucide-react"
 import { BotonSeguir } from "@/components/entrenamiento/boton-seguir"
+import { BotonFinalizar, ResumenSeleccion, type TextosResumen } from "@/components/entrenamiento/seleccion"
 import { Emoji } from "@/components/entrenamiento/dibujo"
 import type { PropsJuego } from "@/components/entrenamiento/juegos/tipos"
 import { useRondas } from "@/components/entrenamiento/use-rondas"
@@ -44,6 +45,12 @@ export function Caza({ items, onRonda }: PropsJuego<ItemCaza>) {
       }}
     />
   )
+}
+
+const TEXTOS_RESUMEN: TextosResumen = {
+  encontrados: ["encontrada", "encontradas"],
+  omitidos: ["sin encontrar", "sin encontrar"],
+  equivocados: ["estaba bien escrita", "estaban bien escritas"],
 }
 
 type EstadoPalabra = "normal" | "marcada" | "encontrada" | "omitida" | "equivocada"
@@ -178,7 +185,7 @@ function RondaCaza({
       </motion.div>
 
       {corregida ? (
-        <Resumen puntaje={puntaje} />
+        <ResumenSeleccion puntaje={puntaje} textos={TEXTOS_RESUMEN} />
       ) : (
         <p className="text-center text-lg font-semibold text-muted-foreground" role="status">
           {marcados.length === 0
@@ -187,36 +194,8 @@ function RondaCaza({
         </p>
       )}
 
-      {r.puedeResponder && (
-        <button
-          type="button"
-          onClick={listo}
-          className="inline-flex min-h-14 items-center gap-2 rounded-full bg-menta-fuerte px-8 text-lg font-bold text-white shadow-boton outline-none transition-[filter] hover:brightness-110 focus-visible:ring-4 focus-visible:ring-menta/50"
-        >
-          <Check className="size-6" aria-hidden="true" strokeWidth={3} />
-          Listo
-        </button>
-      )}
+      {r.puedeResponder && <BotonFinalizar onClick={listo} texto="Listo" />}
       {r.resuelta && <BotonSeguir ultima={r.ultima} onClick={r.siguiente} />}
     </div>
-  )
-}
-
-/** Qué encontró, qué le faltó y qué marcó de más, con color e ícono. */
-function Resumen({ puntaje }: { puntaje: PuntajeSeleccion }) {
-  const filas = [
-    { n: puntaje.encontrados, texto: puntaje.encontrados === 1 ? "encontrada" : "encontradas", clase: "bg-menta-suave text-menta-fuerte", Icono: Check },
-    { n: puntaje.omitidos, texto: puntaje.omitidos === 1 ? "sin encontrar" : "sin encontrar", clase: "bg-sol-suave text-sol-fuerte", Icono: Search },
-    { n: puntaje.equivocados, texto: puntaje.equivocados === 1 ? "estaba bien escrita" : "estaban bien escritas", clase: "bg-rojo-suave text-rojo-fuerte", Icono: X },
-  ].filter((f) => f.n > 0)
-  return (
-    <ul role="status" className="flex flex-wrap justify-center gap-2">
-      {filas.map(({ n, texto, clase, Icono }) => (
-        <li key={texto} className={cn("inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-base font-bold", clase)}>
-          <Icono className="size-5" aria-hidden="true" strokeWidth={3} />
-          {n} {texto}
-        </li>
-      ))}
-    </ul>
   )
 }
