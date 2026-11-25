@@ -12,7 +12,7 @@
  * orden del test, sin compararlos entre sí ni reordenarlos por gravedad.
  */
 import type { BloqueResultado } from "@/lib/test/analisis"
-import type { BloqueCodigo, EtapaEscolar, Nivel } from "@/lib/test/bloques"
+import { nivelParaEtapa, type BloqueCodigo, type EtapaEscolar, type Nivel } from "@/lib/test/bloques"
 
 export type Franja = "correcto" | "intermedio" | "a_observar"
 
@@ -219,4 +219,33 @@ export function ultimaEvaluacion<T extends { fecha: string; created_at: string }
     }
   }
   return ultima
+}
+
+/** Franja de cada bloque de una evaluación, para agrupar los juegos (juegosPorFranja). */
+export type FranjasPorBloque = Partial<Record<BloqueCodigo, Franja | null>>
+
+export type DisponibilidadRecomendacion<T> =
+  | { estado: "sin_evaluaciones" }
+  /** La última evaluación es de otro nivel que el que el niño tiene hoy. */
+  | { estado: "otro_nivel"; nivelEvaluacion: Nivel; nivelNino: Nivel }
+  | { estado: "disponible"; test: T; grado: GradoFranja | null; franjas: FranjasPorBloque }
+
+/**
+ * Si se puede mostrar la recomendación de un niño junto a los juegos de su
+ * nivel actual (Entrenar en consulta, S11b; tareas, S15): hace falta una
+ * evaluación y que la última sea del nivel que el niño tiene hoy
+ * (nivelParaEtapa), porque los juegos que se muestran son los de ese nivel.
+ */
+export function recomendacionParaNino<
+  T extends { fecha: string; created_at: string; nivel: Nivel; bloques: readonly BloqueParaFranja[] },
+>(tests: readonly T[], etapa: EtapaEscolar): DisponibilidadRecomendacion<T> {
+  const test = ultimaEvaluacion(tests)
+  if (!test) return { estado: "sin_evaluaciones" }
+  const nivelNino = nivelParaEtapa(etapa)
+  if (test.nivel !== nivelNino) return { estado: "otro_nivel", nivelEvaluacion: test.nivel, nivelNino }
+  const grado = gradoParaFranja(test.nivel, etapa)
+  const franjas: FranjasPorBloque = Object.fromEntries(
+    franjasDeEvaluacion(test.nivel, test.bloques, grado).map((b) => [b.bloque_codigo, b.franja]),
+  )
+  return { estado: "disponible", test, grado, franjas }
 }

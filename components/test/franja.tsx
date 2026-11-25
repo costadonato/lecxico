@@ -16,26 +16,42 @@ const clave = (franja: Franja | null): ClaveEstilo => franja ?? "sin_franja"
 /**
  * badge: variante del chip; barra y texto: relleno y número de la fila (los
  * tokens --nivel-*); destacado: borde y fondo suave del ítem de la
- * recomendación (solo intermedio y a observar).
+ * recomendación (solo intermedio y a observar); contenedor: el recuadro
+ * sutil de cada grupo de juegos de la recomendación en consulta (S11b), que
+ * deja a las tarjetas blancas como lo que más se ve.
  */
 export const ESTILO_FRANJA: Record<
   ClaveEstilo,
-  { badge: "menta" | "sol" | "rojo" | "neutro"; barra: string; texto: string; destacado: string }
+  { badge: "menta" | "sol" | "rojo" | "neutro"; barra: string; texto: string; destacado: string; contenedor: string }
 > = {
-  correcto: { badge: "menta", barra: ESTILO_NIVEL.alto.barra, texto: ESTILO_NIVEL.alto.texto, destacado: "" },
+  correcto: {
+    badge: "menta",
+    barra: ESTILO_NIVEL.alto.barra,
+    texto: ESTILO_NIVEL.alto.texto,
+    destacado: "",
+    contenedor: "border-menta/25 bg-menta-suave/35",
+  },
   intermedio: {
     badge: "sol",
     barra: ESTILO_NIVEL.medio.barra,
     texto: ESTILO_NIVEL.medio.texto,
     destacado: "border-sol/50 bg-sol-suave/50",
+    contenedor: "border-sol/30 bg-sol-suave/35",
   },
   a_observar: {
     badge: "rojo",
     barra: ESTILO_NIVEL.critico.barra,
     texto: ESTILO_NIVEL.critico.texto,
     destacado: "border-rojo/30 bg-rojo-suave/50",
+    contenedor: "border-rojo/20 bg-rojo-suave/35",
   },
-  sin_franja: { badge: "neutro", barra: "bg-muted-foreground/40", texto: "text-muted-foreground", destacado: "" },
+  sin_franja: {
+    badge: "neutro",
+    barra: "bg-muted-foreground/40",
+    texto: "text-muted-foreground",
+    destacado: "",
+    contenedor: "border-border/70 bg-muted/40",
+  },
 }
 
 export const estiloFranja = (franja: Franja | null) => ESTILO_FRANJA[clave(franja)]

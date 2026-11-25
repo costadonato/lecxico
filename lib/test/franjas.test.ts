@@ -10,6 +10,7 @@ import {
   franjasDeEvaluacion,
   gradoParaFranja,
   recomendacion,
+  recomendacionParaNino,
   ultimaEvaluacion,
   type BloqueParaFranja,
   type Franja,
@@ -415,5 +416,59 @@ describe("textos visibles", () => {
   it("los grados de las franjas son etapas escolares existentes", () => {
     const etapas = ETAPAS_ESCOLARES.map((e) => e.valor)
     for (const g of ["primero", "segundo", "tercero"] as const) expect(etapas).toContain(g)
+  })
+})
+
+describe("recomendacionParaNino", () => {
+  const evaluacion = (nivel: Nivel, fecha: string, bloques: BloqueParaFranja[]) => ({
+    fecha,
+    created_at: `${fecha}T10:00:00Z`,
+    nivel,
+    bloques,
+  })
+
+  it("sin evaluaciones no está disponible", () => {
+    expect(recomendacionParaNino([], "segundo")).toEqual({ estado: "sin_evaluaciones" })
+  })
+
+  it("si la última evaluación es de otro nivel no está disponible, aunque una anterior sea del nivel actual", () => {
+    const tests = [
+      evaluacion("primario", "2026-03-01", [bloque("discriminacion_auditiva", 1, 5, 5)]),
+      evaluacion("inicial", "2026-10-01", [bloque("discriminacion_auditiva", 1, 6, 6)]),
+    ]
+    expect(recomendacionParaNino(tests, "primero")).toEqual({
+      estado: "otro_nivel",
+      nivelEvaluacion: "inicial",
+      nivelNino: "primario",
+    })
+  })
+
+  it("con la última del nivel actual, da la evaluación, el grado y la franja de cada bloque", () => {
+    const vieja = evaluacion("primario", "2026-09-01", [bloque("discriminacion_auditiva", 1, 0, 5)])
+    const ultima = evaluacion("primario", "2026-11-20", [
+      bloque("discriminacion_auditiva", 1, 3, 5),
+      bloque("correspondencia_sonido_letra", 6, 5, 6),
+      denominacion(150_000, 0),
+    ])
+    const r = recomendacionParaNino([ultima, vieja], "primero")
+    expect(r).toEqual({
+      estado: "disponible",
+      test: ultima,
+      grado: "primero",
+      franjas: {
+        discriminacion_auditiva: "intermedio",
+        correspondencia_sonido_letra: "correcto",
+        denominacion_rapida: "a_observar",
+      },
+    })
+  })
+
+  it("en inicial no hay grado y denominación rápida queda sin franja", () => {
+    const ultima = evaluacion("inicial", "2026-11-20", [
+      bloque("discriminacion_auditiva", 1, 6, 6),
+      { ...bloque("denominacion_rapida", 5, 22, 24), tiempo_ms: 38_000, errores: 2 },
+    ])
+    const r = recomendacionParaNino([ultima], "sala_5")
+    expect(r).toMatchObject({ estado: "disponible", grado: null, franjas: { denominacion_rapida: null } })
   })
 })

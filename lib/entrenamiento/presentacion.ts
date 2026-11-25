@@ -8,6 +8,7 @@
 
 import { JUEGOS, type CodigoJuego, type FichaJuego, type Grado, type Nivel, type Origen } from "@/lib/entrenamiento/juegos"
 import { BLOQUES_POR_NIVEL, type BloqueCodigo } from "@/lib/test/bloques"
+import type { Franja, FranjasPorBloque } from "@/lib/test/franjas"
 
 export interface GrupoBloque {
   bloque: BloqueCodigo
@@ -32,6 +33,42 @@ export function juegosPorBloque(nivel: Nivel, opciones: { incluirSoloConsulta: b
         .sort((a, b) => Number(a.niveles[nivel]?.rol !== "principal") - Number(b.niveles[nivel]?.rol !== "principal")),
     }))
     .filter((g) => g.juegos.length > 0)
+}
+
+/** Un juego con el bloque al que pertenece en ese nivel. */
+export interface JuegoDeBloque {
+  juego: FichaJuego
+  bloque: BloqueCodigo
+}
+
+export interface GrupoFranja {
+  /** null = "sin franja de referencia". */
+  franja: Franja | null
+  juegos: JuegoDeBloque[]
+}
+
+/** Orden fijo de los grupos: primero lo que más necesita práctica. */
+export const ORDEN_GRUPOS_FRANJA: readonly (Franja | null)[] = ["a_observar", "intermedio", "correcto", null]
+
+/**
+ * Los juegos de un nivel agrupados según la franja de su bloque en una
+ * evaluación (S11b; S15 lo reutiliza para armar tareas). `franjas` es la
+ * franja de cada bloque (de `franjasDeEvaluacion`); un bloque del nivel que
+ * no figura (por ejemplo, una evaluación vieja sin denominación rápida) cae
+ * en "sin franja". Los grupos van en ORDEN_GRUPOS_FRANJA y, dentro de cada
+ * uno, en el orden de juegosPorBloque (bloques en el orden del test y el
+ * principal primero). Los grupos vacíos no se devuelven.
+ */
+export function juegosPorFranja(
+  nivel: Nivel,
+  franjas: FranjasPorBloque,
+  opciones: { incluirSoloConsulta: boolean },
+): GrupoFranja[] {
+  const juegos = juegosPorBloque(nivel, opciones).flatMap((g) => g.juegos.map((juego) => ({ juego, bloque: g.bloque })))
+  return ORDEN_GRUPOS_FRANJA.map((franja) => ({
+    franja,
+    juegos: juegos.filter((j) => (franjas[j.bloque] ?? null) === franja),
+  })).filter((g) => g.juegos.length > 0)
 }
 
 const SINGULAR: Record<string, string> = {

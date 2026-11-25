@@ -12,6 +12,7 @@ Sirve para dos cosas: que cualquiera de los dos pueda retomar un slice sabiendo 
 | `s09-denominacion-rapida.md` | S9 Denominación rápida (incluye ajustes) | Donato |
 | `s10-perfil-sin-resultados.md` | S10 Perfil del niño sin resultados | Donato |
 | `s11-franjas-recomendacion.md` | S11 Franjas y recomendación | Camila |
+| `s11b-recomendacion-en-consulta.md` | S11b Recomendación en consulta | Camila |
 | `dislexia-contenido.md` | Página /dislexia con contenido real (PR #13) | Donato |
 | `s13a-poses-lex-lumo.md` | Poses nuevas de Lex y Lumo, previo a S13a (PR #14) | Donato |
 | `s13a-marco-entrenamiento.md` | S13a Marco del entrenamiento | Donato |
