@@ -101,6 +101,12 @@
   --sidebar-accent-foreground: #2a2420;
   --sidebar-border: #ebe1d3;
   --sidebar-ring: var(--rojo);
+
+  /* Superficie de las <Card> (components/ui/card.tsx). Fuera del lado del
+     profesional son las de siempre; .fondo-profesional las pasa a vidrio. */
+  --borde-tarjeta: color-mix(in oklab, var(--border) 80%, transparent);
+  --sombra-tarjeta: 0 1px 2px rgb(74 52 30 / 0.05), 0 6px 18px -6px rgb(74 52 30 / 0.12);
+  --filtro-tarjeta: none;
 }
 
 /* La app no activa el modo oscuro hoy; se deja coherente con la paleta. */
@@ -299,12 +305,72 @@
     radial-gradient(30rem 24rem at 100% 90%, color-mix(in oklab, var(--lavanda) 16%, transparent), transparent 70%);
 }
 
-/* Fondo del profesional: sereno, con un brillo celeste muy leve. */
+/*
+ * Fondo del profesional: rojizo pastel (tono "Durazno", aprobado en la
+ * maqueta). Además es un ÁMBITO: redefine las superficies de shadcn para que
+ * todo lo que está adentro se vea como vidrio sobre el fondo, sin tocar
+ * componente por componente.
+ *   --card al 80 % de blanco (= vidrio-fuerte, sin desenfoque): filas de
+ *   tablas en celular, botones outline, chips. Las <Card> suman el
+ *   desenfoque, el borde y la sombra del vidrio (--*-tarjeta, ver ui/card).
+ *   --background, --muted y --border pasan del crema a un rosado muy claro.
+ * Los diálogos, popovers y menús se montan en <body> (portal): quedan afuera
+ * del ámbito y siguen opacos. Las pantallas del niño usan fondo-nino.
+ */
 @utility fondo-profesional {
-  background-color: var(--background);
+  background-color: #fbe9e4;
   background-image:
-    radial-gradient(50rem 30rem at 100% -10%, color-mix(in oklab, var(--celeste) 14%, transparent), transparent 70%),
-    radial-gradient(40rem 26rem at -10% 110%, color-mix(in oklab, var(--rojo) 6%, transparent), transparent 70%);
+    radial-gradient(44rem 32rem at -8% -12%, color-mix(in oklab, var(--rojo) 24%, transparent), transparent 70%),
+    radial-gradient(40rem 30rem at 108% 0%, color-mix(in oklab, #f4a6b6 36%, transparent), transparent 70%),
+    radial-gradient(44rem 34rem at 105% 105%, color-mix(in oklab, var(--mandarina) 19%, transparent), transparent 70%),
+    radial-gradient(34rem 26rem at -6% 100%, color-mix(in oklab, var(--lavanda) 12%, transparent), transparent 70%);
+  --card: rgb(255 255 255 / 0.8);
+  --background: #fff8f6;
+  --muted: #f9ebe7;
+  --border: #f0dcd6;
+  --borde-tarjeta: rgb(255 255 255 / 0.65);
+  --sombra-tarjeta: 0 1px 2px rgb(120 30 30 / 0.05), 0 14px 34px -14px rgb(168 29 34 / 0.28);
+  --filtro-tarjeta: blur(14px) saturate(1.2);
+}
+
+/*
+ * Vidrio: superficie blanca translúcida con desenfoque, para el lado del
+ * profesional. vidrio (66 %) en tarjetas y paneles cortos; vidrio-fuerte
+ * (80 %) en los paneles con mucho texto (listas, tablas, formularios,
+ * historial, actividad reciente). Contraste AA medido contra el punto más
+ * oscuro del fondo (docs/estado-proyecto.md).
+ */
+/* Opacidad propia de una superficie de vidrio ([--vidrio-alfa:0.9]); no se
+   hereda, así un panel más opaco no cambia los vidrios que tenga adentro. */
+@property --vidrio-alfa {
+  syntax: "*";
+  inherits: false;
+}
+
+@utility vidrio {
+  background: rgb(255 255 255 / var(--vidrio-alfa, 0.66));
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  border: 1px solid rgb(255 255 255 / 0.65);
+  box-shadow: 0 1px 2px rgb(120 30 30 / 0.05), 0 14px 34px -14px rgb(168 29 34 / 0.28);
+}
+
+@utility vidrio-fuerte {
+  background: rgb(255 255 255 / var(--vidrio-alfa, 0.8));
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  border: 1px solid rgb(255 255 255 / 0.65);
+  box-shadow: 0 1px 2px rgb(120 30 30 / 0.05), 0 14px 34px -14px rgb(168 29 34 / 0.28);
+}
+
+/* Panel del saludo del inicio: vidrio con un degradado leve de rojo-suave
+   (74 %) a blanco (66 %), para diferenciarse de las tarjetas. */
+@utility vidrio-saludo {
+  background: linear-gradient(120deg, color-mix(in oklab, var(--rojo-suave) 74%, transparent), rgb(255 255 255 / 0.66));
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  border: 1px solid rgb(255 255 255 / 0.65);
+  box-shadow: 0 1px 2px rgb(120 30 30 / 0.05), 0 14px 34px -14px rgb(168 29 34 / 0.28);
 }
 
 /* Degradado rojo de marca para bloques destacados (texto blanco: AA). */

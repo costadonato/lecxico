@@ -11,6 +11,7 @@ import { EASE_SUAVE } from "@/components/motion/transiciones"
 import { LumoCara } from "@/components/personajes/lumo-cara"
 import { CaraPersonaje } from "@/components/personajes/personaje"
 import type { Profile } from "@/lib/types/database"
+import { cn } from "@/lib/utils"
 
 /**
  * Navbar de las páginas con sesión: logo, nombre, campanita de invitaciones
@@ -35,7 +36,11 @@ export function AppHeader({ profile }: { profile: Pick<Profile, "nombre" | "rol"
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: EASE_SUAVE }}
-        className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 rounded-full border border-border/70 bg-card/80 pl-5 pr-2 shadow-media backdrop-blur-md sm:pl-6"
+        className={cn(
+          "mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 rounded-full pl-5 pr-2 sm:pl-6",
+          // El profesional, en vidrio sobre su fondo rojizo; el niño, como siempre.
+          profile.rol === "profesional" ? "vidrio" : "border border-border/70 bg-card/80 shadow-media backdrop-blur-md",
+        )}
       >
         <Link
           href="/dashboard"

@@ -42,7 +42,8 @@ export function PaginaApp({
 
   if (pagina.estado === "error") {
     return (
-      <div className="fondo-profesional flex min-h-screen items-center justify-center px-4">
+      // Sin perfil no se sabe el rol: fondo crema neutro.
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
         <Alert variant="destructive" className="max-w-md">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{pagina.mensaje}</AlertDescription>

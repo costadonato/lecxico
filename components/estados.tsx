@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * Estado de carga: Lumo pensando y un texto. `pantallaCompleta` lo centra en
- * toda la ventana (mientras se carga el perfil).
+ * toda la ventana (mientras se carga el perfil), sobre el crema neutro.
  */
 export function Cargando({
   texto = "Cargando…",
@@ -28,7 +28,9 @@ export function Cargando({
       aria-live="polite"
       className={cn(
         "flex flex-col items-center justify-center gap-3 text-center",
-        pantallaCompleta ? "min-h-screen fondo-profesional" : "py-12",
+        // A pantalla completa se muestra antes de saber el rol: fondo crema
+        // neutro, sin el rojizo del profesional ni las manchas del niño.
+        pantallaCompleta ? "min-h-screen bg-background" : "py-12",
         className,
       )}
     >

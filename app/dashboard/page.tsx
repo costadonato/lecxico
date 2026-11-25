@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { ClipboardCheck, Gamepad2, LogOut, Stethoscope, UserRound, Users } from "lucide-react"
+import { ClipboardCheck, Gamepad2, ListChecks, LogOut, Stethoscope, UserRound, Users } from "lucide-react"
 import { Cargando } from "@/components/estados"
 import { InicioNino, type TarjetaInicio } from "@/components/inicio/inicio-nino"
 import { InicioProfesional } from "@/components/inicio/inicio-profesional"
@@ -54,10 +54,19 @@ const TARJETAS = {
     tono: "celeste",
     href: "/mis-profesionales",
   },
+  // Se activa en S15, con el enlace a la gestión de tareas.
+  tareas: {
+    title: "Tareas",
+    description: "Asigná juegos para practicar en casa",
+    icono: ListChecks,
+    tono: "lavanda",
+    href: "",
+    proximamente: true,
+  },
 } satisfies Record<string, TarjetaInicio>
 
 const TARJETAS_POR_ROL: Record<Rol, TarjetaInicio[]> = {
-  profesional: [TARJETAS.test, TARJETAS.entrenar, TARJETAS.ninos],
+  profesional: [TARJETAS.test, TARJETAS.entrenar, TARJETAS.ninos, TARJETAS.tareas],
   nino: [TARJETAS.entrenamiento, TARJETAS.profesionales, TARJETAS.perfil],
 }
 
@@ -120,7 +129,8 @@ export default function DashboardPage() {
 
   if (errorCarga || !rol) {
     return (
-      <div className="fondo-profesional flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
+      // Sin perfil no se sabe el rol: fondo crema neutro.
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background px-4 text-center">
         <LumoCara estado="dormido" tamano={110} />
         <p className="max-w-md text-lg text-foreground">{errorCarga}</p>
         <button

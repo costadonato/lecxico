@@ -10,7 +10,8 @@ import { cn } from "@/lib/utils"
  * necesita "relative isolate" para que la capa quede detrás.
  *
  * - nino: festivo, con muchas formas de colores y letras b/d.
- * - profesional: sereno, una trama de puntos y dos brillos suaves.
+ * - profesional: sereno, una trama de puntos y tres anillos (el color
+ *   rojizo lo da la clase fondo-profesional).
  * - landing / auth: intermedio, para la portada y las pantallas de cuenta.
  */
 
@@ -26,20 +27,32 @@ export function FondoDecorado({ variante, className }: { variante: Variante; cla
 
 /* ------------------------------------------------------------------ */
 
+/*
+ * El color lo da fondo-profesional (globals.css). Acá solo van la trama de
+ * puntos, que se desvanece hacia abajo, y tres anillos que flotan despacio:
+ * uno blanco arriba a la derecha, uno rojo abajo a la izquierda y uno grande
+ * que asoma desde abajo, cerca del centro.
+ */
 function FondoProfesional() {
   return (
     <>
       <div className="textura-puntos absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent_70%)]" />
-      <div className="absolute -right-24 -top-24 size-[26rem] rounded-full bg-celeste/15 blur-3xl" />
-      <div className="absolute -bottom-32 -left-24 size-[22rem] rounded-full bg-rojo/[0.06] blur-3xl" />
       <Flotante className="absolute right-[6%] top-28 hidden lg:block" duracion={12} amplitud={6}>
-        <Anillo className="size-16 text-celeste/35" />
+        <AnilloBorde className="size-16 border-[6px] border-white/70" />
       </Flotante>
       <Flotante className="absolute bottom-24 left-[4%] hidden lg:block" duracion={14} amplitud={6} retraso={2}>
-        <Anillo className="size-10 text-rojo/20" />
+        <AnilloBorde className="size-10 border-[6px] border-rojo/30" />
+      </Flotante>
+      <Flotante className="absolute -bottom-40 left-[44%] hidden md:block" duracion={16} amplitud={8} retraso={1}>
+        <AnilloBorde className="size-[300px] border-2 border-white/55" />
       </Flotante>
     </>
   )
+}
+
+/** Anillo con borde en píxeles exactos (el grosor no escala con el tamaño). */
+function AnilloBorde({ className }: { className?: string }) {
+  return <span className={cn("block rounded-full", className)} />
 }
 
 const FORMAS_FESTIVAS: Record<Exclude<Variante, "profesional">, React.ReactNode> = {

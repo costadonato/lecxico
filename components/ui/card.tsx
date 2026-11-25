@@ -2,12 +2,17 @@ import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
+/*
+ * Borde, sombra y desenfoque salen de variables (app/globals.css): fuera del
+ * lado del profesional son los de siempre (borde crema, shadow-suave, sin
+ * desenfoque) y dentro de .fondo-profesional, los del vidrio.
+ */
 function Card({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card"
       className={cn(
-        'bg-card text-card-foreground flex flex-col gap-6 rounded-3xl border border-border/80 py-6 shadow-suave',
+        'bg-card text-card-foreground flex flex-col gap-6 rounded-3xl border border-[color:var(--borde-tarjeta)] py-6 shadow-[var(--sombra-tarjeta)] [-webkit-backdrop-filter:var(--filtro-tarjeta)] [backdrop-filter:var(--filtro-tarjeta)]',
         className,
       )}
       {...props}

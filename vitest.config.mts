@@ -45,6 +45,7 @@ export default defineConfig({
         "lib/entrenamiento/ojo-lince.ts",
         "lib/entrenamiento/lluvia.ts",
         "lib/personajes.ts",
+        "lib/inicio/actividad.ts",
       ],
       thresholds: {
         lines: 80,
