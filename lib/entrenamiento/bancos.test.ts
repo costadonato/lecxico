@@ -41,14 +41,15 @@ describe("dibujos", () => {
   it("tieneDibujo y rutaDibujo", () => {
     expect(tieneDibujo("vaca")).toBe(true)
     expect(rutaDibujo("vaca")).toMatch(/^\/emoji\/.+\.webp$/)
-    expect(tieneDibujo("capa")).toBe(false)
-    expect(rutaDibujo("capa")).toBeNull()
+    expect(tieneDibujo("capa")).toBe(true)
+    expect(tieneDibujo("palabra-sin-dibujo")).toBe(false)
+    expect(rutaDibujo("palabra-sin-dibujo")).toBeNull()
     // No confunde propiedades del objeto con palabras.
     expect(tieneDibujo("toString")).toBe(false)
   })
 
   it("las palabras de a_generar no tienen dibujo", () => {
-    expect(PALABRAS_SIN_DIBUJO.length).toBeGreaterThan(0)
+    // Hoy a_generar está vacío: todas las palabras de los bancos tienen dibujo.
     for (const p of PALABRAS_SIN_DIBUJO) expect(tieneDibujo(p), p).toBe(false)
   })
 
@@ -129,16 +130,8 @@ describe("itemsDe", () => {
     return faltan
   }
 
-  /*
-   * Detective de primario, grado 2: 11 de sus 17 ítems usan palabras que
-   * todavía no tienen dibujo (nota, capa, tapa, tela, cono). Hasta que
-   * lleguen, la partida se juega con los 6 que hay. Cuando estén los
-   * dibujos, esta prueba falla para recordar sacar la excepción.
-   */
-  const FALTAN_DIBUJOS = ["detective primario grado 2: 6 de 8"]
-
   it("cada grado de cada juego tiene al menos los ítems de una partida (contando solo los que tienen dibujo)", () => {
-    expect(gradosIncompletos(false)).toEqual(FALTAN_DIBUJOS)
+    expect(gradosIncompletos(false)).toEqual([])
   })
 
   it("con los dibujos de a_generar, todos los grados llegan a una partida", () => {

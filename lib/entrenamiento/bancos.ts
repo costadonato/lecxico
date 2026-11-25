@@ -8,7 +8,7 @@
  * una partida.
  *
  * Un ítem que usa una palabra sin dibujo se descarta al armar la partida de
- * un juego con dibujos (hoy: las palabras de `a_generar`).
+ * un juego con dibujos (las palabras de `a_generar`; hoy no hay ninguna).
  */
 
 import datos from "@/lib/entrenamiento/bancos.json"
