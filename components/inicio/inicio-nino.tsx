@@ -18,6 +18,8 @@ export interface TarjetaInicio {
   href: string
   icono: LucideIcon
   tono: TonoTarjeta
+  /** Función que todavía no está: chip "Próximamente", sin enlace (solo el inicio del profesional). */
+  proximamente?: boolean
 }
 
 /* Zona ilustrada de cada tarjeta (color fuerte) y color del ícono. */

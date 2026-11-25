@@ -2,7 +2,9 @@
 
 import { ArrowRight } from "lucide-react"
 import { AppHeader } from "@/components/app-header"
+import { ChipEnDesarrollo } from "@/components/chip-en-desarrollo"
 import { FondoDecorado } from "@/components/fondo-decorado"
+import { ActividadReciente } from "@/components/inicio/actividad-reciente"
 import type { TarjetaInicio, TonoTarjeta } from "@/components/inicio/inicio-nino"
 import { EntradaPagina } from "@/components/motion/entrada-pagina"
 import { ItemCascada, ListaCascada } from "@/components/motion/lista-cascada"
@@ -10,17 +12,19 @@ import { LumoCara } from "@/components/personajes/lumo-cara"
 import { GloboDialogo, Personaje } from "@/components/personajes/personaje"
 import { cn } from "@/lib/utils"
 
-const ESTILO_PRO: Record<TonoTarjeta, { icono: string; borde: string }> = {
-  rojo: { icono: "bg-rojo-suave text-rojo-fuerte", borde: "hover:border-rojo/35" },
-  celeste: { icono: "bg-celeste-suave text-celeste-fuerte", borde: "hover:border-celeste/60" },
-  sol: { icono: "bg-sol-suave text-sol-fuerte", borde: "hover:border-sol/70" },
-  menta: { icono: "bg-menta-suave text-menta-fuerte", borde: "hover:border-menta/60" },
-  lavanda: { icono: "bg-lavanda-suave text-lavanda-fuerte", borde: "hover:border-lavanda/60" },
+const ICONO_PRO: Record<TonoTarjeta, string> = {
+  rojo: "bg-rojo-suave text-rojo-fuerte",
+  celeste: "bg-celeste-suave text-celeste-fuerte",
+  sol: "bg-sol-suave text-sol-fuerte",
+  menta: "bg-menta-suave text-menta-fuerte",
+  lavanda: "bg-lavanda-suave text-lavanda-fuerte",
 }
 
 /**
- * Inicio del profesional: sereno y ordenado. Lumo, su asistente, lo saluda
- * desde un panel; las opciones son tarjetas sobrias que se elevan apenas.
+ * Inicio del profesional: sereno y ordenado, sobre el fondo rojizo. Arriba,
+ * el botón de actividad reciente; Lumo, su asistente, lo saluda desde un
+ * panel de vidrio; las opciones son tarjetas de vidrio del mismo alto que se
+ * elevan apenas. Una tarjeta "proximamente" no es clickeable.
  */
 export function InicioProfesional({
   nombre,
@@ -37,8 +41,10 @@ export function InicioProfesional({
       <AppHeader profile={{ nombre, rol: "profesional" }} />
 
       <main className="container mx-auto max-w-5xl px-4">
-        <EntradaPagina className="mt-8 sm:mt-12">
-          <section className="relative overflow-hidden rounded-[2rem] border border-border/80 bg-card shadow-suave">
+        <ActividadReciente className="mt-[18px]" />
+
+        <EntradaPagina className="mt-5">
+          <section className="vidrio-saludo relative overflow-hidden rounded-[2rem]">
             <div aria-hidden="true" className="textura-cuadricula absolute inset-0 opacity-60 [mask-image:linear-gradient(to_left,black,transparent_70%)]" />
             <div className="relative grid items-center gap-6 p-6 sm:grid-cols-[auto_1fr] sm:p-8 md:grid-cols-[auto_1fr_auto]">
               <div className="grid size-24 place-items-center rounded-[1.75rem] bg-pantalla shadow-brillo-celeste sm:size-28">
@@ -69,44 +75,79 @@ export function InicioProfesional({
         <ListaCascada
           retraso={0.3}
           paso={0.1}
-          // Dos columnas; con una cantidad impar, la última ocupa el ancho completo.
+          // Dos columnas (2 × 2 con cuatro tarjetas), todas del mismo alto; con
+          // una cantidad impar, la última ocupa el ancho completo. En celular,
+          // una columna y cada tarjeta con su alto (si no, todas tomarían el
+          // de "Evaluación de indicadores de dislexia", que ocupa cinco renglones).
           className={cn(
-            "mt-8 grid grid-cols-1 gap-5",
+            "mt-8 grid grid-cols-1 gap-5 md:auto-rows-fr",
             tarjetas.length > 1 && "md:grid-cols-2 md:[&>*:last-child:nth-child(odd)]:col-span-2",
           )}
         >
-          {tarjetas.map((t) => {
-            const estilo = ESTILO_PRO[t.tono]
-            const Icono = t.icono
-            return (
-              <ItemCascada key={t.title} elevar="suave" className="h-full">
-                <button
-                  type="button"
-                  onClick={() => onElegir(t.href)}
-                  className={cn(
-                    "group flex h-full w-full items-center gap-5 rounded-3xl border border-border/80 bg-card p-6 text-left shadow-suave transition-[border-color,box-shadow] hover:shadow-media focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 sm:p-7",
-                    estilo.borde,
-                  )}
-                >
-                  <span className={cn("grid size-16 shrink-0 place-items-center rounded-2xl", estilo.icono)}>
-                    <Icono className="size-8" />
-                  </span>
-                  <span className="min-w-0 flex-1 space-y-1">
-                    <span className="block text-xl font-bold leading-snug text-foreground">{t.title}</span>
-                    <span className="block text-base text-muted-foreground">{t.description}</span>
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="grid size-11 shrink-0 place-items-center rounded-full border border-border bg-background text-foreground transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground"
-                  >
-                    <ArrowRight className="size-5 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
-                  </span>
-                </button>
-              </ItemCascada>
-            )
-          })}
+          {tarjetas.map((t) => (
+            <ItemCascada key={t.title} elevar={t.proximamente ? false : "suave"} className="h-full">
+              {t.proximamente ? <TarjetaProximamente tarjeta={t} /> : <TarjetaOpcion tarjeta={t} onElegir={onElegir} />}
+            </ItemCascada>
+          ))}
         </ListaCascada>
       </main>
     </div>
+  )
+}
+
+const CLASE_TARJETA = "vidrio flex h-full w-full items-center gap-5 rounded-3xl p-6 text-left sm:p-7"
+
+function TarjetaOpcion({ tarjeta: t, onElegir }: { tarjeta: TarjetaInicio; onElegir: (href: string) => void }) {
+  const Icono = t.icono
+  return (
+    <button
+      type="button"
+      onClick={() => onElegir(t.href)}
+      className={cn(
+        CLASE_TARJETA,
+        "group transition-[border-color,box-shadow] hover:border-rojo/35 hover:shadow-media focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40",
+      )}
+    >
+      <span className={cn("grid size-16 shrink-0 place-items-center rounded-2xl", ICONO_PRO[t.tono])}>
+        <Icono className="size-8" />
+      </span>
+      <span className="min-w-0 flex-1 space-y-1">
+        <span className="block text-xl font-bold leading-snug text-foreground">{t.title}</span>
+        <span className="block text-base text-muted-foreground">{t.description}</span>
+      </span>
+      <span
+        aria-hidden="true"
+        className="grid size-11 shrink-0 place-items-center rounded-full border border-white/80 bg-white/70 text-foreground transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground"
+      >
+        <ArrowRight className="size-5 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
+      </span>
+    </button>
+  )
+}
+
+/**
+ * Función que todavía no está (Tareas, hasta S15): se puede enfocar y la lee
+ * el lector de pantalla, pero no hace nada. Ícono y título un poco atenuados
+ * (con contraste AA) y sin flecha.
+ */
+function TarjetaProximamente({ tarjeta: t }: { tarjeta: TarjetaInicio }) {
+  const Icono = t.icono
+  return (
+    <button
+      type="button"
+      aria-disabled="true"
+      className={cn(CLASE_TARJETA, "cursor-default focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40")}
+    >
+      <span className={cn("grid size-16 shrink-0 place-items-center rounded-2xl opacity-75", ICONO_PRO[t.tono])}>
+        <Icono className="size-8" />
+      </span>
+      <span className="min-w-0 flex-1 space-y-1">
+        <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span className="text-xl font-bold leading-snug text-foreground/80">{t.title}</span>
+          <ChipEnDesarrollo texto="Próximamente" />
+        </span>
+        <span className="block text-base text-muted-foreground">{t.description}</span>
+      </span>
+    </button>
   )
 }
