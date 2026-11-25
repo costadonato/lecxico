@@ -9,13 +9,13 @@ import { Button } from "@/components/ui/button"
 import { Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { EstadoVacio } from "@/components/estados"
 import { Iniciales } from "@/components/iniciales"
-import { BarraPorcentaje } from "@/components/motion/barra-porcentaje"
 import { ItemCascada, ListaCascada } from "@/components/motion/lista-cascada"
 import { NumeroAnimado } from "@/components/motion/numero-animado"
 import { PaginaApp } from "@/components/pagina-app"
 import { CuerpoTablaAnimado, FilaTablaAnimada } from "@/components/tabla-animada"
 import { ConfirmarDialog, type Confirmacion } from "@/components/confirmar-dialog"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
+import { FranjasRecomendacion } from "@/components/ninos/franjas-recomendacion"
 import { CargandoSeccion, SinAccesoNino } from "@/components/ninos/piezas-detalle"
 import { Seccion } from "@/components/seccion"
 import { HistorialEvaluaciones } from "@/components/test/historial-evaluaciones"
@@ -23,9 +23,9 @@ import { usePerfilPagina } from "@/lib/auth/use-perfil-pagina"
 import { calcularEdad, formatearFecha, textoEdad } from "@/lib/fechas"
 import { ORIGEN_CORTO, nombreJuego } from "@/lib/entrenamiento/presentacion"
 import { estiloNivel } from "@/lib/niveles"
-import { cargarDetalleNino, type DetalleNino, type PartidaHistorial, type TestConBloques } from "@/lib/ninos/detalle"
-import { bloquesMasDebiles, ordenRecomendacion, porcentajeBloque } from "@/lib/test/analisis"
-import { BLOQUE_NOMBRES, ETAPAS_ESCOLARES, NIVEL_LABEL, nivelParaEtapa, rutaDelTest } from "@/lib/test/bloques"
+import { cargarDetalleNino, type DetalleNino, type PartidaHistorial } from "@/lib/ninos/detalle"
+import { ETAPAS_ESCOLARES, NIVEL_LABEL, nivelParaEtapa, rutaDelTest } from "@/lib/test/bloques"
+import { ultimaEvaluacion } from "@/lib/test/franjas"
 import { desvincular } from "@/lib/vinculos"
 import { cn } from "@/lib/utils"
 
@@ -215,13 +215,13 @@ function AlcanceHistorial({ comparte }: { comparte: boolean }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Recomendación (última evaluación visible)                           */
+/*  Franjas y recomendación (última evaluación visible, S11)            */
 /* ------------------------------------------------------------------ */
 function Recomendacion({ datos }: { datos: DetalleNino }) {
-  const ultimo = datos.tests[0]
+  const ultimo = ultimaEvaluacion(datos.tests)
 
   return (
-    <Seccion icono={<Lightbulb />} tono="sol" titulo="Recomendación">
+    <Seccion icono={<Lightbulb />} tono="sol" titulo="Franjas y recomendación">
       {!ultimo ? (
         <EstadoVacio
           compacto
@@ -233,52 +233,9 @@ function Recomendacion({ datos }: { datos: DetalleNino }) {
           }
         />
       ) : (
-        <ListaRecomendacion test={ultimo} />
+        <FranjasRecomendacion test={ultimo} etapa={datos.nino.etapa_escolar} />
       )}
     </Seccion>
-  )
-}
-
-function ListaRecomendacion({ test }: { test: TestConBloques }) {
-  const ordenados = ordenRecomendacion(test.bloques)
-  const prioritarios = new Set(bloquesMasDebiles(test.bloques).map((b) => b.bloque_codigo))
-
-  return (
-    <div className="space-y-4">
-      <p className="text-base text-muted-foreground">
-        Según la evaluación del {formatearFecha(test.fecha)} (Nivel {NIVEL_LABEL[test.nivel]}). Los bloques van de menor a
-        mayor porcentaje de acierto.
-      </p>
-      <ListaCascada as="ul" className="space-y-3">
-        {ordenados.map((b, i) => {
-          const pct = porcentajeBloque(b.correctas, b.total)
-          const primero = prioritarios.has(b.bloque_codigo)
-          return (
-            <ItemCascada
-              as="li"
-              key={b.bloque_codigo}
-              className={cn(
-                "rounded-2xl border p-4",
-                primero ? "border-rojo/30 bg-rojo-suave/50" : "border-border/80 bg-background/60",
-              )}
-            >
-              <div className="mb-2.5 flex items-center justify-between gap-3">
-                <span className="flex flex-wrap items-center gap-2 font-semibold">
-                  {BLOQUE_NOMBRES[b.bloque_codigo]}
-                  {primero && <Badge variant="destructive">Practicar primero</Badge>}
-                </span>
-                <NumeroAnimado valor={pct} sufijo="%" className={cn("text-lg font-bold", estiloNivel(pct).texto)} />
-              </div>
-              <BarraPorcentaje valor={pct} className="h-3" retraso={i * 0.08} />
-            </ItemCascada>
-          )
-        })}
-      </ListaCascada>
-      {prioritarios.size === 0 && <p className="text-base text-muted-foreground">En esa evaluación respondió bien todos los bloques.</p>}
-      <p className="text-sm text-muted-foreground">
-        Es una orientación a partir de la última evaluación: vos decidís qué trabajar con el niño.
-      </p>
-    </div>
   )
 }
 

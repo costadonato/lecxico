@@ -1,7 +1,7 @@
 /**
  * Análisis de los resultados por bloque de un test. Funciones puras (sin
- * acceso a la base): las usan la pantalla final del test, el detalle del
- * niño y el detalle de un test.
+ * acceso a la base): las usan la pantalla final del test, el historial y el
+ * detalle de un test.
  *
  * Siempre se compara por porcentaje de acierto (correctas / total), nunca
  * por cantidad de correctas: cada bloque tiene una cantidad distinta de
@@ -9,8 +9,8 @@
  * para que 2/3 y 67/100 no cuenten como empate.
  *
  * Denominación rápida se mide por tiempo y errores, no por porcentaje: queda
- * fuera del porcentaje general, de "X de Y respuestas correctas", de los
- * bloques con más errores y de la recomendación. Se excluye por código de
+ * fuera del porcentaje general, de "X de Y respuestas correctas" y de los
+ * bloques con más errores. La recomendación usa franjas (lib/test/franjas.ts). Se excluye por código de
  * bloque (no por tener tiempo), así vale igual para las evaluaciones
  * anteriores a S9. En la base se siguen guardando sus correctas y total.
  */
@@ -73,13 +73,4 @@ export function bloquesMasDebiles<T extends BloqueResultado>(bloques: T[]): T[] 
   if (lista.length === 0 || lista.every((b) => b.correctas >= b.total)) return []
   const minimo = lista.reduce((min, b) => (compararAcierto(b, min) < 0 ? b : min))
   return lista.filter((b) => compararAcierto(b, minimo) === 0).sort((a, b) => a.orden - b.orden)
-}
-
-/**
- * Todos los bloques de menor a mayor porcentaje de acierto (primero lo que
- * más necesita práctica); los empates, por orden en el test. Sin
- * denominación rápida.
- */
-export function ordenRecomendacion<T extends BloqueResultado>(bloques: T[]): T[] {
-  return [...evaluables(bloques)].sort((a, b) => compararAcierto(a, b) || a.orden - b.orden)
 }

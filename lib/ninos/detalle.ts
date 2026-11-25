@@ -182,6 +182,8 @@ export async function cargarNinoParaEntrenar(ninoId: string): Promise<ResultadoC
 export interface TestDeNino {
   perfil: Pick<Profile, "id" | "nombre" | "apellido">
   test: TestConBloques
+  /** Etapa escolar ACTUAL del niño: da el grado de las franjas (S11); la tabla `test` no la guarda. */
+  etapa_escolar: Nino["etapa_escolar"] | null
 }
 
 /**
@@ -204,18 +206,21 @@ export async function cargarTestDeNino(ninoId: string, testId: string): Promise<
   lanzar(error)
   if (!test) return { estado: "sin-acceso" }
 
-  const { data: bloques, error: bloquesError } = await supabase
-    .from("test_bloque_resultado")
-    .select("*")
-    .eq("test_id", testId)
-    .order("orden", { ascending: true })
-  lanzar(bloquesError)
+  // La etapa sale de `ninos` con la RLS de siempre (profesional con vínculo activo).
+  const [bloquesRes, ninoRes] = await Promise.all([
+    supabase.from("test_bloque_resultado").select("*").eq("test_id", testId).order("orden", { ascending: true }),
+    supabase.from("ninos").select("etapa_escolar").eq("profile_id", ninoId).maybeSingle<Pick<Nino, "etapa_escolar">>(),
+  ])
+  lanzar(bloquesRes.error)
+  lanzar(ninoRes.error)
+  const bloques = bloquesRes.data
 
   return {
     estado: "listo",
     datos: {
       perfil: { id: perfil.id, nombre: perfil.nombre, apellido: perfil.apellido },
       test: { ...test, bloques: (bloques ?? []) as TestBloqueResultado[] },
+      etapa_escolar: ninoRes.data?.etapa_escolar ?? null,
     },
   }
 }

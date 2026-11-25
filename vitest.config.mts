@@ -23,6 +23,7 @@ export default defineConfig({
         "lib/test/bloques.ts",
         "lib/test/denominacion.ts",
         "lib/test/denominacion-config.ts",
+        "lib/test/franjas.ts",
         "lib/auth/perfil.ts",
         "lib/tutor/errores.ts",
         "lib/tutor/etapa.ts",

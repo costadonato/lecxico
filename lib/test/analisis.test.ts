@@ -4,7 +4,6 @@ import {
   bloquesMasDebiles,
   bloquesPorcentuales,
   esBloquePorcentual,
-  ordenRecomendacion,
   porcentajeBloque,
   resumenPorcentual,
   type BloqueResultado,
@@ -117,69 +116,6 @@ describe("bloquesMasDebiles", () => {
   })
 })
 
-describe("ordenRecomendacion", () => {
-  it("ordena de menor a mayor acierto", () => {
-    const bloques = [
-      bloque("discriminacion_auditiva", 1, 5, 5),
-      bloque("conciencia_fonologica", 2, 1, 4),
-      bloque("conciencia_silabica", 3, 3, 6),
-      bloque("memoria_fonologica", 4, 0, 3),
-    ]
-    expect(codigos(ordenRecomendacion(bloques))).toEqual([
-      "memoria_fonologica",
-      "conciencia_fonologica",
-      "conciencia_silabica",
-      "discriminacion_auditiva",
-    ])
-  })
-
-  it("compara por porcentaje y no por cantidad de correctas", () => {
-    // 3/10 (30 %) tiene más correctas que 2/4 (50 %), pero menor acierto.
-    const bloques = [bloque("discriminacion_auditiva", 1, 2, 4), bloque("conciencia_fonologica", 2, 3, 10)]
-    expect(codigos(ordenRecomendacion(bloques))).toEqual(["conciencia_fonologica", "discriminacion_auditiva"])
-  })
-
-  it("desempata por el orden del test", () => {
-    const bloques = [
-      bloque("conciencia_silabica", 3, 2, 4),
-      bloque("memoria_fonologica", 4, 4, 4),
-      bloque("discriminacion_auditiva", 1, 3, 6),
-      bloque("conciencia_fonologica", 2, 1, 2),
-    ]
-    expect(codigos(ordenRecomendacion(bloques))).toEqual([
-      "discriminacion_auditiva",
-      "conciencia_fonologica",
-      "conciencia_silabica",
-      "memoria_fonologica",
-    ])
-  })
-
-  it("excluye los bloques sin ejercicios", () => {
-    const bloques = [
-      bloque("discriminacion_auditiva", 1, 0, 0),
-      bloque("conciencia_fonologica", 2, 2, 4),
-      bloque("conciencia_silabica", 3, 1, 4),
-    ]
-    expect(codigos(ordenRecomendacion(bloques))).toEqual(["conciencia_silabica", "conciencia_fonologica"])
-  })
-
-  it("devuelve una lista vacía si no hay bloques", () => {
-    expect(ordenRecomendacion([])).toEqual([])
-  })
-
-  it("no modifica el arreglo recibido", () => {
-    const bloques = [
-      bloque("conciencia_silabica", 3, 4, 4),
-      bloque("discriminacion_auditiva", 1, 0, 0),
-      bloque("conciencia_fonologica", 2, 1, 4),
-    ]
-    const copia = structuredClone(bloques)
-    const resultado = ordenRecomendacion(bloques)
-    expect(bloques).toEqual(copia)
-    expect(resultado).not.toBe(bloques)
-  })
-})
-
 describe("bloques porcentuales (sin denominación rápida)", () => {
   // Denominación rápida con el formato nuevo (S9) y con el viejo (sin tiempo):
   // las dos se excluyen por código de bloque.
@@ -238,15 +174,5 @@ describe("bloques porcentuales (sin denominación rápida)", () => {
 
   it("bloquesMasDebiles da lista vacía si solo denominación rápida tiene errores", () => {
     expect(bloquesMasDebiles([bloque("discriminacion_auditiva", 1, 4, 4), denominacionNueva])).toEqual([])
-  })
-
-  it("ordenRecomendacion deja afuera denominación rápida", () => {
-    const bloques = [
-      bloque("discriminacion_auditiva", 1, 5, 5),
-      denominacionVieja,
-      bloque("conciencia_fonologica", 2, 1, 4),
-      denominacionNueva,
-    ]
-    expect(codigos(ordenRecomendacion(bloques))).toEqual(["conciencia_fonologica", "discriminacion_auditiva"])
   })
 })
