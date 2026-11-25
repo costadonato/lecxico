@@ -60,20 +60,42 @@ export function textoProgreso(unidad: string, actual: number, total: number): st
 /** Momento del juego que define la pose y la frase del personaje. */
 export type Momento = "consigna" | "lectura" | "pensando" | "acierto" | "reintento" | "respuesta" | "final"
 
-export const FRASES: Record<Momento, readonly string[]> = {
+/** Momentos con frases fijas. La del final depende del resultado (fraseFinal). */
+export type MomentoConFrases = Exclude<Momento, "final">
+
+export const FRASES: Record<MomentoConFrases, readonly string[]> = {
   consigna: ["¡Hola! Te explico cómo se juega.", "¡Vamos a jugar juntos!", "Escuchá bien y tocá «Comenzar»."],
   lectura: ["Leé con calma.", "Tomate tu tiempo.", "Leé despacito. Después te pregunto.", "Sin apuro: leé hasta el final."],
   pensando: ["Tomate tu tiempo.", "¿Cuál será?", "Pensalo con calma.", "Escuchá con atención."],
   acierto: ["¡Muy bien!", "¡Eso es!", "¡Genial!", "¡Bien hecho!", "¡Excelente!"],
   reintento: ["Casi. Probá otra vez.", "¡Uy! Probá de nuevo.", "Mmm, casi. ¡Otra vez!"],
   respuesta: ["Era esta. ¡Seguimos!", "Mirá, era esta. ¡Vamos con otra!", "Era esta. ¡La próxima sale!"],
-  final: ["¡Terminaste! ¡Qué buen trabajo!", "¡Lo hiciste genial!", "¡Llegaste al final! ¡Bravo!"],
 }
 
 /** Frase del momento; `n` (por ejemplo, el número de ronda) hace que varíe sin azar. */
-export function fraseDe(momento: Momento, n: number): string {
+export function fraseDe(momento: MomentoConFrases, n: number): string {
   const lista = FRASES[momento]
   return lista[((n % lista.length) + lista.length) % lista.length]
+}
+
+export interface FinalPartida {
+  frase: string
+  pose: "festejando" | "alentando"
+  animacion: "saltar" | "flotarSuave"
+}
+
+/**
+ * Lo que dice y hace el personaje al terminar la partida, según el
+ * porcentaje (porcentaje() de juegos.ts, entero de 0 a 100). El niño no ve
+ * el número: solo se usa para elegir la frase.
+ * - 80 o más: "¡Lo hiciste genial!", festejando y saltando.
+ * - De 40 a 79: "¡Lo hiciste bien!", festejando y flotando.
+ * - Menos de 40: "¡Podés hacerlo mejor!", alentando y flotando.
+ */
+export function fraseFinal(porcentaje: number): FinalPartida {
+  if (porcentaje >= 80) return { frase: "¡Lo hiciste genial!", pose: "festejando", animacion: "saltar" }
+  if (porcentaje >= 40) return { frase: "¡Lo hiciste bien!", pose: "festejando", animacion: "flotarSuave" }
+  return { frase: "¡Podés hacerlo mejor!", pose: "alentando", animacion: "flotarSuave" }
 }
 
 export const ORIGEN_LABEL: Record<Origen, string> = {
