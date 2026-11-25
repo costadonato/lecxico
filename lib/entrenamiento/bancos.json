@@ -7368,7 +7368,16 @@
   "termómetro": "/emoji/1f321.webp",
   "microscopio": "/emoji/1f52c.webp",
   "telescopio": "/emoji/1f52d.webp",
-  "moneda": "/emoji/1fa99.webp"
+  "moneda": "/emoji/1fa99.webp",
+  "capa": "/emoji/lx-capa.webp",
+  "tapa": "/emoji/lx-tapa.webp",
+  "cuna": "/emoji/lx-cuna.webp",
+  "cono": "/emoji/lx-cono.webp",
+  "goma": "/emoji/lx-goma.webp",
+  "tela": "/emoji/lx-tela.webp",
+  "ola": "/emoji/1f30a.webp",
+  "lana": "/emoji/1f9f6.webp",
+  "nota": "/emoji/1f3b5.webp"
  },
  "emojis": {
   "🕵️": "/emoji/1f575.webp",
@@ -7598,15 +7607,5 @@
   "🍑": "/emoji/1f351.webp",
   "🦈": "/emoji/1f988.webp"
  },
- "a_generar": {
-  "capa": "capa roja de superhéroe, sola, sin personaje",
-  "tapa": "tapa redonda de una olla, con manija",
-  "cuna": "cuna de bebé de madera",
-  "ola": "una ola de mar azul con espuma",
-  "lana": "ovillo de lana con una aguja de tejer",
-  "nota": "nota musical negra, grande",
-  "tela": "rollo de tela de colores",
-  "cono": "cono naranja de tránsito con franjas blancas",
-  "goma": "goma de borrar rosa y celeste"
- }
+ "a_generar": {}
 }
