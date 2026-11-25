@@ -22,28 +22,34 @@ const clave = (franja: Franja | null): ClaveEstilo => franja ?? "sin_franja"
  */
 export const ESTILO_FRANJA: Record<
   ClaveEstilo,
-  { badge: "menta" | "sol" | "rojo" | "neutro"; barra: string; texto: string; destacado: string; contenedor: string }
+  {
+    badge: "menta" | "sol" | "rojo" | "neutro";
+    barra: string;
+    texto: string;
+    destacado: string;
+    contenedor: string;
+  }
 > = {
   correcto: {
     badge: "menta",
     barra: ESTILO_NIVEL.alto.barra,
     texto: ESTILO_NIVEL.alto.texto,
     destacado: "",
-    contenedor: "border-menta/25 bg-menta-suave/35",
+    contenedor: "border-menta/40 bg-menta/15",
   },
   intermedio: {
     badge: "sol",
     barra: ESTILO_NIVEL.medio.barra,
     texto: ESTILO_NIVEL.medio.texto,
     destacado: "border-sol/50 bg-sol-suave/50",
-    contenedor: "border-sol/30 bg-sol-suave/35",
+    contenedor: "border-sol/50 bg-sol/20",
   },
   a_observar: {
     badge: "rojo",
     barra: ESTILO_NIVEL.critico.barra,
     texto: ESTILO_NIVEL.critico.texto,
     destacado: "border-rojo/30 bg-rojo-suave/50",
-    contenedor: "border-rojo/20 bg-rojo-suave/35",
+    contenedor: "border-rojo/30 bg-rojo/10",
   },
   sin_franja: {
     badge: "neutro",
@@ -52,7 +58,7 @@ export const ESTILO_FRANJA: Record<
     destacado: "",
     contenedor: "border-border/70 bg-muted/40",
   },
-}
+};
 
 export const estiloFranja = (franja: Franja | null) => ESTILO_FRANJA[clave(franja)]
 
