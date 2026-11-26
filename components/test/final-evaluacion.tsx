@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
 import { EntradaPagina } from "@/components/motion/entrada-pagina"
 import { ResultadosEvaluacion, type BloqueConMedicion } from "@/components/test/resultados-evaluacion"
-import type { Nivel } from "@/lib/test/bloques"
+import type { EtapaEscolar, Nivel } from "@/lib/test/bloques"
 
 /**
  * Pantalla final de la evaluación: resultados, estado del guardado (con
@@ -16,6 +16,7 @@ export function FinalEvaluacion({
   nivel,
   porcentajeTotal,
   bloques,
+  etapaEscolar,
   guardando,
   guardado,
   errorGuardado,
@@ -27,6 +28,8 @@ export function FinalEvaluacion({
   nivel: Nivel
   porcentajeTotal: number
   bloques: BloqueConMedicion[]
+  /** Etapa escolar actual del niño (grado de las franjas). */
+  etapaEscolar: EtapaEscolar
   guardando: boolean
   guardado: boolean
   errorGuardado: string | null
@@ -42,7 +45,7 @@ export function FinalEvaluacion({
           Resultados de la evaluación de indicadores de dislexia
         </h2>
 
-        <ResultadosEvaluacion nivel={nivel} porcentajeTotal={porcentajeTotal} bloques={bloques} />
+        <ResultadosEvaluacion nivel={nivel} porcentajeTotal={porcentajeTotal} bloques={bloques} etapaEscolar={etapaEscolar} />
 
         {/* Estado del guardado */}
         {guardando && (

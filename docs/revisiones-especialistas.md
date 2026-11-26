@@ -17,6 +17,7 @@ Especialistas asesoras: Lic. Mónica Chávez y Lic. Melisa Julieta Spillmann (ps
 | 23/10/2026 | Equipo, director | Cambios de requerimientos | Se congelan los requerimientos en la definición vigente; los cambios posteriores pasan a trabajo futuro | Propuesta |
 | 28/10/2026 | Equipo, director | Definición del proyecto | El tutor accede por un informe a pedido por correo; los cortes de las franjas se fijan por revisión bibliográfica, provisorios | S11, S17 |
 | 19/11/2026 | Equipo, Lic. Chávez | Validación del mockup de entrenamientos: mapa de juegos y diseño de cada juego | Se aprobó el mapa de juegos. Observaciones generales y cambios por juego en "Reunión del 19/11/2026". La especialista se lleva el mockup para revisarlo y envía correcciones específicas hasta el 25 o 26/11. | S12, S13a, S13b, S14 |
+| 23/11/2026 | Equipo, director (revisión bibliográfica, sin especialistas) | Valores de corte de las franjas | Se fijaron dos cortes por bloque y nivel; ver docs/valores-de-corte.md | S11 |
 | 26/11/2026 | | Juegos del entrenamiento | | S13, S14 |
 | 03/12/2026 | | Juegos del entrenamiento | | S14 |
 

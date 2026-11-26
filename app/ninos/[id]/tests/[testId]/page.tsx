@@ -71,6 +71,7 @@ export default function DetalleTestPage() {
               nivel={carga.datos.test.nivel}
               porcentajeTotal={carga.datos.test.porcentaje_total}
               bloques={carga.datos.test.bloques}
+              etapaEscolar={carga.datos.etapa_escolar}
             />
           </div>
         )

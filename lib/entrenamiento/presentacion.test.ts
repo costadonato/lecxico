@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  juegosPorFranja,
+  ORDEN_GRUPOS_FRANJA,
   FRASES,
   ORIGEN_CORTO,
   ORIGEN_LABEL,
@@ -42,6 +44,96 @@ describe("juegosPorBloque", () => {
     const visual = grupos.find((g) => g.bloque === "reconocimiento_visual")!
     expect(visual.juegos.map((j) => j.codigo)).toEqual(["caza", "memopalabras", "lluvia"])
     expect(grupos.map((g) => g.bloque)).toEqual(BLOQUES_POR_NIVEL.primario)
+  })
+})
+
+describe("juegosPorFranja", () => {
+  /** Grupos resumidos: franja y códigos de juego. */
+  const resumen = (grupos: ReturnType<typeof juegosPorFranja>) =>
+    grupos.map((g) => [g.franja, g.juegos.map((j) => j.juego.codigo)])
+
+  it("devuelve los grupos en orden fijo: a observar, intermedio, correcto y sin franja", () => {
+    const grupos = juegosPorFranja(
+      "inicial",
+      {
+        discriminacion_auditiva: "correcto",
+        conciencia_fonologica: "intermedio",
+        conciencia_silabica: "a_observar",
+        memoria_fonologica: "correcto",
+        denominacion_rapida: null,
+      },
+      { incluirSoloConsulta: true },
+    )
+    expect(grupos.map((g) => g.franja)).toEqual(ORDEN_GRUPOS_FRANJA)
+    expect(resumen(grupos)).toEqual([
+      ["a_observar", ["palmas"]],
+      ["intermedio", ["rima"]],
+      ["correcto", ["detective", "memotono"]],
+      [null, ["nombra", "tocalo", "ojo_lince", "lluvia"]],
+    ])
+  })
+
+  it("dentro de un grupo, bloques en el orden del test y el principal primero, cada juego con su bloque", () => {
+    // Denominación rápida (bloque 9) y correspondencia sonido-letra (bloque 6), los dos a observar.
+    const grupos = juegosPorFranja(
+      "primario",
+      { denominacion_rapida: "a_observar", correspondencia_sonido_letra: "a_observar" },
+      { incluirSoloConsulta: false },
+    )
+    const observar = grupos.find((g) => g.franja === "a_observar")!
+    expect(observar.juegos.map((j) => [j.bloque, j.juego.codigo])).toEqual([
+      ["correspondencia_sonido_letra", "eco"],
+      ["correspondencia_sonido_letra", "ojo_lince"],
+      ["denominacion_rapida", "tocalo"],
+    ])
+  })
+
+  it("un bloque del nivel sin resultado en la evaluación cae en «sin franja»", () => {
+    // Evaluación vieja de primario: sin denominación rápida.
+    const franjas = Object.fromEntries(
+      BLOQUES_POR_NIVEL.primario.filter((b) => b !== "denominacion_rapida").map((b) => [b, "correcto" as const]),
+    )
+    const grupos = juegosPorFranja("primario", franjas, { incluirSoloConsulta: true })
+    expect(resumen(grupos).at(-1)).toEqual([null, ["nombra", "tocalo"]])
+  })
+
+  it("omite los grupos vacíos", () => {
+    const grupos = juegosPorFranja(
+      "inicial",
+      {
+        discriminacion_auditiva: "intermedio",
+        conciencia_fonologica: "intermedio",
+        conciencia_silabica: "intermedio",
+        memoria_fonologica: "intermedio",
+        denominacion_rapida: null,
+      },
+      { incluirSoloConsulta: false },
+    )
+    expect(grupos.map((g) => g.franja)).toEqual(["intermedio", null])
+    expect(grupos.every((g) => g.juegos.length > 0)).toBe(true)
+  })
+
+  it("con todos los bloques en correcto hay un solo grupo, con todos los juegos", () => {
+    const franjas = Object.fromEntries(BLOQUES_POR_NIVEL.primario.map((b) => [b, "correcto" as const]))
+    const grupos = juegosPorFranja("primario", franjas, { incluirSoloConsulta: true })
+    expect(grupos.map((g) => g.franja)).toEqual(["correcto"])
+    const todos = juegosPorBloque("primario", { incluirSoloConsulta: true }).flatMap((g) => g.juegos)
+    expect(grupos[0].juegos.map((j) => j.juego)).toEqual(todos)
+  })
+
+  it("incluye o no los juegos de solo consulta, como juegosPorBloque", () => {
+    const franjas = { denominacion_rapida: "intermedio" as const }
+    const codigos = (incluir: boolean) =>
+      juegosPorFranja("inicial", franjas, { incluirSoloConsulta: incluir })
+        .find((g) => g.franja === "intermedio")!
+        .juegos.map((j) => j.juego.codigo)
+    expect(codigos(true)).toEqual(["nombra", "tocalo", "ojo_lince", "lluvia"])
+    expect(codigos(false)).toEqual(["tocalo", "ojo_lince", "lluvia"])
+  })
+
+  it("sin franjas, todos los juegos quedan sin franja", () => {
+    const grupos = juegosPorFranja("inicial", {}, { incluirSoloConsulta: false })
+    expect(grupos.map((g) => g.franja)).toEqual([null])
   })
 })
 

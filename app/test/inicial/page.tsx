@@ -401,6 +401,7 @@ function TestInicial() {
           nivel="inicial"
           porcentajeTotal={totalPct}
           bloques={bloquesResultado}
+          etapaEscolar={acceso.etapaEscolar}
           guardando={saving}
           guardado={saved}
           errorGuardado={saveError}

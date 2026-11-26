@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { NIVEL_LABEL, nivelParaEtapa, type Nivel } from "@/lib/test/bloques"
+import { NIVEL_LABEL, nivelParaEtapa, type EtapaEscolar, type Nivel } from "@/lib/test/bloques"
 
 export const MENSAJE_SOLO_PROFESIONAL =
   "La evaluación se inicia desde la cuenta de un profesional, seleccionando un niño."
@@ -12,7 +12,8 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
 export type AccesoTest =
   | { estado: "cargando" }
-  | { estado: "permitido"; ninoId: string; nino: { nombre: string; apellido: string } }
+  /** `etapaEscolar`: la actual del niño, para el grado de las franjas en la pantalla final (S11). */
+  | { estado: "permitido"; ninoId: string; nino: { nombre: string; apellido: string }; etapaEscolar: EtapaEscolar }
   /** `elegirNino`: el usuario es profesional; se le ofrece volver a /test a elegir otro. */
   | { estado: "denegado"; motivo: string; elegirNino: boolean }
 
@@ -68,6 +69,7 @@ export function useAccesoTest(nivel: Nivel): AccesoTest {
         estado: "permitido",
         ninoId: ninoParam,
         nino: { nombre: perfilNino?.nombre ?? "", apellido: perfilNino?.apellido ?? "" },
+        etapaEscolar: nino.etapa_escolar,
       })
     }
 

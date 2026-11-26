@@ -10,10 +10,12 @@ import { BarraPorcentaje } from "@/components/motion/barra-porcentaje"
 import { NumeroAnimado } from "@/components/motion/numero-animado"
 import { EASE_SUAVE } from "@/components/motion/transiciones"
 import { CuerpoTablaAnimado, FilaTablaAnimada } from "@/components/tabla-animada"
+import { ChipFranja, LeyendasFranjas, estiloFranja } from "@/components/test/franja"
 import { estiloNivel } from "@/lib/niveles"
 import { porcentajeBloque, resumenPorcentual, type BloqueResultado } from "@/lib/test/analisis"
-import { BLOQUE_NOMBRES, NIVEL_LABEL, type Nivel } from "@/lib/test/bloques"
+import { BLOQUE_NOMBRES, NIVEL_LABEL, type EtapaEscolar, type Nivel } from "@/lib/test/bloques"
 import { formatearTiempo } from "@/lib/test/denominacion"
+import { franjasDeEvaluacion, gradoParaFranja, type Franja } from "@/lib/test/franjas"
 import type { DetalleEjercicioDenominacion } from "@/lib/types/database"
 import { cn } from "@/lib/utils"
 
@@ -34,6 +36,13 @@ import { cn } from "@/lib/utils"
  * se muestran en lugar de la barra de porcentaje, y un botón "+" despliega
  * una sub-fila por ejercicio (leída de `detalle`). Las evaluaciones
  * anteriores (sin tiempo ni detalle) se muestran como cualquier otro bloque.
+ *
+ * Franjas (S11): cada fila lleva el chip de su franja (lib/test/franjas.ts) y
+ * el número y la barra toman el color de esa franja, no la escala general
+ * 80/60/40 (si no, 2 de 3 en conciencia fonológica de inicial se vería en
+ * amarillo y diría "Correcto"). El anillo del porcentaje general no cambia.
+ * Los cortes que dependen del grado usan la etapa escolar ACTUAL del niño
+ * (`etapaEscolar`): la tabla `test` no la guarda.
  */
 export type BloqueConMedicion = BloqueResultado & {
   /** Solo denominación rápida; null o ausente en el resto y en evaluaciones viejas. */
@@ -50,12 +59,17 @@ export function ResultadosEvaluacion({
   nivel,
   porcentajeTotal,
   bloques,
+  etapaEscolar,
 }: {
   nivel: Nivel
   porcentajeTotal: number
   bloques: BloqueConMedicion[]
+  /** Etapa escolar actual del niño, para el grado de las franjas; sin ella esos bloques quedan sin franja. */
+  etapaEscolar: EtapaEscolar | null
 }) {
-  const filas = [...bloques].sort((a, b) => a.orden - b.orden)
+  const grado = gradoParaFranja(nivel, etapaEscolar)
+  // En el orden del test, cada bloque con su franja (o null).
+  const filas = franjasDeEvaluacion(nivel, bloques, grado)
   // "X de Y respuestas correctas" sin denominación rápida (se mide por tiempo y errores).
   const { correctas, total } = resumenPorcentual(filas)
   const conMedicion = filas.some(tieneMedicion)
@@ -84,12 +98,14 @@ export function ResultadosEvaluacion({
               <TableHead>Bloque</TableHead>
               <TableHead className="text-center">Correctas</TableHead>
               <TableHead>{conMedicion ? "Resultado" : "Porcentaje"}</TableHead>
+              <TableHead>Franja</TableHead>
             </TableRow>
           </TableHeader>
           <CuerpoTablaAnimado>
             {filas.map((b) => {
               if (tieneMedicion(b)) return <FilaDenominacion key={b.bloque_codigo} bloque={b} />
               const pct = porcentajeBloque(b.correctas, b.total)
+              const estilo = estiloFranja(b.franja)
               return (
                 <FilaTablaAnimada key={b.bloque_codigo}>
                   <TableCell data-label="Bloque" className="whitespace-normal font-semibold">
@@ -103,11 +119,12 @@ export function ResultadosEvaluacion({
                       <NumeroAnimado
                         valor={pct}
                         sufijo="%"
-                        className={cn("inline-block min-w-12 text-right font-bold", estiloNivel(pct).texto)}
+                        className={cn("inline-block min-w-12 text-right font-bold", estilo.texto)}
                       />
-                      <BarraPorcentaje valor={pct} className="w-28 max-md:w-20" />
+                      <BarraPorcentaje valor={pct} className="w-28 max-md:w-20" claseRelleno={estilo.barra} />
                     </span>
                   </TableCell>
+                  <CeldaFranja franja={b.franja} />
                 </FilaTablaAnimada>
               )
             })}
@@ -115,11 +132,22 @@ export function ResultadosEvaluacion({
         </Table>
       </Card>
 
+      <LeyendasFranjas nivel={nivel} bloques={filas} grado={grado} />
+
       <p className="flex items-start justify-center gap-2 rounded-2xl bg-muted/70 px-4 py-3 text-center text-base text-muted-foreground">
         <Info className="mt-1 size-4 shrink-0" />
         Esta evaluación es orientativa y no reemplaza un diagnóstico profesional.
       </p>
     </div>
+  )
+}
+
+/** Celda con el chip de la franja del bloque. */
+function CeldaFranja({ franja }: { franja: Franja | null }) {
+  return (
+    <TableCell data-label="Franja">
+      <ChipFranja franja={franja} className="text-sm" />
+    </TableCell>
   )
 }
 
@@ -145,7 +173,11 @@ function TiempoYErrores({ tiempoMs, errores }: { tiempoMs: number; errores: numb
  * una sub-fila por ejercicio. Con reducir movimiento, MotionConfig
  * (ProveedorMovimiento) deja solo el fundido, sin desplazamiento.
  */
-function FilaDenominacion({ bloque }: { bloque: BloqueConMedicion & { tiempo_ms: number; errores: number } }) {
+function FilaDenominacion({
+  bloque,
+}: {
+  bloque: BloqueConMedicion & { tiempo_ms: number; errores: number; franja: Franja | null }
+}) {
   const [abierto, setAbierto] = useState(false)
   const base = useId()
   const detalle = bloque.detalle ?? []
@@ -177,6 +209,7 @@ function FilaDenominacion({ bloque }: { bloque: BloqueConMedicion & { tiempo_ms:
             )}
           </span>
         </TableCell>
+        <CeldaFranja franja={bloque.franja} />
       </FilaTablaAnimada>
 
       <AnimatePresence initial={false}>
@@ -201,6 +234,8 @@ function FilaDenominacion({ bloque }: { bloque: BloqueConMedicion & { tiempo_ms:
               <TableCell data-label="Tiempo y errores">
                 <TiempoYErrores tiempoMs={e.tiempo_ms} errores={e.errores} />
               </TableCell>
+              {/* La sub-fila por ejercicio no lleva franja (vacía: en celular no se muestra). */}
+              <TableCell />
             </motion.tr>
           ))}
       </AnimatePresence>

@@ -11,15 +11,19 @@ import { Destello, Estrella } from "@/components/fondo-decorado"
 import { RESORTE } from "@/components/motion/transiciones"
 import type { FichaJuego, Grado, Nivel } from "@/lib/entrenamiento/juegos"
 import { juegoDisponible, textoGradoBloqueado } from "@/lib/entrenamiento/presentacion"
+import { BLOQUE_NOMBRES } from "@/lib/test/bloques"
 import { cn } from "@/lib/utils"
 
 const GRADOS: Grado[] = [1, 2, 3]
 
 /**
  * Tarjeta de un juego en las áreas del entrenamiento: icono grande sobre el
- * color del bloque, nombre y los tres botones de grado. No lleva el nombre
- * del bloque: el niño no lo ve, y el profesional lo tiene en el título de
- * la sección.
+ * color del bloque, nombre y los tres botones de grado. Por defecto no lleva
+ * el nombre del bloque: el niño no lo ve, y en el catálogo del profesional
+ * está en el título de la sección. Con `mostrarBloque` (solo profesional:
+ * la vista por franja de la recomendación, S11b, y las tareas de S15, donde
+ * se mezclan juegos de varios bloques) suma un chip con el nombre del bloque
+ * arriba del nombre del juego.
  *
  * - Niño: los grados no habilitados tienen candado y no inician el juego;
  *   en lugar de prohibir, un cartelito explica cómo desbloquearlos. El
@@ -35,6 +39,7 @@ export function TarjetaJuego({
   modo,
   habilitado,
   hrefGrado,
+  mostrarBloque = false,
 }: {
   juego: FichaJuego
   nivel: Nivel
@@ -42,6 +47,8 @@ export function TarjetaJuego({
   /** Grado habilitado en casa. */
   habilitado: Grado
   hrefGrado: (grado: Grado) => string
+  /** Chip con el nombre del bloque arriba del nombre (apagado por defecto; nunca para el niño). */
+  mostrarBloque?: boolean
 }) {
   const ficha = juego.niveles[nivel]
   if (!ficha) return null
@@ -77,6 +84,11 @@ export function TarjetaJuego({
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-5">
+        {mostrarBloque && (
+          <span className={cn("-mb-1 w-fit rounded-full px-3 py-0.5 text-sm font-semibold", color.chip)}>
+            {BLOQUE_NOMBRES[ficha.bloque]}
+          </span>
+        )}
         <h3 id={idTitulo} className="text-xl font-bold leading-snug text-foreground">
           {juego.nombre}
         </h3>
