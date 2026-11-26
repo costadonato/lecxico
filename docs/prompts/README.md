@@ -18,6 +18,12 @@ Sirve para dos cosas: que cualquiera de los dos pueda retomar un slice sabiendo 
 | `s13a-marco-entrenamiento.md` | S13a Marco del entrenamiento | Donato |
 | `s13a-ajustes.md` | S13a Marco del entrenamiento: ajustes después de la revisión | Donato |
 | `s13b-juegos.md` | S13b Juegos (segunda tanda) | Donato |
+| `s14a-juegos-principales.md` | S14a Juegos principales | Donato |
+| `s14b-juegos-complementarios.md` | S14b Juegos complementarios | Donato |
+| `estilo-profesional.md` | Estilo del profesional (PR #20) | Donato |
+| `ajustes-recorrido-entrenamiento.md` | Ajustes del recorrido (PR #22) | Donato |
 | `docs-proceso-scrum.md` | Documentación del proceso Scrum (sin slice) | Camila |
 
 Los prompts de los slices 1 a 5 están en el chat de Camila; si se recuperan, van con el nombre `s01-...` a `s05-...`.
+
+PR #21 (dibujos de Detective de sonidos) no tiene prompt guardado.
