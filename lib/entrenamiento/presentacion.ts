@@ -149,6 +149,16 @@ export const ORIGEN_CORTO: Record<Origen, string> = {
 }
 
 /**
+ * Tono de cada origen (variante del chip y color de las barras del
+ * seguimiento, S16): consulta en celeste, tarea en lavanda y práctica en menta.
+ */
+export const TONO_ORIGEN: Record<Origen, "celeste" | "lavanda" | "menta"> = {
+  consulta: "celeste",
+  tarea: "lavanda",
+  practica: "menta",
+}
+
+/**
  * Cartelito de un grado bloqueado, para el niño. Nunca menciona el 80 % ni
  * ningún porcentaje: el desbloqueo es un cálculo interno.
  */

@@ -1,11 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import dynamic from "next/dynamic"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { Dumbbell, Gamepad2, History, Lightbulb, User } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { EstadoVacio } from "@/components/estados"
 import { Iniciales } from "@/components/iniciales"
@@ -21,13 +23,20 @@ import { Seccion } from "@/components/seccion"
 import { HistorialEvaluaciones } from "@/components/test/historial-evaluaciones"
 import { usePerfilPagina } from "@/lib/auth/use-perfil-pagina"
 import { calcularEdad, formatearFecha, textoEdad } from "@/lib/fechas"
-import { ORIGEN_CORTO, nombreJuego } from "@/lib/entrenamiento/presentacion"
+import { ORIGEN_CORTO, TONO_ORIGEN, nombreJuego } from "@/lib/entrenamiento/presentacion"
 import { estiloNivel } from "@/lib/niveles"
-import { cargarDetalleNino, type DetalleNino, type PartidaHistorial } from "@/lib/ninos/detalle"
+import { cargarDetalleNino, type DetalleNino } from "@/lib/ninos/detalle"
 import { ETAPAS_ESCOLARES, NIVEL_LABEL, nivelParaEtapa, rutaDelTest } from "@/lib/test/bloques"
 import { ultimaEvaluacion } from "@/lib/test/franjas"
 import { desvincular } from "@/lib/vinculos"
 import { cn } from "@/lib/utils"
+
+// Los gráficos de seguimiento (S16, con recharts) van en su propio paquete:
+// el resto del detalle no espera a que se descarguen.
+const SeccionSeguimiento = dynamic(
+  () => import("@/components/seguimiento/seccion-seguimiento").then((m) => m.SeccionSeguimiento),
+  { ssr: false, loading: () => <Skeleton className="h-96 w-full rounded-3xl" /> },
+)
 
 type Carga = { estado: "cargando" } | { estado: "error"; mensaje: string } | { estado: "sin-acceso" } | { estado: "listo"; datos: DetalleNino }
 
@@ -75,6 +84,7 @@ export default function DetalleNinoPage() {
               urlDetalle={(testId) => `/ninos/${carga.datos.perfil.id}/tests/${testId}`}
             />
             <HistorialEntrenamientos datos={carga.datos} />
+            <SeccionSeguimiento datos={carga.datos} />
           </div>
         )
       }
@@ -242,12 +252,6 @@ function Recomendacion({ datos }: { datos: DetalleNino }) {
 /* ------------------------------------------------------------------ */
 /*  Historial de entrenamientos                                         */
 /* ------------------------------------------------------------------ */
-const TONO_ORIGEN: Record<PartidaHistorial["origen"], "celeste" | "lavanda" | "menta"> = {
-  consulta: "celeste",
-  tarea: "lavanda",
-  practica: "menta",
-}
-
 function HistorialEntrenamientos({ datos }: { datos: DetalleNino }) {
   const { partidas, totalPartidas } = datos
   return (

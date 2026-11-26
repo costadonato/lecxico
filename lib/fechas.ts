@@ -13,6 +13,11 @@ export function formatearFecha(iso: string | null | undefined): string {
   return new Date(iso).toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric" })
 }
 
+/** "dd/mm" (ejes de los gráficos de seguimiento); cadena vacía si no hay fecha. */
+export function formatearFechaCorta(iso: string | null | undefined): string {
+  return formatearFecha(iso).slice(0, 5)
+}
+
 /** Años cumplidos a hoy desde una fecha "YYYY-MM-DD"; null si no es válida. */
 export function calcularEdad(fechaNacimiento: string | null | undefined): number | null {
   const m = fechaNacimiento ? SOLO_FECHA.exec(fechaNacimiento) : null
