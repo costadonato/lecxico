@@ -23,6 +23,7 @@ Sirve para dos cosas: que cualquiera de los dos pueda retomar un slice sabiendo 
 | `estilo-profesional.md` | Estilo del profesional (PR #20) | Donato |
 | `ajustes-recorrido-entrenamiento.md` | Ajustes del recorrido (PR #22) | Donato |
 | `docs-proceso-scrum.md` | Documentación del proceso Scrum (sin slice) | Camila |
+| `pa-matriz-0001-0004.md` | Matriz PA y escenarios SQL de las migraciones 0001 a 0004 (sin slice, adelanta S18) | Camila |
 
 Los prompts de los slices 1 a 5 están en el chat de Camila; si se recuperan, van con el nombre `s01-...` a `s05-...`.
 

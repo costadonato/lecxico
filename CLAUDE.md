@@ -55,6 +55,7 @@ Antes de crear algo nuevo, buscá si ya existe y reutilizalo: `pagina-app.tsx` (
 - Toda tabla nueva con RLS. Las escrituras sensibles van por funciones `security definer` con `set search_path = public` y permisos explícitos (`revoke` de `public` y `anon`, `grant` a `authenticated`).
 - Ningún dato de un niño es accesible sin un vínculo activo con el profesional. Los mensajes de error no revelan si algo existe.
 - Cada migración trae sus escenarios de acceso indebido en `supabase/tests/` (sesión anónima, otro niño, profesional sin vínculo, pendiente o dado de baja, etc.). Probalos en un Postgres local que simule Supabase (`auth.users`, roles `anon` y `authenticated`).
+- Todo escenario nuevo de acceso indebido lleva el código PA-xx de `docs/matriz-pa.md`. Si no encaja en ninguna fila, avisalo en el resumen; no agregues filas a la matriz.
 - Nunca uses `localStorage` para datos de usuario.
 - La clave `service_role` solo se usa en el servidor de Next.js, desde `SUPABASE_SERVICE_ROLE_KEY`; nunca con prefijo `NEXT_PUBLIC_` ni en el navegador.
 

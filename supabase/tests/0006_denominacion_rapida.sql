@@ -223,31 +223,31 @@ select pg_temp.probar('detalle en otro bloque',
   'no lleva tiempo, errores ni detalle');
 
 -- Un usuario niño llamando a guardar_test → "Solo un profesional".
-select pg_temp.probar('un niño llama a guardar_test',
+select pg_temp.probar('PA-09 un niño llama a guardar_test',
   '00000000-0000-4000-8000-0000000000b1', 'authenticated', '00000000-0000-4000-8000-0000000000b1', 'inicial',
   pg_temp.bloques_inicial(pg_temp.denominacion_valida()),
   'Solo un profesional');
 
 -- Profesional sin vínculo → "No tenés un vínculo activo".
-select pg_temp.probar('profesional sin vínculo',
+select pg_temp.probar('PA-11 profesional sin vínculo',
   '00000000-0000-4000-8000-0000000000a2', 'authenticated', '00000000-0000-4000-8000-0000000000b1', 'inicial',
   pg_temp.bloques_inicial(pg_temp.denominacion_valida()),
   'No tenés un vínculo activo');
 
 -- Profesional con vínculo pendiente → mismo error.
-select pg_temp.probar('profesional con vínculo pendiente',
+select pg_temp.probar('PA-06 profesional con vínculo pendiente',
   '00000000-0000-4000-8000-0000000000a3', 'authenticated', '00000000-0000-4000-8000-0000000000b1', 'inicial',
   pg_temp.bloques_inicial(pg_temp.denominacion_valida()),
   'No tenés un vínculo activo');
 
 -- Profesional dado de baja → mismo error.
-select pg_temp.probar('profesional con vínculo dado de baja',
+select pg_temp.probar('PA-07 profesional con vínculo dado de baja',
   '00000000-0000-4000-8000-0000000000a4', 'authenticated', '00000000-0000-4000-8000-0000000000b1', 'inicial',
   pg_temp.bloques_inicial(pg_temp.denominacion_valida()),
   'No tenés un vínculo activo');
 
 -- Sesión anónima → sin permiso de ejecución (revoke de anon).
-select pg_temp.probar('sesión anónima',
+select pg_temp.probar('PA-01 sesión anónima',
   null, 'anon', '00000000-0000-4000-8000-0000000000b1', 'inicial',
   pg_temp.bloques_inicial(pg_temp.denominacion_valida()),
   'permission denied');

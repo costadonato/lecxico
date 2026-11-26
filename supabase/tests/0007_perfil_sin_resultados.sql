@@ -171,20 +171,20 @@ select pruebas.ok('1.4 test_bloque_resultado_select tampoco compara con auth.uid
 -- 2. La sesión del niño (que comparte con su tutor)
 -- =====================================================================
 select pruebas.sesion('authenticated', pruebas.id('N1'));
-select pruebas.ok('2.1 el niño no ve ninguna fila de test, ni las suyas',
+select pruebas.ok('PA-12 2.1 el niño no ve ninguna fila de test, ni las suyas',
   (select count(*) from public.test) = 0);
-select pruebas.ok('2.2 el niño no ve sus evaluaciones ni filtrando por su id',
+select pruebas.ok('PA-12 2.2 el niño no ve sus evaluaciones ni filtrando por su id',
   (select count(*) from public.test where nino_id = pruebas.id('N1')) = 0
   and not exists (select 1 from public.test where id = pruebas.id('tA')));
-select pruebas.ok('2.3 el niño no ve ninguna fila de test_bloque_resultado',
+select pruebas.ok('PA-12 2.3 el niño no ve ninguna fila de test_bloque_resultado',
   pruebas.bloques_visibles() = 0
   and not exists (select 1 from public.test_bloque_resultado where test_id = pruebas.id('tA')));
-select pruebas.ok('2.4 el niño no obtiene filas de ninos_para_test()',
+select pruebas.ok('PA-12 2.4 el niño no obtiene filas de ninos_para_test()',
   (select count(*) from public.ninos_para_test()) = 0);
-select pruebas.ok('2.5 profesional_puede_ver_registro da false para el niño',
+select pruebas.ok('PA-12 2.5 profesional_puede_ver_registro da false para el niño',
   not public.profesional_puede_ver_registro(pruebas.id('N1'), pruebas.id('A'))
   and not public.profesional_puede_ver_registro(pruebas.id('N1'), null));
-select pruebas.falla('2.6 el niño no puede insertar una evaluación directamente',
+select pruebas.falla('PA-09 2.6 el niño no puede insertar una evaluación directamente',
   $q$insert into public.test (nino_id, profesional_id, nivel, puntaje_total, porcentaje_total)
      values (pruebas.id('N1'), pruebas.id('A'), 'inicial', 1, 10)$q$, 'permission denied');
 
@@ -193,9 +193,9 @@ select pruebas.falla('2.6 el niño no puede insertar una evaluación directament
 -- 3. Otro niño
 -- =====================================================================
 select pruebas.sesion('authenticated', pruebas.id('N2'));
-select pruebas.ok('3.1 N2 no ve las evaluaciones de N1 ni las suyas',
+select pruebas.ok('PA-02 3.1 N2 no ve las evaluaciones de N1 ni las suyas',
   (select count(*) from public.test) = 0);
-select pruebas.ok('3.2 N2 no ve ningún bloque',
+select pruebas.ok('PA-02 3.2 N2 no ve ningún bloque',
   pruebas.bloques_visibles() = 0);
 
 
@@ -215,9 +215,9 @@ select pruebas.ok('4.4 ninos_para_test() sigue igual: la última visible de N1 e
    from public.ninos_para_test() where nino_id = pruebas.id('N1')));
 
 select pruebas.sesion('authenticated', pruebas.id('B'));
-select pruebas.ok('4.5 B (no comparte) ve solo la que tomó él',
+select pruebas.ok('PA-08 4.5 B (no comparte) ve solo la que tomó él',
   pruebas.tests_visibles() = array[pruebas.id('tB')]);
-select pruebas.ok('4.6 B ve solo los bloques de su evaluación',
+select pruebas.ok('PA-08 4.6 B ve solo los bloques de su evaluación',
   pruebas.bloques_visibles() = 2
   and not exists (select 1 from public.test_bloque_resultado where test_id <> pruebas.id('tB')));
 
@@ -226,16 +226,16 @@ select pruebas.ok('4.6 B ve solo los bloques de su evaluación',
 -- 5. Profesionales sin vínculo activo
 -- =====================================================================
 select pruebas.sesion('authenticated', pruebas.id('C'));
-select pruebas.ok('5.1 C con vínculo pendiente no ve evaluaciones ni bloques',
+select pruebas.ok('PA-06 5.1 C con vínculo pendiente no ve evaluaciones ni bloques',
   pruebas.tests_visibles() = '{}' and pruebas.bloques_visibles() = 0);
 
 select pruebas.sesion('authenticated', pruebas.id('D'));
-select pruebas.ok('5.2 D dado de baja no ve nada, ni la que tomó él (aunque compartía)',
+select pruebas.ok('PA-07 5.2 D dado de baja no ve nada, ni la que tomó él (aunque compartía)',
   pruebas.tests_visibles() = '{}' and pruebas.bloques_visibles() = 0
   and not exists (select 1 from public.test where id = pruebas.id('tD')));
 
 select pruebas.sesion('authenticated', pruebas.id('E'));
-select pruebas.ok('5.3 E sin vínculo no ve evaluaciones ni bloques',
+select pruebas.ok('PA-05 5.3 E sin vínculo no ve evaluaciones ni bloques',
   pruebas.tests_visibles() = '{}' and pruebas.bloques_visibles() = 0);
 
 
@@ -243,9 +243,9 @@ select pruebas.ok('5.3 E sin vínculo no ve evaluaciones ni bloques',
 -- 6. Sesión anónima
 -- =====================================================================
 select pruebas.sesion('anon');
-select pruebas.falla('6.1 anon no puede leer test',
+select pruebas.falla('PA-01 6.1 anon no puede leer test',
   $q$select count(*) from public.test$q$, 'permission denied');
-select pruebas.falla('6.2 anon no puede leer test_bloque_resultado',
+select pruebas.falla('PA-01 6.2 anon no puede leer test_bloque_resultado',
   $q$select count(*) from public.test_bloque_resultado$q$, 'permission denied');
 select pruebas.sesion('postgres');
 
