@@ -147,17 +147,17 @@ cross join (values ('discriminacion_auditiva', 1), ('conciencia_fonologica', 2))
 -- =====================================================================
 -- 1. Nadie salvo service_role ejecuta las funciones tutor_*
 -- =====================================================================
-select pruebas.ok('1.1 anon no tiene EXECUTE sobre tutor_responder_invitacion',
+select pruebas.ok('PA-01 1.1 anon no tiene EXECUTE sobre tutor_responder_invitacion',
   not has_function_privilege('anon', 'public.tutor_responder_invitacion(uuid,uuid,boolean,boolean)', 'execute'));
-select pruebas.ok('1.2 anon no tiene EXECUTE sobre tutor_desvincular',
+select pruebas.ok('PA-01 1.2 anon no tiene EXECUTE sobre tutor_desvincular',
   not has_function_privilege('anon', 'public.tutor_desvincular(uuid,uuid)', 'execute'));
-select pruebas.ok('1.3 anon no tiene EXECUTE sobre tutor_cambiar_etapa',
+select pruebas.ok('PA-01 1.3 anon no tiene EXECUTE sobre tutor_cambiar_etapa',
   not has_function_privilege('anon', 'public.tutor_cambiar_etapa(uuid,text)', 'execute'));
-select pruebas.ok('1.4 authenticated no tiene EXECUTE sobre tutor_responder_invitacion',
+select pruebas.ok('PA-03a 1.4 authenticated no tiene EXECUTE sobre tutor_responder_invitacion',
   not has_function_privilege('authenticated', 'public.tutor_responder_invitacion(uuid,uuid,boolean,boolean)', 'execute'));
-select pruebas.ok('1.5 authenticated no tiene EXECUTE sobre tutor_desvincular',
+select pruebas.ok('PA-03b 1.5 authenticated no tiene EXECUTE sobre tutor_desvincular',
   not has_function_privilege('authenticated', 'public.tutor_desvincular(uuid,uuid)', 'execute'));
-select pruebas.ok('1.6 authenticated no tiene EXECUTE sobre tutor_cambiar_etapa',
+select pruebas.ok('PA-03c 1.6 authenticated no tiene EXECUTE sobre tutor_cambiar_etapa',
   not has_function_privilege('authenticated', 'public.tutor_cambiar_etapa(uuid,text)', 'execute'));
 select pruebas.ok('1.7 service_role sí tiene EXECUTE sobre las tres',
   has_function_privilege('service_role', 'public.tutor_responder_invitacion(uuid,uuid,boolean,boolean)', 'execute')
@@ -165,21 +165,21 @@ select pruebas.ok('1.7 service_role sí tiene EXECUTE sobre las tres',
   and has_function_privilege('service_role', 'public.tutor_cambiar_etapa(uuid,text)', 'execute'));
 
 select pruebas.sesion('anon');
-select pruebas.falla('1.8 anon no puede llamar a tutor_cambiar_etapa',
+select pruebas.falla('PA-01 1.8 anon no puede llamar a tutor_cambiar_etapa',
   $q$select public.tutor_cambiar_etapa(pruebas.id('N1'), 'primero')$q$, 'permission denied');
-select pruebas.falla('1.9 anon no puede llamar a tutor_responder_invitacion',
+select pruebas.falla('PA-01 1.9 anon no puede llamar a tutor_responder_invitacion',
   $q$select public.tutor_responder_invitacion(pruebas.id('N1'), pruebas.vinculo('A', 'N1'), true, true)$q$, 'permission denied');
 
 select pruebas.sesion('authenticated', pruebas.id('N1'));
-select pruebas.falla('1.10 la sesión del niño no puede aceptar con tutor_responder_invitacion',
+select pruebas.falla('PA-03a 1.10 la sesión del niño no puede aceptar con tutor_responder_invitacion',
   $q$select public.tutor_responder_invitacion(pruebas.id('N1'), pruebas.vinculo('A', 'N1'), true, true)$q$, 'permission denied');
-select pruebas.falla('1.11 la sesión del niño no puede usar tutor_desvincular',
+select pruebas.falla('PA-03b 1.11 la sesión del niño no puede usar tutor_desvincular',
   $q$select public.tutor_desvincular(pruebas.id('N1'), pruebas.vinculo('A', 'N1'))$q$, 'permission denied');
-select pruebas.falla('1.12 la sesión del niño no puede usar tutor_cambiar_etapa',
+select pruebas.falla('PA-03c 1.12 la sesión del niño no puede usar tutor_cambiar_etapa',
   $q$select public.tutor_cambiar_etapa(pruebas.id('N1'), 'primero')$q$, 'permission denied');
 
 select pruebas.sesion('authenticated', pruebas.id('A'));
-select pruebas.falla('1.13 un profesional no puede usar tutor_cambiar_etapa',
+select pruebas.falla('PA-03c 1.13 un profesional no puede usar tutor_cambiar_etapa',
   $q$select public.tutor_cambiar_etapa(pruebas.id('N1'), 'primero')$q$, 'permission denied');
 select pruebas.sesion('postgres');
 
@@ -193,13 +193,13 @@ select pruebas.ok('1.14 nada cambió: la invitación A → N1 sigue pendiente y 
 -- =====================================================================
 -- (Va antes del 2 porque el 2 necesita un vínculo activo.)
 select pruebas.sesion('service_role');
-select pruebas.falla('3.1 con el p_nino_id de otro niño → no encontrada',
+select pruebas.falla('PA-03a 3.1 con el p_nino_id de otro niño → no encontrada',
   $q$select public.tutor_responder_invitacion(pruebas.id('N2'), pruebas.vinculo('A', 'N1'), true, true)$q$,
   'No se encontró la invitación.');
-select pruebas.falla('3.2 con un p_nino_id que es un profesional → mismo mensaje',
+select pruebas.falla('PA-03a 3.2 con un p_nino_id que es un profesional → mismo mensaje',
   $q$select public.tutor_responder_invitacion(pruebas.id('A'), pruebas.vinculo('A', 'N1'), true, true)$q$,
   'No se encontró la invitación.');
-select pruebas.falla('3.3 con un vínculo que no existe → mismo mensaje',
+select pruebas.falla('PA-03a 3.3 con un vínculo que no existe → mismo mensaje',
   $q$select public.tutor_responder_invitacion(pruebas.id('N1'), gen_random_uuid(), true, true)$q$,
   'No se encontró la invitación.');
 select pruebas.falla('3.4 aceptar sin p_comparte_historial → error',
@@ -236,15 +236,15 @@ select pruebas.falla('3.13 el check impide un vínculo activo sin comparte_histo
 -- 2. La sesión del niño
 -- =====================================================================
 select pruebas.sesion('authenticated', pruebas.id('N1'));
-select pruebas.falla('2.1 no puede llamar a responder_invitacion (ya no existe)',
+select pruebas.falla('PA-03a 2.1 no puede llamar a responder_invitacion (ya no existe)',
   $q$select public.responder_invitacion(pruebas.vinculo('B', 'N1'), true)$q$, 'does not exist');
-select pruebas.falla('2.2 no puede dar de baja su vínculo con desvincular',
+select pruebas.falla('PA-03b 2.2 no puede dar de baja su vínculo con desvincular',
   $q$select public.desvincular(pruebas.vinculo('A', 'N1'))$q$, 'No se encontró el vínculo.');
-select pruebas.falla('2.3 no puede hacer UPDATE de ninos.etapa_escolar',
+select pruebas.falla('PA-03c 2.3 no puede hacer UPDATE de ninos.etapa_escolar',
   $q$update public.ninos set etapa_escolar = 'primero' where profile_id = pruebas.id('N1')$q$, 'permission denied');
 select pruebas.anda('2.4 sí puede actualizar tutor_telefono',
   $q$update public.ninos set tutor_telefono = '2222' where profile_id = pruebas.id('N1')$q$);
-select pruebas.falla('2.5 no puede escribir profesional_nino directamente',
+select pruebas.falla('PA-03a 2.5 no puede escribir profesional_nino directamente',
   $q$update public.profesional_nino set estado = 'inactiva' where nino_id = pruebas.id('N1')$q$, 'permission denied');
 select pruebas.sesion('postgres');
 
@@ -259,9 +259,9 @@ select pruebas.ok('2.6 el teléfono se guardó, la etapa no cambió y el víncul
 -- Estado: A → N1 activa con false; B → N1 pendiente.
 -- Evaluaciones de N1: tA (A, 10/01), tB (B, 10/02), tX (sin profesional, 10/03).
 select pruebas.sesion('authenticated', pruebas.id('A'));
-select pruebas.ok('4.1 con false, A ve solo su evaluación',
+select pruebas.ok('PA-08 4.1 con false, A ve solo su evaluación',
   (select array_agg(id) from public.test where nino_id = pruebas.id('N1')) = array[pruebas.id('tA')]);
-select pruebas.ok('4.2 con false, A ve solo los bloques de su evaluación',
+select pruebas.ok('PA-08 4.2 con false, A ve solo los bloques de su evaluación',
   (select count(*) from public.test_bloque_resultado) = 2
   and not exists (select 1 from public.test_bloque_resultado where test_id in (pruebas.id('tB'), pruebas.id('tX'))));
 select pruebas.ok('4.3 con false, ninos_para_test() muestra la última visible (la de A, 40 %)',
@@ -269,14 +269,14 @@ select pruebas.ok('4.3 con false, ninos_para_test() muestra la última visible (
    from public.ninos_para_test() where nino_id = pruebas.id('N1')));
 
 select pruebas.sesion('authenticated', pruebas.id('B'));
-select pruebas.ok('4.4 B con vínculo pendiente no ve ninguna evaluación ni bloque',
+select pruebas.ok('PA-06 4.4 B con vínculo pendiente no ve ninguna evaluación ni bloque',
   (select count(*) from public.test where nino_id = pruebas.id('N1')) = 0
   and (select count(*) from public.test_bloque_resultado) = 0);
-select pruebas.ok('4.5 B con vínculo pendiente no tiene a N1 en ninos_para_test()',
+select pruebas.ok('PA-06 4.5 B con vínculo pendiente no tiene a N1 en ninos_para_test()',
   not exists (select 1 from public.ninos_para_test() where nino_id = pruebas.id('N1')));
 
 select pruebas.sesion('authenticated', pruebas.id('N1'));
-select pruebas.ok('4.6 el niño no ve sus evaluaciones (S10)',
+select pruebas.ok('PA-12 4.6 el niño no ve sus evaluaciones (S10)',
   (select count(*) from public.test) = 0);
 
 -- El tutor da de baja a A.
@@ -289,7 +289,7 @@ select pruebas.ok('4.8 la baja dejó el vínculo inactivo y conservó comparte_h
    from public.profesional_nino where id = pruebas.vinculo('A', 'N1')));
 
 select pruebas.sesion('authenticated', pruebas.id('A'));
-select pruebas.ok('4.9 A con vínculo inactivo no ve ninguna evaluación, ni la suya',
+select pruebas.ok('PA-07 4.9 A con vínculo inactivo no ve ninguna evaluación, ni la suya',
   (select count(*) from public.test where nino_id = pruebas.id('N1')) = 0
   and (select count(*) from public.test_bloque_resultado) = 0
   and not exists (select 1 from public.ninos_para_test() where nino_id = pruebas.id('N1')));
@@ -315,7 +315,7 @@ select pruebas.ok('4.13 con true, ninos_para_test() muestra la más reciente de 
    from public.ninos_para_test() where nino_id = pruebas.id('N1')));
 
 select pruebas.sesion('authenticated', pruebas.id('B'));
-select pruebas.ok('4.14 B activo con false ve solo la suya, y su última es la de 60 %',
+select pruebas.ok('PA-08 4.14 B activo con false ve solo la suya, y su última es la de 60 %',
   (select array_agg(id) from public.test where nino_id = pruebas.id('N1')) = array[pruebas.id('tB')]
   and (select porcentaje_ultimo_test from public.ninos_para_test() where nino_id = pruebas.id('N1')) = 60);
 
@@ -331,13 +331,13 @@ select pruebas.sesion('authenticated', pruebas.id('A'));
 select pruebas.ok('4.15 después de la baja y una nueva vinculación (false), A vuelve a ver la suya',
   (select array_agg(id) from public.test where nino_id = pruebas.id('N1')) = array[pruebas.id('tA')]
   and (select porcentaje_ultimo_test from public.ninos_para_test() where nino_id = pruebas.id('N1')) = 40);
-select pruebas.ok('4.16 profesional_puede_ver_registro: suya sí, de otro no, sin autor no',
+select pruebas.ok('PA-08 4.16 profesional_puede_ver_registro: suya sí, de otro no, sin autor no',
   public.profesional_puede_ver_registro(pruebas.id('N1'), pruebas.id('A'))
   and not public.profesional_puede_ver_registro(pruebas.id('N1'), pruebas.id('B'))
   and not public.profesional_puede_ver_registro(pruebas.id('N1'), null));
 
 select pruebas.sesion('authenticated', pruebas.id('N2'));
-select pruebas.ok('4.17 otro niño (N2) no ve las evaluaciones de N1',
+select pruebas.ok('PA-02 4.17 otro niño (N2) no ve las evaluaciones de N1',
   (select count(*) from public.test where nino_id = pruebas.id('N1')) = 0);
 select pruebas.sesion('postgres');
 
@@ -346,13 +346,13 @@ select pruebas.sesion('postgres');
 -- 5. tutor_desvincular y desvincular
 -- =====================================================================
 select pruebas.sesion('service_role');
-select pruebas.falla('5.1 tutor_desvincular con el vínculo de otro niño → no encontrado',
+select pruebas.falla('PA-03b 5.1 tutor_desvincular con el vínculo de otro niño → no encontrado',
   $q$select public.tutor_desvincular(pruebas.id('N2'), pruebas.vinculo('A', 'N1'))$q$, 'No se encontró el vínculo.');
-select pruebas.falla('5.2 tutor_desvincular con un p_nino_id de profesional → no encontrado',
+select pruebas.falla('PA-03b 5.2 tutor_desvincular con un p_nino_id de profesional → no encontrado',
   $q$select public.tutor_desvincular(pruebas.id('A'), pruebas.vinculo('A', 'N1'))$q$, 'No se encontró el vínculo.');
 
 select pruebas.sesion('authenticated', pruebas.id('B'));
-select pruebas.falla('5.3 un profesional no puede dar de baja el vínculo de otro',
+select pruebas.falla('PA-03b 5.3 un profesional no puede dar de baja el vínculo de otro',
   $q$select public.desvincular(pruebas.vinculo('A', 'N2'))$q$, 'No se encontró el vínculo.');
 
 select pruebas.sesion('authenticated', pruebas.id('A'));
@@ -377,9 +377,9 @@ select pruebas.falla('6.1 con un valor inválido → error',
   $q$select public.tutor_cambiar_etapa(pruebas.id('N1'), 'cuarto')$q$, 'La etapa escolar no es válida.');
 select pruebas.falla('6.2 sin valor → error',
   $q$select public.tutor_cambiar_etapa(pruebas.id('N1'), null)$q$, 'La etapa escolar no es válida.');
-select pruebas.falla('6.3 con un p_nino_id de profesional → no encontrado',
+select pruebas.falla('PA-03c 6.3 con un p_nino_id de profesional → no encontrado',
   $q$select public.tutor_cambiar_etapa(pruebas.id('A'), 'primero')$q$, 'No se encontró la cuenta del niño.');
-select pruebas.falla('6.4 con un p_nino_id que no existe → no encontrado',
+select pruebas.falla('PA-03c 6.4 con un p_nino_id que no existe → no encontrado',
   $q$select public.tutor_cambiar_etapa(gen_random_uuid(), 'primero')$q$, 'No se encontró la cuenta del niño.');
 select pruebas.anda('6.5 con un valor válido → actualiza',
   $q$select public.tutor_cambiar_etapa(pruebas.id('N1'), 'primero')$q$);
@@ -400,22 +400,22 @@ select pruebas.ok('7.2 handle_new_user no falla si falta (alta con Google): qued
 select pruebas.ok('7.3 un profesional sin compromiso en la metadata queda en false (C)',
   (select not acepta_compromiso and fecha_aceptacion_compromiso is null
    from public.profiles where id = pruebas.id('C')));
-select pruebas.ok('7.4 un niño con acepta_compromiso en la metadata queda en false',
+select pruebas.ok('PA-13 7.4 un niño con acepta_compromiso en la metadata queda en false',
   (select not acepta_compromiso and fecha_aceptacion_compromiso is null
    from public.profiles where id = pruebas.id('N1')));
 
 select pruebas.sesion('authenticated', pruebas.id('N1'));
-select pruebas.falla('7.5 un niño no puede poner acepta_compromiso en true',
+select pruebas.falla('PA-13 7.5 un niño no puede poner acepta_compromiso en true',
   $q$update public.profiles set acepta_compromiso = true where id = pruebas.id('N1')$q$, 'Solo un profesional');
 
 select pruebas.sesion('authenticated', pruebas.id('A'));
-select pruebas.falla('7.6 la aceptación no se puede revertir',
+select pruebas.falla('PA-13 7.6 la aceptación no se puede revertir',
   $q$update public.profiles set acepta_compromiso = false where id = pruebas.id('A')$q$, 'no se puede revertir');
 
 select pruebas.sesion('authenticated', pruebas.id('C'));
-select pruebas.falla('7.7 invitar_nino falla sin compromiso',
+select pruebas.falla('PA-13 7.7 invitar_nino falla sin compromiso',
   $q$select public.invitar_nino('nino_tres')$q$, 'compromiso de uso responsable');
-select pruebas.falla('7.8 el cliente no puede escribir la fecha del compromiso',
+select pruebas.falla('PA-13 7.8 el cliente no puede escribir la fecha del compromiso',
   $q$update public.profiles set fecha_aceptacion_compromiso = '2000-01-01' where id = pruebas.id('C')$q$, 'permission denied');
 select pruebas.anda('7.9 el profesional acepta el compromiso (como en /completar-perfil)',
   $q$update public.profiles set acepta_compromiso = true where id = pruebas.id('C')$q$);
