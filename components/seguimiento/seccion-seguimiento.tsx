@@ -7,7 +7,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EstadoVacio } from "@/components/estados"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
 import { Seccion } from "@/components/seccion"
-import { GraficosDenominacion } from "@/components/seguimiento/graficos-denominacion"
 import { GraficosEntrenamiento } from "@/components/seguimiento/graficos-entrenamiento"
 import { GraficosEvaluaciones } from "@/components/seguimiento/graficos-evaluaciones"
 import { SelectorOpciones } from "@/components/seguimiento/piezas"
@@ -75,19 +74,12 @@ export function SeccionSeguimiento({ datos }: { datos: DetalleNino }) {
       />
     ) : null
 
-  const sinEvaluaciones = (
-    <EstadoVacio compacto descripcion="La evolución va a aparecer después de la primera evaluación." />
-  )
-
   return (
     <Seccion icono={<TrendingUp />} tono="celeste" titulo="Seguimiento">
       <Tabs defaultValue="evaluaciones" className="space-y-4">
-        <TabsList className="grid h-auto w-full grid-cols-1 gap-1 sm:inline-flex sm:w-auto sm:gap-0">
+        <TabsList className="grid h-auto w-full grid-cols-2 sm:inline-flex sm:w-auto">
           <TabsTrigger value="evaluaciones" className="py-1.5">
             Evaluaciones
-          </TabsTrigger>
-          <TabsTrigger value="denominacion" className="py-1.5">
-            Denominación rápida
           </TabsTrigger>
           <TabsTrigger value="entrenamiento" className="py-1.5">
             Entrenamiento
@@ -96,22 +88,11 @@ export function SeccionSeguimiento({ datos }: { datos: DetalleNino }) {
 
         <TabsContent value="evaluaciones" className="space-y-4">
           {serie.length === 0 ? (
-            sinEvaluaciones
+            <EstadoVacio compacto descripcion="La evolución va a aparecer después de la primera evaluación." />
           ) : (
             <>
               <EncabezadoNivel nivel={nivel} selector={selectorNivel} cantidad={serie.length} />
-              <GraficosEvaluaciones serie={serie} nivel={nivel} grado={grado} />
-            </>
-          )}
-        </TabsContent>
-
-        <TabsContent value="denominacion" className="space-y-4">
-          {serie.length === 0 ? (
-            sinEvaluaciones
-          ) : (
-            <>
-              <EncabezadoNivel nivel={nivel} selector={selectorNivel} cantidad={serie.length} />
-              <GraficosDenominacion puntos={denominacion} nivel={nivel} grado={grado} />
+              <GraficosEvaluaciones serie={serie} denominacion={denominacion} nivel={nivel} grado={grado} />
             </>
           )}
         </TabsContent>

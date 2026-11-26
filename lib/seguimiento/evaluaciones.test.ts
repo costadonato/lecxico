@@ -1,21 +1,19 @@
 import { describe, expect, it } from "vitest"
 
-import type { BloqueCodigo, Nivel } from "@/lib/test/bloques"
-import type { BloqueParaFranja } from "@/lib/test/franjas"
+import { porcentajeBloque } from "@/lib/test/analisis"
+import { BLOQUES_POR_NIVEL, type BloqueCodigo, type Nivel } from "@/lib/test/bloques"
+import { CORTES, franjaDeBloque, type BloqueParaFranja, type GradoFranja } from "@/lib/test/franjas"
 import {
+  bandaDe,
   bandasDeFranja,
-  bandasDenominacion,
-  bloquesDeLaGrilla,
   nivelInicialSeguimiento,
   nivelesConEvaluaciones,
   resumenBloque,
   resumenDenominacion,
-  resumenFranjaDenominacion,
   serieDeBloque,
   serieDenominacion,
   serieEvaluaciones,
   textoFranja,
-  textoSegundos,
   type EvaluacionParaSerie,
 } from "@/lib/seguimiento/evaluaciones"
 
@@ -117,54 +115,51 @@ describe("serieDeBloque", () => {
   })
 })
 
-describe("bloquesDeLaGrilla", () => {
-  it("son los del test en orden, sin denominación rápida", () => {
-    expect(bloquesDeLaGrilla("inicial")).toEqual([
-      "discriminacion_auditiva",
-      "conciencia_fonologica",
-      "conciencia_silabica",
-      "memoria_fonologica",
-    ])
-    expect(bloquesDeLaGrilla("primario")).toHaveLength(8)
-    expect(bloquesDeLaGrilla("primario")).not.toContain("denominacion_rapida")
-  })
-})
-
 describe("bandasDeFranja", () => {
-  it("aciertos: límites en porcentaje entero, de abajo hacia arriba", () => {
-    // Primario, conciencia silábica: total 6, correcto desde 4, intermedio desde 3.
-    expect(bandasDeFranja("primario", "conciencia_silabica", null)).toEqual([
-      { franja: "a_observar", desde: 0, hasta: 50 },
-      { franja: "intermedio", desde: 50, hasta: 67 },
-      { franja: "correcto", desde: 67, hasta: 100 },
+  /** Bandas con los bordes redondeados a 2 decimales, para comparar. */
+  const redondeadas = (nivel: Nivel, bloque: BloqueCodigo, grado: GradoFranja | null) =>
+    bandasDeFranja(nivel, bloque, grado)?.map((x) => ({
+      ...x,
+      desde: Math.round(x.desde * 100) / 100,
+      hasta: Math.round(x.hasta * 100) / 100,
+    }))
+
+  it("reconocimiento visual (2 de 2): las tres franjas se ven, con bordes a mitad de camino", () => {
+    expect(bandasDeFranja("primario", "reconocimiento_visual", null)).toEqual([
+      { franja: "a_observar", desde: 0, hasta: 25 },
+      { franja: "intermedio", desde: 25, hasta: 75 },
+      { franja: "correcto", desde: 75, hasta: 100 },
     ])
   })
 
-  it("redondea igual que el porcentaje del punto: 1 de 3 (33 %) cae justo en el límite de intermedio", () => {
-    // Inicial, conciencia fonológica: total 3, correcto desde 2, intermedio desde 1.
-    const bandas = bandasDeFranja("inicial", "conciencia_fonologica", null)
-    expect(bandas?.find((x) => x.franja === "intermedio")).toEqual({ franja: "intermedio", desde: 33, hasta: 67 })
+  it("comprensión lectora (3 de 3): correcto ya no queda sin alto", () => {
+    expect(redondeadas("primario", "comprension_lectora", null)).toEqual([
+      { franja: "a_observar", desde: 0, hasta: 50 },
+      { franja: "intermedio", desde: 50, hasta: 83.33 },
+      { franja: "correcto", desde: 83.33, hasta: 100 },
+    ])
   })
 
-  it("omite la banda sin alto (correcto desde 100 %)", () => {
-    // Comprensión lectora: total 3, correcto desde 3.
-    expect(bandasDeFranja("primario", "comprension_lectora", null)).toEqual([
-      { franja: "a_observar", desde: 0, hasta: 67 },
-      { franja: "intermedio", desde: 67, hasta: 100 },
+  it("un corte normal (5 de 7)", () => {
+    // Primario, conciencia fonológica: total 7, correcto desde 5, intermedio desde 4.
+    expect(redondeadas("primario", "conciencia_fonologica", null)).toEqual([
+      { franja: "a_observar", desde: 0, hasta: 50 },
+      { franja: "intermedio", desde: 50, hasta: 64.29 },
+      { franja: "correcto", desde: 64.29, hasta: 100 },
     ])
   })
 
   it("aciertos por grado: usa los del grado; sin grado, null", () => {
-    expect(bandasDeFranja("primario", "correspondencia_sonido_letra", "primero")).toEqual([
-      { franja: "a_observar", desde: 0, hasta: 67 },
-      { franja: "intermedio", desde: 67, hasta: 83 },
-      { franja: "correcto", desde: 83, hasta: 100 },
+    expect(redondeadas("primario", "correspondencia_sonido_letra", "primero")).toEqual([
+      { franja: "a_observar", desde: 0, hasta: 58.33 },
+      { franja: "intermedio", desde: 58.33, hasta: 75 },
+      { franja: "correcto", desde: 75, hasta: 100 },
     ])
-    expect(bandasDeFranja("primario", "correspondencia_sonido_letra", "segundo")?.at(-1)).toEqual({
-      franja: "intermedio",
-      desde: 83,
-      hasta: 100,
-    })
+    expect(redondeadas("primario", "correspondencia_sonido_letra", "segundo")).toEqual([
+      { franja: "a_observar", desde: 0, hasta: 75 },
+      { franja: "intermedio", desde: 75, hasta: 91.67 },
+      { franja: "correcto", desde: 91.67, hasta: 100 },
+    ])
     expect(bandasDeFranja("primario", "correspondencia_sonido_letra", null)).toBeNull()
   })
 
@@ -173,6 +168,42 @@ describe("bandasDeFranja", () => {
     expect(bandasDeFranja("inicial", "denominacion_rapida", null)).toBeNull()
     // Comprensión lectora no es un bloque de inicial: no tiene corte.
     expect(bandasDeFranja("inicial", "comprension_lectora", null)).toBeNull()
+  })
+
+  it("en todos los bloques con corte, cada valor posible de aciertos cae en la banda de su franja", () => {
+    let revisados = 0
+    for (const nivel of ["inicial", "primario"] as const) {
+      for (const bloque of BLOQUES_POR_NIVEL[nivel]) {
+        for (const grado of ["primero", "segundo", "tercero"] as const) {
+          const bandas = bandasDeFranja(nivel, bloque, grado)
+          const corte = CORTES[nivel][bloque]
+          if (!bandas || !corte || !("total" in corte)) continue
+          // Las tres franjas se ven siempre.
+          expect(bandas.map((x) => x.franja)).toEqual(["a_observar", "intermedio", "correcto"])
+          for (let k = 0; k <= corte.total; k++) {
+            const franja = franjaDeBloque(nivel, b(bloque, 1, k, corte.total), grado)
+            expect(bandaDe(bandas, porcentajeBloque(k, corte.total))?.franja, `${nivel} ${bloque} ${grado} ${k}`).toBe(franja)
+            revisados++
+          }
+        }
+      }
+    }
+    // 12 bloques con corte por aciertos, 3 grados cada uno.
+    expect(revisados).toBeGreaterThan(150)
+  })
+})
+
+describe("bandaDe", () => {
+  const bandas = bandasDeFranja("primario", "reconocimiento_visual", null)
+
+  it("el borde pertenece a la banda de arriba y 100 % a correcto", () => {
+    expect(bandaDe(bandas, 0)?.franja).toBe("a_observar")
+    expect(bandaDe(bandas, 25)?.franja).toBe("intermedio")
+    expect(bandaDe(bandas, 100)?.franja).toBe("correcto")
+  })
+
+  it("null sin bandas", () => {
+    expect(bandaDe(null, 50)).toBeNull()
   })
 })
 
@@ -185,85 +216,52 @@ describe("serieDenominacion", () => {
     evaluacion("ini", "inicial", "2026-01-01", [dr(90_000, 3, 48)]),
   ]
 
-  it("primaria: tiempo en segundos, errores y franjas, de la más vieja a la más nueva; sin tiempo queda afuera", () => {
+  it("primaria: tiempo, errores, aciertos y franja, de la más vieja a la más nueva; sin tiempo queda afuera", () => {
     expect(serieDenominacion(tests, "primario", "segundo")).toEqual([
       {
         fecha: "2026-08-01",
         testId: "media",
+        tiempoMs: 150_000,
         segundos: 150,
         errores: 1,
+        total: 100,
+        aciertosPorcentaje: 99,
         franja: "a_observar",
-        franjaTiempo: "a_observar",
-        franjaErrores: "correcto",
       },
       {
         fecha: "2026-10-01",
         testId: "nueva",
+        tiempoMs: 125_400,
         segundos: 125.4,
         errores: 2,
+        total: 100,
+        aciertosPorcentaje: 98,
         franja: "intermedio",
-        franjaTiempo: "intermedio",
-        franjaErrores: "intermedio",
       },
     ])
   })
 
-  it("redondea los segundos como franjaDeBloque: 121,4 s cuenta como 121 (correcto en 2.º)", () => {
-    const [p] = serieDenominacion([evaluacion("x", "primario", "2026-01-01", [dr(121_400, 0)])], "primario", "segundo")
-    expect(p.franjaTiempo).toBe("correcto")
-    expect(p.franja).toBe("correcto")
+  it("sin grado, sin franja", () => {
+    expect(serieDenominacion(tests, "primario", null).every((p) => p.franja === null)).toBe(true)
   })
 
-  it("sin grado o con otro total, sin franjas", () => {
-    expect(serieDenominacion(tests, "primario", null).every((p) => p.franja === null && p.franjaTiempo === null)).toBe(true)
-    const otroTotal = [evaluacion("x", "primario", "2026-01-01", [dr(100_000, 1, 80)])]
-    expect(serieDenominacion(otroTotal, "primario", "segundo")[0]).toMatchObject({
-      franja: null,
-      franjaTiempo: null,
-      franjaErrores: null,
-    })
-  })
-
-  it("inicial: hay puntos pero no hay corte", () => {
+  it("inicial: hay puntos pero no hay corte; aciertos sobre su total", () => {
     expect(serieDenominacion(tests, "inicial", null)).toEqual([
       {
         fecha: "2026-01-01",
         testId: "ini",
+        tiempoMs: 90_000,
         segundos: 90,
         errores: 3,
+        total: 48,
+        aciertosPorcentaje: 94,
         franja: null,
-        franjaTiempo: null,
-        franjaErrores: null,
       },
     ])
   })
 
   it("deja afuera un bloque con tiempo pero sin errores", () => {
     expect(serieDenominacion([evaluacion("x", "primario", "2026-01-01", [dr(100_000, null)])], "primario", "segundo")).toEqual([])
-  })
-})
-
-describe("bandasDenominacion", () => {
-  it("primaria: límites a medio camino de los cortes enteros, por grado", () => {
-    expect(bandasDenominacion("primario", "segundo")).toEqual({
-      tiempo: [
-        { franja: "correcto", desde: 0, hasta: 121.5 },
-        { franja: "intermedio", desde: 121.5, hasta: 131.5 },
-        { franja: "a_observar", desde: 131.5, hasta: null },
-      ],
-      errores: [
-        { franja: "correcto", desde: 0, hasta: 1.5 },
-        { franja: "intermedio", desde: 1.5, hasta: 2.5 },
-        { franja: "a_observar", desde: 2.5, hasta: null },
-      ],
-    })
-    expect(bandasDenominacion("primario", "primero")?.tiempo[0].hasta).toBe(137.5)
-  })
-
-  it("null en inicial y en primaria sin grado", () => {
-    expect(bandasDenominacion("inicial", null)).toBeNull()
-    expect(bandasDenominacion("inicial", "segundo")).toBeNull()
-    expect(bandasDenominacion("primario", null)).toBeNull()
   })
 })
 
@@ -292,33 +290,24 @@ describe("resúmenes en texto", () => {
     expect(resumenBloque("conciencia_silabica", [])).toBe("Conciencia Silábica: sin evaluaciones.")
   })
 
-  it("textoSegundos: un decimal con coma, sin decimal si es entero", () => {
-    expect(textoSegundos(131.44)).toBe("131,4 s")
-    expect(textoSegundos(130)).toBe("130 s")
-    expect(textoSegundos(129.96)).toBe("130 s")
-  })
-
-  const pd = (segundos: number, errores: number, franja: "correcto" | "intermedio" | null = null) => ({
+  const pd = (tiempoMs: number, aciertosPorcentaje: number, franja: "correcto" | "intermedio" | null = null) => ({
     fecha: "2026-01-01",
     testId: "t",
-    segundos,
-    errores,
+    tiempoMs,
+    segundos: tiempoMs / 1000,
+    errores: 0,
+    total: 100,
+    aciertosPorcentaje,
     franja,
-    franjaTiempo: null,
-    franjaErrores: null,
   })
 
-  it("resumenDenominacion de tiempo y de errores", () => {
-    expect(resumenDenominacion("tiempo", [pd(150, 4), pd(130.5, 2)])).toBe("Tiempo: de 150 s a 130,5 s en 2 evaluaciones.")
-    expect(resumenDenominacion("errores", [pd(150, 4), pd(130, 1)])).toBe("Errores: de 4 errores a 1 error en 2 evaluaciones.")
-    expect(resumenDenominacion("errores", [pd(150, 1)])).toBe("Errores: 1 error en 1 evaluación.")
-    expect(resumenDenominacion("tiempo", [])).toBe("Tiempo: sin evaluaciones con tiempo registrado.")
-  })
-
-  it("resumenFranjaDenominacion toma la última", () => {
-    expect(resumenFranjaDenominacion([pd(150, 4, "correcto"), pd(130, 1, "intermedio")])).toBe(
-      "Última franja de denominación rápida: intermedio.",
+  it("resumenDenominacion: tiempo en m:ss y aciertos, con varias, una y ninguna evaluación", () => {
+    expect(resumenDenominacion([pd(151_000, 92), pd(140_000, 95), pd(125_000, 98, "correcto")])).toBe(
+      "Denominación Rápida: tiempo de 2:31 a 2:05 y aciertos de 92 % a 98 % en 3 evaluaciones; última franja: correcto.",
     )
-    expect(resumenFranjaDenominacion([])).toBe("Última franja de denominación rápida: sin franja de referencia.")
+    expect(resumenDenominacion([pd(48_400, 90)])).toBe(
+      "Denominación Rápida: tiempo 0:48 y aciertos 90 % en 1 evaluación; franja: sin franja de referencia.",
+    )
+    expect(resumenDenominacion([])).toBe("Denominación Rápida: sin tiempo registrado en estas evaluaciones.")
   })
 })

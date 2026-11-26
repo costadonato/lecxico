@@ -5,7 +5,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { ChevronDown, Table2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import type { Banda } from "@/lib/seguimiento/evaluaciones"
 import type { Franja } from "@/lib/test/franjas"
 import { cn } from "@/lib/utils"
 
@@ -36,11 +35,6 @@ export const CLASE_GRAFICO =
 /** false si el sistema pide reducir el movimiento: los gráficos aparecen sin animación. */
 export function useAnimarGraficos(): boolean {
   return !useReducedMotion()
-}
-
-/** Las bandas que se pintan, con el techo resuelto (una banda "hasta arriba" llega hasta `techo`). */
-export function bandasConTecho(bandas: readonly Banda[] | null, techo: number) {
-  return (bandas ?? []).map((b) => ({ ...b, hasta: b.hasta ?? techo }))
 }
 
 /** Caja del tooltip de los gráficos. */
@@ -84,7 +78,12 @@ export function DatosEnTabla({ children, className }: { children: ReactNode; cla
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
-              className="mt-2 overflow-x-auto rounded-xl border border-border/80 bg-background/70"
+              // Si la tabla no entra (por ejemplo, la de denominación rápida en 375 px), se desplaza:
+              // por eso el contenedor se puede enfocar y mover con las flechas (WCAG 1.4.10 y 2.1.1).
+              tabIndex={0}
+              role="region"
+              aria-label="Datos en tabla"
+              className="mt-2 overflow-x-auto rounded-xl border border-border/80 bg-background/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               {children}
             </motion.div>
