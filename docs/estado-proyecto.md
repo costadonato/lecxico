@@ -1,10 +1,9 @@
 # Lecxico — Estado del proyecto
 
-Última actualización: 26/11/2026 (S16 Gráficos de seguimiento, con los ajustes de la revisión; antes: estado de los slices integrados en `main` con su número de PR y migración 0008 aplicada; S11 Franjas y recomendación, con S11b: recomendación en Entrenar en consulta). Reemplaza al documento "Estado del proyecto tras la etapa de gestión de usuarios (slices 1 a 5)" del 9/10/2026.
-
+Última actualización: 26/11/2026 (S16 Gráficos de seguimiento, con los ajustes de la revisión; matriz PA en `docs/matriz-pa.md` y escenarios SQL de las migraciones 0001 a 0004; antes: estado de los slices integrados en `main` con su número de PR y migración 0008 aplicada; S11 Franjas y recomendación, con S11b: recomendación en Entrenar en consulta). Reemplaza al documento "Estado del proyecto tras la etapa de gestión de usuarios (slices 1 a 5)" del 9/10/2026.
 **Cómo se usa:** es la fuente de contexto para cualquier chat o Claude Code que trabaje en el repo. Cada PR actualiza las secciones que toca (estado de slices, modelo de datos, decisiones, pendientes). Si este documento y el código no coinciden, manda el código; las migraciones de `supabase/migrations/` describen la base exactamente.
 
-Documentos relacionados: `CLAUDE.md` (reglas para Claude Code), `docs/revisiones-especialistas.md` (registro de revisiones), `docs/prompts/` (prompt de cada slice). El plan completo con fechas está en el documento "Lecxico — Plan de desarrollo hasta el 4 de diciembre" y en el tablero de Trello del equipo.
+Documentos relacionados: `CLAUDE.md` (reglas para Claude Code), `docs/matriz-pa.md` (matriz de protección de acceso), `docs/revisiones-especialistas.md` (registro de revisiones), `docs/prompts/` (prompt de cada slice). El plan completo con fechas está en el documento "Lecxico — Plan de desarrollo hasta el 4 de diciembre" y en el tablero de Trello del equipo.
 
 ## Resumen
 
@@ -37,7 +36,7 @@ Meta: desarrollo cerrado el viernes 4/12/2026; verificación y documentación de
 | S15 Tareas del profesional | Armar y asignar tareas; la recomendación enlaza a juegos | Camila | 30/11–2/12 | usa 0008 | Pendiente |
 | S16 Gráficos de seguimiento | Sección "Seguimiento" en `/ninos/[id]` con dos pestañas: evaluaciones (small multiples con las franjas de fondo; denominación rápida con tiempo y aciertos; cada gráfico se amplía en un modal) y entrenamiento (barras por semana y origen, tabla "Por juego"); lógica pura en `lib/seguimiento/` para reusar en S17. Prompts: `docs/prompts/s16-graficos-seguimiento.md` y `docs/prompts/s16-ajustes.md` | Donato | 26/11 | — | En revisión (rama `s16-graficos-seguimiento`) |
 | S17 Informes | PDF del profesional; informe a pedido del tutor por correo | Camila | 1–4/12 | 0009 | Pendiente |
-| S18 Verificación | Matriz PA, cobertura, auditoría WCAG, comparación con la práctica actual | Los dos | 7–11/12 | — | Pendiente |
+| S18 Verificación | Matriz PA, cobertura, auditoría WCAG, comparación con la práctica actual. Matriz PA hecha (PB-54, 26/11). Auditoría WCAG (28/11) y comparación con la práctica actual (30/11) adelantadas. Cobertura: pendiente. | Los dos | 26/11–4/12 | — | En curso |
 
 **Criterio de corte (V8):** si hay atraso se asegura, en este orden: (1) evaluación y control de acceso; (2) recomendación; (3) entrenamiento mínimo, un juego por bloque y nivel; (4) seguimiento. Lo que no se complete pasa a trabajo futuro.
 
@@ -49,7 +48,9 @@ Meta: desarrollo cerrado el viernes 4/12/2026; verificación y documentación de
 
 **Pruebas:** `npm test` corre las pruebas de Vitest (`lib/**/*.test.ts`) y `npm run coverage` suma la cobertura V8 de los módulos de lógica listados en `vitest.config.mts` (hoy `lib/test/analisis.ts`, `bloques.ts`, `denominacion.ts`, `denominacion-config.ts` y, desde S11, `franjas.ts`, `lib/auth/perfil.ts`, `lib/tutor/errores.ts`, `etapa.ts` y `validaciones.ts`, y `lib/entrenamiento/juegos.ts`, `bancos.ts`, `rondas.ts`, `presentacion.ts`, `partidas.ts`, desde S13b `partida.ts`, `memotono.ts`, `denominacion-entrenamiento.ts`, `tocalo.ts` y `audio.ts`, desde S14a `seleccion.ts`, `lee.ts`, `eco.ts` y `caza.ts`, desde S14b `memopalabras.ts`, `ojo-lince.ts` y `lluvia.ts`, `lib/inicio/actividad.ts` del estilo del profesional y, desde S16, `lib/seguimiento/evaluaciones.ts`, `entrenamiento.ts` y `datos.ts`), con umbrales de 80 % de líneas y 90 % de ramas (reporte HTML en `coverage/`).
 
-**Pruebas de migraciones:** `supabase/tests/00_simular_supabase.sql` arma en un Postgres local lo que las migraciones esperan de Supabase (`auth.users`, `auth.uid()`, `auth.jwt()`, `auth.role()`, roles `anon`, `authenticated` y `service_role`, la tabla previa `entrenamientos` y la collation `und-x-icu` si falta). Orden: ese archivo → migraciones → `supabase/tests/NNNN_*.sql` (ver `supabase/tests/README.md`). Cada archivo de pruebas corre en una transacción con `rollback` y corta con "FALLARON …" si algún escenario no dio lo esperado. Sin Postgres instalado se puede usar PGlite (`@electric-sql/pglite`, Postgres en WASM) desde Node, fuera del repo.
+**Pruebas de migraciones:** `supabase/tests/00_simular_supabase.sql` arma en un Postgres local lo que las migraciones esperan de Supabase (`auth.users`, `auth.uid()`, `auth.jwt()`, `auth.role()`, roles `anon`, `authenticated` y `service_role`, la tabla previa `entrenamientos` y la collation `und-x-icu` si falta). Orden: ese archivo → migraciones → `supabase/tests/NNNN_*.sql` (ver `supabase/tests/README.md`). Cada archivo de pruebas corre en una transacción con `rollback` y corta con "FALLARON …" si algún escenario no dio lo esperado. Hay cinco archivos de escenarios: `0001_0004_base_y_vinculacion.sql` (tablas base, RLS, invitaciones y `ninos_para_test`), `0005`, `0006`, `0007` y `0008`.
+
+**Matriz PA:** la métrica PA se calcula sobre la lista de escenarios de acceso indebido de la propuesta V6.1, sección 6.3, que el equipo fijó en `docs/matriz-pa.md` (PA-01 a PA-15, con PA-03a a PA-03e). Cada escenario SQL de acceso indebido empieza con su código; los casos de uso legítimo del archivo 0001_0004 empiezan con "VÁLIDO". La matriz no se amplía: un escenario que no encaje se avisa. Hoy hay 122 escenarios de acceso indebido en los cinco archivos y todos pasan; PA-03d y PA-04 no tienen escenarios porque son del informe (S17). Sin Postgres instalado se puede usar PGlite (`@electric-sql/pglite`, Postgres en WASM) desde Node, fuera del repo.
 
 **Cuidados conocidos:**
 

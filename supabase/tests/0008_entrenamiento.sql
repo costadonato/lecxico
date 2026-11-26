@@ -140,7 +140,7 @@ select pruebas.ok('2.2 los juegos de inicial no incluyen Rompe y une',
   not exists (select 1 from public.grados_habilitados(pruebas.id('N1')) where juego = 'rompe'));
 select pruebas.ok('2.3 guarda una práctica en grado 1 con 50 %',
   (public.guardar_partida(pruebas.id('N1'), 'detective', 1, 'practica', 4, 8)) ->> 'grado_habilitado' = '1');
-select pruebas.falla('2.4 rechaza el grado 2 sin desbloquear',
+select pruebas.falla('PA-10 2.4 rechaza el grado 2 sin desbloquear',
   $q$select public.guardar_partida(pruebas.id('N1'), 'detective', 2, 'practica', 8, 8)$q$, 'no está desbloqueado');
 select pruebas.ok('2.5 una partida de 80 % en grado 1 habilita el grado 2',
   (public.guardar_partida(pruebas.id('N1'), 'detective', 1, 'practica', 7, 8,
@@ -154,19 +154,19 @@ select pruebas.falla('2.9 un juego de otro nivel se rechaza',
   $q$select public.guardar_partida(pruebas.id('N1'), 'rompe', 1, 'practica', 5, 8)$q$, 'nivel');
 select pruebas.falla('2.10 un juego que no existe se rechaza',
   $q$select public.guardar_partida(pruebas.id('N1'), 'inventado', 1, 'practica', 5, 8)$q$, 'no existe');
-select pruebas.falla('2.11 el niño no registra partidas en consulta',
+select pruebas.falla('PA-09 2.11 el niño no registra partidas en consulta',
   $q$select public.guardar_partida(pruebas.id('N1'), 'rima', 1, 'consulta', 5, 8)$q$, 'vínculo activo');
-select pruebas.falla('2.12 el niño no registra partidas de otro niño',
+select pruebas.falla('PA-09 2.12 el niño no registra partidas de otro niño',
   $q$select public.guardar_partida(pruebas.id('N2'), 'rima', 1, 'practica', 5, 8)$q$, 'cuenta del niño');
 select pruebas.falla('2.13 rechaza más correctas que el total',
   $q$select public.guardar_partida(pruebas.id('N1'), 'rima', 1, 'practica', 9, 8)$q$, 'no es válido');
 select pruebas.falla('2.14 tiempo sin errores se rechaza',
   $q$select public.guardar_partida(pruebas.id('N1'), 'rima', 1, 'practica', 5, 8, 1000)$q$, 'van juntos');
-select pruebas.ok('2.15 el niño no lee partidas, ni las suyas', pruebas.partidas_visibles() = 0);
-select pruebas.falla('2.16 el niño no inserta partidas directamente',
+select pruebas.ok('PA-12 2.15 el niño no lee partidas, ni las suyas', pruebas.partidas_visibles() = 0);
+select pruebas.falla('PA-09 2.16 el niño no inserta partidas directamente',
   $q$insert into public.entrenamiento_partida (nino_id, juego, nivel, grado, origen, correctas, total)
      values (pruebas.id('N1'), 'rima', 'inicial', 3, 'practica', 8, 8)$q$, 'permission denied');
-select pruebas.falla('2.17 el niño no ve el entrenamiento de otro niño',
+select pruebas.falla('PA-02 2.17 el niño no ve el entrenamiento de otro niño',
   $q$select * from public.grados_habilitados(pruebas.id('N2'))$q$, 'No tenés acceso');
 select pruebas.sesion('postgres');
 select pruebas.ok('2.18 la práctica no tiene autor y actualiza ultimo_entrenamiento',
@@ -184,14 +184,14 @@ select pruebas.ok('3.2 A elige el grado 3 sin desbloquear',
   (public.guardar_partida(pruebas.id('N1'), 'rima', 3, 'consulta', 4, 8)) ? 'partida');
 select pruebas.ok('3.3 una consulta de 90 % en grado 2 habilita el 3 en casa',
   (public.guardar_partida(pruebas.id('N1'), 'palmas', 2, 'consulta', 9, 10)) ->> 'grado_habilitado' = '3');
-select pruebas.falla('3.4 el profesional no registra práctica en casa',
+select pruebas.falla('PA-13 3.4 el profesional no registra práctica en casa',
   $q$select public.guardar_partida(pruebas.id('N1'), 'rima', 1, 'practica', 5, 8)$q$, 'cuenta del niño');
 select pruebas.sesion('authenticated', pruebas.id('B'));
 select pruebas.ok('3.5 B también juega en consulta', (public.guardar_partida(pruebas.id('N1'), 'rima', 1, 'consulta', 6, 8)) ? 'partida');
 select pruebas.sesion('authenticated', pruebas.id('E'));
-select pruebas.falla('3.6 E, sin vínculo, no registra partidas',
+select pruebas.falla('PA-11 3.6 E, sin vínculo, no registra partidas',
   $q$select public.guardar_partida(pruebas.id('N1'), 'rima', 1, 'consulta', 6, 8)$q$, 'vínculo activo');
-select pruebas.falla('3.7 E no ve los grados de N1',
+select pruebas.falla('PA-05 3.7 E no ve los grados de N1',
   $q$select * from public.grados_habilitados(pruebas.id('N1'))$q$, 'No tenés acceso');
 select pruebas.sesion('authenticated', pruebas.id('N1'));
 select pruebas.ok('3.8 el niño ve palmas en grado 3 habilitado', pruebas.habilitado(pruebas.id('N1'), 'palmas') = 3);
@@ -205,11 +205,11 @@ select pruebas.sesion('postgres');
 select pruebas.sesion('authenticated', pruebas.id('A'));
 select pruebas.ok('4.1 A (comparte) ve las 4 prácticas, sus 3 consultas y la de B', pruebas.partidas_visibles() = 8);
 select pruebas.sesion('authenticated', pruebas.id('B'));
-select pruebas.ok('4.2 B (no comparte) ve las prácticas y su consulta, no las de A', pruebas.partidas_visibles() = 5);
+select pruebas.ok('PA-08 4.2 B (no comparte) ve las prácticas y su consulta, no las de A', pruebas.partidas_visibles() = 5);
 select pruebas.sesion('authenticated', pruebas.id('E'));
-select pruebas.ok('4.3 E no ve ninguna', pruebas.partidas_visibles() = 0);
+select pruebas.ok('PA-05 4.3 E no ve ninguna', pruebas.partidas_visibles() = 0);
 select pruebas.sesion('anon');
-select pruebas.falla('4.4 anon no lee partidas', $q$select count(*) from public.entrenamiento_partida$q$, 'permission denied');
+select pruebas.falla('PA-01 4.4 anon no lee partidas', $q$select count(*) from public.entrenamiento_partida$q$, 'permission denied');
 select pruebas.sesion('postgres');
 
 
@@ -227,11 +227,11 @@ select pruebas.falla('5.4 no se asigna un juego de otro nivel',
   $q$select public.crear_tarea(pruebas.id('N1'), '[{"juego":"lee","grado":1}]')$q$, 'no se puede asignar');
 select pruebas.guardar_id('T2', public.crear_tarea(pruebas.id('N1'), '[{"juego":"rima","grado":2},{"juego":"palmas","grado":1},{"juego":"lluvia","grado":3}]', 'Misión del mar', true));
 select pruebas.sesion('authenticated', pruebas.id('E'));
-select pruebas.falla('5.5 E no asigna tareas',
+select pruebas.falla('PA-11 5.5 E no asigna tareas',
   $q$select public.crear_tarea(pruebas.id('N1'), '[{"juego":"rima","grado":1}]')$q$, 'vínculo activo');
 select pruebas.sesion('authenticated', pruebas.id('B'));
-select pruebas.ok('5.6 B (no comparte) no ve las tareas de A', (select count(*) from public.entrenamiento_tarea) = 0);
-select pruebas.falla('5.7 B no cancela una tarea de A', $q$select public.cancelar_tarea(pruebas.id('T1'))$q$, 'No se puede cancelar');
+select pruebas.ok('PA-08 5.6 B (no comparte) no ve las tareas de A', (select count(*) from public.entrenamiento_tarea) = 0);
+select pruebas.falla('PA-08 5.7 B no cancela una tarea de A', $q$select public.cancelar_tarea(pruebas.id('T1'))$q$, 'No se puede cancelar');
 
 select pruebas.sesion('authenticated', pruebas.id('N1'));
 select pruebas.ok('5.8 el niño ve sus 2 tareas y sus 5 juegos',
@@ -271,7 +271,7 @@ select public.cambiar_letra_entrenamiento(pruebas.id('N1'), 'mayuscula');
 select pruebas.ok('6.3 el profesional vinculado la cambia en consulta',
   (select letra_entrenamiento from public.ninos where profile_id = pruebas.id('N1')) = 'mayuscula');
 select pruebas.sesion('authenticated', pruebas.id('E'));
-select pruebas.falla('6.4 E no la cambia',
+select pruebas.falla('PA-05 6.4 E no la cambia',
   $q$select public.cambiar_letra_entrenamiento(pruebas.id('N1'), 'minuscula')$q$, 'No podés');
 select pruebas.sesion('postgres');
 
