@@ -8,6 +8,7 @@ import {
   ORIGEN_LABEL,
   esCodigoJuego,
   fraseDe,
+  fraseFinal,
   juegoConPersonaje,
   juegoDisponible,
   juegosPorBloque,
@@ -162,6 +163,32 @@ describe("fraseDe", () => {
 
   it("las frases de aviso no muestran la respuesta", () => {
     for (const f of FRASES.reintento) expect(f).toMatch(/otra vez|de nuevo/i)
+  })
+})
+
+describe("fraseFinal", () => {
+  const genial = { frase: "¡Lo hiciste genial!", pose: "festejando", animacion: "saltar" }
+  const bien = { frase: "¡Lo hiciste bien!", pose: "festejando", animacion: "flotarSuave" }
+  const mejor = { frase: "¡Podés hacerlo mejor!", pose: "alentando", animacion: "flotarSuave" }
+
+  it("80 % o más: genial, festejando y saltando", () => {
+    expect(fraseFinal(100)).toEqual(genial)
+    expect(fraseFinal(80)).toEqual(genial)
+  })
+
+  it("de 40 % a 79 %: bien, festejando y flotando", () => {
+    expect(fraseFinal(79)).toEqual(bien)
+    expect(fraseFinal(40)).toEqual(bien)
+  })
+
+  it("menos de 40 %, incluido 0 %: alentando", () => {
+    expect(fraseFinal(39)).toEqual(mejor)
+    expect(fraseFinal(1)).toEqual(mejor)
+    expect(fraseFinal(0)).toEqual(mejor)
+  })
+
+  it("ninguna frase muestra números", () => {
+    for (const p of [0, 50, 100]) expect(fraseFinal(p).frase).not.toMatch(/\d|%/)
   })
 })
 

@@ -56,6 +56,7 @@ export function Nombra({ items, onRonda, letra }: PropsJuego<ItemNombra>) {
         conPractica={actual === 0}
         onConfirmar={confirmar}
         letra={letra}
+        mostrarNumero={false}
       />
     </div>
   )

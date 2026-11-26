@@ -39,7 +39,9 @@ const TIEMPO_MINIMO_MS = 1000
  *
  * Lo reusa Nombrá rápido (entrenamiento, S13b) con `letra`: las letras de
  * la cuadrícula siguen el switch "A a" en lugar de ir siempre en mayúscula.
- * Sin `letra` (la evaluación), todo queda como antes.
+ * Sin `letra` (la evaluación), todo queda como antes. Nombrá rápido
+ * también pasa `mostrarNumero={false}`: el número de cuadrícula ya está en
+ * la barra de progreso del marco.
  */
 export function EjercicioDenominacion({
   config,
@@ -49,6 +51,7 @@ export function EjercicioDenominacion({
   conPractica,
   onConfirmar,
   letra,
+  mostrarNumero = true,
 }: {
   config: ConfigDenominacion
   ejercicio: Ejercicio
@@ -61,6 +64,12 @@ export function EjercicioDenominacion({
   onConfirmar: (resultado: ResultadoEjercicio) => void
   /** Solo el entrenamiento: las letras siguen el switch "A a". Sin letra, van en mayúscula. */
   letra?: LetraEntrenamiento
+  /**
+   * Mostrar "Cuadrícula N de M" como título de la tarjeta. El entrenamiento
+   * lo pasa en false: la barra de progreso del marco ya lo dice. El rótulo
+   * "Práctica" se muestra siempre.
+   */
+  mostrarNumero?: boolean
 }) {
   const [fase, setFase] = useState<Fase>(conPractica ? "practica" : "preparado")
   const [tiempoMs, setTiempoMs] = useState<number | null>(null)
@@ -113,11 +122,8 @@ export function EjercicioDenominacion({
     if (e.key === " ") e.preventDefault()
   }
 
-  const titulo = (
-    <p className="mb-4 text-center text-sm font-semibold text-muted-foreground">
-      {fase === "practica" ? "Práctica" : `${ejercicio.nombre} de ${cantidad}`}
-    </p>
-  )
+  const textoTitulo = fase === "practica" ? "Práctica" : mostrarNumero ? `${ejercicio.nombre} de ${cantidad}` : null
+  const titulo = textoTitulo && <p className="mb-4 text-center text-sm font-semibold text-muted-foreground">{textoTitulo}</p>
 
   return (
     <div

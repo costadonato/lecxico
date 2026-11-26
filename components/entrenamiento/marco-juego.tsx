@@ -20,15 +20,17 @@ import { RESORTE } from "@/components/motion/transiciones"
 import { Personaje } from "@/components/personajes/personaje"
 import { TestBandaNino } from "@/components/test-banda-nino"
 import { createClient } from "@/lib/supabase/client"
-import { JUEGOS, consignaDe, type CodigoJuego, type Grado, type Nivel, type Origen } from "@/lib/entrenamiento/juegos"
+import { JUEGOS, consignaDe, porcentaje, type CodigoJuego, type Grado, type Nivel, type Origen } from "@/lib/entrenamiento/juegos"
 import { armarPartida, type ItemPartida } from "@/lib/entrenamiento/partida"
 import { guardarPartida, type LetraEntrenamiento, type PartidaGuardada } from "@/lib/entrenamiento/partidas"
 import {
   ORIGEN_LABEL,
   fraseDe,
+  fraseFinal,
   juegoConPersonaje,
   partidaConReintento,
   textoProgreso,
+  type FinalPartida,
   type Momento,
 } from "@/lib/entrenamiento/presentacion"
 import { estiloNivel } from "@/lib/niveles"
@@ -175,7 +177,9 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
     [guardar],
   )
 
-  const frase = fraseDe(momento, variacion)
+  // Al terminar, la frase (y la pose del niño) dependen del porcentaje de la partida.
+  const final = useMemo(() => (resultado ? fraseFinal(porcentaje(resultado.correctas, resultado.total)) : null), [resultado])
+  const frase = momento === "final" ? (final?.frase ?? "") : fraseDe(momento, variacion)
 
   return (
     <div className="fondo-nino relative isolate flex min-h-screen flex-col">
@@ -287,11 +291,11 @@ function MarcoInterno({ juego, nivel, grado, origen, nino, habilitado: habilitad
           </div>
         )}
 
-        {fase === "final" && guardada && resultado && (
+        {fase === "final" && guardada && resultado && final && (
           modo === "nino" ? (
             <FinalNino
               personaje={ficha.personaje}
-              frase={frase}
+              final={final}
               desbloqueado={desbloqueado}
               puedeRepetir={origen !== "tarea"}
               onOtraVez={empezar}
@@ -496,16 +500,20 @@ function Consigna({
   )
 }
 
+/**
+ * Pantalla final del niño: el personaje con la frase según el resultado
+ * (fraseFinal), sin números, y el premio si desbloqueó un grado.
+ */
 function FinalNino({
   personaje,
-  frase,
+  final,
   desbloqueado,
   puedeRepetir,
   onOtraVez,
   volverA,
 }: {
   personaje: "lex" | "lumo"
-  frase: string
+  final: FinalPartida
   desbloqueado: Grado | null
   puedeRepetir: boolean
   onOtraVez: () => void
@@ -519,9 +527,9 @@ function FinalNino({
       <div aria-hidden="true">
         <Personaje
           personaje={personaje}
-          pose="festejando"
-          animacion="saltar"
-          mensaje={frase}
+          pose={final.pose}
+          animacion={final.animacion}
+          mensaje={final.frase}
           ladoGlobo="derecha"
           decorativo
           prioridad
