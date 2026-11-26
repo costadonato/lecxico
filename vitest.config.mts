@@ -47,6 +47,9 @@ export default defineConfig({
         "lib/entrenamiento/lluvia.ts",
         "lib/personajes.ts",
         "lib/inicio/actividad.ts",
+        "lib/seguimiento/evaluaciones.ts",
+        "lib/seguimiento/entrenamiento.ts",
+        "lib/seguimiento/datos.ts",
       ],
       thresholds: {
         lines: 80,
