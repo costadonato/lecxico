@@ -16,11 +16,40 @@ export function coincideRuta(ruta: string, base: string): boolean {
   return ruta === base || ruta.startsWith(`${base}/`)
 }
 
+/** Origen ficticio para resolver una ruta y ver si se queda en el mismo sitio. */
+const ORIGEN_PRUEBA = "https://lecxico.invalid"
+
 /**
- * Devuelve `next` solo si es una ruta interna ("/algo", no "//otro-sitio"
- * ni una URL absoluta); si no, `porDefecto`. Evita redirecciones abiertas.
+ * Caracteres de control (0x00 a 0x1F y 0x7F) o barra invertida. El parser de
+ * URL del navegador descarta \t, \n y \r y lee "\" como "/", así que
+ * "/\t/otro.com" o "/\otro.com" terminarían en "//otro.com".
+ */
+function tieneCaracterPeligroso(ruta: string): boolean {
+  for (let i = 0; i < ruta.length; i++) {
+    const codigo = ruta.charCodeAt(i)
+    if (codigo <= 0x1f || codigo === 0x7f || codigo === 0x5c) return true
+  }
+  return false
+}
+
+/**
+ * Devuelve `next` solo si es una ruta relativa del mismo sitio ("/algo", con
+ * consulta y ancla si las tiene); si no, `porDefecto`. Evita redirecciones
+ * abiertas. Rechaza:
+ * - lo que no empieza con "/": URLs absolutas y esquemas (https:, javascript:, data:);
+ * - caracteres de control y barra invertida;
+ * - lo que, resuelto con new URL, cambia de origen o no es una URL: "//otro.com"
+ *   apunta a otro sitio y "//" sola no se puede leer;
+ * - lo que, resuelto, deja un pathname que empieza con "//" ("/..//otro.com"
+ *   queda como "//otro.com"): si se vuelve a usar como ruta, apunta a otro sitio.
  */
 export function rutaSegura(next: string | null | undefined, porDefecto = RUTA_INICIO): string {
-  if (!next || !next.startsWith("/") || next.startsWith("//") || next.startsWith("/\\")) return porDefecto
+  if (!next || !next.startsWith("/") || tieneCaracterPeligroso(next)) return porDefecto
+  try {
+    const url = new URL(next, ORIGEN_PRUEBA)
+    if (url.origin !== ORIGEN_PRUEBA || url.pathname.startsWith("//")) return porDefecto
+  } catch {
+    return porDefecto
+  }
   return next
 }

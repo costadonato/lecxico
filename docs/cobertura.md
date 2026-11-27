@@ -11,7 +11,7 @@ Qué entra en la medición de cobertura de Vitest (V8) y qué no, con el motivo.
 | Cálculo de resultados | `lib/test/analisis.ts` y `lib/test/denominacion.ts` |
 | Franjas | `lib/test/franjas.ts` |
 | Recomendación | `lib/test/franjas.ts` |
-| Desbloqueo | En la base: `grados_habilitados` y `guardar_partida` de la migración 0008, probadas con SQL en `supabase/tests/0008_entrenamiento.sql`. En el cliente: `gradoTrasPartida` de `lib/entrenamiento/juegos.ts` (la misma regla del 80 %, con sus pruebas) y la lectura del grado que devuelve la base en `lib/entrenamiento/partidas.ts` (`guardarPartida`, `gradosHabilitados`, `gradoDe`) |
+| Desbloqueo | En la base: `grados_habilitados` y `guardar_partida` de la migración 0008, probadas con SQL en `supabase/tests/0008_entrenamiento.sql`. La regla del 80 % se aplica solo en la base. El cliente no la calcula: lee el grado habilitado que devuelve la base con `lib/entrenamiento/partidas.ts` (`guardarPartida`, `gradosHabilitados`, `gradoDe`) |
 
 ## Módulos medidos
 
@@ -30,11 +30,11 @@ Qué entra en la medición de cobertura de Vitest (V8) y qué no, con el motivo.
 | Tutor | `lib/tutor/errores.ts` | Resultado y mensajes de las acciones del tutor |
 | Tutor | `lib/tutor/etapa.ts` | Cambio de etapa escolar |
 | Tutor | `lib/tutor/validaciones.ts` | Validación de los datos que llegan a las acciones del tutor |
-| Entrenamiento | `lib/entrenamiento/juegos.ts` | Catálogo de juegos, porcentaje de una partida y desbloqueo (`gradoTrasPartida`) |
+| Entrenamiento | `lib/entrenamiento/juegos.ts` | Catálogo de juegos y porcentaje de una partida |
 | Entrenamiento | `lib/entrenamiento/bancos.ts` | Acceso tipado a los bancos de contenido |
 | Entrenamiento | `lib/entrenamiento/rondas.ts` | Rondas y regla del reintento |
 | Entrenamiento | `lib/entrenamiento/presentacion.ts` | Textos y orden en pantalla: grupos por bloque y por franja, frases, orígenes |
-| Entrenamiento | `lib/entrenamiento/partidas.ts` | Envoltorios de las funciones de la 0008 (reciben el cliente de Supabase) |
+| Entrenamiento | `lib/entrenamiento/partidas.ts` | Envoltorios de las funciones de la 0008 (reciben el cliente de Supabase); lectura del grado habilitado |
 | Entrenamiento | `lib/entrenamiento/partida.ts` | Armado de una partida |
 | Entrenamiento | `lib/entrenamiento/audio.ts` | Reproductor único de audio |
 | Entrenamiento | `lib/entrenamiento/memotono.ts` | Memotono: secuencias de una partida |
@@ -61,18 +61,17 @@ Qué entra en la medición de cobertura de Vitest (V8) y qué no, con el motivo.
 | --- | --- | --- |
 | Acceso a Supabase o al servidor | `lib/supabase/admin.ts`, `client.ts`, `server.ts`; `lib/tutor/acciones.ts`, `verificar-contrasena.ts`; `lib/test/guardar-test.ts`, `ninos-para-test.ts`; `lib/ninos/detalle.ts`; `lib/vinculos.ts` | Dependen de la base, de la sesión o del servidor de Next.js. Se verifican con las pruebas SQL (`supabase/tests/`) y en la aplicación |
 | Hooks de React | `lib/auth/use-nombre-usuario.ts`, `use-perfil-pagina.ts`; `lib/entrenamiento/use-audio.ts`; `lib/hooks/use-voz.ts`; `lib/test/use-acceso-test.ts`, `use-salida-test.tsx` | Necesitan el DOM y un componente montado; las pruebas de Vitest corren en Node |
-| Tipos, textos y constantes | `lib/types/database.ts`, `game-telemetry.ts`; `lib/sitio.ts`; `lib/compromiso.ts`; `lib/utils.ts` (envoltorio de librerías) | No tienen lógica propia para probar |
-| Código heredado del prototipo | `lib/auth-utils.ts` | Simulación en `localStorage`, a retirar |
+| Tipos, textos y constantes | `lib/types/database.ts`; `lib/sitio.ts`; `lib/compromiso.ts`; `lib/utils.ts` (envoltorio de librerías) | No tienen lógica propia para probar |
 
 ## Resultado de hoy
 
-`npm run coverage` del 27/11/2026:
+`npm run coverage` del 27/11/2026, después de corregir `rutaSegura` y `lib/fechas.ts` y de borrar `lib/auth-utils.ts`, `lib/types/game-telemetry.ts` y `gradoTrasPartida`:
 
 | Medida | Resultado |
 | --- | --- |
-| Líneas | 99,89 % (982/983) |
-| Ramas | 98,38 % (733/745) |
-| Sentencias | 99,6 % (1250/1255) |
-| Funciones | 100 % (389/389) |
+| Líneas | 99,9 % (1002/1003) |
+| Ramas | 98,44 % (758/770) |
+| Sentencias | 99,6 % (1275/1280) |
+| Funciones | 100 % (391/391) |
 | Archivos de prueba | 34 |
-| Pruebas | 615 |
+| Pruebas | 618 |
