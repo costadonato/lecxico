@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PaginaApp } from "@/components/pagina-app"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
+import { BotonInforme } from "@/components/informes/dialogo-informe"
 import { CargandoSeccion, SinAccesoNino } from "@/components/ninos/piezas-detalle"
 import { ResultadosEvaluacion } from "@/components/test/resultados-evaluacion"
 import { usePerfilPagina } from "@/lib/auth/use-perfil-pagina"
@@ -48,12 +49,15 @@ export default function DetalleTestPage() {
       }
       acciones={
         datos ? (
-          <Button variant="outline" asChild>
-            <Link href={volver}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Volver al detalle del niño
-            </Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <BotonInforme ninoId={id} testId={testId} texto="Descargar informe" />
+            <Button variant="outline" asChild>
+              <Link href={volver}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Volver al detalle del niño
+              </Link>
+            </Button>
+          </div>
         ) : undefined
       }
       volverA={datos ? volver : "/ninos"}

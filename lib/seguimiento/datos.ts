@@ -17,7 +17,7 @@ export const FILAS_POR_PAGINA = 1000
 /** Tope de páginas, por las dudas (100 000 partidas): evita un bucle sin fin si la API respondiera siempre llena. */
 const MAX_PAGINAS = 100
 
-const COLUMNAS = "juego, grado, origen, correctas, total, porcentaje, tiempo_ms, errores, created_at"
+const COLUMNAS = "juego, grado, origen, correctas, total, porcentaje, tiempo_ms, errores, created_at, profesional_id"
 
 /**
  * Todas las partidas visibles del niño, de la más reciente a la más vieja.

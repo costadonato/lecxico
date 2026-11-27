@@ -17,6 +17,7 @@ import { PaginaApp } from "@/components/pagina-app"
 import { CuerpoTablaAnimado, FilaTablaAnimada } from "@/components/tabla-animada"
 import { ConfirmarDialog, type Confirmacion } from "@/components/confirmar-dialog"
 import { MensajeAlerta } from "@/components/mensaje-alerta"
+import { BotonInforme } from "@/components/informes/dialogo-informe"
 import { FranjasRecomendacion } from "@/components/ninos/franjas-recomendacion"
 import { CargandoSeccion, SinAccesoNino } from "@/components/ninos/piezas-detalle"
 import { Seccion } from "@/components/seccion"
@@ -117,12 +118,13 @@ function AccionesEncabezado({ datos }: { datos: DetalleNino }) {
       <Button asChild>
         <Link href={rutaDelTest(nivelParaEtapa(datos.nino.etapa_escolar), datos.perfil.id)}>Tomar evaluación</Link>
       </Button>
-      <Button asChild variant="secondary">
+      <Button asChild>
         <Link href={`/ninos/${datos.perfil.id}/entrenamiento`}>
           <Gamepad2 className="mr-2 size-4" aria-hidden="true" />
           Entrenar en consulta
         </Link>
       </Button>
+      <BotonInforme ninoId={datos.perfil.id} detalle={datos} />
       <Button variant="outline" onClick={pedirBaja}>
         Dar de baja
       </Button>

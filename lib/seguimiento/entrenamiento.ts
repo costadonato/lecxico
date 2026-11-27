@@ -12,10 +12,23 @@ import type { GradosHabilitados } from "@/lib/entrenamiento/partidas"
 import { esCodigoJuego, nombreJuego } from "@/lib/entrenamiento/presentacion"
 import type { EntrenamientoPartida } from "@/lib/types/database"
 
-/** Columnas de una partida que usa el seguimiento (cargarPartidasSeguimiento). */
+/**
+ * Columnas de una partida que usa el seguimiento (cargarPartidasSeguimiento).
+ * `profesional_id` (el autor; null en la práctica) lo usa el filtro de
+ * autoría del informe en PDF (S17).
+ */
 export type PartidaSeguimiento = Pick<
   EntrenamientoPartida,
-  "juego" | "grado" | "origen" | "correctas" | "total" | "porcentaje" | "tiempo_ms" | "errores" | "created_at"
+  | "juego"
+  | "grado"
+  | "origen"
+  | "correctas"
+  | "total"
+  | "porcentaje"
+  | "tiempo_ms"
+  | "errores"
+  | "created_at"
+  | "profesional_id"
 >
 
 export const ORIGENES: readonly Origen[] = ["consulta", "tarea", "practica"]

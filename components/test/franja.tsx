@@ -1,7 +1,15 @@
 import { Badge } from "@/components/ui/badge"
 import { ESTILO_NIVEL } from "@/lib/niveles"
-import { BLOQUE_NOMBRES, ETAPAS_ESCOLARES, type BloqueCodigo, type Nivel } from "@/lib/test/bloques"
-import { FRANJA_LABEL, SIN_FRANJA_LABEL, dependeDelGrado, type Franja, type GradoFranja } from "@/lib/test/franjas"
+import type { BloqueCodigo, Nivel } from "@/lib/test/bloques"
+import {
+  FRANJA_LABEL,
+  SIN_FRANJA_LABEL,
+  TEXTO_QUE_SON_FRANJAS,
+  TEXTO_SIN_FRANJA,
+  textoGradoFranjas,
+  type Franja,
+  type GradoFranja,
+} from "@/lib/test/franjas"
 
 /*
  * Piezas visuales de las franjas (S11), compartidas por el desglose de una
@@ -74,7 +82,8 @@ export function ChipFranja({ franja, className }: { franja: Franja | null; class
 /**
  * Aclaraciones de las franjas: qué son (siempre), qué significa "sin franja
  * de referencia" (si hay algún bloque sin franja) y qué grado se usó (si un
- * bloque que depende del grado tiene franja).
+ * bloque que depende del grado tiene franja). Los textos están en
+ * lib/test/franjas.ts: el informe en PDF (S17) usa los mismos.
  */
 export function LeyendasFranjas({
   nivel,
@@ -89,32 +98,17 @@ export function LeyendasFranjas({
   mostrarQueSon?: boolean
 }) {
   const haySinFranja = bloques.some((b) => b.franja === null)
-  const conGrado = bloques.filter((b) => b.franja !== null && dependeDelGrado(nivel, b.bloque_codigo))
-  const etiquetaGrado = ETAPAS_ESCOLARES.find((e) => e.valor === grado)?.label
+  const textoGrado = textoGradoFranjas(nivel, bloques, grado)
 
   return (
     <div className="space-y-1.5 text-sm text-muted-foreground">
-      {mostrarQueSon && (
-        <p>
-          Las franjas comparan cada bloque con valores de referencia de la bibliografía. Son orientativas y no son normas
-          de población.
-        </p>
-      )}
+      {mostrarQueSon && <p>{TEXTO_QUE_SON_FRANJAS}</p>}
       {haySinFranja && (
         <p>
-          <span className="font-semibold">{SIN_FRANJA_LABEL}:</span> no hay valores de la bibliografía para comparar este
-          resultado. Su interpretación queda a cargo del profesional.
+          <span className="font-semibold">{SIN_FRANJA_LABEL}:</span> {TEXTO_SIN_FRANJA}
         </p>
       )}
-      {conGrado.length > 0 && etiquetaGrado && <p>{textoGrado(conGrado.map((b) => b.bloque_codigo), etiquetaGrado)}</p>}
+      {textoGrado && <p>{textoGrado}</p>}
     </div>
   )
-}
-
-/** "La franja de correspondencia sonido-letra y la de denominación rápida usan el grado actual del niño (2do grado)." */
-function textoGrado(codigos: BloqueCodigo[], etiquetaGrado: string): string {
-  const nombres = codigos.map((c) => BLOQUE_NOMBRES[c].toLowerCase())
-  const sujeto =
-    nombres.length === 1 ? `La franja de ${nombres[0]} usa` : `La franja de ${nombres.slice(0, -1).join(", ")} y la de ${nombres.at(-1)} usan`
-  return `${sujeto} el grado actual del niño (${etiquetaGrado}).`
 }

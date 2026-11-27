@@ -8,9 +8,13 @@ import { defineConfig } from "vitest/config"
 export default defineConfig({
   // Resuelve el alias `@/` con los `paths` de tsconfig.json (soporte nativo de Vite 8).
   resolve: { tsconfigPaths: true },
+  // tsconfig.json deja el JSX sin transformar ("preserve", para Next): las
+  // pruebas con JSX (el PDF de S17a) usan el runtime automático de React.
+  oxc: { jsx: { runtime: "automatic" } },
   test: {
     environment: "node",
-    include: ["lib/**/*.test.ts"],
+    // components/**/*.test.tsx: el render del PDF (S17a), en Node con renderToBuffer.
+    include: ["lib/**/*.test.ts", "components/**/*.test.tsx"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
@@ -50,6 +54,9 @@ export default defineConfig({
         "lib/seguimiento/evaluaciones.ts",
         "lib/seguimiento/entrenamiento.ts",
         "lib/seguimiento/datos.ts",
+        "lib/informes/opciones.ts",
+        "lib/informes/periodo.ts",
+        "lib/informes/modelo.ts",
       ],
       thresholds: {
         lines: 80,

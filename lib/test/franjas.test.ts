@@ -11,6 +11,7 @@ import {
   gradoParaFranja,
   recomendacion,
   recomendacionParaNino,
+  textoGradoFranjas,
   ultimaEvaluacion,
   type BloqueParaFranja,
   type Franja,
@@ -470,5 +471,25 @@ describe("recomendacionParaNino", () => {
     ])
     const r = recomendacionParaNino([ultima], "sala_5")
     expect(r).toMatchObject({ estado: "disponible", grado: null, franjas: { denominacion_rapida: null } })
+  })
+})
+
+describe("textoGradoFranjas", () => {
+  const csl = { bloque_codigo: "correspondencia_sonido_letra" as const, franja: "correcto" as const }
+  const den = { bloque_codigo: "denominacion_rapida" as const, franja: "intermedio" as const }
+
+  it("nombra los bloques que dependen del grado y tienen franja", () => {
+    expect(textoGradoFranjas("primario", [csl], "primero")).toBe(
+      "La franja de correspondencia sonido-letra usa el grado actual del niño (1er grado).",
+    )
+    expect(textoGradoFranjas("primario", [csl, den], "segundo")).toBe(
+      "La franja de correspondencia sonido-letra y la de denominación rápida usan el grado actual del niño (2do grado).",
+    )
+  })
+
+  it("null sin grado, sin bloques que dependan del grado o si esos quedaron sin franja", () => {
+    expect(textoGradoFranjas("primario", [csl], null)).toBeNull()
+    expect(textoGradoFranjas("primario", [{ bloque_codigo: "conciencia_silabica", franja: "correcto" }], "tercero")).toBeNull()
+    expect(textoGradoFranjas("primario", [{ ...csl, franja: null }], "tercero")).toBeNull()
   })
 })

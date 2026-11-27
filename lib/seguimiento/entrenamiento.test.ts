@@ -20,6 +20,7 @@ function partida(p: Partial<PartidaSeguimiento> & Pick<PartidaSeguimiento, "crea
     porcentaje: 50,
     tiempo_ms: null,
     errores: null,
+    profesional_id: null,
     ...p,
   }
 }

@@ -31,7 +31,7 @@ describe("cargarPartidasSeguimiento", () => {
     expect(partidas).toHaveLength(3)
     expect(llamadas.from).toHaveBeenCalledWith("entrenamiento_partida")
     expect(llamadas.select).toHaveBeenCalledWith(
-      "juego, grado, origen, correctas, total, porcentaje, tiempo_ms, errores, created_at",
+      "juego, grado, origen, correctas, total, porcentaje, tiempo_ms, errores, created_at, profesional_id",
     )
     // Sin filtros propios: solo el niño (la RLS decide el resto).
     expect(llamadas.eq).toHaveBeenCalledTimes(1)

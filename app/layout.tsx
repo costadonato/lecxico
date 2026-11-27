@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { DetenerAudioAlNavegar } from "@/components/detener-audio-al-navegar"
 import { ProveedorMovimiento } from "@/components/motion/proveedor-movimiento"
+import { Toaster } from "@/components/ui/sonner"
 import { SITIO_URL } from "@/lib/sitio"
 import "./globals.css"
 
@@ -78,6 +79,8 @@ export default function RootLayout({
           <Suspense fallback={null}>{children}</Suspense>
         </ProveedorMovimiento>
         <DetenerAudioAlNavegar />
+        {/* Avisos breves (S17a: "Informe descargado"). La app no tiene modo oscuro activo. */}
+        <Toaster theme="light" position="top-center" />
         <Analytics />
       </body>
     </html>

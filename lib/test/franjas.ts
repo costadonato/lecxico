@@ -12,7 +12,14 @@
  * orden del test, sin compararlos entre sí ni reordenarlos por gravedad.
  */
 import type { BloqueResultado } from "@/lib/test/analisis"
-import { nivelParaEtapa, type BloqueCodigo, type EtapaEscolar, type Nivel } from "@/lib/test/bloques"
+import {
+  BLOQUE_NOMBRES,
+  ETAPAS_ESCOLARES,
+  nivelParaEtapa,
+  type BloqueCodigo,
+  type EtapaEscolar,
+  type Nivel,
+} from "@/lib/test/bloques"
 
 export type Franja = "correcto" | "intermedio" | "a_observar"
 
@@ -102,6 +109,14 @@ export const FRANJA_LABEL: Record<Franja, string> = {
 }
 
 export const SIN_FRANJA_LABEL = "Sin franja de referencia"
+
+/** Qué son las franjas (desglose, "Franjas y recomendación" e informe en PDF). */
+export const TEXTO_QUE_SON_FRANJAS =
+  "Las franjas comparan cada bloque con valores de referencia de la bibliografía. Son orientativas y no son normas de población."
+
+/** Qué significa "sin franja de referencia" (va después de SIN_FRANJA_LABEL y dos puntos). */
+export const TEXTO_SIN_FRANJA =
+  "no hay valores de la bibliografía para comparar este resultado. Su interpretación queda a cargo del profesional."
 
 /** Lo que necesita un bloque para calcular su franja. */
 export type BloqueParaFranja = Pick<BloqueResultado, "bloque_codigo" | "orden" | "correctas" | "total"> & {
@@ -248,4 +263,25 @@ export function recomendacionParaNino<
     franjasDeEvaluacion(test.nivel, test.bloques, grado).map((b) => [b.bloque_codigo, b.franja]),
   )
   return { estado: "disponible", test, grado, franjas }
+}
+
+/**
+ * "La franja de correspondencia sonido-letra y la de denominación rápida usan
+ * el grado actual del niño (2do grado)." para los bloques que dependen del
+ * grado y tienen franja; null si no hay ninguno o el grado es desconocido.
+ */
+export function textoGradoFranjas(
+  nivel: Nivel,
+  bloques: readonly { bloque_codigo: BloqueCodigo; franja: Franja | null }[],
+  grado: GradoFranja | null,
+): string | null {
+  const etiquetaGrado = ETAPAS_ESCOLARES.find((e) => e.valor === grado)?.label
+  const codigos = bloques.filter((b) => b.franja !== null && dependeDelGrado(nivel, b.bloque_codigo)).map((b) => b.bloque_codigo)
+  if (codigos.length === 0 || !etiquetaGrado) return null
+  const nombres = codigos.map((c) => BLOQUE_NOMBRES[c].toLowerCase())
+  const sujeto =
+    nombres.length === 1
+      ? `La franja de ${nombres[0]} usa`
+      : `La franja de ${nombres.slice(0, -1).join(", ")} y la de ${nombres.at(-1)} usan`
+  return `${sujeto} el grado actual del niño (${etiquetaGrado}).`
 }
