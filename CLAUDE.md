@@ -71,15 +71,22 @@ Antes de crear algo nuevo, buscá si ya existe y reutilizalo: `pagina-app.tsx` (
 ## Pruebas
 
 - La lógica pura (cálculo de resultados, franjas, recomendación, desbloqueo de grados) va en `lib/` y lleva pruebas de Vitest al lado (`*.test.ts`).
-- Meta de la V8: 80 % de líneas y 90 % de ramas en esos módulos. Cubrí cada condición por sus dos caminos.
+- Meta de la V6.1: 80 % de líneas y 90 % de ramas en esos módulos. Cubrí cada condición por sus dos caminos.
 
-## Un slice está hecho cuando
+## Definición de Hecho
 
-- `npm run build` pasa y `npx tsc --noEmit` da 0 errores.
-- Las pruebas de Vitest pasan.
-- La migración, si hay, se probó en Postgres local con sus escenarios de acceso.
-- Se puede probar en la app con un profesional y un niño de prueba.
-- `docs/estado-proyecto.md` está actualizado en lo que tocó el slice.
+Definición de Hecho (vigente desde el 27/11/2026). Un ítem está terminado cuando:
+
+1. `npm run build` pasa y `npx tsc --noEmit` da 0 errores. (Hasta S13a, el 20/11, la regla era no sumar errores a los 4 previos del código heredado, que S13a eliminó.)
+2. Las pruebas de Vitest pasan, con al menos 80 % de líneas y 90 % de ramas en los módulos de lógica listados en docs/cobertura.md.
+3. Si hay migración, se probó en el Postgres local con sus escenarios, y cada escenario de acceso indebido lleva su código PA de docs/matriz-pa.md.
+4. Se probó en la aplicación con un profesional y un niño de prueba.
+5. docs/estado-proyecto.md está actualizado en lo que tocó el ítem.
+6. Si el PR trae una migración o cambia políticas de acceso (RLS, permisos o funciones security definer), lo revisa el otro integrante antes de integrarlo y de aplicar la migración. Los demás PR los integra su dueño, que pide revisión si hay conflictos.
+7. Está integrado en main y desplegado en el entorno de prueba. La migración la aplica el dueño del slice después de la revisión del punto 6.
+8. Si es un ejercicio o un juego, la revisión con las especialistas quedó registrada en docs/revisiones-especialistas.md.
+
+El agente ejecuta y reporta los puntos 1, 2, 3 y 5. El desarrollador verifica ese reporte y hace los puntos 4, 6, 7 y 8.
 
 ## Al terminar, resumí
 

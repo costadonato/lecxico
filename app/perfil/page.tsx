@@ -98,7 +98,7 @@ export default function PerfilPage() {
         </div>
       </Seccion>
 
-      {/* ---- Resultados (V8: el perfil del niño no los muestra) ---- */}
+      {/* ---- Resultados (V6.1: el perfil del niño no los muestra) ---- */}
       {profile?.rol === "nino" && (
         <MensajeAlerta tipo="info" texto="Los resultados de las evaluaciones los ve el profesional que acompaña al niño." />
       )}

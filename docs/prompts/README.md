@@ -2,7 +2,7 @@
 
 Acá queda el prompt de cada slice tal como se le pasó a Claude Code, con el nombre `sNN-nombre.md`. Si durante el slice se mandaron correcciones, se agregan al final del mismo archivo bajo "Ajustes".
 
-Sirve para dos cosas: que cualquiera de los dos pueda retomar un slice sabiendo qué se pidió, y el apartado sobre el proceso de desarrollo del informe final (la V8 lo basa en el historial del repositorio).
+Sirve para dos cosas: que cualquiera de los dos pueda retomar un slice sabiendo qué se pidió, y el apartado sobre el proceso de desarrollo del informe final (la V6.1 lo basa en el historial del repositorio).
 
 | Archivo | Slice | Responsable |
 | --- | --- | --- |
@@ -24,6 +24,7 @@ Sirve para dos cosas: que cualquiera de los dos pueda retomar un slice sabiendo 
 | `ajustes-recorrido-entrenamiento.md` | Ajustes del recorrido (PR #22) | Donato |
 | `docs-proceso-scrum.md` | Documentación del proceso Scrum (sin slice) | Camila |
 | `pa-matriz-0001-0004.md` | Matriz PA y escenarios SQL de las migraciones 0001 a 0004 (sin slice, adelanta S18) | Camila |
+| `proceso-bloque-b.md` | Correcciones del bloque B de la devolución del director: Definición de Hecho, cobertura, verificación funcional, versión V6.1 de la propuesta y registro de revisiones (sin slice) | Camila |
 
 Los prompts de los slices 1 a 5 están en el chat de Camila; si se recuperan, van con el nombre `s01-...` a `s05-...`.
 

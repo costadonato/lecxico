@@ -50,6 +50,10 @@ export default defineConfig({
         "lib/seguimiento/evaluaciones.ts",
         "lib/seguimiento/entrenamiento.ts",
         "lib/seguimiento/datos.ts",
+        "lib/niveles.ts",
+        "lib/fechas.ts",
+        "lib/auth/validaciones.ts",
+        "lib/auth/rutas.ts",
       ],
       thresholds: {
         lines: 80,

@@ -1,6 +1,6 @@
 # Registro de revisiones con las especialistas
 
-Entregable de la propuesta V8 ("Registro fechado de las revisiones con las especialistas y documento de requerimientos vigente"). Es la evidencia del criterio de cumplimiento del objetivo 1: cada bloque de la evaluación necesita la revisión conforme de las especialistas. También registra la revisión de cada juego del entrenamiento.
+Entregable de la propuesta V6.1 ("Registro fechado de las revisiones con las especialistas y documento de requerimientos vigente"). Es la evidencia del criterio de cumplimiento del objetivo 1: cada bloque de la evaluación necesita la revisión conforme de las especialistas. También registra la revisión de cada juego del entrenamiento.
 
 Especialistas asesoras: Lic. Mónica Chávez y Lic. Melisa Julieta Spillmann (psicopedagogía).
 
@@ -14,12 +14,13 @@ Especialistas asesoras: Lic. Mónica Chávez y Lic. Melisa Julieta Spillmann (ps
 | 27/08/2026 | Equipo, Lic. Chávez | Evaluación bloque por bloque | Conteo de sílabas: palabras de 2 sílabas en vez de 1. Evitar pares con la misma sílaba inicial (sol/sopa). Recordar el orden: máximo 2 reproducciones y secuencias de largo progresivo. "Memoria fonológica" pasa a "Memoria auditiva". Construir la palabra: una de 2 y una de 3 sílabas. Pseudopalabras más cortas y de sílabas simples. Audio en el texto de comprensión lectora. Palabras más cortas en reconocimiento visual | PR #3 |
 | 04/09/2026 | Equipo, Lic. Chávez | Definición del proyecto | El profesional pasa a ser el usuario principal y toma la evaluación | PR #4, PR #5 |
 | 14/10/2026 | Equipo, Lic. Chávez, Lic. Spillmann | Evaluación completa (la revisión más profunda) y definición del proyecto | Muchas correcciones a denominación rápida. El niño entrena siempre acompañado; denominación rápida se suma a primeros lectores; el perfil del niño no muestra resultados. Se planteó que el tutor no viera nada desde la cuenta del niño | S9, S10 |
-| 23/10/2026 | Equipo, director | Cambios de requerimientos | Se congelan los requerimientos en la definición vigente; los cambios posteriores pasan a trabajo futuro | Propuesta |
-| 28/10/2026 | Equipo, director | Definición del proyecto | El tutor accede por un informe a pedido por correo; los cortes de las franjas se fijan por revisión bibliográfica, provisorios | S11, S17 |
+| 23/10/2026 | Equipo, director | Cambios de requerimientos | El equipo congeló los requerimientos en la definición vigente, con la orientación del director; los cambios posteriores pasan a trabajo futuro. | Propuesta |
+| 28/10/2026 | Equipo, director | Definición del proyecto | El equipo definió que el tutor accede por un informe a pedido por correo y, por indicación del director, que los cortes de las franjas se fijan por revisión bibliográfica, provisorios. | S11, S17 |
 | 19/11/2026 | Equipo, Lic. Chávez | Validación del mockup de entrenamientos: mapa de juegos y diseño de cada juego | Se aprobó el mapa de juegos. Observaciones generales y cambios por juego en "Reunión del 19/11/2026". La especialista se lleva el mockup para revisarlo y envía correcciones específicas hasta el 25 o 26/11. | S12, S13a, S13b, S14 |
-| 23/11/2026 | Equipo, director (revisión bibliográfica, sin especialistas) | Valores de corte de las franjas | Se fijaron dos cortes por bloque y nivel; ver docs/valores-de-corte.md | S11 |
-| 26/11/2026 | | Juegos del entrenamiento | | S13, S14 |
+| 26/11/2026 | Lic. Chávez, Donato Costa (virtual) | Correcciones específicas de los juegos del entrenamiento tras revisar el mockup | Cinco correcciones a los juegos; ver "Reunión del 26/11/2026: correcciones a los juegos del entrenamiento" | S13, S14 |
 | 03/12/2026 | | Juegos del entrenamiento | | S14 |
+
+Los valores de corte de las franjas los fijó el equipo el 23/11/2026 por revisión bibliográfica (docs/valores-de-corte.md). El director indicó el método; no participó en fijar los cortes.
 
 ### Reunión del 19/11/2026: validación del mockup de entrenamientos
 
@@ -34,6 +35,20 @@ Observaciones generales (se aplican a todos los juegos desde S13a):
 - **Prioridad de lo visual**: colores, Lex y Lumo, animaciones y contenedores cuidados.
 
 Los cambios por juego se aplican en S13a (Detective de sonidos, Rima y Palmas), S13b y S14. Cambio de diseño en **Rima, grado 3**: los distractores ya no riman ni en asonante. Los audios con límite de reproducciones suman una más que en el mockup, porque ya no hay reproducción automática.
+
+### Reunión del 26/11/2026: correcciones a los juegos del entrenamiento
+
+Todas las correcciones son sobre los juegos del entrenamiento; la evaluación no tuvo correcciones nuevas.
+
+| N.º | Corrección | Estado |
+| --- | --- | --- |
+| 1 | En general, en los juegos, dar una segunda oportunidad al niño cuando no elige la opción correcta. | Pendiente |
+| 2 | Detective de sonidos, primeros lectores, grados 2 y 3: escuchar 2 palabras y elegir entre 4 opciones, para sumar dificultad. | Pendiente |
+| 3 | Leé y descubrí (juego de comprensión lectora): el texto separado de las preguntas y un cronómetro visible del tiempo de respuesta, sin guardarlo. | Pendiente |
+| 4 | Poder cambiar la letra de los juegos entre imprenta mayúscula e imprenta minúscula. | Aplicada (`components/entrenamiento/switch-letra.tsx` y `components/entrenamiento/proveedor-letra.tsx`) |
+| 5 | Ojo de lince, grado 3: límite de tiempo para encontrar las letras, 60 segundos por defecto y modificable por el profesional. | Pendiente |
+
+Estado al 27/11/2026; lo confirma el equipo al integrar las correcciones.
 
 ## Conformidad de la evaluación (objetivo 1)
 
