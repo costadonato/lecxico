@@ -1,9 +1,9 @@
 # Lecxico — Estado del proyecto
 
-Última actualización: 26/11/2026 (S16 Gráficos de seguimiento, con los ajustes de la revisión; matriz PA en `docs/matriz-pa.md` y escenarios SQL de las migraciones 0001 a 0004; antes: estado de los slices integrados en `main` con su número de PR y migración 0008 aplicada; S11 Franjas y recomendación, con S11b: recomendación en Entrenar en consulta). Reemplaza al documento "Estado del proyecto tras la etapa de gestión de usuarios (slices 1 a 5)" del 9/10/2026.
+Última actualización: 27/11/2026 (correcciones del bloque B de la devolución del director: Definición de Hecho vigente desde el 27/11, `docs/cobertura.md`, `docs/verificacion-funcional.md`, la propuesta es la V6.1; antes, 26/11: S16 Gráficos de seguimiento, con los ajustes de la revisión; matriz PA en `docs/matriz-pa.md` y escenarios SQL de las migraciones 0001 a 0004; antes: estado de los slices integrados en `main` con su número de PR y migración 0008 aplicada; S11 Franjas y recomendación, con S11b: recomendación en Entrenar en consulta). Reemplaza al documento "Estado del proyecto tras la etapa de gestión de usuarios (slices 1 a 5)" del 9/10/2026.
 **Cómo se usa:** es la fuente de contexto para cualquier chat o Claude Code que trabaje en el repo. Cada PR actualiza las secciones que toca (estado de slices, modelo de datos, decisiones, pendientes). Si este documento y el código no coinciden, manda el código; las migraciones de `supabase/migrations/` describen la base exactamente.
 
-Documentos relacionados: `CLAUDE.md` (reglas para Claude Code), `docs/matriz-pa.md` (matriz de protección de acceso), `docs/revisiones-especialistas.md` (registro de revisiones), `docs/prompts/` (prompt de cada slice). El plan completo con fechas está en el documento "Lecxico — Plan de desarrollo hasta el 4 de diciembre" y en el tablero de Trello del equipo.
+Documentos relacionados: `CLAUDE.md` (reglas para Claude Code), `docs/matriz-pa.md` (matriz de protección de acceso), `docs/revisiones-especialistas.md` (registro de revisiones), `docs/cobertura.md` (qué módulos mide la cobertura y por qué), `docs/verificacion-funcional.md` (casos de verificación funcional en el entorno de prueba), `docs/prompts/` (prompt de cada slice). El plan completo con fechas está en el documento "Lecxico — Plan de desarrollo hasta el 4 de diciembre" y en el tablero de Trello del equipo.
 
 ## Resumen
 
@@ -36,17 +36,19 @@ Meta: desarrollo cerrado el viernes 4/12/2026; verificación y documentación de
 | S15 Tareas del profesional | Armar y asignar tareas; la recomendación enlaza a juegos | Camila | 30/11–2/12 | usa 0008 | Pendiente |
 | S16 Gráficos de seguimiento | Sección "Seguimiento" en `/ninos/[id]` con dos pestañas: evaluaciones (small multiples con las franjas de fondo; denominación rápida con tiempo y aciertos; cada gráfico se amplía en un modal) y entrenamiento (barras por semana y origen, tabla "Por juego"); lógica pura en `lib/seguimiento/` para reusar en S17. Prompts: `docs/prompts/s16-graficos-seguimiento.md` y `docs/prompts/s16-ajustes.md` | Donato | 26/11 | — | En revisión (rama `s16-graficos-seguimiento`) |
 | S17 Informes | PDF del profesional; informe a pedido del tutor por correo | Camila | 1–4/12 | 0009 | Pendiente |
-| S18 Verificación | Matriz PA, cobertura, auditoría WCAG, comparación con la práctica actual. Matriz PA hecha (PB-54, 26/11). Auditoría WCAG (28/11) y comparación con la práctica actual (30/11) adelantadas. Cobertura: pendiente. | Los dos | 26/11–4/12 | — | En curso |
+| S18 Verificación | Matriz PA, cobertura, auditoría WCAG, comparación con la práctica actual. Matriz PA hecha (PB-54, 26/11). Auditoría WCAG (28/11) y comparación con la práctica actual (30/11) adelantadas. Cobertura: módulos medidos, no medidos y resultado en `docs/cobertura.md` (27/11). Verificación funcional: 30 casos en `docs/verificacion-funcional.md`, primera pasada antes del 30/11 y segunda el 04/12. | Los dos | 26/11–4/12 | — | En curso |
 
-**Criterio de corte (V8):** si hay atraso se asegura, en este orden: (1) evaluación y control de acceso; (2) recomendación; (3) entrenamiento mínimo, un juego por bloque y nivel; (4) seguimiento. Lo que no se complete pasa a trabajo futuro.
+**Criterio de corte (V6.1):** si hay atraso se asegura, en este orden: (1) evaluación y control de acceso; (2) recomendación; (3) entrenamiento mínimo, un juego por bloque y nivel; (4) seguimiento. Lo que no se complete pasa a trabajo futuro.
 
 **Migraciones:** los números están reservados en la tabla. Se aplican en orden de número; si una con número mayor está lista antes, espera o se renumera antes del merge. Las aplica el dueño del slice, con el PR aprobado.
+
+**Definición de Hecho (vigente desde el 27/11/2026):** está en `CLAUDE.md` y en la plantilla de PR (`.github/pull_request_template.md`). Cambios respecto de la anterior: la cobertura se mide sobre los módulos de `docs/cobertura.md`; un PR con migración o con cambios en políticas de acceso (RLS, permisos o funciones `security definer`) lo revisa obligatoriamente el otro integrante antes de integrarlo y de aplicar la migración, y los demás los integra su dueño, que pide revisión si hay conflictos; un ítem está hecho cuando está integrado en `main` y desplegado en el entorno de prueba. El agente ejecuta y reporta build, `tsc`, pruebas con cobertura, migración con sus escenarios PA y este documento; el desarrollador verifica ese reporte, prueba en la aplicación, revisa, integra y registra las revisiones con las especialistas.
 
 ## Stack y configuración
 
 **Stack:** Next.js 15 (App Router) + React 19 + TypeScript + Tailwind 4 + shadcn/ui + Motion + Supabase (Postgres + Auth) con `@supabase/ssr`. Vitest para pruebas. Despliegue de prueba en Vercel desde `main`: https://lecxico-three.vercel.app. Repositorio: https://github.com/costadonato/lecxico.
 
-**Pruebas:** `npm test` corre las pruebas de Vitest (`lib/**/*.test.ts`) y `npm run coverage` suma la cobertura V8 de los módulos de lógica listados en `vitest.config.mts` (hoy `lib/test/analisis.ts`, `bloques.ts`, `denominacion.ts`, `denominacion-config.ts` y, desde S11, `franjas.ts`, `lib/auth/perfil.ts`, `lib/tutor/errores.ts`, `etapa.ts` y `validaciones.ts`, y `lib/entrenamiento/juegos.ts`, `bancos.ts`, `rondas.ts`, `presentacion.ts`, `partidas.ts`, desde S13b `partida.ts`, `memotono.ts`, `denominacion-entrenamiento.ts`, `tocalo.ts` y `audio.ts`, desde S14a `seleccion.ts`, `lee.ts`, `eco.ts` y `caza.ts`, desde S14b `memopalabras.ts`, `ojo-lince.ts` y `lluvia.ts`, `lib/inicio/actividad.ts` del estilo del profesional y, desde S16, `lib/seguimiento/evaluaciones.ts`, `entrenamiento.ts` y `datos.ts`), con umbrales de 80 % de líneas y 90 % de ramas (reporte HTML en `coverage/`).
+**Pruebas:** `npm test` corre las pruebas de Vitest (`lib/**/*.test.ts`) y `npm run coverage` suma la cobertura V8 de los módulos de lógica listados en `vitest.config.mts` (hoy `lib/test/analisis.ts`, `bloques.ts`, `denominacion.ts`, `denominacion-config.ts` y, desde S11, `franjas.ts`, `lib/auth/perfil.ts`, `lib/tutor/errores.ts`, `etapa.ts` y `validaciones.ts`, y `lib/entrenamiento/juegos.ts`, `bancos.ts`, `rondas.ts`, `presentacion.ts`, `partidas.ts`, desde S13b `partida.ts`, `memotono.ts`, `denominacion-entrenamiento.ts`, `tocalo.ts` y `audio.ts`, desde S14a `seleccion.ts`, `lee.ts`, `eco.ts` y `caza.ts`, desde S14b `memopalabras.ts`, `ojo-lince.ts` y `lluvia.ts`, `lib/inicio/actividad.ts` del estilo del profesional y, desde S16, `lib/seguimiento/evaluaciones.ts`, `entrenamiento.ts` y `datos.ts`, y desde el 27/11 `lib/niveles.ts`, `lib/fechas.ts`, `lib/auth/validaciones.ts` y `lib/auth/rutas.ts`: 35 módulos), con umbrales de 80 % de líneas y 90 % de ramas (reporte HTML en `coverage/`). La lista, los archivos de `lib/` que no se miden con su motivo y el último resultado están en `docs/cobertura.md`.
 
 **Pruebas de migraciones:** `supabase/tests/00_simular_supabase.sql` arma en un Postgres local lo que las migraciones esperan de Supabase (`auth.users`, `auth.uid()`, `auth.jwt()`, `auth.role()`, roles `anon`, `authenticated` y `service_role`, la tabla previa `entrenamientos` y la collation `und-x-icu` si falta). Orden: ese archivo → migraciones → `supabase/tests/NNNN_*.sql` (ver `supabase/tests/README.md`). Cada archivo de pruebas corre en una transacción con `rollback` y corta con "FALLARON …" si algún escenario no dio lo esperado. Hay cinco archivos de escenarios: `0001_0004_base_y_vinculacion.sql` (tablas base, RLS, invitaciones y `ninos_para_test`), `0005`, `0006`, `0007` y `0008`.
 
@@ -78,9 +80,9 @@ select set_config('request.jwt.claims',
 rollback;
 ```
 
-## Definición vigente (propuesta V8)
+## Definición vigente (propuesta V6.1)
 
-La definición funcional es la de la propuesta V8 (reuniones del 14/10 y 28/10/2026). Las marcadas **(V8)** todavía no están implementadas. Las marcadas (S8) están en la rama de S8 y dependen de la 0005.
+La definición funcional es la de la propuesta V6.1 (reuniones del 14/10 y 28/10/2026). Las marcadas **(V6.1)** todavía no están implementadas. Las marcadas (S8) están en la rama de S8 y dependen de la 0005.
 
 **Usuarios y cuentas**
 
@@ -91,7 +93,7 @@ La definición funcional es la de la propuesta V8 (reuniones del 14/10 y 28/10/2
 - Hoy se inicia sesión con email en los dos roles. El nombre de usuario es único y sirve para que el profesional encuentre al niño.
 - Consentimiento = aceptación de Términos y Condiciones al registrarse, obligatoria; la fecha la fija la base y no se puede revertir.
 - Nombre y apellido se guardan con formato "Juan Pérez", aplicado por la base.
-- Las acciones del tutor exigen volver a ingresar la contraseña, que el servidor verifica antes de ejecutarlas: aceptar o rechazar invitaciones, elegir si comparte el historial, dar de baja vínculos, modificar la etapa escolar y eliminar la cuenta del niño. **(V8)** Pedir el informe (S17) va a reutilizar el mismo diálogo (`components/tutor/dialogo-contrasena-tutor.tsx`) y la misma verificación (`conContrasenaTutor` de `lib/tutor/verificar-contrasena.ts`). (S8)
+- Las acciones del tutor exigen volver a ingresar la contraseña, que el servidor verifica antes de ejecutarlas: aceptar o rechazar invitaciones, elegir si comparte el historial, dar de baja vínculos, modificar la etapa escolar y eliminar la cuenta del niño. **(V6.1)** Pedir el informe (S17) va a reutilizar el mismo diálogo (`components/tutor/dialogo-contrasena-tutor.tsx`) y la misma verificación (`conContrasenaTutor` de `lib/tutor/verificar-contrasena.ts`). (S8)
   - Cómo: cada acción es una Server Action (`lib/tutor/acciones.ts`). Toma el usuario de la sesión (cookies), exige rol `nino`, prueba la contraseña con `signInWithPassword` en un cliente aparte sin persistencia (no toca la sesión del navegador), comprueba que sea el mismo usuario y cierra esa sesión temporal con `scope: "local"`. Recién ahí llama, con el cliente `service_role`, a una función `tutor_*` que solo puede ejecutar `service_role`. El id del niño sale siempre de la sesión.
   - En la base, la sesión del niño ya no puede aceptar, rechazar ni dar de baja vínculos, ni cambiar la etapa escolar.
 - El tutor puede eliminar la cuenta del niño con todos sus datos, desde "Acciones del tutor" en `/perfil` (`auth.admin.deleteUser`; el resto se borra en cascada). (S8)
@@ -170,7 +172,7 @@ La definición funcional es la de la propuesta V8 (reuniones del 14/10 y 28/10/2
 
 - El perfil del niño (`/perfil`, que comparten niño y tutor) no muestra resultados de evaluaciones ni el progreso del entrenamiento (S10). Muestra los datos personales con el nombre de usuario, un aviso ("Los resultados de las evaluaciones los ve el profesional que acompaña al niño.") y "Acciones del tutor". En la base, el niño no lee `test` ni `test_bloque_resultado`, ni las suyas (0007).
 - Solo el profesional con vínculo activo ve las evaluaciones, su desglose, las franjas y la recomendación.
-- En `/entrenamiento` el niño ve sus tareas y el grado alcanzado en cada juego, con estrellas y nunca con porcentajes; al terminar una partida no ve aciertos (S13a). **(V8)** El tutor accede a los resultados con un informe a pedido que recibe por correo como enlace con acceso autenticado, que vence a los 7 días (S17).
+- En `/entrenamiento` el niño ve sus tareas y el grado alcanzado en cada juego, con estrellas y nunca con porcentajes; al terminar una partida no ve aciertos (S13a). **(V6.1)** El tutor accede a los resultados con un informe a pedido que recibe por correo como enlace con acceso autenticado, que vence a los 7 días (S17).
 
 **Entrenamiento (validado con las especialistas el 19/11; S12 y S13a)**
 
