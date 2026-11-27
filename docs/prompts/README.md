@@ -25,6 +25,7 @@ Sirve para dos cosas: que cualquiera de los dos pueda retomar un slice sabiendo 
 | `docs-proceso-scrum.md` | Documentación del proceso Scrum (sin slice) | Camila |
 | `pa-matriz-0001-0004.md` | Matriz PA y escenarios SQL de las migraciones 0001 a 0004 (sin slice, adelanta S18) | Camila |
 | `proceso-bloque-b.md` | Correcciones del bloque B de la devolución del director: Definición de Hecho, cobertura, verificación funcional, versión V6.1 de la propuesta y registro de revisiones (sin slice) | Camila |
+| `fix-rutas-fechas.md` | Corrección de `rutaSegura` (redirección abierta) y de las fechas inválidas de `lib/fechas.ts`; borra código muerto (sin slice) | Camila |
 
 Los prompts de los slices 1 a 5 están en el chat de Camila; si se recuperan, van con el nombre `s01-...` a `s05-...`.
 

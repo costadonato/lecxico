@@ -451,9 +451,3 @@ export function juegosDelNivel(nivel: Nivel, opciones: { incluirSoloConsulta: bo
 export function porcentaje(correctas: number, total: number): number {
   return Math.round((100 * correctas) / total)
 }
-
-/** Grado habilitado después de una partida (misma regla que grados_habilitados en la 0008). */
-export function gradoTrasPartida(habilitado: Grado, jugado: Grado, pct: number, enMision: boolean): Grado {
-  if (enMision || pct < 80) return habilitado
-  return Math.min(3, Math.max(habilitado, jugado + 1)) as Grado
-}

@@ -29,12 +29,20 @@ describe("formatearFecha", () => {
     expect(formatearFecha("")).toBe("")
   })
 
-  // POSIBLE ERROR (no se corrige acá; ver el resumen de proceso-bloque-b):
-  // la función promete "cadena vacía si no hay fecha", pero un texto que no es
-  // fecha devuelve "Invalid Date", y una fecha sin hora no se valida (mes 13).
-  it("hoy, un texto que no es fecha da 'Invalid Date' y un mes 13 se muestra igual", () => {
-    expect(formatearFecha("no es fecha")).toBe("Invalid Date")
-    expect(formatearFecha("2026-13-45")).toBe("45/13/2026")
+  it("un texto que no es fecha da una cadena vacía", () => {
+    expect(formatearFecha("no es fecha")).toBe("")
+  })
+
+  it("una fecha imposible da una cadena vacía, con o sin hora", () => {
+    expect(formatearFecha("2026-13-45")).toBe("")
+    expect(formatearFecha("2020-02-30")).toBe("")
+    expect(formatearFecha("2021-02-29")).toBe("")
+    expect(formatearFecha("2026-02-30T10:00:00Z")).toBe("")
+  })
+
+  it("el 29/02 de un año bisiesto es válido; los años de 4 cifras menores a 100 también", () => {
+    expect(formatearFecha("2020-02-29")).toBe("29/02/2020")
+    expect(formatearFecha("0050-01-01")).toBe("01/01/0050")
   })
 })
 
@@ -49,9 +57,10 @@ describe("formatearFechaCorta", () => {
     expect(formatearFechaCorta(undefined)).toBe("")
   })
 
-  // POSIBLE ERROR: hereda el caso anterior y recorta "Invalid Date".
-  it("hoy, un texto que no es fecha da 'Inval'", () => {
-    expect(formatearFechaCorta("no es fecha")).toBe("Inval")
+  it("un texto que no es fecha o una fecha imposible dan una cadena vacía", () => {
+    expect(formatearFechaCorta("no es fecha")).toBe("")
+    expect(formatearFechaCorta("2026-13-45")).toBe("")
+    expect(formatearFechaCorta("2020-02-30")).toBe("")
   })
 })
 
@@ -98,12 +107,14 @@ describe("calcularEdad", () => {
     expect(calcularEdad("2020-05-10T00:00:00Z")).toBeNull()
   })
 
-  // POSIBLE ERROR (no se corrige acá; ver el resumen de proceso-bloque-b):
-  // la función promete "null si no es válida", pero solo revisa el formato.
-  // Un mes 13 resta un año (como si no hubiera llegado el cumpleaños).
-  it("hoy, una fecha con formato correcto pero imposible devuelve un número", () => {
-    expect(calcularEdad("2020-13-01")).toBe(5)
-    expect(calcularEdad("2020-02-30")).toBe(6)
+  it("una fecha con formato correcto pero imposible da null", () => {
+    expect(calcularEdad("2020-13-01")).toBeNull()
+    expect(calcularEdad("2020-02-30")).toBeNull()
+    expect(calcularEdad("2020-00-10")).toBeNull()
+  })
+
+  it("el 29/02 de un año bisiesto es válido", () => {
+    expect(calcularEdad("2020-02-29")).toBe(6)
   })
 })
 
@@ -136,10 +147,11 @@ describe("formatearFechaHora", () => {
     expect(formatearFechaHora("")).toBe("")
   })
 
-  // POSIBLE ERROR (no se corrige acá; ver el resumen de proceso-bloque-b):
-  // un texto que no es fecha no da cadena vacía sino "NaN/NaN/NaN NaN:NaN".
-  it("hoy, un texto que no es fecha da NaN", () => {
-    expect(formatearFechaHora("no es fecha")).toBe("NaN/NaN/NaN NaN:NaN")
+  it("un texto que no es fecha o una fecha imposible dan una cadena vacía", () => {
+    expect(formatearFechaHora("no es fecha")).toBe("")
+    expect(formatearFechaHora("2026-13-45")).toBe("")
+    expect(formatearFechaHora("2020-02-30")).toBe("")
+    expect(formatearFechaHora("2026-02-30T10:00:00Z")).toBe("")
   })
 })
 
@@ -208,9 +220,9 @@ describe("tiempoRelativo", () => {
     expect(tiempoRelativo(new Date())).toBe("hace 1 minuto")
   })
 
-  // POSIBLE ERROR (no se corrige acá; ver el resumen de proceso-bloque-b):
-  // una fecha que no se puede leer atraviesa todas las comparaciones con NaN.
-  it("hoy, una fecha que no se puede leer da 'hace NaN años'", () => {
-    expect(tiempoRelativo("no es fecha", ahora)).toBe("hace NaN años")
+  it("una fecha que no se puede leer da una cadena vacía", () => {
+    expect(tiempoRelativo("no es fecha", ahora)).toBe("")
+    expect(tiempoRelativo(new Date(Number.NaN), ahora)).toBe("")
+    expect(tiempoRelativo("2026-02-30T10:00:00Z", ahora)).toBe("")
   })
 })

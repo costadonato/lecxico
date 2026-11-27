@@ -36,10 +36,11 @@ describe("coincideRuta", () => {
 })
 
 describe("rutaSegura", () => {
-  it("devuelve una ruta interna tal cual, con consulta incluida", () => {
+  it("devuelve una ruta interna tal cual, con consulta y ancla", () => {
     expect(rutaSegura("/ninos")).toBe("/ninos")
     expect(rutaSegura("/restablecer")).toBe("/restablecer")
     expect(rutaSegura("/ninos/abc?pestana=seguimiento")).toBe("/ninos/abc?pestana=seguimiento")
+    expect(rutaSegura("/ninos/abc?x=1#y")).toBe("/ninos/abc?x=1#y")
     expect(rutaSegura("/")).toBe("/")
   })
 
@@ -49,31 +50,60 @@ describe("rutaSegura", () => {
     expect(rutaSegura("")).toBe("/dashboard")
   })
 
-  it("rechaza URLs absolutas y rutas relativas", () => {
-    expect(rutaSegura("https://otro-sitio.com")).toBe("/dashboard")
-    expect(rutaSegura("javascript:alert(1)")).toBe("/dashboard")
+  it("rechaza las rutas que no empiezan con /", () => {
     expect(rutaSegura("ninos")).toBe("/dashboard")
+    expect(rutaSegura("?next=/ninos")).toBe("/dashboard")
   })
 
-  it("rechaza las rutas que el navegador lee como otro sitio (// y /\\)", () => {
+  it("rechaza esquemas: https:, javascript: y data:", () => {
+    expect(rutaSegura("https://otro-sitio.com")).toBe("/dashboard")
+    expect(rutaSegura("javascript:alert(1)")).toBe("/dashboard")
+    expect(rutaSegura("data:text/html,<script>alert(1)</script>")).toBe("/dashboard")
+  })
+
+  it("rechaza las que empiezan con //: apuntan a otro sitio o no se pueden leer", () => {
     expect(rutaSegura("//otro-sitio.com")).toBe("/dashboard")
-    expect(rutaSegura("/\\otro-sitio.com")).toBe("/dashboard")
+    expect(rutaSegura("///otro-sitio.com")).toBe("/dashboard")
+    expect(rutaSegura("//")).toBe("/dashboard")
+  })
+
+  it("rechaza la barra invertida", () => {
+    expect(rutaSegura(String.raw`/\otro-sitio.com`)).toBe("/dashboard")
+    expect(rutaSegura(String.raw`/ninos\abc`)).toBe("/dashboard")
+  })
+
+  it("rechaza tabulación, salto de línea y retorno de carro (el navegador los descarta)", () => {
+    expect(rutaSegura("/\t/otro-sitio.com")).toBe("/dashboard")
+    expect(rutaSegura("/\n/otro-sitio.com")).toBe("/dashboard")
+    expect(rutaSegura("/\r/otro-sitio.com")).toBe("/dashboard")
+  })
+
+  it("rechaza los demás caracteres de control: 0x00, 0x1F y 0x7F", () => {
+    expect(rutaSegura("/ninos\u0000")).toBe("/dashboard")
+    expect(rutaSegura("/ninos\u001f")).toBe("/dashboard")
+    expect(rutaSegura("/ninos\u007f")).toBe("/dashboard")
+  })
+
+  it("acepta caracteres que no son de control: espacio y 0x80", () => {
+    expect(rutaSegura("/ninos abc")).toBe("/ninos abc")
+    expect(rutaSegura("/ninos\u0080")).toBe("/ninos\u0080")
+  })
+
+  it("acepta rutas que, resueltas, siguen en el mismo sitio", () => {
+    expect(rutaSegura("/%2F%2Fotro-sitio.com")).toBe("/%2F%2Fotro-sitio.com")
+    expect(rutaSegura("/ninos/../perfil")).toBe("/ninos/../perfil")
+  })
+
+  it("rechaza las que, resueltas, dejan un pathname que empieza con //", () => {
+    expect(new URL("/..//otro-sitio.com", "https://lecxico.test").pathname).toBe("//otro-sitio.com")
+    expect(rutaSegura("/..//otro-sitio.com")).toBe("/dashboard")
+    expect(rutaSegura("/.//otro-sitio.com")).toBe("/dashboard")
   })
 
   it("usa el valor por defecto que se le pase", () => {
     expect(rutaSegura(null, "/perfil")).toBe("/perfil")
     expect(rutaSegura("//otro-sitio.com", "/perfil")).toBe("/perfil")
+    expect(rutaSegura("/\t/otro-sitio.com", "/perfil")).toBe("/perfil")
     expect(rutaSegura("/ninos", "/perfil")).toBe("/ninos")
-  })
-
-  // POSIBLE ERROR (no se corrige acá; ver el resumen de proceso-bloque-b):
-  // una tabulación o un salto de línea después de la primera barra pasan el
-  // filtro, pero el parser de URL del navegador los descarta y "/\t/otro.com"
-  // queda como "//otro.com", que apunta a otro sitio. En /login, router.push(next)
-  // podría redirigir afuera. En /auth/callback no, porque antepone el origin.
-  it("hoy deja pasar una tabulación o un salto de línea después de la barra", () => {
-    expect(rutaSegura("/\t/otro-sitio.com")).toBe("/\t/otro-sitio.com")
-    expect(rutaSegura("/\n/otro-sitio.com")).toBe("/\n/otro-sitio.com")
-    expect(new URL("/\t/otro-sitio.com", "https://lecxico.test").host).toBe("otro-sitio.com")
   })
 })

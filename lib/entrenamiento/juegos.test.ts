@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import { describe, expect, it } from "vitest"
 
-import { JUEGOS, consignaDe, gradoTrasPartida, juegosDelNivel, porcentaje, type Grado } from "@/lib/entrenamiento/juegos"
+import { JUEGOS, consignaDe, juegosDelNivel, porcentaje, type Grado } from "@/lib/entrenamiento/juegos"
 import { BLOQUES_POR_NIVEL, type Nivel } from "@/lib/test/bloques"
 
 /** Filas del insert de entrenamiento_juego en la 0008: código, niveles y solo_consulta. */
@@ -96,34 +96,6 @@ describe("porcentaje", () => {
     expect(porcentaje(2, 3)).toBe(67)
     expect(porcentaje(0, 8)).toBe(0)
     expect(porcentaje(8, 8)).toBe(100)
-  })
-})
-
-describe("gradoTrasPartida", () => {
-  it("con 80 % o más habilita el grado siguiente", () => {
-    expect(gradoTrasPartida(1, 1, 80, false)).toBe(2)
-    expect(gradoTrasPartida(2, 2, 100, false)).toBe(3)
-  })
-
-  it("con menos de 80 % no cambia", () => {
-    expect(gradoTrasPartida(1, 1, 79, false)).toBe(1)
-    expect(gradoTrasPartida(2, 2, 0, false)).toBe(2)
-  })
-
-  it("no pasa del grado 3", () => {
-    expect(gradoTrasPartida(3, 3, 100, false)).toBe(3)
-  })
-
-  it("no baja el grado habilitado al jugar uno anterior", () => {
-    expect(gradoTrasPartida(3, 1, 100, false)).toBe(3)
-  })
-
-  it("en consulta o tarea, un grado alto aprobado habilita hasta el siguiente", () => {
-    expect(gradoTrasPartida(1, 2, 90, false)).toBe(3)
-  })
-
-  it("las partidas de una misión no desbloquean", () => {
-    expect(gradoTrasPartida(1, 1, 100, true)).toBe(1)
   })
 })
 
